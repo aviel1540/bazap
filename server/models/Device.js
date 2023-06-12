@@ -18,6 +18,11 @@ const deviceSchema = new Schema({
         trim: true,
         required: true
     },
+    project: {
+        type: String,
+        default: null,
+        trim: true
+    },
     place: {
         type: String,
         enum: [DeviceStatus.WAIT_TO_WORK, DeviceStatus.AT_WORK, DeviceStatus.FINISHED,DeviceStatus.RETURNED],

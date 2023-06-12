@@ -155,5 +155,15 @@ exports.updateDetails = async (req, res) => {
 }
 
 exports.getAllDevices = async (req, res) => {
-
+    const projectId = escape(req.params.projectId);
+    let devices;
+    try {
+        devices = await deviceService.findAllDevices();
+        if(!devices) {
+            return res.status(404).json({ message: "לא קיימים מכשירים"});
+        }
+        return res.status(200).json(devices);
+    } catch(err) {
+        return res.status(500).json({message: err.message});
+    }
 }

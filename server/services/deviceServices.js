@@ -2,6 +2,7 @@ const Device = require('../models/Device');
 
 exports.findDeviceById = async(DeviceId) => await Device.findById(DeviceId);
 exports.findDeviceBySerialNumber = async(serialNumber) => await Device.findOne({serialNumber});
+exports.findAllDevices = async() => await Device.find();
 
 exports.addNewDevice = async(request) => {
 	return new Device({

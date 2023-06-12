@@ -6,3 +6,4 @@ exports.addNewProject = async(request) => {
         unit: request.checkUnit
     });
 }
+exports.findAllProjects = async() => await Project.find();
