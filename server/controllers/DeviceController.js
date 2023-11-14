@@ -155,7 +155,6 @@ exports.updateDetails = async (req, res) => {
 }
 
 exports.getAllDevices = async (req, res) => {
-    const projectId = escape(req.params.projectId);
     let devices;
     try {
         devices = await deviceService.findAllDevices();

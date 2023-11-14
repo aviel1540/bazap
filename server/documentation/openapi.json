@@ -20,6 +20,126 @@
 		}
 	],
 	"paths": {
+		"/units": {
+			"get": {
+				"tags": ["Units"],
+				"summary": "Register to the app",
+				"parameters": [
+					{
+						"name": "token",
+						"in": "header",
+						"schema": { "type": "string" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success"
+					}
+				}
+			}
+		},
+		"/units/find-by-name/{unitName}": {
+			"get": {
+				"tags": ["Units"],
+				"summary": "Register to the app",
+				"parameters": [
+					{
+						"name": "token",
+						"in": "header",
+						"schema": { "type": "string" }
+					},
+					{
+						"name": "unitName",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "string" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success"
+					}
+				}
+			}
+		},
+		"/units/add-new-unit": {
+			"post": {
+				"tags": ["Units"],
+				"summary": "Register to the app",
+				"parameters": [
+					{
+						"name": "token",
+						"in": "header",
+						"schema": { "type": "string" }
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"unitName": { "type": "string" }
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Success"
+					}
+				}
+			}
+		},
+		"/deviceType": {
+			"get": {
+				"tags": ["Device-Type"],
+				"summary": "Register to the app",
+				"parameters": [
+					{
+						"name": "token",
+						"in": "header",
+						"schema": { "type": "string" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success"
+					}
+				}
+			}
+		},
+		"/deviceType/add-new-deviceType": {
+			"post": {
+				"tags": ["Device-Type"],
+				"summary": "Register to the app",
+				"parameters": [
+					{
+						"name": "token",
+						"in": "header",
+						"schema": { "type": "string" }
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"deviceName": { "type": "string" }
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Success"
+					}
+				}
+			}
+		},
 		"/device/{id}": {
 			"get": {
 				"tags": ["Device"],
@@ -209,8 +329,93 @@
 							"schema": {
 								"type": "object",
 								"properties": {
-									"projectName": { "type": "string" },
-									"unit": { "type": "string" }
+									"projectName": { "type": "string" }
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Success"
+					}
+				}
+			}
+		},
+		"/project/{id}": {
+			"get": {
+				"tags": ["Project"],
+				"summary": "Get project by id",
+				"parameters": [
+					{
+						"name": "token",
+						"in": "header",
+						"schema": { "type": "string" }
+					},
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "string" }
+					}
+				],
+
+				"responses": {
+					"200": {
+						"description": "find project by id."
+					}
+				}
+			}
+		},
+		"/project/find-by-name/{projectName}": {
+			"get": {
+				"tags": ["Project"],
+				"summary": "Get project by name",
+				"parameters": [
+					{
+						"name": "token",
+						"in": "header",
+						"schema": { "type": "string" }
+					},
+					{
+						"name": "projectName",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "string" }
+					}
+				],
+
+				"responses": {
+					"200": {
+						"description": "find project by name."
+					}
+				}
+			}
+		},
+		"/project/update-project/{id}": {
+			"patch": {
+				"tags": ["Project"],
+				"summary": "Register to the app",
+				"parameters": [
+					{
+						"name": "token",
+						"in": "header",
+						"schema": { "type": "string" }
+					},
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "string" }
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"projectName": { "type": "string" }
 								}
 							}
 						}

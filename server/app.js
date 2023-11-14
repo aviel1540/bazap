@@ -4,6 +4,10 @@ const express = require("express");
 const fs = require("fs");
 const deviceRouter = require("./routers/deviceRouter");
 const projectRouter = require("./routers/projectRouter");
+const deviceTypeRouter = require("./routers/deviceTypeRouter");
+const technicianRouter = require("./routers/technicianRouter");
+const unitsRouter = require("./routers/unitsRouter");
+const voucherRouter = require("./routers/voucherRouter");
 
 // const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
@@ -39,6 +43,10 @@ app.use(
 
 app.use("/api/device/", deviceRouter);
 app.use("/api/project/", projectRouter);
+app.use("/api/deviceType/", deviceTypeRouter);
+app.use("/api/technician/", technicianRouter);
+app.use("/api/units/", unitsRouter);
+app.use("/api/voucher/", voucherRouter);
 
 
 

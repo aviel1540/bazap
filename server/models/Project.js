@@ -8,27 +8,22 @@ const projectSchema = new Schema({
         trim: true,
         required: true
     },
-    unit: {
-        type: String,
-        trim: true,
-        required: true
-    },
-    createdDate: {
-        type: Date,
-        default: Date.now()
-    },
     startDate: {
         type: Date,
-        default: null
+        default: Date.now()
     },
     endDate: {
         type: Date,
         default: null
     },
-    categoriesList: {
+    finished: {
+        type: Boolean,
+        default: false
+    },
+    vouchersList : [{
         type: Schema.Types.ObjectId,
-		ref: "Device",
-    }
+		ref: "Voucher",
+    }]
 });
 
 
