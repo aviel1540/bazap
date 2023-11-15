@@ -62,6 +62,30 @@
 				}
 			}
 		},
+		"/units/{id}": {
+			"get": {
+				"tags": ["Units"],
+				"summary": "Register to the app",
+				"parameters": [
+					{
+						"name": "token",
+						"in": "header",
+						"schema": { "type": "string" }
+					},
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "string" }
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Success"
+					}
+				}
+			}
+		},
 		"/units/add-new-unit": {
 			"post": {
 				"tags": ["Units"],
@@ -80,6 +104,42 @@
 								"type": "object",
 								"properties": {
 									"unitName": { "type": "string" }
+								}
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Success"
+					}
+				}
+			}
+		},
+		"/units/update-unit/{id}": {
+			"patch": {
+				"tags": ["Units"],
+				"summary": "Register to the app",
+				"parameters": [
+					{
+						"name": "token",
+						"in": "header",
+						"schema": { "type": "string" }
+					},
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "string" }
+					}
+				],
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"type": "object",
+								"properties": {
+									"unitsName": { "type": "string" }
 								}
 							}
 						}

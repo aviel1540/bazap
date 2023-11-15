@@ -31,6 +31,10 @@ const voucherSchema = new Schema({
         type: Date,
         default: Date.now()
     },
+    place: {
+        type: Boolean,
+        default: null
+    },
     project: {
         type: Schema.Types.ObjectId,
         ref: "Project"
