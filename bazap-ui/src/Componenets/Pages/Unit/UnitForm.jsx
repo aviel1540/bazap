@@ -1,27 +1,39 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import CustomForm from "../../UI/CustomForm/CustomForm";
-import { addDeviceType } from "../../../Utils/deviceTypeApi";
 import { swalFire } from "../../UI/Swal";
 import propTypes from "prop-types";
+import { addUnit, updateUnit } from "../../../Utils/unitAPI";
 
-const DeviceForm = ({ onCancel, formValues = null, isEdit }) => {
+const UnitForm = ({ onCancel, formValues = null, isEdit }) => {
     const queryClient = useQueryClient();
     const onSubmit = (data) => {
         if (!isEdit) {
-            let newDeviceType = { deviceName: data.deviceTypeName };
-            addDeviceTypeMutation.mutate(newDeviceType);
+            let newUnit = { unitsName: data.unitName };
+            addUnitMutation.mutate(newUnit);
         } else {
-            let editDeviceType = {
+            let editUnit = {
                 id: formValues.id,
-                deviceName: data.deviceTypeName,
+                unitsName: data.unitName,
             };
-            alert("edit: " + JSON.stringify(editDeviceType));
-            //editDeviceTypeMutation.mutate(editDeviceType);
+            editUnitMutation.mutate(editUnit);
         }
     };
-    const addDeviceTypeMutation = useMutation(addDeviceType, {
+    const addUnitMutation = useMutation(addUnit, {
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["deviceTypes"] });
+            queryClient.invalidateQueries({ queryKey: ["units"] });
+            onCancel();
+        },
+        onError: (message) => {
+            swalFire({
+                html: message,
+                icon: "error",
+                showCancelButton: false,
+            });
+        },
+    });
+    const editUnitMutation = useMutation(updateUnit, {
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["units"] });
             onCancel();
         },
         onError: (message) => {
@@ -34,10 +46,10 @@ const DeviceForm = ({ onCancel, formValues = null, isEdit }) => {
     });
     const deviceNameInputObj = [
         {
-            label: "שם סוג מכשיר",
-            name: "deviceTypeName",
+            label: "שם יחידה",
+            name: "unitName",
             type: "text",
-            placeholder: "לדוגמא RPT",
+            placeholder: "לדוגמא 319",
             validators: {
                 required: "יש למלא שדה זה.",
                 minLength: {
@@ -54,15 +66,15 @@ const DeviceForm = ({ onCancel, formValues = null, isEdit }) => {
     );
 };
 
-DeviceForm.propTypes = {
+UnitForm.propTypes = {
     formValues: propTypes.object,
     onCancel: propTypes.func,
     isEdit: propTypes.bool,
     editId: propTypes.string,
 };
 
-DeviceForm.defaultProps = {
+UnitForm.defaultProps = {
     isEdit: false,
 };
 
-export default DeviceForm;
+export default UnitForm;

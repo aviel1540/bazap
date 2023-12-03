@@ -2,6 +2,7 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const express = require("express");
 const fs = require("fs");
+const cors = require('cors');
 const deviceRouter = require("./routers/deviceRouter");
 const projectRouter = require("./routers/projectRouter");
 const deviceTypeRouter = require("./routers/deviceTypeRouter");
@@ -40,7 +41,7 @@ app.use(
         customSiteTitle: "Bazap",
     })
 );
-
+app.use(cors());
 app.use("/api/device/", deviceRouter);
 app.use("/api/project/", projectRouter);
 app.use("/api/deviceType/", deviceTypeRouter);

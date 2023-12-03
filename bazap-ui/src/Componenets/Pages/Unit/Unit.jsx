@@ -1,16 +1,16 @@
 import { Button, Card } from "react-bootstrap";
 import CustomModal from "../../UI/CustomModal";
-import DeviceTypeTable from "./DeviceTypeTable";
-import DeviceForm from "./DeviceForm";
 import { useQuery } from "@tanstack/react-query";
-import { getAllDeviceTypes } from "../../../Utils/deviceTypeApi";
 import { useState } from "react";
+import UnitTable from "./UnitTable";
+import UnitForm from "./UnitForm";
+import { getAllUnits } from "../../../Utils/unitAPI";
 
-const DeviceType = () => {
+const Unit = () => {
     const [show, setShow] = useState(false);
     const { isLoading, data: deviceTypes } = useQuery({
-        queryKey: ["deviceTypes"],
-        queryFn: getAllDeviceTypes,
+        queryKey: ["units"],
+        queryFn: getAllUnits,
     });
     const showModal = () => {
         setShow(true);
@@ -32,22 +32,22 @@ const DeviceType = () => {
         <>
             <Card>
                 <div className="card-header">
-                    <div className="card-title">סוגי מכשירים</div>
+                    <div className="card-title">יחידות</div>
                     <div className="card-toolbar">
                         <Button size="sm" className="btn-light-primary" onClick={showModal}>
-                            הוסף סוג מכשיר חדש
+                           הוסף יחידה
                         </Button>
                     </div>
                 </div>
                 <Card.Body>
-                    <DeviceTypeTable deviceTypes={deviceTypes} isLoading={isLoading} />
+                    <UnitTable deviceTypes={deviceTypes} isLoading={isLoading} />
                 </Card.Body>
             </Card>
             <CustomModal {...modalProperties}>
-                <DeviceForm onCancel={hideModal} />
+                <UnitForm onCancel={hideModal} />
             </CustomModal>
         </>
     );
 };
 
-export default DeviceType;
+export default Unit;

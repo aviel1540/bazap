@@ -3,26 +3,26 @@ import { Dropdown, DropdownButton } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 import Loader from "../../Layout/Loader";
 import { swalFire } from "../../UI/Swal";
-import { deleteDeviceType } from "../../../Utils/deviceTypeApi";
 import propTypes from "prop-types";
 import CustomModal from "../../UI/CustomModal";
 import { useState } from "react";
-import DeviceForm from "./DeviceForm";
+import UnitForm from "./UnitForm";
+import { deleteUnit } from "../../../Utils/unitAPI";
 
-const DeviceTypeTable = ({ deviceTypes, isLoading }) => {
+const UnitTable = ({ deviceTypes, isLoading }) => {
     const [show, setShow] = useState(false);
     const [formValues, setFormValues] = useState(null);
     const queryClient = useQueryClient();
-    const onEditDeviceTypeHandler = (data) => {
-        setFormValues({ deviceTypeName: data.deviceName, id: data._id });
+    const onEditUnitHandler = (data) => {
+        setFormValues({ unitName: data.unitsName, id: data._id });
         showModal();
     };
-    const onDeleteDeviceTypeHandler = (id) => {
+    const onDeleteUnitHandler = (id) => {
         swalFire({
-            html: "האם אתה בטוח מעוניין למחוק את סוג המכשיר?",
+            html: "האם אתה בטוח מעוניין למחוק את היחידה?",
             icon: "warning",
             onConfirmHandler: () => {
-                deleteDeviceMutation.mutate(id);
+                deleteUnitMutation.mutate(id);
             },
             showCancelButton: true,
             confirmButtonText: "כן, מחק",
@@ -30,9 +30,9 @@ const DeviceTypeTable = ({ deviceTypes, isLoading }) => {
     };
     const columns = [
         {
-            name: "שם מכשיר",
+            name: "שם יחידה",
             sortable: true,
-            selector: (row) => row.deviceName,
+            selector: (row) => row.unitsName,
         },
         {
             name: "פעולות",
@@ -57,9 +57,9 @@ const DeviceTypeTable = ({ deviceTypes, isLoading }) => {
             ),
         },
     ];
-    const deleteDeviceMutation = useMutation(deleteDeviceType, {
+    const deleteUnitMutation = useMutation(deleteUnit, {
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["deviceTypes"] });
+            queryClient.invalidateQueries({ queryKey: ["units"] });
         },
         onError: (message) => {
             swalFire({
@@ -72,10 +72,10 @@ const DeviceTypeTable = ({ deviceTypes, isLoading }) => {
     const selectActionHandler = (data, event) => {
         switch (event) {
             case "edit":
-                onEditDeviceTypeHandler(data);
+                onEditUnitHandler(data);
                 break;
             case "delete":
-                onDeleteDeviceTypeHandler(data._id);
+                onDeleteUnitHandler(data._id);
                 break;
             default:
                 break;
@@ -104,15 +104,15 @@ const DeviceTypeTable = ({ deviceTypes, isLoading }) => {
         <>
             <DataTable className="table" columns={columns} data={deviceTypes} />
             <CustomModal {...modalProperties}>
-                <DeviceForm onCancel={hideModal} formValues={formValues} isEdit={true} />
+                <UnitForm onCancel={hideModal} formValues={formValues} isEdit={true} />
             </CustomModal>
         </>
     );
 };
 
-DeviceTypeTable.propTypes = {
+UnitTable.propTypes = {
     deviceTypes: propTypes.array,
     isLoading: propTypes.bool.isRequired,
 };
 
-export default DeviceTypeTable;
+export default UnitTable;

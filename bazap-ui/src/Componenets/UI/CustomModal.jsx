@@ -1,9 +1,19 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Modal, Button } from "react-bootstrap";
+import PropTypes from "prop-types";
 
-const CustomModal = ({ show, children, modalPropeties }) => {
+const CustomModal = ({
+    show,
+    title,
+    showExitButton,
+    showOkButton,
+    okButtonHandler,
+    showCancelButton,
+    cancelButtonHandler,
+    showFooter,
+    children,
+}) => {
     const [showModal, setShowModal] = useState(show);
-    const { savePropetries, cancelProperties, hasFooter } = modalPropeties;
 
     useEffect(() => {
         setTimeout(() => {
@@ -12,25 +22,48 @@ const CustomModal = ({ show, children, modalPropeties }) => {
     }, [show]);
 
     return (
-        <Modal show={showModal} {...modalPropeties}>
-            <Modal.Header closeButton>{modalPropeties.title && <Modal.Title>{modalPropeties.title}</Modal.Title>}</Modal.Header>
+        <Modal show={showModal} onHide={cancelButtonHandler}>
+            <Modal.Header closeButton={showExitButton}>
+                <Modal.Title>{title}</Modal.Title>
+            </Modal.Header>
             <Modal.Body>{children}</Modal.Body>
-            {hasFooter && (
+            {showFooter && (
                 <Modal.Footer>
-                    {savePropetries && (
-                        <Button variant="primary" size="sm" className={savePropetries.className} onClick={savePropetries.handleSave}>
-                            {savePropetries.label}
+                    {showCancelButton && (
+                        <Button variant="secondary" onClick={cancelButtonHandler}>
+                            Cancel
                         </Button>
                     )}
-                    {cancelProperties && (
-                        <Button variant="primary" size="sm" className={cancelProperties.className} onClick={cancelProperties.handleCancel}>
-                            {cancelProperties.label}
+                    {showOkButton && (
+                        <Button variant="primary" onClick={okButtonHandler}>
+                            OK
                         </Button>
                     )}
                 </Modal.Footer>
             )}
         </Modal>
     );
+};
+
+CustomModal.propTypes = {
+    show: PropTypes.bool.isRequired,
+    title: PropTypes.string.isRequired,
+    showExitButton: PropTypes.bool,
+    showOkButton: PropTypes.bool,
+    okButtonHandler: PropTypes.func,
+    showCancelButton: PropTypes.bool,
+    cancelButtonHandler: PropTypes.func,
+    showFooter: PropTypes.bool,
+    children: PropTypes.node.isRequired,
+};
+
+CustomModal.defaultProps = {
+    showExitButton: true,
+    showOkButton: true,
+    okButtonHandler: () => {},
+    showCancelButton: true,
+    showFooter: false,
+    cancelButtonHandler: () => {},
 };
 
 export default CustomModal;

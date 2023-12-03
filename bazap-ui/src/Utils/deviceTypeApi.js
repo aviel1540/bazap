@@ -1,40 +1,23 @@
 import axios from "axios";
 
-const subscriberApi = axios.create({ baseURL: "http://localhost:3000/api/" });
+const deviceTypeApi = axios.create({ baseURL: "http://localhost:5000/api/deviceType" });
 
-export const getAllSubscribers = async () => {
-    const response = await subscriberApi.get("subscriber");
+export const getAllDeviceTypes = async () => {
+    const response = await deviceTypeApi.get("");
     return response.data;
 };
 
-export const addSubscriber = async (subscriber) => {
+export const addDeviceType = async (deviceType) => {
     try {
-        return await subscriberApi.post("subscriber/add-new-subscriber", subscriber);
+        return await deviceTypeApi.post("add-new-deviceType", deviceType);
     } catch (error) {
         throw new Error(error.response.data.message);
     }
 };
 
-export const editSubscriber = async (subscriber) => {
+export const deleteDeviceType = async (deviceTypeId) => {
     try {
-        return await subscriberApi.patch("subscriber/edit-subscriber", subscriber);
-    } catch (error) {
-        throw new Error(error.response.data.message);
-    }
-};
-
-export const getSubscriberById = async (request) => {
-    try {
-        const [_, subscriberId] = request.queryKey;
-        return await subscriberApi.get("subscriber/get-subscriber-by-id", { params: { subscriberId } });
-    } catch (error) {
-        throw new Error(error.response.data.message);
-    }
-};
-
-export const deleteSubscriber = async (id) => {
-    try {
-        return await subscriberApi.delete("subscriber/delete-subscriber", { data: { subscriberId: id } });
+        return await deviceTypeApi.delete("delete-deviceType", { data: { deviceTypeId: deviceTypeId } });
     } catch (error) {
         throw new Error(error.response.data.message);
     }

@@ -10,9 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@tanstack/react-query": "^5.8.2",
-    "@tanstack/react-query-devtools": "^5.8.2",
+    "@tanstack/react-query": "^4.29.25",
+    "@tanstack/react-query-devtools": "^4.29.25",
+    "axios": "^1.6.2",
     "firebase": "^10.6.0",
+    "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-bootstrap": "^2.9.1",
     "react-data-table": "^0.1.0",
@@ -23,8 +25,9 @@
     "react-router": "^6.18.0",
     "react-router-dom": "^6.18.0",
     "styled-component": "^2.8.0",
-    "styled-components": "^6.1.1",
-    "sweetalert2": "^11.9.0"
+    "styled-components": "^5.3.3",
+    "sweetalert2": "^11.10.1",
+    "sweetalert2-react-content": "^5.0.7"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",

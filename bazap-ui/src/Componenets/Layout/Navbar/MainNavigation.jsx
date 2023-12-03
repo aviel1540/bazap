@@ -23,6 +23,11 @@ const MainNavigation = () => {
                                 סוגי מכשירים
                             </NavLink>
                         </Nav>
+                        <Nav className="mx-3">
+                            <NavLink to="/Unit" className="fw-bold text-dark" end>
+                               יחידות
+                            </NavLink>
+                        </Nav>
                     </Navbar.Collapse>
                 </Container>
             </Navbar>

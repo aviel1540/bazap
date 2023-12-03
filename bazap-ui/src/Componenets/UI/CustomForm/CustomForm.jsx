@@ -3,13 +3,15 @@ import FormInput from "./FormInput";
 import { Button, Form } from "react-bootstrap";
 
 const CustomForm = (props) => {
-    const { inputs, onSubmit, onCancel } = props;
+    const { inputs, onSubmit, onCancel,values } = props;
     const {
         register,
         handleSubmit,
         reset,
         formState: { errors },
-    } = useForm();
+    } = useForm({
+        values
+    });
     const populateInputs = () => {
         return inputs.map((input) => {
             return <FormInput key={input.name} {...input} register={register} errors={errors} />;
