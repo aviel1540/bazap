@@ -15,8 +15,11 @@ exports.findUnitById = async (checkUnitId) => await Units.findById(checkUnitId);
 exports.updateUnits = async (request) => {
     const { checkUnitId, checkNewName } = request;
     return await Units.findByIdAndUpdate(checkUnitId, {
-        unitsName: checkNewName,
-    });
-};
+        unitsName: checkNewName
+    })
+}
 
-exports.deleteUnit = async (unitId) => await Units.findByIdAndDelete(unitId);
+exports.findUnitsAndDelete = async(checkUnitsId) => {
+    return await Units.findByIdAndDelete(checkUnitsId);
+}
+};

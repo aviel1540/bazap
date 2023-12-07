@@ -18,13 +18,13 @@ const voucherSchema = new Schema({
         default: null
     },
     recievedBy: {
-        type: Schema.Types.ObjectId,
-        ref: "Technician"
+        type: String,
+        trim: true,
+        required: true
     },
     arrivedBy: {
         type: String,
         trim: true,
-        default: null,
         required: true
     },
     date: {

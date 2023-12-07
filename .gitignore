@@ -25,4 +25,5 @@ yarn-error.log*
 
 
 ../files
+node_modules
 .history
