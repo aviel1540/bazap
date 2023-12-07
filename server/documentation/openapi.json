@@ -152,6 +152,31 @@
 				}
 			}
 		},
+		"/units/delete/{id}": {
+			"delete": {
+				"tags": ["Units"],
+				"summary": "Delete unit by id",
+				"parameters": [
+					{
+						"name": "token",
+						"in": "header",
+						"schema": { "type": "string" }
+					},
+					{
+						"name": "id",
+						"in": "path",
+						"required": true,
+						"schema": { "type": "string" }
+					}
+				],
+
+				"responses": {
+					"200": {
+						"description": "A list of users."
+					}
+				}
+			}
+		},
 		"/deviceType": {
 			"get": {
 				"tags": ["Device-Type"],

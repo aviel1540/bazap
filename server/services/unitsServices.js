@@ -16,3 +16,7 @@ exports.updateUnits = async (request) => {
         unitsName: checkNewName
     })
 }
+
+exports.findUnitsAndDelete = async(checkUnitsId) => {
+    return await Units.findByIdAndDelete(checkUnitsId);
+}

@@ -68,7 +68,20 @@ exports.updateUnitDetailes = async(req,res) => {
             })
         if(!updatedUnit) return res.status(404).json({message: "לא נמצאה יחידה"});
         await updatedUnit.save();
-        res.status(200).json({message: "היחידה עודכנה בהצלחה"});
+        return res.status(200).json({message: "היחידה עודכנה בהצלחה"});
+    } catch(err) {
+        res.status(500).json({messgae: err.messgae});
+    }
+}
+
+exports.deleteUnits = async(req,res) => {
+    const unitId = escape(req.params.id);
+    let units;
+    try {
+        const checkUnitId = await validation.addSlashes(unitId);
+        units = await unitsServices.findUnitsAndDelete(checkUnitId);
+        if(!units) return res.status(404).json({message: "לא נמצאה יחידה"});
+        return res.status(200).json({message: "היחידה נמחקה בהצלחה"});
     } catch(err) {
         res.status(500).json({messgae: err.messgae});
     }
