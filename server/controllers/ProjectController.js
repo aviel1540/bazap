@@ -1,14 +1,12 @@
-const projectService = require('../services/projectServices');
+const projectService = require("../services/projectServices");
 const escape = require("escape-html");
 const validation = require("../utils/validation");
-
 
 exports.addNewProject = async (req, res) => {
     const projectName = escape(req.body.projectName);
     let newProject;
     try {
         if (!projectName) return res.status(400).json({ message: "נא למלא את כל השדות." });
-
 
         const checkProjectName = validation.addSlashes(projectName);
         newProject = await projectService.addNewProject(checkProjectName);
@@ -17,7 +15,7 @@ exports.addNewProject = async (req, res) => {
     } catch (err) {
         return res.status(401).json({ message: err.message });
     }
-}
+};
 
 exports.getAllProjects = async (req, res) => {
     let project;
@@ -40,7 +38,7 @@ exports.getAllProjects = async (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: err.message });
     }
-}
+};
 
 exports.getProjectById = async (req, res) => {
     const projectId = escape(req.params.id);
@@ -53,7 +51,7 @@ exports.getProjectById = async (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: err.message });
     }
-}
+};
 
 exports.getProjectByName = async (req, res) => {
     const projectName = escape(req.params.projectName);
@@ -67,7 +65,7 @@ exports.getProjectByName = async (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: err.message });
     }
-}
+};
 
 exports.updateProject = async (req, res) => {
     const projectId = escape(req.params.id);
@@ -78,11 +76,10 @@ exports.updateProject = async (req, res) => {
         const checkProjectId = validation.addSlashes(projectId);
         const checkProjectName = validation.addSlashes(projectName);
 
-        updateProject =
-            await projectService.updateProjectDetails({
-                checkProjectId,
-                checkProjectName,
-            });
+        updateProject = await projectService.updateProjectDetails({
+            checkProjectId,
+            checkProjectName,
+        });
         if (!updateProject) {
             return res.status(404).json({ message: "לא נמצא פרויקט ." });
         }
@@ -91,6 +88,4 @@ exports.updateProject = async (req, res) => {
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
-}
-
-
+};

@@ -1,27 +1,27 @@
 const mongoose = require("mongoose");
-const { DeviceStatus } = require("../constants/DeviceStatus")
+const { DeviceStatus } = require("../constants/DeviceStatus");
 const Schema = mongoose.Schema;
 
 const deviceSchema = new Schema({
     catalogNumber: {
         type: String,
         trim: true,
-        required: true
+        required: true,
     },
     serialNumber: {
         type: String,
         trim: true,
-        required: true
+        required: true,
     },
     deviceType: {
         type: String,
         trim: true,
-        required: true
+        required: true,
     },
     unit: {
         type: String,
         trim: true,
-        required: true
+        required: true,
     },
     status: {
         type: String,
@@ -30,22 +30,22 @@ const deviceSchema = new Schema({
     },
     technician: {
         type: Schema.Types.ObjectId,
-        ref: "Technician"
+        ref: "Technician",
     },
     notes: {
         type: String,
         trim: true,
-        default: null
+        default: null,
     },
     voucherNumber: {
         type: Schema.Types.ObjectId,
-        ref: "Voucher"
+        ref: "Voucher",
     },
     projectName: {
         type: Schema.Types.ObjectId,
-        ref: "Project"
-    }
+        ref: "Project",
+    },
 });
 
-const Device = mongoose.model('device', deviceSchema);
+const Device = mongoose.model("device", deviceSchema);
 module.exports = Device;

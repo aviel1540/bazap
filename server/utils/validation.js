@@ -1,3 +1,3 @@
 exports.addSlashes = (text) => {
-	return text.replace(/'/g, "\\'");
+    return text.replace(/'/g, "\\'");
 };

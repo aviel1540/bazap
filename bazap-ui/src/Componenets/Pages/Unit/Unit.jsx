@@ -35,7 +35,7 @@ const Unit = () => {
                     <div className="card-title">יחידות</div>
                     <div className="card-toolbar">
                         <Button size="sm" className="btn-light-primary" onClick={showModal}>
-                           הוסף יחידה
+                            הוסף יחידה
                         </Button>
                     </div>
                 </div>
