@@ -4,8 +4,7 @@ const Schema = mongoose.Schema;
 const voucherSchema = new Schema({
     voucherNumber: {
         type: Number,
-        trim: true,
-        default: 0,
+        autoIncrement: true
     },
     unit: {
         type: Schema.Types.ObjectId,
