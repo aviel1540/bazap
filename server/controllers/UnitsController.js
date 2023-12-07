@@ -54,7 +54,6 @@ exports.getUnitById = async (req, res) => {
 };
 
 exports.updateUnitDetailes = async (req, res) => {
-    console.log(req);
     const unitId = escape(req.params.id);
     const unitNewName = escape(req.body.unitsName);
     let updatedUnit;
