@@ -7,11 +7,6 @@ const techSchema = new Schema({
         trim: true,
         required: true,
     },
-    techNumber: {
-        type: String,
-        trim: true,
-        required: true,
-    },
 });
 
 const Technician = mongoose.model("technician", techSchema);
