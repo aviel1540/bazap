@@ -12,7 +12,7 @@
     "dependencies": {
         "@tanstack/react-query": "^4.29.25",
         "@tanstack/react-query-devtools": "^4.29.25",
-        "apexcharts": "^3.44.0",
+        "apexcharts": "^3.44.2",
         "axios": "^1.6.2",
         "firebase": "^10.6.0",
         "prop-types": "^15.8.1",

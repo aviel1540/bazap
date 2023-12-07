@@ -34,6 +34,7 @@ exports.updateStatusEnd = async (request) => {
         place: request.checkPlace,
         endDate: new Date(),
     });
+    Device.create
 };
 
 exports.updateStatusReturn = async (request) => {
