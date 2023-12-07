@@ -8,11 +8,7 @@ exports.addNewDevice = async (req, res) => {
     const type = escape(req.body.type);
     let newDevice;
     try {
-        if (
-            !serialNumber ||
-            !category ||
-            !type
-        ) {
+        if (!serialNumber || !category || !type) {
             return res.status(400).json({ message: "נא למלא את כל השדות." });
         }
 
@@ -23,15 +19,14 @@ exports.addNewDevice = async (req, res) => {
         newDevice = await deviceService.addNewDevice({
             checkSerialNumber,
             checkCategory,
-            checkType
-        })
+            checkType,
+        });
         await newDevice.save();
         return res.status(200).json(newDevice);
     } catch (err) {
         return res.status(401).json({ message: err.message });
     }
-
-}
+};
 
 exports.getDeviceById = async (req, res) => {
     const categoryId = escape(req.params.id);
@@ -40,13 +35,13 @@ exports.getDeviceById = async (req, res) => {
         const checkcategoryId = validation.addSlashes(categoryId);
         deviceFound = await deviceService.findDeviceById(checkcategoryId);
         if (!deviceFound) {
-            return res.status(400).json({ message: "לא נמצא מכשיר" })
+            return res.status(400).json({ message: "לא נמצא מכשיר" });
         }
         return res.status(200).json(deviceFound);
     } catch (err) {
         return res.status(404).json({ message: err.message });
     }
-}
+};
 
 exports.getDeviceBySerialNumber = async (req, res) => {
     const categorySerialNumber = escape(req.params.serialnumber);
@@ -61,7 +56,7 @@ exports.getDeviceBySerialNumber = async (req, res) => {
     } catch (err) {
         return res.status(404).json({ message: err.message });
     }
-}
+};
 
 exports.statusChangeToFinish = async (req, res) => {
     const deviceId = escape(req.params.id);
@@ -75,14 +70,11 @@ exports.statusChangeToFinish = async (req, res) => {
         const checkFixedBy = validation.addSlashes(fixedBy);
         const checkNotes = validation.addSlashes(notes);
 
-
         if (!checkFixedBy) {
             return res.status(401).json({ message: "יש למלא שם טכנאי" });
         }
 
-        if (checkStatus == DeviceStatus.WAIT_TO_WORK ||
-            checkStatus == DeviceStatus.AT_WORK ||
-            checkStatus == DeviceStatus.RETURNED) {
+        if (checkStatus == DeviceStatus.WAIT_TO_WORK || checkStatus == DeviceStatus.AT_WORK || checkStatus == DeviceStatus.RETURNED) {
             return res.status(401).json({ message: "יש לדווח סטטוס תקין / תקול" });
         }
 
@@ -90,19 +82,16 @@ exports.statusChangeToFinish = async (req, res) => {
             checkDeviceId,
             checkStatus,
             checkFixedBy,
-            checkNotes
-        })
-        if (!updateDevice)
-            return res
-                .status(401)
-                .json({ message: "הדיווח נכשל - יש לנסות שוב" });
+            checkNotes,
+        });
+        if (!updateDevice) return res.status(401).json({ message: "הדיווח נכשל - יש לנסות שוב" });
         await updatecategory.save();
 
         return res.status(201).json({ message: "המכשיר עודכן בהצלחה." });
     } catch (err) {
         res.status(401).json({ message: err.message });
     }
-}
+};
 
 exports.changeStatus = async (req, res) => {
     const deviceId = escape(req.params.id);
@@ -134,7 +123,7 @@ exports.changeStatus = async (req, res) => {
     } catch (err) {
         res.status(401).json({ message: err.message });
     }
-}
+};
 
 exports.updateDetails = async (req, res) => {
     const deviceId = escape(req.params.id);
@@ -145,24 +134,18 @@ exports.updateDetails = async (req, res) => {
         const checkDeviceId = validation.addSlashes(deviceId);
         const checkSerialNumber = validation.addSlashes(serialNumber);
         const checkType = validation.addSlashes(type);
-
-
-
-    } catch (err) {
-
-    }
-
-}
+    } catch (err) {}
+};
 
 exports.getAllDevices = async (req, res) => {
     let devices;
     try {
         devices = await deviceService.findAllDevices();
-        if(!devices) {
-            return res.status(404).json({ message: "לא קיימים מכשירים"});
+        if (!devices) {
+            return res.status(404).json({ message: "לא קיימים מכשירים" });
         }
         return res.status(200).json(devices);
-    } catch(err) {
-        return res.status(500).json({message: err.message});
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
     }
-}
+};

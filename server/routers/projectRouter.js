@@ -9,6 +9,6 @@ router.get("/find-by-name/:projectName", projectController.getProjectByName);
 
 router.post("/add-new-project", projectController.addNewProject);
 
-router.patch("/update-project/:id", projectController.updateProject)
+router.patch("/update-project/:id", projectController.updateProject);
 
-module.exports = router
+module.exports = router;

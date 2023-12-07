@@ -1,44 +1,44 @@
-const Device = require('../models/Device');
+const Device = require("../models/Device");
 
-exports.findDeviceById = async(DeviceId) => await Device.findById(DeviceId);
-exports.findDeviceBySerialNumber = async(serialNumber) => await Device.findOne({serialNumber});
-exports.findAllDevices = async() => await Device.find();
+exports.findDeviceById = async (DeviceId) => await Device.findById(DeviceId);
+exports.findDeviceBySerialNumber = async (serialNumber) => await Device.findOne({ serialNumber });
+exports.findAllDevices = async () => await Device.find();
 
-exports.addNewDevice = async(request) => {
-	return new Device({
-		serialNumber: request.checkSerialNumber,
-		category: request.checkCategory,
-		type: request.checkType
-	});
-}
+exports.addNewDevice = async (request) => {
+    return new Device({
+        serialNumber: request.checkSerialNumber,
+        category: request.checkCategory,
+        type: request.checkType,
+    });
+};
 
-exports.updateDeviceDatailsInFinish = async(request) => {
+exports.updateDeviceDatailsInFinish = async (request) => {
     return await Device.findByIdAndUpdate(request.checkDeviceId, {
         place: request.checkPlace,
         status: request.checkStatus,
         endDate: new Date(),
         fixedBy: request.checkFixedBy,
         notes: request.checkNotes,
-    })
+    });
 };
 
-exports.updateStatusStart = async(request) => {
+exports.updateStatusStart = async (request) => {
     return await Device.findByIdAndUpdate(request.checkDeviceId, {
         place: request.checkPlace,
-        startDate: new Date()
-    })
-}
+        startDate: new Date(),
+    });
+};
 
-exports.updateStatusEnd = async(request) => {
+exports.updateStatusEnd = async (request) => {
     return await Device.findByIdAndUpdate(request.checkDeviceId, {
         place: request.checkPlace,
-        endDate: new Date()
-    })
-}
+        endDate: new Date(),
+    });
+};
 
-exports.updateStatusReturn = async(request) => {
+exports.updateStatusReturn = async (request) => {
     return await Device.findByIdAndUpdate(request.checkDeviceId, {
         place: request.checkPlace,
-        returnDate: new Date()
-    })
-}
+        returnDate: new Date(),
+    });
+};

@@ -11,7 +11,7 @@ export const Project = () => {
                             <div className="card-title">title</div>
                             <div className="card-toolbar">
                                 <Button size="sm" className="btn-light-primary btn-icon">
-                                <TbEdit  className="fs-2" />
+                                    <TbEdit className="fs-2" />
                                 </Button>
                             </div>
                         </div>

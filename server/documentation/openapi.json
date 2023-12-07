@@ -1,517 +1,517 @@
 {
-	"openapi": "3.0.3",
-	"info": {
-		"description": "Bazap Follower",
-		"version": "1.0.0",
-		"title": "Bazap",
-		"contact": {
-			"name": "Bazap",
-			"email": ""
-		},
-		"license": {
-			"name": "Apache 2.0",
-			"url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-		}
-	},
-	"servers": [
-		{
-			"url": "http://localhost:5000/api",
-			"description": "Sandbox"
-		}
-	],
-	"paths": {
-		"/units": {
-			"get": {
-				"tags": ["Units"],
-				"summary": "Register to the app",
-				"parameters": [
-					{
-						"name": "token",
-						"in": "header",
-						"schema": { "type": "string" }
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Success"
-					}
-				}
-			}
-		},
-		"/units/find-by-name/{unitName}": {
-			"get": {
-				"tags": ["Units"],
-				"summary": "Register to the app",
-				"parameters": [
-					{
-						"name": "token",
-						"in": "header",
-						"schema": { "type": "string" }
-					},
-					{
-						"name": "unitName",
-						"in": "path",
-						"required": true,
-						"schema": { "type": "string" }
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Success"
-					}
-				}
-			}
-		},
-		"/units/{id}": {
-			"get": {
-				"tags": ["Units"],
-				"summary": "Register to the app",
-				"parameters": [
-					{
-						"name": "token",
-						"in": "header",
-						"schema": { "type": "string" }
-					},
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": { "type": "string" }
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Success"
-					}
-				}
-			}
-		},
-		"/units/add-new-unit": {
-			"post": {
-				"tags": ["Units"],
-				"summary": "Register to the app",
-				"parameters": [
-					{
-						"name": "token",
-						"in": "header",
-						"schema": { "type": "string" }
-					}
-				],
-				"requestBody": {
-					"content": {
-						"application/json": {
-							"schema": {
-								"type": "object",
-								"properties": {
-									"unitName": { "type": "string" }
-								}
-							}
-						}
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "Success"
-					}
-				}
-			}
-		},
-		"/units/update-unit/{id}": {
-			"patch": {
-				"tags": ["Units"],
-				"summary": "Register to the app",
-				"parameters": [
-					{
-						"name": "token",
-						"in": "header",
-						"schema": { "type": "string" }
-					},
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": { "type": "string" }
-					}
-				],
-				"requestBody": {
-					"content": {
-						"application/json": {
-							"schema": {
-								"type": "object",
-								"properties": {
-									"unitsName": { "type": "string" }
-								}
-							}
-						}
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "Success"
-					}
-				}
-			}
-		},
-		"/units/delete/{id}": {
-			"delete": {
-				"tags": ["Units"],
-				"summary": "Delete unit by id",
-				"parameters": [
-					{
-						"name": "token",
-						"in": "header",
-						"schema": { "type": "string" }
-					},
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": { "type": "string" }
-					}
-				],
+    "openapi": "3.0.3",
+    "info": {
+        "description": "Bazap Follower",
+        "version": "1.0.0",
+        "title": "Bazap",
+        "contact": {
+            "name": "Bazap",
+            "email": ""
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        }
+    },
+    "servers": [
+        {
+            "url": "http://localhost:5000/api",
+            "description": "Sandbox"
+        }
+    ],
+    "paths": {
+        "/units": {
+            "get": {
+                "tags": ["Units"],
+                "summary": "Register to the app",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "header",
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/units/find-by-name/{unitName}": {
+            "get": {
+                "tags": ["Units"],
+                "summary": "Register to the app",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "header",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "unitName",
+                        "in": "path",
+                        "required": true,
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/units/{id}": {
+            "get": {
+                "tags": ["Units"],
+                "summary": "Register to the app",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "header",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/units/add-new-unit": {
+            "post": {
+                "tags": ["Units"],
+                "summary": "Register to the app",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "header",
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "unitName": { "type": "string" }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/units/update-unit/{id}": {
+            "patch": {
+                "tags": ["Units"],
+                "summary": "Register to the app",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "header",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "unitsName": { "type": "string" }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/units/delete/{id}": {
+            "delete": {
+                "tags": ["Units"],
+                "summary": "Delete unit by id",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "header",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": { "type": "string" }
+                    }
+                ],
 
-				"responses": {
-					"200": {
-						"description": "A list of users."
-					}
-				}
-			}
-		},
-		"/deviceType": {
-			"get": {
-				"tags": ["Device-Type"],
-				"summary": "Register to the app",
-				"parameters": [
-					{
-						"name": "token",
-						"in": "header",
-						"schema": { "type": "string" }
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Success"
-					}
-				}
-			}
-		},
-		"/deviceType/add-new-deviceType": {
-			"post": {
-				"tags": ["Device-Type"],
-				"summary": "Register to the app",
-				"parameters": [
-					{
-						"name": "token",
-						"in": "header",
-						"schema": { "type": "string" }
-					}
-				],
-				"requestBody": {
-					"content": {
-						"application/json": {
-							"schema": {
-								"type": "object",
-								"properties": {
-									"deviceName": { "type": "string" }
-								}
-							}
-						}
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "Success"
-					}
-				}
-			}
-		},
-		"/device/{id}": {
-			"get": {
-				"tags": ["Device"],
-				"summary": "Register to the app",
-				"parameters": [
-					{
-						"name": "token",
-						"in": "header",
-						"schema": { "type": "string" }
-					},
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": { "type": "string" }
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Success"
-					}
-				}
-			}
-		},
-		"/device/find-by-serialNumber/{serialnumber}": {
-			"get": {
-				"tags": ["Device"],
-				"summary": "Register to the app",
-				"parameters": [
-					{
-						"name": "token",
-						"in": "header",
-						"schema": { "type": "string" }
-					},
-					{
-						"name": "serialnumber",
-						"in": "path",
-						"required": true,
-						"schema": { "type": "string" }
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Success"
-					}
-				}
-			}
-		},
-		"/device/add-new-device": {
-			"post": {
-				"tags": ["Device"],
-				"summary": "Register to the app",
-				"parameters": [
-					{
-						"name": "token",
-						"in": "header",
-						"schema": { "type": "string" }
-					}
-				],
-				"requestBody": {
-					"content": {
-						"application/json": {
-							"schema": {
-								"type": "object",
-								"properties": {
-									"serialNumber": { "type": "string" },
-									"category": { "type": "string" },
-									"type": { "type": "string" }
-								}
-							}
-						}
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "Success"
-					}
-				}
-			}
-		},
-		"/device/update-status/{id}": {
-			"patch": {
-				"tags": ["Device"],
-				"summary": "Register to the app",
-				"parameters": [
-					{
-						"name": "token",
-						"in": "header",
-						"schema": { "type": "string" }
-					},
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": { "type": "string" }
-					}
-				],
-				"requestBody": {
-					"content": {
-						"application/json": {
-							"schema": {
-								"type": "object",
-								"properties": {
-									"place": { "type": "string" }
-								}
-							}
-						}
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "Success"
-					}
-				}
-			}
-		},
-		"/device/update-report/{id}": {
-			"patch": {
-				"tags": ["Device"],
-				"summary": "Register to the app",
-				"parameters": [
-					{
-						"name": "token",
-						"in": "header",
-						"schema": { "type": "string" }
-					},
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": { "type": "string" }
-					}
-				],
-				"requestBody": {
-					"content": {
-						"application/json": {
-							"schema": {
-								"type": "object",
-								"properties": {
-									"status": { "type": "string" },
-									"fixedBy": { "type": "string" },
-									"notes": { "type": "string" }
-								}
-							}
-						}
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "Success"
-					}
-				}
-			}
-		},
-		"/project": {
-			"get": {
-				"tags": ["Project"],
-				"summary": "Register to the app",
-				"parameters": [
-					{
-						"name": "token",
-						"in": "header",
-						"schema": { "type": "string" }
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "Success"
-					}
-				}
-			}
-		},
-		"/project/add-new-project": {
-			"post": {
-				"tags": ["Project"],
-				"summary": "Register to the app",
-				"parameters": [
-					{
-						"name": "token",
-						"in": "header",
-						"schema": { "type": "string" }
-					}
-				],
-				"requestBody": {
-					"content": {
-						"application/json": {
-							"schema": {
-								"type": "object",
-								"properties": {
-									"projectName": { "type": "string" }
-								}
-							}
-						}
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "Success"
-					}
-				}
-			}
-		},
-		"/project/{id}": {
-			"get": {
-				"tags": ["Project"],
-				"summary": "Get project by id",
-				"parameters": [
-					{
-						"name": "token",
-						"in": "header",
-						"schema": { "type": "string" }
-					},
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": { "type": "string" }
-					}
-				],
+                "responses": {
+                    "200": {
+                        "description": "A list of users."
+                    }
+                }
+            }
+        },
+        "/deviceType": {
+            "get": {
+                "tags": ["Device-Type"],
+                "summary": "Register to the app",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "header",
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/deviceType/add-new-deviceType": {
+            "post": {
+                "tags": ["Device-Type"],
+                "summary": "Register to the app",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "header",
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "deviceName": { "type": "string" }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/device/{id}": {
+            "get": {
+                "tags": ["Device"],
+                "summary": "Register to the app",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "header",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/device/find-by-serialNumber/{serialnumber}": {
+            "get": {
+                "tags": ["Device"],
+                "summary": "Register to the app",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "header",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "serialnumber",
+                        "in": "path",
+                        "required": true,
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/device/add-new-device": {
+            "post": {
+                "tags": ["Device"],
+                "summary": "Register to the app",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "header",
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "serialNumber": { "type": "string" },
+                                    "category": { "type": "string" },
+                                    "type": { "type": "string" }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/device/update-status/{id}": {
+            "patch": {
+                "tags": ["Device"],
+                "summary": "Register to the app",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "header",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "place": { "type": "string" }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/device/update-report/{id}": {
+            "patch": {
+                "tags": ["Device"],
+                "summary": "Register to the app",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "header",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "status": { "type": "string" },
+                                    "fixedBy": { "type": "string" },
+                                    "notes": { "type": "string" }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/project": {
+            "get": {
+                "tags": ["Project"],
+                "summary": "Register to the app",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "header",
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/project/add-new-project": {
+            "post": {
+                "tags": ["Project"],
+                "summary": "Register to the app",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "header",
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "projectName": { "type": "string" }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/project/{id}": {
+            "get": {
+                "tags": ["Project"],
+                "summary": "Get project by id",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "header",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": { "type": "string" }
+                    }
+                ],
 
-				"responses": {
-					"200": {
-						"description": "find project by id."
-					}
-				}
-			}
-		},
-		"/project/find-by-name/{projectName}": {
-			"get": {
-				"tags": ["Project"],
-				"summary": "Get project by name",
-				"parameters": [
-					{
-						"name": "token",
-						"in": "header",
-						"schema": { "type": "string" }
-					},
-					{
-						"name": "projectName",
-						"in": "path",
-						"required": true,
-						"schema": { "type": "string" }
-					}
-				],
+                "responses": {
+                    "200": {
+                        "description": "find project by id."
+                    }
+                }
+            }
+        },
+        "/project/find-by-name/{projectName}": {
+            "get": {
+                "tags": ["Project"],
+                "summary": "Get project by name",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "header",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "projectName",
+                        "in": "path",
+                        "required": true,
+                        "schema": { "type": "string" }
+                    }
+                ],
 
-				"responses": {
-					"200": {
-						"description": "find project by name."
-					}
-				}
-			}
-		},
-		"/project/update-project/{id}": {
-			"patch": {
-				"tags": ["Project"],
-				"summary": "Register to the app",
-				"parameters": [
-					{
-						"name": "token",
-						"in": "header",
-						"schema": { "type": "string" }
-					},
-					{
-						"name": "id",
-						"in": "path",
-						"required": true,
-						"schema": { "type": "string" }
-					}
-				],
-				"requestBody": {
-					"content": {
-						"application/json": {
-							"schema": {
-								"type": "object",
-								"properties": {
-									"projectName": { "type": "string" }
-								}
-							}
-						}
-					}
-				},
-				"responses": {
-					"200": {
-						"description": "Success"
-					}
-				}
-			}
-		}
-	}
+                "responses": {
+                    "200": {
+                        "description": "find project by name."
+                    }
+                }
+            }
+        },
+        "/project/update-project/{id}": {
+            "patch": {
+                "tags": ["Project"],
+                "summary": "Register to the app",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "header",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "projectName": { "type": "string" }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        }
+    }
 }
