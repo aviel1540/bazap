@@ -17,3 +17,9 @@ exports.updateProjectDetails = async (request) => {
         projectName: checkProjectName,
     });
 };
+
+exports.showVoucherList = async (projectId) => {
+    return Project.findById(projectId).populate('vouchersList').exec().then((voucher) => {
+        return voucher;
+    }).catch((err) => { return err; })
+}

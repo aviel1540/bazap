@@ -512,6 +512,69 @@
                     }
                 }
             }
+        },
+        "/voucher/find-all-vouchers/{projectId}": {
+            "get": {
+                "tags": ["Voucher"],
+                "summary": "get all vouchers in project",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "header",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/voucher/add-new-voucher/{projectId}": {
+            "post": {
+                "tags": ["Voucher"],
+                "summary": "add voucher to project",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "header",
+                        "schema": { "type": "string" }
+                    },
+                    {
+                        "name": "projectId",
+                        "in": "path",
+                        "required": true,
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "units": { "type": "string" },
+                                    "type": {"type": "boolean" },
+                                    "arrivedBy": { "type": "string" },
+                                    "recievedBy": { "type": "string" }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
         }
     }
 }
