@@ -29,6 +29,7 @@ exports.addNewVoucher = async (req, res) => {
         if (!project) return res.status(404).json({ message: "לא נמצא פרויקט" })
 
         project.vouchersList.push(voucher);
+        await project.save();
         return res.status(201).json({ message: "שובר נוצר ושויך בהצלחה !" });
     } catch (err) {
         return res.status(500).json({ message: err.message });
@@ -40,12 +41,12 @@ exports.getAllVouchersInProject = async (req, res) => {
     const projectId = escape(req.params.projectId);
 
     let voucherList;
+    let project;
     try {
         const checkProjectId = validation.addSlashes(projectId);
-        voucherList = await projectService.showVoucherList(checkProjectId);
-        console.log(voucherList);
+        voucherList = await voucherService.showVoucherList(checkProjectId);
         if (!voucherList) return res.status(404).json({ message: "לא נמצא פרויקט" })
-
+        
     } catch (err) {
         return res.status(500).json({ message: err.message });
     }

@@ -561,7 +561,7 @@
                                 "type": "object",
                                 "properties": {
                                     "units": { "type": "string" },
-                                    "type": {"type": "boolean" },
+                                    "type": {"type": "string" },
                                     "arrivedBy": { "type": "string" },
                                     "recievedBy": { "type": "string" }
                                 }
