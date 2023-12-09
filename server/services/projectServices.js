@@ -18,8 +18,4 @@ exports.updateProjectDetails = async (request) => {
     });
 };
 
-exports.showVoucherList = async (projectId) => {
-    return Project.findById(projectId).populate('vouchersList').exec().then((voucher) => {
-        return voucher;
-    }).catch((err) => { return err; })
-}
+

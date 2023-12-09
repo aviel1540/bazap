@@ -9,5 +9,5 @@ const techSchema = new Schema({
     },
 });
 
-const Technician = mongoose.model("technician", techSchema);
+const Technician = mongoose.model("Technician", techSchema);
 module.exports = Technician;

@@ -25,8 +25,8 @@ const projectSchema = new Schema({
             type: Schema.Types.ObjectId,
             ref: "Voucher",
         },
-    ],
+    ]
 });
 
-const Project = mongoose.model("project", projectSchema);
+const Project = mongoose.model("Project", projectSchema);
 module.exports = Project;
