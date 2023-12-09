@@ -1,9 +1,9 @@
 const Voucher = require('../models/Voucher');
 
 exports.addVoucher = async(request) => {
-    new Voucher ({
+    return new Voucher ({
         unit: request.checkUnits,
-        recievedBy: checkRecievedBy,
-        arrivedBy: checkArrivedBy
+        recievedBy: request.checkRecievedBy,
+        arrivedBy: request.checkArrivedBy
     })
 }
