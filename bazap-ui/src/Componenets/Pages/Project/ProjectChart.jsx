@@ -19,7 +19,8 @@ const ProjectChart = (props) => {
     options: {
       chart: {
         height: 300,
-        type: 'radialBar',
+        type: 'pie',
+        fontFamily: 'Rubik, sans-serif', // Replace 'Your Body Font' with the actual font name
       },
       plotOptions: {
         radialBar: {
@@ -41,6 +42,12 @@ const ProjectChart = (props) => {
         }
       },
       labels: ['ממתין לעבודה', 'בעבודה', 'הסתיים', 'הוחזר'],
+      dataLabels: {
+        enabled: true,
+        // formatter: function (val, opts) {
+        //   return opts.w.globals.labels[opts.seriesIndex] + ": " + val
+        // }
+      },
       colors: ['#F1BC00', '#5014D0', '#009EF7', '#47BE7D'],
     },
 
@@ -48,7 +55,7 @@ const ProjectChart = (props) => {
   };
 
   return (
-    <ReactApexChart options={chartData.options} series={chartData.series} type="radialBar" height={250} />
+    <ReactApexChart options={chartData.options} series={chartData.series} type="pie" height={250} />
   );
 }
 

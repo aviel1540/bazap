@@ -1,18 +1,8 @@
-import { useEffect, useState } from "react";
-import { Modal, Button } from "react-bootstrap";
+import { Dialog, DialogContent, DialogContentText, DialogTitle, useMediaQuery, useTheme } from "@mui/material";
 import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
 
-const CustomModal = ({
-    show,
-    title,
-    showExitButton,
-    showOkButton,
-    okButtonHandler,
-    showCancelButton,
-    cancelButtonHandler,
-    showFooter,
-    children,
-}) => {
+const CustomModal = ({ show, title, cancelButtonHandler, children }) => {
     const [showModal, setShowModal] = useState(show);
 
     useEffect(() => {
@@ -20,49 +10,40 @@ const CustomModal = ({
             setShowModal(show);
         }, 100);
     }, [show]);
+    const theme = useTheme();
+    const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
     return (
-        <Modal show={showModal} onHide={cancelButtonHandler}>
-            <Modal.Header closeButton={showExitButton}>
-                <Modal.Title>{title}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>{children}</Modal.Body>
-            {showFooter && (
-                <Modal.Footer>
-                    {showCancelButton && (
-                        <Button variant="secondary" onClick={cancelButtonHandler}>
-                            Cancel
-                        </Button>
-                    )}
-                    {showOkButton && (
-                        <Button variant="primary" onClick={okButtonHandler}>
-                            OK
-                        </Button>
-                    )}
-                </Modal.Footer>
-            )}
-        </Modal>
+        <>
+            <Dialog
+                open={showModal}
+                onClose={cancelButtonHandler}
+                fullScreen={fullScreen}
+                PaperProps={{
+                    sx: {
+                        width: 1 / 3,
+                    },
+                }}
+            >
+                <DialogTitle id="responsive-dialog-title">{title}</DialogTitle>
+                <DialogContent>
+                    {children}
+                    <DialogContentText></DialogContentText>
+                </DialogContent>
+            </Dialog>
+        </>
     );
 };
 
 CustomModal.propTypes = {
     show: PropTypes.bool.isRequired,
     title: PropTypes.string.isRequired,
-    showExitButton: PropTypes.bool,
-    showOkButton: PropTypes.bool,
-    okButtonHandler: PropTypes.func,
-    showCancelButton: PropTypes.bool,
     cancelButtonHandler: PropTypes.func,
-    showFooter: PropTypes.bool,
     children: PropTypes.node.isRequired,
 };
 
 CustomModal.defaultProps = {
-    showExitButton: true,
-    showOkButton: true,
     okButtonHandler: () => {},
-    showCancelButton: true,
-    showFooter: false,
     cancelButtonHandler: () => {},
 };
 

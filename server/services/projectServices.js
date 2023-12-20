@@ -7,7 +7,7 @@ exports.addNewProject = async (checkProjectName) => {
 };
 exports.findAllProjects = async () => await Project.find();
 
-exports.findProjectById = async (checkProjectId) => await Project.findById(checkProjectId);
+exports.findProjectById = async (checkProjectId) => await Project.findById(checkProjectId).populate("vouchersList");
 
 exports.findProjectByName = async (projectName) => await Project.findOne({ projectName });
 
@@ -17,5 +17,3 @@ exports.updateProjectDetails = async (request) => {
         projectName: checkProjectName,
     });
 };
-
-

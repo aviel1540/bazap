@@ -1,42 +1,54 @@
-import Container from "react-bootstrap/Container";
-import Nav from "react-bootstrap/Nav";
-import Navbar from "react-bootstrap/Navbar";
-import { NavLink } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
+import Link from "@mui/material/Link";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import Container from "@mui/material/Container";
+import Avatar from "@mui/material/Avatar";
+import { useEffect, useState } from "react";
+import { Tab, Tabs } from "@mui/material";
 
+const pages = [
+    { title: "דף הבית", navTo: "/" },
+    { title: "פרוייקטים", navTo: "/Project" },
+    { title: "סוגי מכשירים", navTo: "/DeviceType" },
+    { title: "יחידות", navTo: "/Unit" },
+];
 const MainNavigation = () => {
+    const [currentPage, setCurrentPage] = useState(0);
+    useEffect(() => {
+        const currentPath = window.location.pathname;
+        const index = pages.findIndex((page) => page.navTo == currentPath);
+        index >= 0 && setCurrentPage(index);
+    }, []);
+
+    const handleChangePage = (event, newPage) => {
+        setCurrentPage(newPage);
+    };
     return (
-        <>
-            <Navbar collapseOnSelect expand="lg" className="bg-white shadow-sm">
-                <Container>
-                    <Navbar.Brand className="me-5 me-md-10">
-                        <img alt="Logo" src="/logo.jpg" className="h-70px logo-default" />
-                    </Navbar.Brand>
-                    <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-                    <Navbar.Collapse id="responsive-navbar-nav">
-                        <Nav className="mx-3">
-                            <NavLink to="/" className="fw-bold text-dark" end>
-                                דף הבית
-                            </NavLink>
-                        </Nav>
-                        <Nav className="mx-3">
-                            <NavLink to="/Project" className="fw-bold text-dark" end>
-                                פרוייקטים
-                            </NavLink>
-                        </Nav>
-                        <Nav className="mx-3">
-                            <NavLink to="/DeviceType" className="fw-bold text-dark" end>
-                                סוגי מכשירים
-                            </NavLink>
-                        </Nav>
-                        <Nav className="mx-3">
-                            <NavLink to="/Unit" className="fw-bold text-dark" end>
-                                יחידות
-                            </NavLink>
-                        </Nav>
-                    </Navbar.Collapse>
-                </Container>
-            </Navbar>
-        </>
+        // <StyledAppBar position="static">
+        <AppBar position="absolute" sx={{ bgcolor: "#fff", boxShadow: "0 .5rem 1rem rgba(0,0,0,.15)" }}>
+            <Container maxWidth="xl">
+                <Toolbar disableGutters>
+                    <Link component={RouterLink} to="/" onClick={() => handleChangePage(null, 0)}>
+                        <Avatar alt="Bazap" src="/logo.jpg" sx={{ m: "10px", width: 56, height: 56 }} />
+                    </Link>
+                    <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
+                        <Tabs value={currentPage} onChange={handleChangePage} aria-label="icon tabs example">
+                            {pages.map((page, index) => (
+                                <Tab
+                                    label={<Box sx={{ fontWeight: "bold", fontSize: 14, m: 1 }}>{page.title}</Box>}
+                                    value={index}
+                                    key={page.title}
+                                    to={page.navTo}
+                                    component={RouterLink}
+                                />
+                            ))}
+                        </Tabs>
+                    </Box>
+                </Toolbar>
+            </Container>
+        </AppBar>
     );
 };
 

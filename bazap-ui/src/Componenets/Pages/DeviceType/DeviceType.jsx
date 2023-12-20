@@ -1,11 +1,12 @@
-import { Button, Card } from "react-bootstrap";
-import CustomModal from "../../UI/CustomModal";
-import DeviceTypeTable from "./DeviceTypeTable";
-import DeviceForm from "./DeviceForm";
+// import { Button, Card } from "react-bootstrap";
 import { useQuery } from "@tanstack/react-query";
 import { getAllDeviceTypes } from "../../../Utils/deviceTypeApi";
 import { useState } from "react";
-
+import { Card, CardContent, CardHeader } from "@mui/material";
+import LightButton from "../../UI/LightButton";
+import DeviceTypeTable from "./DeviceTypeTable";
+import CustomModal from "../../UI/CustomModal";
+import DeviceForm from "./DeviceForm";
 const DeviceType = () => {
     const [show, setShow] = useState(false);
     const { isLoading, data: deviceTypes } = useQuery({
@@ -20,33 +21,30 @@ const DeviceType = () => {
     };
     const modalProperties = {
         show,
-        handleClose: () => {},
         title: "סוג מוצר חדש",
-        showExitButton: true,
-        showOkButton: false,
-        okButtonHandler: hideModal,
-        showCancelButton: false,
         cancelButtonHandler: hideModal,
     };
     return (
-        <>
-            <Card>
-                <div className="card-header">
-                    <div className="card-title">סוגי מכשירים</div>
-                    <div className="card-toolbar">
-                        <Button size="sm" className="btn-light-primary" onClick={showModal}>
-                            הוסף סוג מכשיר חדש
-                        </Button>
-                    </div>
-                </div>
-                <Card.Body>
-                    <DeviceTypeTable deviceTypes={deviceTypes} isLoading={isLoading} />
-                </Card.Body>
-            </Card>
-            <CustomModal {...modalProperties}>
-                <DeviceForm onCancel={hideModal} />
-            </CustomModal>
-        </>
+        <Card>
+            <CardHeader
+                action={
+                    <LightButton variant="contained" btnColor="primary" onClick={showModal} size="small">
+                        הוסף סוג מכשיר חדש
+                    </LightButton>
+                }
+                titleTypographyProps={{ variant: "h5" }}
+                title="סוגי מכשירים"
+            />
+            {/* <Card>
+                </Card>
+               */}
+            <CardContent>
+                <CustomModal {...modalProperties}>
+                    <DeviceForm onCancel={hideModal} />
+                </CustomModal>
+                <DeviceTypeTable deviceTypes={deviceTypes} isLoading={isLoading} />
+            </CardContent>
+        </Card>
     );
 };
 
