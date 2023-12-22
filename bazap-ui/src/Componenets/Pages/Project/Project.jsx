@@ -3,7 +3,6 @@ import { useParams } from "react-router";
 import { getProjectData } from "../../../Utils/projectAPI";
 import Loader from "../../Layout/Loader";
 import CustomModal from "../../UI/CustomModal";
-import CustomStepper from "../../UI/CustomStepper/CustomStepper";
 import { Card, CardHeader } from "@mui/material";
 import LightButton from "../../UI/LightButton";
 import AddIcon from "@mui/icons-material/Add";
@@ -18,7 +17,6 @@ export const Project = () => {
     if (isLoading) {
         return <Loader />;
     }
-    const steps = ["תיאור 1", "תיאוק123213 2asdsadasda"];
     return (
         <>
             <Card>
@@ -32,8 +30,8 @@ export const Project = () => {
                     }
                 />
             </Card>
-            <CustomModal size="lg" title="שובר חדש" show={false} showExitButton showCancelButton>
-                <CustomStepper steps={steps} />
+            <CustomModal size="lg" title="שובר חדש" show={true} showExitButton showCancelButton>
+                asd
             </CustomModal>
         </>
     );
