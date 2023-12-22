@@ -33,27 +33,28 @@ const lightColors = {
     },
 };
 const LightButton = (props) => {
-    const { btnColor, children, onClick } = props;
+    const { btncolor, children, onClick, icon } = props;
     const ColorButton = styled(Button)(() => ({
         // color: theme.palette.getContrastText(color[200]),
-        color: lightColors[btnColor].hoverAndTextColor,
-        backgroundColor: lightColors[btnColor].backgroundColor,
+        color: lightColors[btncolor].hoverAndTextColor,
+        backgroundColor: lightColors[btncolor].backgroundColor,
         "&:hover": {
-            backgroundColor: lightColors[btnColor].hoverAndTextColor,
+            backgroundColor: lightColors[btncolor].hoverAndTextColor,
             color: "#ffffff",
         },
     }));
     return (
-        <ColorButton variant="contained" {...props} onClick={onClick}>
+        <ColorButton variant="contained" {...props} onClick={onClick} endIcon={icon}>
             {children}
         </ColorButton>
     );
 };
 
 LightButton.propTypes = {
-    btnColor: propTypes.string.isRequired,
+    btncolor: propTypes.oneOf(Object.keys(lightColors)).isRequired,
     children: propTypes.node.isRequired,
     onClick: propTypes.func.isRequired,
+    icon: propTypes.node,
 };
 
 export default LightButton;

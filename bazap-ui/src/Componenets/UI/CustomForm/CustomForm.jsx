@@ -4,6 +4,7 @@ import Button from "@mui/material/Button";
 import LightButton from "../LightButton";
 import PropTypes from "prop-types";
 import { Box, DialogActions } from "@mui/material";
+import Divider from "@mui/material/Divider";
 
 const CustomForm = (props) => {
     const { inputs, onSubmit, onCancel, values } = props;
@@ -28,13 +29,14 @@ const CustomForm = (props) => {
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
             <Box>{populateInputs()}</Box>
+            <Divider variant="fullWidth" sx={{ paddingTop: 2 }} />
             <DialogActions>
                 <Button size="small" type="submit" variant="contained">
                     שמור
                 </Button>
                 <LightButton
                     size="small"
-                    btnColor="primary"
+                    btncolor="dark"
                     onClick={handleCancel}
                     variant="contained"
                     sx={{

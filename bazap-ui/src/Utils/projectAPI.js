@@ -7,8 +7,8 @@ export const getAllProjects = async () => {
     return response.data;
 };
 
-export const getProjectData = async ({queryKey}) => {
-    const [_,id] = queryKey;
+export const getProjectData = async ({ queryKey }) => {
+    const [_, id] = queryKey;
     const response = await projectAPI.get(`/${id}`);
     return response.data;
 };

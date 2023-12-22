@@ -2,7 +2,7 @@ import { getAllProjects } from "../../../Utils/projectAPI";
 import { useQuery } from "@tanstack/react-query";
 import Loader from "../../Layout/Loader";
 import ProjectItem from "./ProjectItem";
-import { Row } from "react-bootstrap";
+import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 
 const ProjectsList = () => {
     const { isLoading, data: projects } = useQuery({
@@ -13,11 +13,11 @@ const ProjectsList = () => {
         return <Loader />;
     }
     return (
-        <Row sm={1} md={2} lg={3}>
+        <Grid container spacing={2}>
             {projects.map((project) => (
                 <ProjectItem key={project._id} projectData={project} />
             ))}
-        </Row>
+        </Grid>
     );
 };
 

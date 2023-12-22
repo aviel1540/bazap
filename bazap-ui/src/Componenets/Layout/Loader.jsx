@@ -1,9 +1,12 @@
-import { Spinner } from "react-bootstrap";
+import { Box, LinearProgress } from "@mui/material";
 
 export default function Loader() {
     return (
-        <div className="text-center">
-            <Spinner animation="border" variant="primary" />
-        </div>
+        <Box width={1 / 2} marginX={"auto"}>
+            <Box textAlign="center" fontWeight="600" marginBottom={2}>
+                אנא המתן...
+            </Box>
+            <LinearProgress color="primary" fourColor={false} variant="indeterminate" />
+        </Box>
     );
 }

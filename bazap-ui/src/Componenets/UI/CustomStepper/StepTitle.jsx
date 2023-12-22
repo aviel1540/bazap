@@ -8,7 +8,7 @@ const StepTitle = ({ title, stepNumber }) => {
                     {stepNumber}
                 </Button>
             </Col>
-            <Col >
+            <Col>
                 <div className="fw-bold fs-6 text-gray-900">{`שלב ${stepNumber}`}</div>
                 <div className="fw-semibold text-muted">{title}</div>
             </Col>

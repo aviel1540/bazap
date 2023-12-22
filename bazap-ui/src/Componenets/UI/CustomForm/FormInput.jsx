@@ -1,4 +1,4 @@
-import { FormControl, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 import PropTypes from "prop-types";
 
 const textInputTypes = ["text", "number", "email"];
@@ -9,30 +9,18 @@ const FormInput = (props) => {
     const isTextInput = textInputTypes.includes(type);
     if (isTextInput) {
         return (
-            <>
-                <TextField
-                    error={errors && errors[name]}
-                    id={name}
-                    name={name}
-                    fullWidth
-                    placeholder={placeholder}
-                    label={label}
-                    helperText={errors && errors[name] && errors[name].message}
-                    variant="standard"
-                    {...register(name, { ...fieldProps })}
-                />
-            </>
-            // <Form.Group className="mb-3">
-            //     <Form.Label>{label}</Form.Label>
-            //     <Form.Control
-            //         isInvalid={errors && errors[name]}
-            //         type={type}
-            //         name={name}
-            //         placeholder={placeholder}
-            //         {...register(name, { ...fieldProps })}
-            //     />
-            //     {errors && errors[name] && <Form.Control.Feedback type="invalid">{errors[name].message}</Form.Control.Feedback>}
-            // </Form.Group>
+            <TextField
+                error={errors && errors[name]}
+                id={name}
+                name={name}
+                fullWidth
+                margin="normal"
+                placeholder={placeholder}
+                label={label}
+                helperText={errors && errors[name] && errors[name].message}
+                variant="outlined"
+                {...register(name, { ...fieldProps })}
+            />
         );
     } else {
         return <div>need to do this {type} type of input </div>;
@@ -44,6 +32,7 @@ FormInput.propTypes = {
     type: PropTypes.string.isRequired,
     placeholder: PropTypes.string,
     register: PropTypes.func.isRequired,
-    errors: PropTypes.object, // Adjust the shape based on your errors object
+    validators: PropTypes.object,
+    errors: PropTypes.object,
 };
 export default FormInput;

@@ -4,7 +4,7 @@ import { addDeviceType } from "../../../Utils/deviceTypeApi";
 import { swalFire } from "../../UI/Swal";
 import propTypes from "prop-types";
 
-const DeviceForm = ({ onCancel, formValues = null, isEdit }) => {
+const DeviceTypeForm = ({ onCancel, formValues = null, isEdit }) => {
     const queryClient = useQueryClient();
     const onSubmit = (data) => {
         if (!isEdit) {
@@ -54,15 +54,15 @@ const DeviceForm = ({ onCancel, formValues = null, isEdit }) => {
     );
 };
 
-DeviceForm.propTypes = {
+DeviceTypeForm.propTypes = {
     formValues: propTypes.object,
     onCancel: propTypes.func,
     isEdit: propTypes.bool,
     editId: propTypes.string,
 };
 
-DeviceForm.defaultProps = {
+DeviceTypeForm.defaultProps = {
     isEdit: false,
 };
 
-export default DeviceForm;
+export default DeviceTypeForm;

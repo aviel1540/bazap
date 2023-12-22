@@ -14,6 +14,8 @@ import CssBaseline from "@mui/material/CssBaseline";
 import createCache from "@emotion/cache";
 import rtlPlugin from "stylis-plugin-rtl";
 import { prefixer } from "stylis";
+import "@fontsource/rubik/100.css";
+import "@fontsource/rubik/200.css";
 import "@fontsource/rubik/300.css";
 import "@fontsource/rubik/400.css";
 import "@fontsource/rubik/500.css";

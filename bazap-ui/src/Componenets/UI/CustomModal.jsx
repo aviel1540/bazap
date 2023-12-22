@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogContentText, DialogTitle, useMediaQuery, useTheme } from "@mui/material";
+import { Dialog, DialogContent, DialogTitle, useMediaQuery, useTheme } from "@mui/material";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 
@@ -21,15 +21,15 @@ const CustomModal = ({ show, title, cancelButtonHandler, children }) => {
                 fullScreen={fullScreen}
                 PaperProps={{
                     sx: {
+                        width: 1,
+                    },
+                    mg: {
                         width: 1 / 3,
                     },
                 }}
             >
                 <DialogTitle id="responsive-dialog-title">{title}</DialogTitle>
-                <DialogContent>
-                    {children}
-                    <DialogContentText></DialogContentText>
-                </DialogContent>
+                <DialogContent>{children}</DialogContent>
             </Dialog>
         </>
     );

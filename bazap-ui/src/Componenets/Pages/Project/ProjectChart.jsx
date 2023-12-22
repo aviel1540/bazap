@@ -1,62 +1,36 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
-import ReactApexChart from 'react-apexcharts';
+import ReactApexChart from "react-apexcharts";
 
 const ProjectChart = (props) => {
-  const { data } = props
-  const { totalDevices, totalWaiting, totalInWork, totalFinished, TotalOut } = data;
-  const calculatePercent = (fromValue, ofValue) => {
-    let percent = 0;
-    if (fromValue !== 0) {
-      percent = (ofValue / fromValue) * 100;
-      percent = Math.ceil(percent);
-    }
-    return percent;
-  }
-  const percentArray = [calculatePercent(totalDevices, totalWaiting), calculatePercent(totalDevices, totalInWork), calculatePercent(totalDevices, totalFinished), calculatePercent(totalDevices, TotalOut)];
-  const chartData = {
-    series: percentArray,
-    options: {
-      chart: {
-        height: 300,
-        type: 'pie',
-        fontFamily: 'Rubik, sans-serif', // Replace 'Your Body Font' with the actual font name
-      },
-      plotOptions: {
-        radialBar: {
-          dataLabels: {
-            name: {
-              fontSize: '22px',
+    const { data } = props;
+    const chartSeries = [data.totalWaiting, data.totalInWork, data.totalFinished, data.TotalOut];
+    const chartOptions = {
+        labels: ["ממתין לעבודה", "בעבודה", "הסתיים", "הוחזר"],
+        // colors: ["#FFD700", "#FFA07A", "#00FF00", "#4169E1"],
+        colors: ["#F1BC00", "#5014D0", "#009EF7", "#47BE7D"],
+        legend: {
+            show: true,
+            position: "bottom",
+            markers: {
+                width: 10,
+                height: 10,
+                radius: 5,
+                offsetX: 5,
             },
-            value: {
-              fontSize: '16px',
+        },
+        chart: {
+            fontFamily: "Rubik, sans-serif",
+        },
+        plotOptions: {
+            pie: {
+                donut: {
+                    size: "65%", // Adjust the width of the donut
+                },
             },
-            total: {
-              show: true,
-              label: 'סה"כ מכשירים',
-              formatter: function () {
-                return totalDevices
-              }
-            }
-          }
-        }
-      },
-      labels: ['ממתין לעבודה', 'בעבודה', 'הסתיים', 'הוחזר'],
-      dataLabels: {
-        enabled: true,
-        // formatter: function (val, opts) {
-        //   return opts.w.globals.labels[opts.seriesIndex] + ": " + val
-        // }
-      },
-      colors: ['#F1BC00', '#5014D0', '#009EF7', '#47BE7D'],
-    },
-
-
-  };
-
-  return (
-    <ReactApexChart options={chartData.options} series={chartData.series} type="pie" height={250} />
-  );
-}
+        },
+    };
+    return <ReactApexChart options={chartOptions} series={chartSeries} type="donut" height={250} />;
+};
 
 export default ProjectChart;

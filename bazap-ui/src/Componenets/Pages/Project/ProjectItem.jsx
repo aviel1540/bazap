@@ -1,26 +1,36 @@
-import { Card, Col } from "react-bootstrap";
-import CustomCardHeader from "../../UI/CustomCardHeader";
 import propTypes from "prop-types";
 import { dateTostring } from "../../../Utils/utils";
 import CustomInfoLabel from "../../UI/CustomForm/CustomInfoLabel";
 import ProjectChart from "./ProjectChart";
-import { NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { Box, Card, CardContent, CardHeader } from "@mui/material";
+import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 
 const dummyData = { totalDevices: 100, totalWaiting: 20, totalInWork: 35, totalFinished: 10, TotalOut: 35 };
 const ProjectItem = ({ projectData }) => {
+    const navigate = useNavigate();
+
     const { projectName, startDate, _id: id } = projectData;
+
+    const handleCardClick = () => {
+        // Redirect to the specified route when the card is clicked
+        navigate(`/Project/${id}`);
+    };
+
+    // <NavLink to={`/Project/${id}`}>
+    //         </NavLink>
     return (
-        <Col>
-            <NavLink to={`/Project/${id}`}>
-                <Card className="bg-hover-light-primary">
-                    <CustomCardHeader title={projectName} />
-                    <Card.Body>
-                        <CustomInfoLabel label="תאריך התחלה" value={dateTostring(startDate)} />
+        <Grid item xs={12} sm={6} md={4} lg={4}>
+            <Card onClick={handleCardClick} style={{ cursor: "pointer" }}>
+                <CardHeader titleTypographyProps={{ variant: "h6" }} title={projectName} />
+                <CardContent>
+                    <CustomInfoLabel label="תאריך התחלה" value={dateTostring(startDate)} />
+                    <Box margin={3}>
                         <ProjectChart data={dummyData} />
-                    </Card.Body>
-                </Card>
-            </NavLink>
-        </Col>
+                    </Box>
+                </CardContent>
+            </Card>
+        </Grid>
     );
 };
 

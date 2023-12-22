@@ -1,5 +1,5 @@
 import MainNavigation from "../Navbar/MainNavigation";
-import Card from '@mui/material/Card';
+import Card from "@mui/material/Card";
 
 const ErrorPage = () => {
     return (

@@ -1,5 +1,4 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Dropdown, DropdownButton } from "react-bootstrap";
 import DataTable from "react-data-table-component";
 import Loader from "../../Layout/Loader";
 import { swalFire } from "../../UI/Swal";
@@ -8,16 +7,29 @@ import CustomModal from "../../UI/CustomModal";
 import { useState } from "react";
 import UnitForm from "./UnitForm";
 import { deleteUnit } from "../../../Utils/unitAPI";
+import { Button, Menu, MenuItem } from "@mui/material";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 
 const UnitTable = ({ deviceTypes, isLoading }) => {
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+
     const [show, setShow] = useState(false);
     const [formValues, setFormValues] = useState(null);
     const queryClient = useQueryClient();
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
     const onEditUnitHandler = (data) => {
+        handleClose();
         setFormValues({ unitName: data.unitsName, id: data._id });
         showModal();
     };
     const onDeleteUnitHandler = (id) => {
+        handleClose();
         swalFire({
             html: "האם אתה בטוח מעוניין למחוק את היחידה?",
             icon: "warning",
@@ -38,22 +50,40 @@ const UnitTable = ({ deviceTypes, isLoading }) => {
             name: "פעולות",
             center: true,
             cell: (row) => (
-                <DropdownButton
-                    onSelect={(event) => {
-                        selectActionHandler(row, event);
-                    }}
-                    size="sm"
-                    className="btn-light-primary"
-                    id="dropdown-item-button"
-                    title="פעולות"
-                >
-                    <Dropdown.Item eventKey="edit" as="button">
-                        ערוך
-                    </Dropdown.Item>
-                    <Dropdown.Item eventKey="delete" as="button" className="btn-light-danger">
-                        מחק
-                    </Dropdown.Item>
-                </DropdownButton>
+                <>
+                    <Button
+                        variant="contained"
+                        id="basic-button"
+                        aria-controls={open ? "basic-menu" : undefined}
+                        aria-haspopup="true"
+                        aria-expanded={open ? "true" : undefined}
+                        onClick={handleClick}
+                        size="small"
+                        endIcon={<KeyboardArrowDownIcon />}
+                    >
+                        פעולות
+                    </Button>
+                    <Menu
+                        id="basic-menu"
+                        anchorEl={anchorEl}
+                        open={open}
+                        onClose={handleClose}
+                        anchorOrigin={{
+                            vertical: "bottom",
+                            horizontal: "right",
+                        }}
+                        transformOrigin={{
+                            vertical: "top",
+                            horizontal: "right",
+                        }}
+                        MenuListProps={{
+                            "aria-labelledby": "basic-button",
+                        }}
+                    >
+                        <MenuItem onClick={() => onEditUnitHandler(row)}>ערוך</MenuItem>
+                        <MenuItem onClick={() => onDeleteUnitHandler(row._id)}>מחק</MenuItem>
+                    </Menu>
+                </>
             ),
         },
     ];
@@ -69,18 +99,6 @@ const UnitTable = ({ deviceTypes, isLoading }) => {
             });
         },
     });
-    const selectActionHandler = (data, event) => {
-        switch (event) {
-            case "edit":
-                onEditUnitHandler(data);
-                break;
-            case "delete":
-                onDeleteUnitHandler(data._id);
-                break;
-            default:
-                break;
-        }
-    };
     if (isLoading) {
         return <Loader />;
     }

@@ -20,8 +20,7 @@ const DeviceTypeTable = ({ deviceTypes, isLoading }) => {
 
     const queryClient = useQueryClient();
     const onDeleteDeviceTypeHandler = (id) => {
-        alert(id);
-        setAnchorEl(null);
+        handleClose();
         swalFire({
             html: "האם אתה בטוח מעוניין למחוק את סוג המכשיר?",
             icon: "warning",

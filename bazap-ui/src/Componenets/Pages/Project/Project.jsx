@@ -2,11 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router";
 import { getProjectData } from "../../../Utils/projectAPI";
 import Loader from "../../Layout/Loader";
-import { Button, Card, Col, Row, Stack } from "react-bootstrap";
-import CustomCardHeader from "../../UI/CustomCardHeader";
 import CustomModal from "../../UI/CustomModal";
 import CustomStepper from "../../UI/CustomStepper/CustomStepper";
-
+import { Card, CardHeader } from "@mui/material";
+import LightButton from "../../UI/LightButton";
+import AddIcon from "@mui/icons-material/Add";
 export const Project = () => {
     // Access the id parameter from the URL
     const { id } = useParams();
@@ -22,11 +22,15 @@ export const Project = () => {
     return (
         <>
             <Card>
-                <CustomCardHeader title={project.projectName}>
-                    <Button size="sm" className="btn-light-primary">
-                        הוסף שובר
-                    </Button>
-                </CustomCardHeader>
+                <CardHeader
+                    titleTypographyProps={{ variant: "h6" }}
+                    title={project.projectName}
+                    action={
+                        <LightButton variant="contained" btncolor="primary" size="small" icon={<AddIcon />}>
+                            הוסף שובר
+                        </LightButton>
+                    }
+                />
             </Card>
             <CustomModal size="lg" title="שובר חדש" show={false} showExitButton showCancelButton>
                 <CustomStepper steps={steps} />

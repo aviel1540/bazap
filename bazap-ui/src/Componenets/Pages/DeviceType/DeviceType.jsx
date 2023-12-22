@@ -6,7 +6,9 @@ import { Card, CardContent, CardHeader } from "@mui/material";
 import LightButton from "../../UI/LightButton";
 import DeviceTypeTable from "./DeviceTypeTable";
 import CustomModal from "../../UI/CustomModal";
-import DeviceForm from "./DeviceForm";
+import DeviceTypeForm from "./DeviceTypeForm";
+import AddIcon from "@mui/icons-material/Add";
+
 const DeviceType = () => {
     const [show, setShow] = useState(false);
     const { isLoading, data: deviceTypes } = useQuery({
@@ -28,19 +30,16 @@ const DeviceType = () => {
         <Card>
             <CardHeader
                 action={
-                    <LightButton variant="contained" btnColor="primary" onClick={showModal} size="small">
+                    <LightButton variant="contained" btncolor="primary" onClick={showModal} size="small" icon={<AddIcon />}>
                         הוסף סוג מכשיר חדש
                     </LightButton>
                 }
                 titleTypographyProps={{ variant: "h5" }}
                 title="סוגי מכשירים"
             />
-            {/* <Card>
-                </Card>
-               */}
             <CardContent>
                 <CustomModal {...modalProperties}>
-                    <DeviceForm onCancel={hideModal} />
+                    <DeviceTypeForm onCancel={hideModal} />
                 </CustomModal>
                 <DeviceTypeTable deviceTypes={deviceTypes} isLoading={isLoading} />
             </CardContent>
