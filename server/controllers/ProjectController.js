@@ -45,7 +45,6 @@ exports.getProjectById = async (req, res) => {
     let project;
     try {
         const checkProjectId = validation.addSlashes(projectId);
-
         project = await projectService.findProjectById(checkProjectId);
         return res.status(200).json(project);
     } catch (err) {

@@ -2,7 +2,7 @@ import { Dialog, DialogContent, DialogTitle, useMediaQuery, useTheme } from "@mu
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 
-const CustomModal = ({ show, title, cancelButtonHandler, children }) => {
+const CustomModal = ({ show, title, cancelButtonHandler, children, maxWidth }) => {
     const [showModal, setShowModal] = useState(show);
 
     useEffect(() => {
@@ -19,14 +19,19 @@ const CustomModal = ({ show, title, cancelButtonHandler, children }) => {
                 open={showModal}
                 onClose={cancelButtonHandler}
                 fullScreen={fullScreen}
-                PaperProps={{
-                    sx: {
-                        width: 1,
-                    },
-                    mg: {
-                        width: 1 / 3,
-                    },
-                }}
+                fullWidth={true}
+                maxWidth={maxWidth}
+                // PaperProps={{
+                //     sx: {
+                //         width: 1,
+                //     },
+                //     md: {
+                //         width: 1,
+                //     },
+                //     lg: {
+                //         width: 1,
+                //     },
+                // }}
             >
                 <DialogTitle id="responsive-dialog-title">{title}</DialogTitle>
                 <DialogContent>{children}</DialogContent>
@@ -40,11 +45,13 @@ CustomModal.propTypes = {
     title: PropTypes.string.isRequired,
     cancelButtonHandler: PropTypes.func,
     children: PropTypes.node.isRequired,
+    maxWidth: PropTypes.string,
 };
 
 CustomModal.defaultProps = {
     okButtonHandler: () => {},
     cancelButtonHandler: () => {},
+    maxWidth: "md",
 };
 
 export default CustomModal;

@@ -21,7 +21,6 @@ export const swalFire = ({
         confirmButtonColor: "#009ef7",
         cancelButtonText,
     }).then((result) => {
-        /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
             onConfirmHandler && onConfirmHandler();
         } else if (result.isDismissed) {

@@ -2,25 +2,25 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import CustomForm from "../../UI/CustomForm/CustomForm";
 import { swalFire } from "../../UI/Swal";
 import propTypes from "prop-types";
-import { addUnit, updateUnit } from "../../../Utils/unitAPI";
+import { addTechnician, updateTechnician } from "../../../Utils/technicianAPI";
 
-const UnitForm = ({ onCancel, formValues = null, isEdit }) => {
+const TechnicianForm = ({ onCancel, formValues = null, isEdit }) => {
     const queryClient = useQueryClient();
     const onSubmit = (data) => {
         if (!isEdit) {
-            let newUnit = { unitName: data.unitName };
-            addUnitMutation.mutate(newUnit);
+            let newTechnician = { techName: data.techName };
+            addTechnicianMutation.mutate(newTechnician);
         } else {
-            let editUnit = {
+            let editTechnician = {
                 id: formValues.id,
-                unitsName: data.unitName,
+                techName: data.techName,
             };
-            editUnitMutation.mutate(editUnit);
+            editTechnicianMutation.mutate(editTechnician);
         }
     };
-    const addUnitMutation = useMutation(addUnit, {
+    const addTechnicianMutation = useMutation(addTechnician, {
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["units"] });
+            queryClient.invalidateQueries({ queryKey: ["technicians"] });
             onCancel();
         },
         onError: (message) => {
@@ -31,9 +31,9 @@ const UnitForm = ({ onCancel, formValues = null, isEdit }) => {
             });
         },
     });
-    const editUnitMutation = useMutation(updateUnit, {
+    const editTechnicianMutation = useMutation(updateTechnician, {
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["units"] });
+            queryClient.invalidateQueries({ queryKey: ["technicians"] });
             onCancel();
         },
         onError: (message) => {
@@ -46,10 +46,10 @@ const UnitForm = ({ onCancel, formValues = null, isEdit }) => {
     });
     const deviceNameInputObj = [
         {
-            label: "שם יחידה",
-            name: "unitName",
+            label: "שם טכנאי",
+            name: "techName",
             type: "text",
-            placeholder: "לדוגמא 319",
+            placeholder: "לדוגמא אורי",
             validators: {
                 required: "יש למלא שדה זה.",
                 minLength: {
@@ -62,15 +62,15 @@ const UnitForm = ({ onCancel, formValues = null, isEdit }) => {
     return <CustomForm inputs={deviceNameInputObj} onSubmit={onSubmit} onCancel={onCancel} values={formValues}></CustomForm>;
 };
 
-UnitForm.propTypes = {
+TechnicianForm.propTypes = {
     formValues: propTypes.object,
     onCancel: propTypes.func,
     isEdit: propTypes.bool,
     editId: propTypes.string,
 };
 
-UnitForm.defaultProps = {
+TechnicianForm.defaultProps = {
     isEdit: false,
 };
 
-export default UnitForm;
+export default TechnicianForm;

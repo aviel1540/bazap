@@ -7,8 +7,8 @@ exports.findAllDevices = async () => await Device.find();
 exports.addNewDevice = async (request) => {
     return new Device({
         serialNumber: request.checkSerialNumber,
-        category: request.checkCategory,
-        type: request.checkType,
+        deviceType: request.checkType,
+        unit: request.unitId,
     });
 };
 
@@ -34,7 +34,7 @@ exports.updateStatusEnd = async (request) => {
         place: request.checkPlace,
         endDate: new Date(),
     });
-    Device.create
+    Device.create;
 };
 
 exports.updateStatusReturn = async (request) => {

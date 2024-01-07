@@ -1,18 +1,18 @@
 import CustomModal from "../../UI/CustomModal";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import UnitTable from "./UnitTable";
-import UnitForm from "./UnitForm";
-import { getAllUnits } from "../../../Utils/unitAPI";
+import TechnicianTable from "./TechnicianTable";
+import TechnicianForm from "./TechnicianForm";
+import { getAllTechnicians } from "../../../Utils/technicianAPI";
 import { Card, CardContent, CardHeader } from "@mui/material";
 import LightButton from "../../UI/LightButton";
 import AddIcon from "@mui/icons-material/Add";
 
-const Unit = () => {
+const Technician = () => {
     const [show, setShow] = useState(false);
-    const { isLoading, data: units } = useQuery({
-        queryKey: ["units"],
-        queryFn: getAllUnits,
+    const { isLoading, data: technicians } = useQuery({
+        queryKey: ["technicians"],
+        queryFn: getAllTechnicians,
     });
     const showModal = () => {
         setShow(true);
@@ -35,20 +35,20 @@ const Unit = () => {
             <CardHeader
                 action={
                     <LightButton variant="contained" btncolor="primary" onClick={showModal} size="small" icon={<AddIcon />}>
-                        הוסף יחידה
+                        הוסף טכנאי
                     </LightButton>
                 }
                 titleTypographyProps={{ variant: "h5" }}
-                title="יחידות"
+                title="טכנאים"
             />
             <CardContent>
-                <UnitTable units={units} isLoading={isLoading} />
+                <TechnicianTable technicians={technicians} isLoading={isLoading} />
             </CardContent>
             <CustomModal {...modalProperties}>
-                <UnitForm onCancel={hideModal} />
+                <TechnicianForm onCancel={hideModal} />
             </CustomModal>
         </Card>
     );
 };
 
-export default Unit;
+export default Technician;

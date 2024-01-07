@@ -13,6 +13,7 @@ const pages = [
     { title: "פרוייקטים", navTo: "/Project" },
     { title: "סוגי מכשירים", navTo: "/DeviceType" },
     { title: "יחידות", navTo: "/Unit" },
+    { title: "טכנאים", navTo: "/Technician" },
 ];
 const MainNavigation = () => {
     const [currentPage, setCurrentPage] = useState(0);

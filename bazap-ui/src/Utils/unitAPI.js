@@ -17,7 +17,7 @@ export const addUnit = async (unit) => {
 
 export const deleteUnit = async (deleteUnit) => {
     try {
-        return await unitAPI.delete("delete-unit", { data: { unitId: deleteUnit } });
+        return await unitAPI.delete(`delete/${deleteUnit}`);
     } catch (error) {
         throw new Error(error.response.data.message);
     }

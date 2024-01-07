@@ -7,7 +7,14 @@ exports.addNewProject = async (checkProjectName) => {
 };
 exports.findAllProjects = async () => await Project.find();
 
-exports.findProjectById = async (checkProjectId) => await Project.findById(checkProjectId).populate("vouchersList");
+exports.findProjectById = async (checkProjectId) =>
+    await Project.findById(checkProjectId).populate({
+        path: "vouchersList",
+        populate: {
+            path: "unit",
+            model: "Units",
+        },
+    });
 
 exports.findProjectByName = async (projectName) => await Project.findOne({ projectName });
 

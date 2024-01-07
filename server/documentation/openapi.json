@@ -563,7 +563,55 @@
                                     "units": { "type": "string" },
                                     "type": {"type": "string" },
                                     "arrivedBy": { "type": "string" },
-                                    "recievedBy": { "type": "string" }
+                                    "receivedBy": { "type": "string" }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/technician": {
+            "get": {
+                "tags": ["Technician"],
+                "summary": "Register to the app",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "header",
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            }
+        },
+        "/technician/add-new-technician": {
+            "post": {
+                "tags": ["Technician"],
+                "summary": "Register to the app",
+                "parameters": [
+                    {
+                        "name": "token",
+                        "in": "header",
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "techName": { "type": "string" }
                                 }
                             }
                         }

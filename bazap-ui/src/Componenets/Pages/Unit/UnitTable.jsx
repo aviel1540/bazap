@@ -1,5 +1,4 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import DataTable from "react-data-table-component";
 import Loader from "../../Layout/Loader";
 import { swalFire } from "../../UI/Swal";
 import propTypes from "prop-types";
@@ -7,39 +6,36 @@ import CustomModal from "../../UI/CustomModal";
 import { useState } from "react";
 import UnitForm from "./UnitForm";
 import { deleteUnit } from "../../../Utils/unitAPI";
-import { Button, Menu, MenuItem } from "@mui/material";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-
-const UnitTable = ({ deviceTypes, isLoading }) => {
-    const [anchorEl, setAnchorEl] = useState(null);
-    const open = Boolean(anchorEl);
-
+import CustomTable from "../../UI/CustomTable/CustomTable";
+import TableActions from "../../UI/CustomTable/TableActions";
+const UnitTable = ({ units, isLoading }) => {
     const [show, setShow] = useState(false);
     const [formValues, setFormValues] = useState(null);
     const queryClient = useQueryClient();
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
+    const onEditUnitHandler = (rowId, handleClose) => {
+        const unit = units.find((item) => (item._id == rowId));
+        if (unit) {
+            handleClose(rowId);
+            setFormValues({ unitName: unit.unitsName, id: unit._id });
+            showModal();
+        }
     };
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
-    const onEditUnitHandler = (data) => {
-        handleClose();
-        setFormValues({ unitName: data.unitsName, id: data._id });
-        showModal();
-    };
-    const onDeleteUnitHandler = (id) => {
-        handleClose();
+    const onDeleteUnitHandler = (rowId, handleClose) => {
+        handleClose(rowId);
         swalFire({
             html: "האם אתה בטוח מעוניין למחוק את היחידה?",
             icon: "warning",
             onConfirmHandler: () => {
-                deleteUnitMutation.mutate(id);
+                deleteUnitMutation.mutate(rowId);
             },
             showCancelButton: true,
             confirmButtonText: "כן, מחק",
         });
     };
+    const actions = [
+        { title: "ערוך", handler: onEditUnitHandler },
+        { title: "מחק", handler: onDeleteUnitHandler },
+    ];
     const columns = [
         {
             name: "שם יחידה",
@@ -49,42 +45,7 @@ const UnitTable = ({ deviceTypes, isLoading }) => {
         {
             name: "פעולות",
             center: true,
-            cell: (row) => (
-                <>
-                    <Button
-                        variant="contained"
-                        id="basic-button"
-                        aria-controls={open ? "basic-menu" : undefined}
-                        aria-haspopup="true"
-                        aria-expanded={open ? "true" : undefined}
-                        onClick={handleClick}
-                        size="small"
-                        endIcon={<KeyboardArrowDownIcon />}
-                    >
-                        פעולות
-                    </Button>
-                    <Menu
-                        id="basic-menu"
-                        anchorEl={anchorEl}
-                        open={open}
-                        onClose={handleClose}
-                        anchorOrigin={{
-                            vertical: "bottom",
-                            horizontal: "right",
-                        }}
-                        transformOrigin={{
-                            vertical: "top",
-                            horizontal: "right",
-                        }}
-                        MenuListProps={{
-                            "aria-labelledby": "basic-button",
-                        }}
-                    >
-                        <MenuItem onClick={() => onEditUnitHandler(row)}>ערוך</MenuItem>
-                        <MenuItem onClick={() => onDeleteUnitHandler(row._id)}>מחק</MenuItem>
-                    </Menu>
-                </>
-            ),
+            cell: (row) => <TableActions rowId={row._id} actions={actions} />,
         },
     ];
     const deleteUnitMutation = useMutation(deleteUnit, {
@@ -111,7 +72,7 @@ const UnitTable = ({ deviceTypes, isLoading }) => {
     const modalProperties = {
         show,
         handleClose: () => {},
-        title: "סוג מוצר חדש",
+        title: "עריכת סוג מכשיר",
         showExitButton: true,
         showOkButton: false,
         okButtonHandler: hideModal,
@@ -120,7 +81,7 @@ const UnitTable = ({ deviceTypes, isLoading }) => {
     };
     return (
         <>
-            <DataTable className="table" columns={columns} data={deviceTypes} />
+            <CustomTable columns={columns} data={units} />
             <CustomModal {...modalProperties}>
                 <UnitForm onCancel={hideModal} formValues={formValues} isEdit={true} />
             </CustomModal>
@@ -129,7 +90,7 @@ const UnitTable = ({ deviceTypes, isLoading }) => {
 };
 
 UnitTable.propTypes = {
-    deviceTypes: propTypes.array,
+    units: propTypes.array,
     isLoading: propTypes.bool.isRequired,
 };
 

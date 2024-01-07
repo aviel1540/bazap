@@ -1,18 +1,16 @@
-const Project = require('../models/Project');
-const Voucher = require('../models/Voucher');
+const Project = require("../models/Project");
+const Voucher = require("../models/Voucher");
 
-exports.addVoucher = async(request) => {
-    return new Voucher ({
-        unit: request.checkUnits,
-        recievedBy: request.checkRecievedBy,
-        arrivedBy: request.checkArrivedBy
-    })
-}
-
-exports.showVoucherList = async (projectId) => {
-    return Project.findById(projectId).populate('vouchersList').exec().then((project) => {
-        return project.vouchersList;
-    }).catch((err) => {
-        return err;
+exports.addVoucher = async (request) => {
+    return new Voucher({
+        unit: request.checkUnitName,
+        receivedBy: request.checkreceivedBy,
+        arrivedBy: request.checkArrivedBy,
+        type: Boolean(request.type),
     });
-}
+};
+
+exports.showVoucherList = async (projectId) => await Voucher.find({ project: projectId }).populate("deviceList").populate("Units");
+exports.findVoucherById = async (checkVoucherId) => await Voucher.findById(checkVoucherId).populate("deviceList").populate("project");
+
+exports.deleteVoucher = async (checkVoucherId) => await Voucher.findByIdAndDelete(checkVoucherId);

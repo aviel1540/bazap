@@ -1,22 +1,22 @@
+// voucherModel.js
+
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const voucherSchema = new Schema({
     voucherNumber: {
         type: Number,
-        autoIncrement: true
     },
     unit: {
         type: Schema.Types.ObjectId,
         ref: "Units",
     },
-    // voucher in or out
     type: {
         type: Boolean,
         trim: true,
         default: null,
     },
-    recievedBy: {
+    receivedBy: {
         type: String,
         trim: true,
         required: true,
@@ -45,6 +45,5 @@ const voucherSchema = new Schema({
         },
     ],
 });
-
 const Voucher = mongoose.model("Voucher", voucherSchema);
 module.exports = Voucher;

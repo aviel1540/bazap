@@ -6,7 +6,7 @@ const deviceSchema = new Schema({
     catalogNumber: {
         type: String,
         trim: true,
-        required: true,
+        // required: true,
     },
     serialNumber: {
         type: String,
@@ -19,13 +19,19 @@ const deviceSchema = new Schema({
         required: true,
     },
     unit: {
-        type: String,
-        trim: true,
-        required: true,
+        type: Schema.Types.ObjectId,
+        ref: "Units",
     },
     status: {
         type: String,
-        enum: [DeviceStatus.AT_WORK, DeviceStatus.DEFECTIVE, DeviceStatus.DEFECTIVE_RETURN, DeviceStatus.FIXED, DeviceStatus.FIXED_RETURN],
+        enum: [
+            DeviceStatus.AT_WORK,
+            DeviceStatus.DEFECTIVE,
+            DeviceStatus.DEFECTIVE_RETURN,
+            DeviceStatus.FIXED,
+            DeviceStatus.FIXED_RETURN,
+            DeviceStatus.WAIT_TO_WORK,
+        ],
         default: DeviceStatus.WAIT_TO_WORK,
     },
     technician: {

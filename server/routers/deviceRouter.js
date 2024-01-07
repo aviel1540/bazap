@@ -7,6 +7,8 @@ router.get("/find-by-serialNumber/:serialnumber", deviceController.getDeviceBySe
 
 router.post("/add-new-device", deviceController.addNewDevice);
 
+router.post("/add-new-devices", deviceController.addNewDevices);
+
 router.patch("/update-status/:id", deviceController.changeStatus);
 
 router.patch("/update-report/:id", deviceController.statusChangeToFinish);

@@ -6,7 +6,7 @@ export default function Loader() {
             <Box textAlign="center" fontWeight="600" marginBottom={2}>
                 אנא המתן...
             </Box>
-            <LinearProgress color="primary" fourColor={false} variant="indeterminate" />
+            <LinearProgress color="primary" variant="indeterminate" />
         </Box>
     );
 }

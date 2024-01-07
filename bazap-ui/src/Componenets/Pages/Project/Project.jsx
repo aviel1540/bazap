@@ -3,17 +3,32 @@ import { useParams } from "react-router";
 import { getProjectData } from "../../../Utils/projectAPI";
 import Loader from "../../Layout/Loader";
 import CustomModal from "../../UI/CustomModal";
-import { Card, CardHeader } from "@mui/material";
+import { Card, CardContent, CardHeader } from "@mui/material";
 import LightButton from "../../UI/LightButton";
 import AddIcon from "@mui/icons-material/Add";
+import VoucherStepper from "./NewVoucher/VoucherStepper";
+import { useState } from "react";
+import VoucherTable from "./VoucherTable";
+import { getAllVouchers } from "../../../Utils/voucherApi";
+
 export const Project = () => {
-    // Access the id parameter from the URL
+    const [show, setShow] = useState(false);
     const { id } = useParams();
-    // Use React Query to fetch project data by ID
-    const { isLoading, data: project } = useQuery({
+    const { isLoading: isProjecLoading, data: project } = useQuery({
         queryKey: ["project", id],
         queryFn: getProjectData,
     });
+    const { isLoading: isVouchersLoading, data: vouchers } = useQuery({
+        queryKey: ["vouchers", id],
+        queryFn: getAllVouchers,
+    });
+    const isLoading = isProjecLoading || isVouchersLoading;
+    const showModal = () => {
+        setShow(true);
+    };
+    const hideModal = () => {
+        setShow(false);
+    };
     if (isLoading) {
         return <Loader />;
     }
@@ -24,14 +39,17 @@ export const Project = () => {
                     titleTypographyProps={{ variant: "h6" }}
                     title={project.projectName}
                     action={
-                        <LightButton variant="contained" btncolor="primary" size="small" icon={<AddIcon />}>
+                        <LightButton variant="contained" btncolor="primary" size="small" icon={<AddIcon />} onClick={showModal}>
                             הוסף שובר
                         </LightButton>
                     }
                 />
+                <CardContent>
+                    <VoucherTable vouchers={vouchers} isLoading={isLoading} projectId={id} />
+                </CardContent>
             </Card>
-            <CustomModal size="lg" title="שובר חדש" show={true} showExitButton showCancelButton>
-                asd
+            <CustomModal maxWidth="md" title="שובר חדש" show={show} showExitButton showCancelButton>
+                <VoucherStepper onCancel={hideModal} projectId={id} />
             </CustomModal>
         </>
     );
