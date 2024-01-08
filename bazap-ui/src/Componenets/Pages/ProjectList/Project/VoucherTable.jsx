@@ -1,11 +1,11 @@
-import Loader from "../../Layout/Loader";
+import Loader from "../../../Layout/Loader";
 import propTypes from "prop-types";
 import { Chip } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { swalFire } from "../../UI/Swal";
-import { deleteVoucher } from "../../../Utils/voucherApi";
-import TableActions from "../../UI/CustomTable/TableActions";
-import CustomTable from "../../UI/CustomTable/CustomTable";
+import { swalFire } from "../../../UI/Swal";
+import { deleteVoucher } from "../../../../Utils/voucherApi";
+import TableActions from "../../../UI/CustomTable/TableActions";
+import CustomTable from "../../../UI/CustomTable/CustomTable";
 
 const VoucherTable = ({ vouchers, isLoading, projectId }) => {
     const queryClient = useQueryClient();

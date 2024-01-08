@@ -1,14 +1,14 @@
 import { Box, Button, Divider, Stack, Step, StepLabel, Stepper } from "@mui/material";
 import { useForm, FormProvider } from "react-hook-form";
-import LightButton from "../../../UI/LightButton";
+import LightButton from "../../../../UI/LightButton";
 import PropTypes from "prop-types";
 import VoucherStep1 from "./VoucherStep1";
 import VoucherStep2 from "./VoucherStep2";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { addVoucher } from "../../../../Utils/voucherApi";
-import { useError } from "../../../Context/ErrorContext";
-import { addNewDevices } from "../../../../Utils/deviceApi";
+import { useError } from "../../../../Context/ErrorContext";
+import { addNewDevices } from "../../../../../Utils/deviceApi";
+import { addVoucher } from "../../../../../Utils/voucherApi";
 
 const VoucherStepper = ({ onCancel, projectId }) => {
     const { onError } = useError();

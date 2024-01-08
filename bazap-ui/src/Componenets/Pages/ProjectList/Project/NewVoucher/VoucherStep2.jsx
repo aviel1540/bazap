@@ -1,9 +1,9 @@
 import { Box, Button, IconButton, createFilterOptions } from "@mui/material";
 import { Controller, useFieldArray, useFormContext } from "react-hook-form";
-import ControllerInput from "../../../UI/CustomForm/ControlledInput";
+import ControllerInput from "../../../../UI/CustomForm/ControlledInput";
 import { useQuery } from "@tanstack/react-query";
-import { getAllDeviceTypes } from "../../../../Utils/deviceTypeApi";
-import Loader from "../../../Layout/Loader";
+import { getAllDeviceTypes } from "../../../../../Utils/deviceTypeApi";
+import Loader from "../../../../Layout/Loader";
 import Grid from "@mui/material/Unstable_Grid2";
 import HighlightOff from "@mui/icons-material/HighlightOff";
 import Add from "@mui/icons-material/Add";

@@ -4,9 +4,9 @@ import ErrorPage from "./Componenets/Layout/ErrorPage/ErrorPage";
 import RootLayout from "./Componenets/Layout/RootLayout";
 import DeviceType from "./Componenets/Pages/DeviceType/DeviceType";
 import Unit from "./Componenets/Pages/Unit/Unit";
-import { Project } from "./Componenets/Pages/Project/Project";
 import Home from "./Componenets/Pages/Home/Home";
-import ProjectsList from "./Componenets/Pages/Project/ProjectsList";
+import ProjectsList from "./Componenets/Pages/ProjectList/ProjectsList";
+import Project from "./Componenets/Pages/ProjectList/Project/Project";
 import "@fontsource/rubik/300.css";
 import "@fontsource/rubik/400.css";
 import "@fontsource/rubik/500.css";
@@ -25,7 +25,7 @@ const router = createBrowserRouter(
             <Route index element={<Home />} />
             <Route path="DeviceType" element={<DeviceType />} />
             <Route path="Project" element={<ProjectsList />} />
-            <Route path="Project/:id" element={<Project />} />
+            <Route path="Project/:id" element={<Project/>} />
             <Route path="Unit" element={<Unit />} />
             <Route path="Technician" element={<Technician />} />
         </Route>,
