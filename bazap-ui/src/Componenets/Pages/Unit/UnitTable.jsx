@@ -1,6 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Loader from "../../Layout/Loader";
-import { swalFire } from "../../UI/Swal";
 import propTypes from "prop-types";
 import { useState } from "react";
 import UnitForm from "./UnitForm";
@@ -8,7 +7,9 @@ import { deleteUnit } from "../../../Utils/unitAPI";
 import CustomTable from "../../UI/CustomTable/CustomTable";
 import TableActions from "../../UI/CustomTable/TableActions";
 import { useCustomModal } from "../../store/CustomModalContext";
+import { useAlert } from "../../store/AlertContext";
 const UnitTable = ({ units, isLoading }) => {
+    const { onAlert } = useAlert();
     const { onShow, onHide } = useCustomModal();
     const [formValues, setFormValues] = useState(null);
     const queryClient = useQueryClient();
@@ -22,15 +23,16 @@ const UnitTable = ({ units, isLoading }) => {
     };
     const onDeleteUnitHandler = (rowId, handleClose) => {
         handleClose(rowId);
-        swalFire({
-            html: "האם אתה בטוח מעוניין למחוק את היחידה?",
+        const message = "האם אתה בטוח מעוניין למחוק את היחידה?";
+        const options = {
+            showCancel: true,
             icon: "warning",
-            onConfirmHandler: () => {
+            confirmButtonText: "כן, מחק",
+            handleConfirm: () => {
                 deleteUnitMutation.mutate(rowId);
             },
-            showCancelButton: true,
-            confirmButtonText: "כן, מחק",
-        });
+        };
+        onAlert({ message, options });
     };
     const actions = [
         { title: "ערוך", handler: onEditUnitHandler },
@@ -53,11 +55,8 @@ const UnitTable = ({ units, isLoading }) => {
             queryClient.invalidateQueries({ queryKey: ["units"] });
         },
         onError: (message) => {
-            swalFire({
-                html: message,
-                icon: "error",
-                showCancelButton: false,
-            });
+            const options = { showCancel: false, icon: "error" };
+            onAlert({ message, options });
         },
     });
     if (isLoading) {

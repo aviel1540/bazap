@@ -1,15 +1,16 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import DataTable from "react-data-table-component";
 import Loader from "../../Layout/Loader";
-import { swalFire } from "../../UI/Swal";
 import propTypes from "prop-types";
 import { useState } from "react";
 import TechnicianForm from "./TechnicianForm";
 import { deleteTechnician } from "../../../Utils/technicianAPI";
 import { useCustomModal } from "../../store/CustomModalContext";
 import TableActions from "../../UI/CustomTable/TableActions";
+import { useAlert } from "../../store/AlertContext";
 
 const TechnicianTable = ({ technicians, isLoading }) => {
+    const { onAlert } = useAlert();
     const { onShow, onHide } = useCustomModal();
     const [formValues, setFormValues] = useState(null);
     const queryClient = useQueryClient();
@@ -23,15 +24,16 @@ const TechnicianTable = ({ technicians, isLoading }) => {
     };
     const onDeleteTechnicianHandler = (rowId, handleClose) => {
         handleClose(rowId);
-        swalFire({
-            html: "האם אתה בטוח מעוניין למחוק את הטכנאי?",
+        const options = {
+            showCancel: true,
             icon: "warning",
-            onConfirmHandler: () => {
+            confirmButtonText: "כן, מחק",
+            handleConfirm: () => {
                 deleteTechnicianMutation.mutate(rowId);
             },
-            showCancelButton: true,
-            confirmButtonText: "כן, מחק",
-        });
+        };
+        const message = "האם אתה בטוח מעוניין למחוק את הטכנאי?";
+        onAlert({ message, options });
     };
     const actions = [
         { title: "ערוך", handler: onEditTechnicianHandler },
@@ -54,11 +56,8 @@ const TechnicianTable = ({ technicians, isLoading }) => {
             queryClient.invalidateQueries({ queryKey: ["technicians"] });
         },
         onError: (message) => {
-            swalFire({
-                html: message,
-                icon: "error",
-                showCancelButton: false,
-            });
+            const options = { showCancel: false, icon: "error" };
+            onAlert({ message, options });
         },
     });
     if (isLoading) {

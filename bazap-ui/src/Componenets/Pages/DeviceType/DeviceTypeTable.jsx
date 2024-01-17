@@ -21,8 +21,7 @@ const DeviceTypeTable = ({ deviceTypes, isLoading }) => {
             },
         };
         const message = "האם אתה בטוח מעוניין למחוק את סוג המכשיר?";
-        const alertRecord = { message, options };
-        onAlert(alertRecord);
+        onAlert({ message, options });
     };
     const actions = [{ title: "מחק", handler: onDeleteDeviceTypeHandler }];
     const columns = [
@@ -46,8 +45,7 @@ const DeviceTypeTable = ({ deviceTypes, isLoading }) => {
         },
         onError: (message) => {
             const options = { showCancel: false, icon: "error" };
-            const error = { message, options };
-            onAlert(error);
+            onAlert({ message, options });
         },
     });
 

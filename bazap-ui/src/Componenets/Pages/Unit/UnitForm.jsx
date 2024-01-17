@@ -1,10 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import CustomForm from "../../UI/CustomForm/CustomForm";
-import { swalFire } from "../../UI/Swal";
 import propTypes from "prop-types";
 import { addUnit, updateUnit } from "../../../Utils/unitAPI";
+import { useAlert } from "../../store/AlertContext";
 
 const UnitForm = ({ onCancel, formValues = null, isEdit }) => {
+    const { onAlert } = useAlert();
     const queryClient = useQueryClient();
     const onSubmit = (data) => {
         if (!isEdit) {
@@ -24,11 +25,8 @@ const UnitForm = ({ onCancel, formValues = null, isEdit }) => {
             onCancel();
         },
         onError: (message) => {
-            swalFire({
-                html: message,
-                icon: "error",
-                showCancelButton: false,
-            });
+            const options = { showCancel: false, icon: "error" };
+            onAlert({ message, options });
         },
     });
     const editUnitMutation = useMutation(updateUnit, {
@@ -37,11 +35,8 @@ const UnitForm = ({ onCancel, formValues = null, isEdit }) => {
             onCancel();
         },
         onError: (message) => {
-            swalFire({
-                html: message,
-                icon: "error",
-                showCancelButton: false,
-            });
+            const options = { showCancel: false, icon: "error" };
+            onAlert({ message, options });
         },
     });
     const deviceNameInputObj = [
