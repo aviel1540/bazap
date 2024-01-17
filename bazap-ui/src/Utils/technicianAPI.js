@@ -1,4 +1,5 @@
 import axios from "axios";
+import { replaceApostropheInObject } from "./utils";
 
 const technicianAPI = axios.create({ baseURL: "http://localhost:5000/api/technician" });
 
@@ -9,6 +10,7 @@ export const getAllTechnicians = async () => {
 
 export const addTechnician = async (technician) => {
     try {
+        technician = replaceApostropheInObject(technician, "techName");
         return await technicianAPI.post("add-new-technician", technician);
     } catch (error) {
         throw new Error(error.response.data.message);

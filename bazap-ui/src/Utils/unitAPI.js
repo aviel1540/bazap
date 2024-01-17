@@ -1,4 +1,5 @@
 import axios from "axios";
+import { replaceApostropheInObject } from "./utils";
 
 const unitAPI = axios.create({ baseURL: "http://localhost:5000/api/units" });
 
@@ -9,6 +10,7 @@ export const getAllUnits = async () => {
 
 export const addUnit = async (unit) => {
     try {
+        unit = replaceApostropheInObject(unit, "unitsName");
         return await unitAPI.post("add-new-unit", unit);
     } catch (error) {
         throw new Error(error.response.data.message);

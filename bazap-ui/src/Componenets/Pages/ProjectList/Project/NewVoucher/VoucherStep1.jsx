@@ -12,6 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllUnits } from "../../../../../Utils/unitAPI";
 import Loader from "../../../../Layout/Loader";
 import { getAllTechnicians } from "../../../../../Utils/technicianAPI";
+import { replaceApostrophe } from "../../../../../Utils/utils";
 
 const VoucherStep1 = ({ getValues }) => {
     const { control } = useFormContext();
@@ -20,8 +21,7 @@ const VoucherStep1 = ({ getValues }) => {
         queryFn: async () => {
             const unitsData = await getAllUnits();
             const units = unitsData.map((unit) => {
-                const formattedName = unit.unitsName.replace(/&#39;/g, "'");
-                return { text: formattedName, value: unit._id, ...unit };
+                return { text: replaceApostrophe(unit.unitsName), value: unit._id, ...unit };
             });
             return units;
         },
@@ -31,7 +31,7 @@ const VoucherStep1 = ({ getValues }) => {
         queryFn: async () => {
             const techniciansData = await getAllTechnicians();
             const technicians = techniciansData.map((technician) => {
-                const formattedName = technician.techName.replace(/&#39;/g, "'");
+                const formattedName = replaceApostrophe(technician.techName);
                 return { text: formattedName, value: formattedName };
             });
             return technicians;
@@ -66,7 +66,7 @@ const VoucherStep1 = ({ getValues }) => {
         },
         {
             label: "יחידה",
-            name: "units",
+            name: "unit",
             type: "select",
             validators: {
                 required: "יש למלא שדה זה.",

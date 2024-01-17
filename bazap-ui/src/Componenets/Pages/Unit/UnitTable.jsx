@@ -2,18 +2,18 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Loader from "../../Layout/Loader";
 import { swalFire } from "../../UI/Swal";
 import propTypes from "prop-types";
-import CustomModal from "../../UI/CustomModal";
 import { useState } from "react";
 import UnitForm from "./UnitForm";
 import { deleteUnit } from "../../../Utils/unitAPI";
 import CustomTable from "../../UI/CustomTable/CustomTable";
 import TableActions from "../../UI/CustomTable/TableActions";
+import { useCustomModal } from "../../store/CustomModalContext";
 const UnitTable = ({ units, isLoading }) => {
-    const [show, setShow] = useState(false);
+    const { onShow, onHide } = useCustomModal();
     const [formValues, setFormValues] = useState(null);
     const queryClient = useQueryClient();
     const onEditUnitHandler = (rowId, handleClose) => {
-        const unit = units.find((item) => (item._id == rowId));
+        const unit = units.find((item) => item._id == rowId);
         if (unit) {
             handleClose(rowId);
             setFormValues({ unitName: unit.unitsName, id: unit._id });
@@ -63,30 +63,16 @@ const UnitTable = ({ units, isLoading }) => {
     if (isLoading) {
         return <Loader />;
     }
-    const showModal = () => {
-        setShow(true);
-    };
-    const hideModal = () => {
-        setShow(false);
-    };
     const modalProperties = {
-        show,
-        handleClose: () => {},
         title: "עריכת סוג מכשיר",
-        showExitButton: true,
-        showOkButton: false,
-        okButtonHandler: hideModal,
-        showCancelButton: false,
-        cancelButtonHandler: hideModal,
+        maxWidth: "md",
+        body: <UnitForm onCancel={onHide} formValues={formValues} isEdit={true} />,
     };
-    return (
-        <>
-            <CustomTable columns={columns} data={units} />
-            <CustomModal {...modalProperties}>
-                <UnitForm onCancel={hideModal} formValues={formValues} isEdit={true} />
-            </CustomModal>
-        </>
-    );
+    const showModal = () => {
+        onShow(modalProperties);
+    };
+
+    return <CustomTable columns={columns} data={units} />;
 };
 
 UnitTable.propTypes = {

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { replaceApostropheInObject } from "./utils";
 
 const deviceTypeApi = axios.create({ baseURL: "http://localhost:5000/api/deviceType" });
 
@@ -9,6 +10,7 @@ export const getAllDeviceTypes = async () => {
 
 export const addDeviceType = async (deviceType) => {
     try {
+        deviceType = replaceApostropheInObject(deviceType, "deviceName");
         return await deviceTypeApi.post("add-new-deviceType", deviceType);
     } catch (error) {
         throw new Error(error.response.data.message);

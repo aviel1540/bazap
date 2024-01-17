@@ -7,7 +7,6 @@ const ProjectChart = (props) => {
     const chartSeries = [data.totalWaiting, data.totalInWork, data.totalFinished, data.TotalOut];
     const chartOptions = {
         labels: ["ממתין לעבודה", "בעבודה", "הסתיים", "הוחזר"],
-        // colors: ["#FFD700", "#FFA07A", "#00FF00", "#4169E1"],
         colors: ["#F1BC00", "#5014D0", "#009EF7", "#47BE7D"],
         legend: {
             show: true,

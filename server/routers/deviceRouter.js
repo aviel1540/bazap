@@ -2,6 +2,7 @@ const router = require("express").Router();
 const deviceController = require("../controllers/DeviceController");
 
 router.get("/:id", deviceController.getDeviceById);
+router.get("/get-all-arrived-devices-in-project/:id", deviceController.getAllArrivedDevicesInProject);
 
 router.get("/find-by-serialNumber/:serialnumber", deviceController.getDeviceBySerialNumber);
 

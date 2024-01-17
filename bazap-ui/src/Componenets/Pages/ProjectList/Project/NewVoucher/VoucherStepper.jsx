@@ -6,12 +6,12 @@ import VoucherStep1 from "./VoucherStep1";
 import VoucherStep2 from "./VoucherStep2";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useError } from "../../../../Context/ErrorContext";
+import { useAlert } from "../../../../store/AlertContext";
 import { addNewDevices } from "../../../../../Utils/deviceApi";
 import { addVoucher } from "../../../../../Utils/voucherApi";
 
 const VoucherStepper = ({ onCancel, projectId }) => {
-    const { onError } = useError();
+    const { onAlert } = useAlert();
     const [activeStep, setActiveStep] = useState(0);
     const queryClient = useQueryClient();
 
@@ -36,7 +36,7 @@ const VoucherStepper = ({ onCancel, projectId }) => {
             clearErrors();
             if (activeStep == steps.length - 1) {
                 handleSave();
-                onCancel();
+                // onCancel();
             } else {
                 setActiveStep((prevStep) => prevStep + 1);
             }
@@ -47,7 +47,7 @@ const VoucherStepper = ({ onCancel, projectId }) => {
             queryClient.invalidateQueries({ queryKey: ["vouchers", projectId] });
         },
         onError: (message) => {
-            onError(message.message);
+            onAlert(message.message);
         },
     });
     const addVoucherMutation = useMutation(addVoucher, {
@@ -60,10 +60,11 @@ const VoucherStepper = ({ onCancel, projectId }) => {
                 voucherId: voucherId,
                 unitId: voucherData.unit,
             }));
+
             addNewDevicesMutation.mutate(devices);
         },
         onError: (message) => {
-            onError(message.message);
+            onAlert(message.message);
         },
     });
     const handleBack = () => {

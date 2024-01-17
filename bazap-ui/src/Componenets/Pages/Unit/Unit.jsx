@@ -1,35 +1,27 @@
-import CustomModal from "../../UI/CustomModal";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
 import UnitTable from "./UnitTable";
 import UnitForm from "./UnitForm";
 import { getAllUnits } from "../../../Utils/unitAPI";
 import { Card, CardContent, CardHeader } from "@mui/material";
 import LightButton from "../../UI/LightButton";
 import AddIcon from "@mui/icons-material/Add";
+import { useCustomModal } from "../../store/CustomModalContext";
 
 const Unit = () => {
-    const [show, setShow] = useState(false);
+    const { onShow, onHide } = useCustomModal();
     const { isLoading, data: units } = useQuery({
         queryKey: ["units"],
         queryFn: getAllUnits,
     });
-    const showModal = () => {
-        setShow(true);
-    };
-    const hideModal = () => {
-        setShow(false);
-    };
     const modalProperties = {
-        show,
-        handleClose: () => {},
-        title: "סוג מוצר חדש",
-        showExitButton: true,
-        showOkButton: false,
-        okButtonHandler: hideModal,
-        showCancelButton: false,
-        cancelButtonHandler: hideModal,
+        title: "יחידה חדשה",
+        maxWidth: "md",
+        body: <UnitForm onCancel={onHide} />,
     };
+    const showModal = () => {
+        onShow(modalProperties);
+    };
+
     return (
         <Card>
             <CardHeader
@@ -44,9 +36,6 @@ const Unit = () => {
             <CardContent>
                 <UnitTable units={units} isLoading={isLoading} />
             </CardContent>
-            <CustomModal {...modalProperties}>
-                <UnitForm onCancel={hideModal} />
-            </CustomModal>
         </Card>
     );
 };

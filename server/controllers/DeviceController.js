@@ -40,8 +40,10 @@ exports.addNewDevices = async (req, res) => {
         if (!devicesData || !Array.isArray(devicesData) || devicesData.length === 0) {
             return res.status(400).json({ message: "לא נמצא מכשיר" });
         }
-
         const insertedDevices = [];
+        const voucherId = escape(devicesData[0].voucherId);
+        const checkVoucherId = validation.addSlashes(voucherId);
+        const voucher = await voucherService.findVoucherById(checkVoucherId);
 
         for (const deviceData of devicesData) {
             const serialNumber = escape(deviceData.serialNumber);
@@ -52,25 +54,22 @@ exports.addNewDevices = async (req, res) => {
             if (!serialNumber || !type || !voucherId || !unitId) {
                 return res.status(400).json({ message: "נא למלא את כל השדות" });
             }
-
             const checkSerialNumber = validation.addSlashes(serialNumber);
             const checkType = validation.addSlashes(type);
-            const checkVoucherId = validation.addSlashes(voucherId);
             const checkUnitId = validation.addSlashes(unitId);
-
             const newDevice = await deviceService.addNewDevice({
                 checkSerialNumber,
                 checkType,
                 checkUnitId,
+                checkVoucherId,
+                projectId: voucher.project._id,
             });
 
             await newDevice.save();
-
-            const voucher = await voucherService.findVoucherById(checkVoucherId);
             voucher.deviceList.push(newDevice);
-            voucher.save();
             insertedDevices.push(newDevice);
         }
+        voucher.save();
 
         return res.status(200).json(insertedDevices);
     } catch (err) {
@@ -194,6 +193,22 @@ exports.getAllDevices = async (req, res) => {
             return res.status(404).json({ message: "לא קיימים מכשירים" });
         }
         return res.status(200).json(devices);
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
+    }
+};
+
+exports.getAllArrivedDevicesInProject = async (req, res) => {
+    try {
+        const projectId = escape(req.params.id);
+        const devices = await deviceService.findAllDevicesByProject(projectId);
+        const allArrivedDevices = devices.filter((device) => device.voucherNumber.type == true);
+        const allDeliveredDevices = devices.filter((device) => device.voucherNumber.type == false).map((device) => device._id);
+        const notDeliveredDevices = allArrivedDevices.filter((arrivedDevice) => {
+            return !allDeliveredDevices.some((deliveredDevice) => deliveredDevice.deviceId === arrivedDevice.deviceId);
+        });
+
+        return res.status(200).json(notDeliveredDevices);
     } catch (err) {
         return res.status(500).json({ message: err.message });
     }

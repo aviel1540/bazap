@@ -1,7 +1,7 @@
 import { CacheProvider } from "@emotion/react";
 import { ThemeProvider, createTheme } from "@mui/material";
 import { heIL } from "@mui/material/locale";
-import { blue, amber } from "@mui/material/colors";
+// import { blue, amber } from "@mui/material/colors";
 import createCache from "@emotion/cache";
 import rtlPlugin from "stylis-plugin-rtl";
 import { prefixer } from "stylis";
@@ -13,17 +13,59 @@ const cacheRtl = createCache({
     stylisPlugins: [prefixer, rtlPlugin],
 });
 
+// const theme = createTheme({
+//     typography: {
+//         fontFamily: "Rubik, sans-serif",
+//     },
+//     palette: {
+//         mode: "light",
+//         // primary: {
+
+//         // },
+//         secondary: amber,
+//         lightPrimary: {
+//             light: "#ffffff",
+//             main: "#f1faff",
+//             dark: "#00b2ff",
+//             contrastText: "#ffffff",
+//         },
+//     },
+//     background: {
+//         // default: "#f8f9fa",
+//         default: "#04255c",
+//     },
+//     direction: "rtl",
+//     heIL,
+// });
 const theme = createTheme({
+    palette: {
+        mode: "light",
+        primary: {
+            main: "#009EF7",
+            contrastText: "#ffffff",
+        },
+        secondary: {
+            main: "#f9f9f9",
+        },
+        error: {
+            main: "#f1416c",
+        },
+        warning: {
+            main: "#ffc700",
+        },
+        info: {
+            main: "#7239ea",
+        },
+        success: {
+            main: "#50cd89",
+        },
+        background: {
+            default: "#F9F9F9",
+            paper: "#ffffff",
+        },
+    },
     typography: {
         fontFamily: "Rubik, sans-serif",
-    },
-
-    palette: {
-        primary: blue,
-        secondary: amber,
-    },
-    background: {
-        default: "#f8f9fa",
     },
     direction: "rtl",
     heIL,

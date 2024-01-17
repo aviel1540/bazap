@@ -16,3 +16,9 @@ export const addNewDevices = async (devices) => {
         throw new Error(error.response.data.message);
     }
 };
+
+export const getAllArrivedDevicesInProject = async ({ queryKey }) => {
+    const [_, id] = queryKey;
+    const response = await deviceAPI.get(`get-all-arrived-devices-in-project/${id}`);
+    return response.data;
+};

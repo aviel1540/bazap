@@ -8,6 +8,7 @@ import Grid from "@mui/material/Unstable_Grid2";
 import HighlightOff from "@mui/icons-material/HighlightOff";
 import Add from "@mui/icons-material/Add";
 import { Fragment } from "react";
+import { replaceApostrophe } from "../../../../../Utils/utils";
 const filter = createFilterOptions();
 
 const VoucherStep2 = () => {
@@ -16,7 +17,7 @@ const VoucherStep2 = () => {
         queryFn: async () => {
             const deviceTypesData = await getAllDeviceTypes();
             const newArray = deviceTypesData.map((dType) => {
-                const formattedName = dType.deviceName.replace(/&#39;/g, "'");
+                const formattedName = replaceApostrophe(dType.deviceName);
                 return { text: formattedName, value: formattedName, ...dType };
             });
             return newArray;

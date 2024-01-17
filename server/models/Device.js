@@ -47,7 +47,7 @@ const deviceSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "Voucher",
     },
-    projectName: {
+    project: {
         type: Schema.Types.ObjectId,
         ref: "Project",
     },

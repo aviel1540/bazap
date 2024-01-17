@@ -1,24 +1,28 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import Loader from "../../Layout/Loader";
-import { swalFire } from "../../UI/Swal";
 import { deleteDeviceType } from "../../../Utils/deviceTypeApi";
 import propTypes from "prop-types";
 import TableActions from "../../UI/CustomTable/TableActions";
 import CustomTable from "../../UI/CustomTable/CustomTable";
+import { useAlert } from "../../store/AlertContext";
+import { replaceApostrophe } from "../../../Utils/utils";
 
 const DeviceTypeTable = ({ deviceTypes, isLoading }) => {
+    const { onAlert } = useAlert();
     const queryClient = useQueryClient();
     const onDeleteDeviceTypeHandler = (rowId, handleClose) => {
         handleClose(rowId);
-        swalFire({
-            html: "האם אתה בטוח מעוניין למחוק את סוג המכשיר?",
+        const options = {
+            showCancel: true,
             icon: "warning",
-            onConfirmHandler: () => {
+            confirmButtonText: "כן, מחק",
+            handleConfirm: () => {
                 deleteDeviceMutation.mutate(rowId);
             },
-            showCancelButton: true,
-            confirmButtonText: "כן, מחק",
-        });
+        };
+        const message = "האם אתה בטוח מעוניין למחוק את סוג המכשיר?";
+        const alertRecord = { message, options };
+        onAlert(alertRecord);
     };
     const actions = [{ title: "מחק", handler: onDeleteDeviceTypeHandler }];
     const columns = [
@@ -27,9 +31,7 @@ const DeviceTypeTable = ({ deviceTypes, isLoading }) => {
             sortable: true,
             selector: (row) => row.deviceName,
             cell: (row) => {
-                const stringWithEntities = row.deviceName;
-                const decodedDeviceName = stringWithEntities.replace(/&#39;/g, "'");
-                return <div>{decodedDeviceName}</div>;
+                return <div>{replaceApostrophe(row.deviceName)}</div>;
             },
         },
         {
@@ -43,11 +45,9 @@ const DeviceTypeTable = ({ deviceTypes, isLoading }) => {
             queryClient.invalidateQueries({ queryKey: ["deviceTypes"] });
         },
         onError: (message) => {
-            swalFire({
-                html: message,
-                icon: "error",
-                showCancelButton: false,
-            });
+            const options = { showCancel: false, icon: "error" };
+            const error = { message, options };
+            onAlert(error);
         },
     });
 

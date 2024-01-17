@@ -16,8 +16,10 @@ import "@fontsource/rubik/800.css";
 import "@fontsource/rubik/900.css";
 import Technician from "./Componenets/Pages/Technician/Technician";
 import Theme from "./Componenets/Layout/Theme";
-import { ErrorProvider } from "./Componenets/Context/ErrorContext";
-import { ErrorDialog } from "./Componenets/UI/ErrorDialog";
+import { AlertDialog } from "./Componenets/UI/AlertDialog";
+import { AlertProvider } from "./Componenets/store/AlertContext";
+import { CustomModalProvider } from "./Componenets/store/CustomModalContext";
+import CustomModal from "./Componenets/UI/CustomModal";
 
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -25,7 +27,7 @@ const router = createBrowserRouter(
             <Route index element={<Home />} />
             <Route path="DeviceType" element={<DeviceType />} />
             <Route path="Project" element={<ProjectsList />} />
-            <Route path="Project/:id" element={<Project/>} />
+            <Route path="Project/:id" element={<Project />} />
             <Route path="Unit" element={<Unit />} />
             <Route path="Technician" element={<Technician />} />
         </Route>,
@@ -35,10 +37,13 @@ const router = createBrowserRouter(
 function App() {
     return (
         <Theme>
-            <ErrorProvider>
-                <RouterProvider router={router} />
-                <ErrorDialog />
-            </ErrorProvider>
+            <CustomModalProvider>
+                <AlertProvider>
+                    <RouterProvider router={router} />
+                    <AlertDialog />
+                    <CustomModal />
+                </AlertProvider>
+            </CustomModalProvider>
         </Theme>
     );
 }

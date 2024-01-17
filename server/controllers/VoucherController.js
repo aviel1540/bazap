@@ -19,7 +19,7 @@ exports.getVoucherById = async (req, res) => {
 
 exports.addNewVoucher = async (req, res) => {
     const projectId = escape(req.params.projectId);
-    const unitName = escape(req.body.units);
+    const unitName = escape(req.body.unit);
     const type = escape(req.body.type); //boolean
     const arrivedBy = escape(req.body.arrivedBy);
     const receivedBy = escape(req.body.receivedBy);
@@ -33,10 +33,10 @@ exports.addNewVoucher = async (req, res) => {
         const checkArrivedBy = validation.addSlashes(arrivedBy);
         const checkreceivedBy = validation.addSlashes(receivedBy);
 
-        voucher = await voucherService.addVoucher({ checkUnitName, checkArrivedBy, checkreceivedBy, type });
+        const checkProjectId = validation.addSlashes(projectId);
+        voucher = await voucherService.addVoucher({ checkUnitName, checkArrivedBy, checkreceivedBy, type, checkProjectId });
         await voucher.save();
         if (!voucher) return res.status(400).json({ message: "לא נוצר שובר נא לנסות שוב" });
-        const checkProjectId = validation.addSlashes(projectId);
         project = await projectService.findProjectById(checkProjectId);
         if (!project) return res.status(404).json({ message: "לא נמצא פרויקט" });
 
@@ -67,7 +67,10 @@ exports.deleteVoucher = async (req, res) => {
     try {
         const voucherId = escape(req.params.id);
         const voucher = await voucherService.findVoucherById(voucherId);
+        const project = voucher.project;
         if (voucher.deviceList.length == 0) {
+            project.vouchersList = project.vouchersList.filter((item) => item._id != voucherId);
+            project.save();
             await voucherService.deleteVoucher(voucherId);
         } else {
             return res.status(401).json({ message: "אי אפשר למחוק שובר עם מכשירים" });

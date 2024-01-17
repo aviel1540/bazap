@@ -1,25 +1,32 @@
 import Loader from "../../../Layout/Loader";
 import propTypes from "prop-types";
-import { Chip } from "@mui/material";
+import { Card, CardContent, CardHeader, Chip } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { swalFire } from "../../../UI/Swal";
 import { deleteVoucher } from "../../../../Utils/voucherApi";
 import TableActions from "../../../UI/CustomTable/TableActions";
 import CustomTable from "../../../UI/CustomTable/CustomTable";
-
+import { useAlert } from "../../../store/AlertContext";
+import LightButton from "../../../UI/LightButton";
+import AddIcon from "@mui/icons-material/Add";
+import VoucherStepper from "./NewVoucher/VoucherStepper";
+import { useCustomModal } from "../../../store/CustomModalContext";
 const VoucherTable = ({ vouchers, isLoading, projectId }) => {
+    const { onShow, onHide } = useCustomModal();
+    const { onAlert } = useAlert();
     const queryClient = useQueryClient();
     const onDeleteDeviceTypeHandler = (id, handleClose) => {
         handleClose && handleClose(id);
-        swalFire({
-            html: "האם אתה בטוח מעוניין למחוק את השובר?",
+        const options = {
+            showCancel: true,
             icon: "warning",
-            onConfirmHandler: () => {
+            confirmButtonText: "כן, מחק",
+            handleConfirm: () => {
                 deleteDeviceMutation.mutate(id);
             },
-            showCancelButton: true,
-            confirmButtonText: "כן, מחק",
-        });
+        };
+        const message = "האם אתה בטוח מעוניין למחוק את השובר?";
+        const alertRecord = { message, options };
+        onAlert(alertRecord);
     };
     const actions = [
         {
@@ -67,20 +74,43 @@ const VoucherTable = ({ vouchers, isLoading, projectId }) => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["project", projectId] });
         },
-        onError: (message) => {
-            swalFire({
-                html: message,
-                icon: "error",
-                showCancelButton: false,
-            });
+        onError: ({ message }) => {
+            const options = { showCancel: false, icon: "error" };
+            const error = { message, options };
+            onAlert(error);
         },
     });
+    const modalProperties = {
+        title: "שובר חדש",
+        maxWidth: "md",
+        body: <VoucherStepper onCancel={onHide} projectId={projectId} />,
+    };
+    const showModal = () => {
+        onShow(modalProperties);
+    };
 
     if (isLoading) {
         return <Loader />;
     }
 
-    return <CustomTable columns={columns} data={vouchers} />;
+    return (
+        <>
+            <Card>
+                <CardHeader
+                    titleTypographyProps={{ variant: "h6" }}
+                    title="שוברים"
+                    action={
+                        <LightButton variant="contained" btncolor="primary" size="small" icon={<AddIcon />} onClick={showModal}>
+                            הוסף שובר
+                        </LightButton>
+                    }
+                />
+                <CardContent>
+                    <CustomTable columns={columns} data={vouchers} />
+                </CardContent>
+            </Card>
+        </>
+    );
 };
 
 VoucherTable.propTypes = {
