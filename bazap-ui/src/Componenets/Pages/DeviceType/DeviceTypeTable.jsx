@@ -43,7 +43,7 @@ const DeviceTypeTable = ({ deviceTypes, isLoading }) => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["deviceTypes"] });
         },
-        onError: (message) => {
+        onError: ({ message }) => {
             const options = { showCancel: false, icon: "error" };
             onAlert({ message, options });
         },

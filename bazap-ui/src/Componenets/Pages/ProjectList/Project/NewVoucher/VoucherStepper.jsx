@@ -10,7 +10,7 @@ import { useAlert } from "../../../../store/AlertContext";
 import { addNewDevices } from "../../../../../Utils/deviceApi";
 import { addVoucher } from "../../../../../Utils/voucherApi";
 
-const VoucherStepper = ({ onCancel, projectId }) => {
+const VoucherStepper = ({ onCancel, projectId, formDefaultValues }) => {
     const { onAlert } = useAlert();
     const [activeStep, setActiveStep] = useState(0);
     const queryClient = useQueryClient();
@@ -19,12 +19,13 @@ const VoucherStepper = ({ onCancel, projectId }) => {
         defaultValues: {
             projectId,
             devices: [{ serialNumber: "", deviceType: "" }],
+            ...formDefaultValues,
         },
     });
     const { handleSubmit, formState, setError, clearErrors, getValues } = methods;
     const { isSubmitting, isDirty } = formState;
     const titles = ["יצירת שובר", "הוספת מכשירים"];
-    const steps = [<VoucherStep1 key={1} getValues={getValues} />, <VoucherStep2 key={2} getValues={getValues} />];
+    const steps = [<VoucherStep1 key={1} />, <VoucherStep2 key={2} />];
     const handleNext = async () => {
         const result = await handleSubmit(() => {})(methods.getValues());
         if (result) {
@@ -36,7 +37,7 @@ const VoucherStepper = ({ onCancel, projectId }) => {
             clearErrors();
             if (activeStep == steps.length - 1) {
                 handleSave();
-                // onCancel();
+                onCancel();
             } else {
                 setActiveStep((prevStep) => prevStep + 1);
             }
@@ -45,9 +46,12 @@ const VoucherStepper = ({ onCancel, projectId }) => {
     const addNewDevicesMutation = useMutation(addNewDevices, {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["vouchers", projectId] });
+            queryClient.invalidateQueries({ queryKey: ["arrivedDevices", projectId] });
         },
-        onError: (message) => {
-            onAlert(message.message);
+        onError: ({ message }) => {
+            const options = { showCancel: false, icon: "error" };
+            const error = { message, options };
+            onAlert(error);
         },
     });
     const addVoucherMutation = useMutation(addVoucher, {
@@ -63,8 +67,10 @@ const VoucherStepper = ({ onCancel, projectId }) => {
 
             addNewDevicesMutation.mutate(devices);
         },
-        onError: (message) => {
-            onAlert(message.message);
+        onError: ({ message }) => {
+            const options = { showCancel: false, icon: "error" };
+            const error = { message, options };
+            onAlert(error);
         },
     });
     const handleBack = () => {
@@ -107,6 +113,7 @@ const VoucherStepper = ({ onCancel, projectId }) => {
 };
 VoucherStepper.propTypes = {
     onCancel: PropTypes.func.isRequired,
+    formDefaultValues: PropTypes.object,
     projectId: PropTypes.string.isRequired,
 };
 

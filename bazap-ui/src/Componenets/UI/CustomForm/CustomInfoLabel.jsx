@@ -1,24 +1,29 @@
-import { Typography } from "@mui/material";
+import { Typography, useTheme } from "@mui/material";
+import Grid from "@mui/material/Unstable_Grid2/Grid2";
 import propTypes from "prop-types";
 
 const CustomInfoLabel = ({ label, value }) => {
+    const theme = useTheme();
     return (
-        <Typography variant="body1" fontSize={14}>
-            <span style={{ fontWeight: 600 }}>{label}:</span> <span style={{ color: "#888" }}>{value}</span>
-        </Typography>
-        // <Row className="mb-7">
-        //     <Col lg={4}>
-        //         <label className="fw-semibold text-muted">{label}</label>
-        //     </Col>
-        //     <Col lg={8}>
-        //         <span className="fw-bold fs-6 text-gray-900">{value}</span>
-        //     </Col>
-        // </Row>
+        <>
+            <Grid container rowSpacing={1}>
+                <Grid xs={6}>
+                    <Typography variant="body1" color={theme.palette.infoText} fontSize={14} fontWeight={500}>
+                        {label}
+                    </Typography>
+                </Grid>
+                <Grid xs={6}>
+                    <Typography variant="body1" fontSize={14} fontWeight={500}>
+                        {value}
+                    </Typography>
+                </Grid>
+            </Grid>
+        </>
     );
 };
 CustomInfoLabel.propTypes = {
     label: propTypes.string.isRequired,
-    value: propTypes.string.isRequired,
+    value: propTypes.any.isRequired,
 };
 
 export default CustomInfoLabel;

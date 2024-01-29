@@ -14,19 +14,4 @@ const CustomModal = () => {
         </Dialog>
     );
 };
-
-CustomModal.propTypes = {
-    // show: PropTypes.bool.isRequired,
-    // title: PropTypes.string.isRequired,
-    // cancelButtonHandler: PropTypes.func,
-    // children: PropTypes.node.isRequired,
-    // maxWidth: PropTypes.string,
-};
-
-CustomModal.defaultProps = {
-    okButtonHandler: () => {},
-    cancelButtonHandler: () => {},
-    maxWidth: "md",
-};
-
 export default CustomModal;

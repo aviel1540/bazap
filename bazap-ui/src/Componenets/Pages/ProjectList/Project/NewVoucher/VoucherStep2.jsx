@@ -9,10 +9,19 @@ import HighlightOff from "@mui/icons-material/HighlightOff";
 import Add from "@mui/icons-material/Add";
 import { Fragment } from "react";
 import { replaceApostrophe } from "../../../../../Utils/utils";
+import { getAllArrivedDevicesInProject } from "../../../../../Utils/deviceApi";
+
 const filter = createFilterOptions();
 
 const VoucherStep2 = () => {
-    const { isLoading, data: deviceTypes } = useQuery({
+    const { getValues } = useFormContext();
+    const projectId = getValues("projectId");
+    const isArrive = getValues("type") == "true";
+    const { isLoading: isLoadingArrivedDevices, data: arrivedDevices } = useQuery({
+        queryKey: ["arrivedDevices", projectId],
+        queryFn: getAllArrivedDevicesInProject,
+    });
+    const { isLoading: isLoadingDevicesTypes, data: deviceTypes } = useQuery({
         queryKey: ["deviceTypes"],
         queryFn: async () => {
             const deviceTypesData = await getAllDeviceTypes();
@@ -23,6 +32,7 @@ const VoucherStep2 = () => {
             return newArray;
         },
     });
+    const isLoading = isLoadingDevicesTypes || isLoadingArrivedDevices;
     const { control } = useFormContext();
     const { fields, append, remove } = useFieldArray({
         control,
@@ -37,11 +47,13 @@ const VoucherStep2 = () => {
 
         const { inputValue } = params;
         const isExisting = options.some((option) => inputValue === option.text);
-        if (inputValue !== "" && !isExisting) {
-            filtered.push({
-                inputValue,
-                text: `הוסף צ' "${inputValue}"`,
-            });
+        if (isArrive) {
+            if (inputValue !== "" && !isExisting) {
+                filtered.push({
+                    inputValue,
+                    text: `הוסף צ' "${inputValue}"`,
+                });
+            }
         }
 
         return filtered;
@@ -52,6 +64,11 @@ const VoucherStep2 = () => {
         }
         return option.text;
     };
+    const arrivedDevicesText = arrivedDevices.map((device) => {
+        return { text: device.serialNumber };
+    });
+
+    const devicesToDisplay = isArrive ? [{ text: "123" }] : arrivedDevicesText;
     const voucherInputs = [
         {
             label: "צ' מכשיר",
@@ -61,7 +78,7 @@ const VoucherStep2 = () => {
             validators: {
                 required: "יש למלא שדה זה.",
             },
-            options: [{ text: "555" }, { text: "1533" }],
+            options: devicesToDisplay,
             getOptionLabel: onGetOptionLabel,
             filterOptions: onFilterOptions,
         },

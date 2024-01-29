@@ -25,7 +25,7 @@ const DeviceTypeForm = ({ onCancel, formValues = null, isEdit }) => {
             queryClient.invalidateQueries({ queryKey: ["deviceTypes"] });
             onCancel();
         },
-        onError: (message) => {
+        onError: ({ message }) => {
             const options = { showCancel: false, icon: "error" };
             const error = { message, options };
             onAlert(error);

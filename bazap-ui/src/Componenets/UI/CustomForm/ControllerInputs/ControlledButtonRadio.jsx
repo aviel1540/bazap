@@ -3,13 +3,13 @@ import { Controller } from "react-hook-form";
 import PropTypes, { object } from "prop-types";
 
 const ControllerButtonRadio = (props) => {
-    const { name, label, control, validators, onFieldChange, options } = props;
+    const { name, label, control, validators, onFieldChange, options, disabled } = props;
     return (
         <Controller
             name={name}
             control={control}
             rules={validators}
-            render={({ field: { onChange, value, disabled }, fieldState: { error } }) => (
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
                 <FormControl fullWidth>
                     <ToggleButtonGroup
                         fullWidth
@@ -42,6 +42,7 @@ ControllerButtonRadio.propTypes = {
     control: PropTypes.object,
     options: PropTypes.arrayOf(object),
     onFieldChange: PropTypes.func,
+    disabled: PropTypes.bool,
 };
 ControllerButtonRadio.defaultProps = {
     onFieldChange: () => {},

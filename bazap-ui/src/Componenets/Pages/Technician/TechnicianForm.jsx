@@ -24,7 +24,7 @@ const TechnicianForm = ({ onCancel, formValues = null, isEdit }) => {
             queryClient.invalidateQueries({ queryKey: ["technicians"] });
             onCancel();
         },
-        onError: (message) => {
+        onError: ({ message }) => {
             const options = { showCancel: false, icon: "error" };
             onAlert({ message, options });
         },
@@ -34,7 +34,7 @@ const TechnicianForm = ({ onCancel, formValues = null, isEdit }) => {
             queryClient.invalidateQueries({ queryKey: ["technicians"] });
             onCancel();
         },
-        onError: (message) => {
+        onError: ({ message }) => {
             const options = { showCancel: false, icon: "error" };
             onAlert({ message, options });
         },

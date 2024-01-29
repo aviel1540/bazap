@@ -18,7 +18,7 @@ const pages = [
 const MainNavigation = () => {
     const [currentPage, setCurrentPage] = useState(0);
     useEffect(() => {
-        const currentPath = window.location.pathname;
+        const currentPath = `/${window.location.pathname.split("/")[1]}`;
         const index = pages.findIndex((page) => page.navTo == currentPath);
         index >= 0 && setCurrentPage(index);
     }, []);

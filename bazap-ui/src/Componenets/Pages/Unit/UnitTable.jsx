@@ -54,7 +54,7 @@ const UnitTable = ({ units, isLoading }) => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["units"] });
         },
-        onError: (message) => {
+        onError: ({ message }) => {
             const options = { showCancel: false, icon: "error" };
             onAlert({ message, options });
         },

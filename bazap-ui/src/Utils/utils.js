@@ -34,15 +34,15 @@ export const DeviceStatuses = {
     DEFECTIVE: "מושבת",
 };
 
-const DeviceStatusesKeys = {
-    "ממתין לעבודה": "WAIT_TO_WORK",
-    בעבודה: "AT_WORK",
-    "תקין - הוחזר ליחידה": "FIXED_RETURN",
-    "מושבת - הוחזר ליחידה": "DEFECTIVE_RETURN",
-    תקין: "FIXED",
-    מושבת: "DEFECTIVE",
-};
+export const ALL = "הכל";
+export const RETURNED = "הוחזר ליחידה";
+export const FIXED_OF_DEFFECTIVE = "תקין/מושבת";
 
-export const getDeviceStatusKey = (status) => {
-    return DeviceStatusesKeys[status];
+export const chipColors = {
+    "ממתין לעבודה": "error",
+    בעבודה: "primary",
+    תקין: "success",
+    מושבת: "warning",
+    "תקין - הוחזר ליחידה": "success",
+    "מושבת - הוחזר ליחידה": "warning",
 };

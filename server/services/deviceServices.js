@@ -25,24 +25,22 @@ exports.updateDeviceDatailsInFinish = async (request) => {
     });
 };
 
-exports.updateStatusStart = async (request) => {
+exports.updateStatus = async (request) => {
     return await Device.findByIdAndUpdate(request.checkDeviceId, {
-        place: request.checkPlace,
-        startDate: new Date(),
+        status: request.checkStatus,
     });
 };
 
 exports.updateStatusEnd = async (request) => {
     return await Device.findByIdAndUpdate(request.checkDeviceId, {
-        place: request.checkPlace,
+        status: request.checkPlace,
         endDate: new Date(),
     });
-    Device.create;
 };
 
 exports.updateStatusReturn = async (request) => {
     return await Device.findByIdAndUpdate(request.checkDeviceId, {
-        place: request.checkPlace,
+        status: request.checkPlace,
         returnDate: new Date(),
     });
 };

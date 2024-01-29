@@ -16,22 +16,23 @@ const ControlledInput = forwardRef((props, ref) => {
     const isAutoComplete = lowerType === "autocomplete";
 
     if (isButtonRadio) {
-        return <ControlledButtonRadio ref={ref} {...props} />;
+        return <ControlledButtonRadio ref={ref} {...props} key={props.name} />;
     }
     if (isAutoComplete) {
-        return <ControlledAutocomplete ref={ref} {...props} />;
+        return <ControlledAutocomplete ref={ref} {...props} key={props.name} />;
     }
     if (isSelect) {
-        return <ControlledSelect ref={ref} {...props} />;
+        return <ControlledSelect ref={ref} {...props} key={props.name} />;
     }
     if (isTextInput) {
-        return <ControlledTextField ref={ref} {...props} />;
+        return <ControlledTextField ref={ref} {...props} key={props.name} />;
     }
     return <div>need to do this {type} type of input </div>;
 });
 
 ControlledInput.propTypes = {
     type: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
 };
 ControlledInput.displayName = "ControlledInput";
 

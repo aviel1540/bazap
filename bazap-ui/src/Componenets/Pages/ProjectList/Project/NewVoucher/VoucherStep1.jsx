@@ -1,21 +1,21 @@
-// "units": "string",
-// "type": "string",
-// "arrivedBy": "string",
-// "receivedBy": "string"
-
 import { useFormContext } from "react-hook-form";
 import { Box, Stack } from "@mui/material";
 import ControllerInput from "../../../../UI/CustomForm/ControlledInput";
 import { useState } from "react";
-import PropTypes from "prop-types";
 import { useQuery } from "@tanstack/react-query";
 import { getAllUnits } from "../../../../../Utils/unitAPI";
 import Loader from "../../../../Layout/Loader";
 import { getAllTechnicians } from "../../../../../Utils/technicianAPI";
 import { replaceApostrophe } from "../../../../../Utils/utils";
 
-const VoucherStep1 = ({ getValues }) => {
-    const { control } = useFormContext();
+const VoucherStep1 = () => {
+    const { control, getValues, getFieldState } = useFormContext();
+    const isTypeSelected = !!getValues("type") && getFieldState("type").isDirty == false;
+
+    const [technicianType, setTechnicianType] = useState({
+        arrivedBy: getValues("type") == "true" ? "text" : "select",
+        receivedBy: getValues("type") == "true" ? "select" : "text",
+    });
     const { isLoading: isLoadingUnits, data: units } = useQuery({
         queryKey: ["units"],
         queryFn: async () => {
@@ -38,16 +38,13 @@ const VoucherStep1 = ({ getValues }) => {
         },
     });
     const isLoading = isLoadingUnits || isLoadingTechnician;
-    const [technicianType, setTechnicianType] = useState({
-        arrivedBy: "text",
-        receivedBy: "text",
-    });
-    const isTypeSelected = !!getValues("type");
+
     const voucherInputs = [
         {
             label: "סוג שובר",
             name: "type",
             type: "buttonRadio",
+            disabled: isTypeSelected,
             validators: {
                 required: "יש למלא שדה זה.",
             },
@@ -116,8 +113,5 @@ const VoucherStep1 = ({ getValues }) => {
             </Stack>
         </Box>
     );
-};
-VoucherStep1.propTypes = {
-    getValues: PropTypes.func.isRequired,
 };
 export default VoucherStep1;

@@ -143,30 +143,38 @@ exports.statusChangeToFinish = async (req, res) => {
 
 exports.changeStatus = async (req, res) => {
     const deviceId = escape(req.params.id);
-    const place = escape(req.body.place);
-    let deviceFound;
+    const status = escape(req.body.status);
+    const device = await deviceService.findDeviceById(deviceId);
+    if (!device) {
+        return res.status(404).json({ message: "לא נמצא מכשיר" });
+    }
     try {
         const checkDeviceId = validation.addSlashes(deviceId);
-        const checkPlace = validation.addSlashes(place);
-
-        categoryFound = await deviceService.findcategoryById(checkDeviceId);
-        switch (checkPlace) {
+        const checkStatus = validation.addSlashes(status);
+        switch (checkStatus) {
+            case DeviceStatus.WAIT_TO_WORK:
             case DeviceStatus.AT_WORK:
-                deviceFound = await deviceService.updateStatusStart({ checkDeviceId, checkPlace });
+                await deviceService.updateStatus({ checkDeviceId, checkStatus });
                 break;
-            case DeviceStatus.FINISHED:
-                deviceFound = await deviceService.updateStatusEnd({ checkDeviceId, checkPlace });
-                break;
-            case DeviceStatus.RETURNED:
-                if (deviceFound.place != DeviceStatus.FINISHED) {
-                    return res.status(401).json({ message: "יש לדווח מכשיר מוכן לפני החזרה" });
+            case DeviceStatus.FIXED:
+            case DeviceStatus.DEFECTIVE:
+                if (device.status == DeviceStatus.AT_WORK) {
+                    await deviceService.updateStatus({ checkDeviceId, checkStatus });
+                } else {
+                    return res.status(400).json({ message: "סטטוס מכשיר צריך להיות בעבודה כדי לדווח תקין או מושבת" });
                 }
-                categoryFound = await deviceService.updateStatusReturn({ checkDeviceId, checkPlace });
+                break;
+            case DeviceStatus.FIXED_RETURN:
+            case DeviceStatus.DEFECTIVE_RETURN:
+                if ([DeviceStatus.FIXED, DeviceStatus.DEFECTIVE].includes(device.status)) {
+                    await deviceService.updateStatus({ checkDeviceId, checkStatus });
+                } else {
+                    return res.status(400).json({ message: "סטטוס מכשיר צריך להיות תקין או מושבת כדי לדווח שחזר ליחידה" });
+                }
                 break;
             default:
-                return res.status(404).json({ message: "ערך לא תקין" });
+                return res.status(400).json({ message: "סטטוס לא קיים" });
         }
-        // await categoryFound.save();
         return res.status(201).json({ message: "המכשיר עודכן בהצלחה." });
     } catch (err) {
         res.status(401).json({ message: err.message });

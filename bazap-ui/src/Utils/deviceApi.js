@@ -22,3 +22,12 @@ export const getAllArrivedDevicesInProject = async ({ queryKey }) => {
     const response = await deviceAPI.get(`get-all-arrived-devices-in-project/${id}`);
     return response.data;
 };
+
+export const updateStatus = async (device) => {
+    try {
+        const { id } = device;
+        return await deviceAPI.patch(`/update-status/${id}`, device);
+    } catch (error) {
+        throw new Error(error.response.data.message);
+    }
+};

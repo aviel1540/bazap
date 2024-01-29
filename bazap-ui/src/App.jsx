@@ -1,12 +1,7 @@
+import { lazy } from "react";
 import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from "react-router-dom";
-// import "./assets/css/style.bundle.rtl.css";
 import ErrorPage from "./Componenets/Layout/ErrorPage/ErrorPage";
 import RootLayout from "./Componenets/Layout/RootLayout";
-import DeviceType from "./Componenets/Pages/DeviceType/DeviceType";
-import Unit from "./Componenets/Pages/Unit/Unit";
-import Home from "./Componenets/Pages/Home/Home";
-import ProjectsList from "./Componenets/Pages/ProjectList/ProjectsList";
-import Project from "./Componenets/Pages/ProjectList/Project/Project";
 import "@fontsource/rubik/300.css";
 import "@fontsource/rubik/400.css";
 import "@fontsource/rubik/500.css";
@@ -20,6 +15,13 @@ import { AlertDialog } from "./Componenets/UI/AlertDialog";
 import { AlertProvider } from "./Componenets/store/AlertContext";
 import { CustomModalProvider } from "./Componenets/store/CustomModalContext";
 import CustomModal from "./Componenets/UI/CustomModal";
+import { ProjectProvider } from "./Componenets/store/ProjectContext";
+
+const DeviceType = lazy(() => import("./Componenets/Pages/DeviceType/DeviceType"));
+const Unit = lazy(() => import("./Componenets/Pages/Unit/Unit"));
+const Home = lazy(() => import("./Componenets/Pages/Home/Home"));
+const ProjectsList = lazy(() => import("./Componenets/Pages/ProjectList/ProjectsList"));
+const Project = lazy(() => import("./Componenets/Pages/ProjectList/Project/Project"));
 
 const router = createBrowserRouter(
     createRoutesFromElements(
@@ -39,9 +41,11 @@ function App() {
         <Theme>
             <CustomModalProvider>
                 <AlertProvider>
-                    <RouterProvider router={router} />
-                    <AlertDialog />
-                    <CustomModal />
+                    <ProjectProvider>
+                        <RouterProvider router={router} />
+                        <AlertDialog />
+                        <CustomModal />
+                    </ProjectProvider>
                 </AlertProvider>
             </CustomModalProvider>
         </Theme>

@@ -10,7 +10,10 @@ import LightButton from "../../../UI/LightButton";
 import AddIcon from "@mui/icons-material/Add";
 import VoucherStepper from "./NewVoucher/VoucherStepper";
 import { useCustomModal } from "../../../store/CustomModalContext";
-const VoucherTable = ({ vouchers, isLoading, projectId }) => {
+import { useProject } from "../../../store/ProjectContext";
+
+const VoucherTable = ({ vouchers, isLoading }) => {
+    const { projectId } = useProject();
     const { onShow, onHide } = useCustomModal();
     const { onAlert } = useAlert();
     const queryClient = useQueryClient();
@@ -115,8 +118,6 @@ const VoucherTable = ({ vouchers, isLoading, projectId }) => {
 
 VoucherTable.propTypes = {
     vouchers: propTypes.array.isRequired,
-    isLoading: propTypes.bool.isRequired,
-    projectId: propTypes.string.isRequired,
-};
+    isLoading: propTypes.bool.isRequired,};
 
 export default VoucherTable;
