@@ -1,7 +1,6 @@
 import { lazy } from "react";
 import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from "react-router-dom";
-import ErrorPage from "./Componenets/Layout/ErrorPage/ErrorPage";
-import RootLayout from "./Componenets/Layout/RootLayout";
+import RootLayout from "./Components/Layout/RootLayout";
 import "@fontsource/rubik/300.css";
 import "@fontsource/rubik/400.css";
 import "@fontsource/rubik/500.css";
@@ -9,19 +8,20 @@ import "@fontsource/rubik/600.css";
 import "@fontsource/rubik/700.css";
 import "@fontsource/rubik/800.css";
 import "@fontsource/rubik/900.css";
-import Technician from "./Componenets/Pages/Technician/Technician";
-import Theme from "./Componenets/Layout/Theme";
-import { AlertDialog } from "./Componenets/UI/AlertDialog";
-import { AlertProvider } from "./Componenets/store/AlertContext";
-import { CustomModalProvider } from "./Componenets/store/CustomModalContext";
-import CustomModal from "./Componenets/UI/CustomModal";
-import { ProjectProvider } from "./Componenets/store/ProjectContext";
+import Technician from "./Components/Pages/Technician/Technician";
+import ErrorPage from "./Components/Layout/ErrorPage/ErrorPage";
+import Theme from "./Components/Layout/Theme";
+import { AlertDialog } from "./Components/UI/AlertDialog";
+import { AlertProvider } from "./Components/store/AlertContext";
+import { CustomModalProvider } from "./Components/store/CustomModalContext";
+import CustomModal from "./Components/UI/CustomModal";
+import { ProjectProvider } from "./Components/store/ProjectContext";
 
-const DeviceType = lazy(() => import("./Componenets/Pages/DeviceType/DeviceType"));
-const Unit = lazy(() => import("./Componenets/Pages/Unit/Unit"));
-const Home = lazy(() => import("./Componenets/Pages/Home/Home"));
-const ProjectsList = lazy(() => import("./Componenets/Pages/ProjectList/ProjectsList"));
-const Project = lazy(() => import("./Componenets/Pages/ProjectList/Project/Project"));
+const DeviceType = lazy(() => import("./Components/Pages/DeviceType/DeviceType"));
+const Unit = lazy(() => import("./Components/Pages/Unit/Unit"));
+const Home = lazy(() => import("./Components/Pages/Home/Home"));
+const ProjectsList = lazy(() => import("./Components/Pages/ProjectList/ProjectsList"));
+const Project = lazy(() => import("./Components/Pages/ProjectList/Project/Project"));
 
 const router = createBrowserRouter(
     createRoutesFromElements(
