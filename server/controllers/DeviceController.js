@@ -106,35 +106,20 @@ exports.getDeviceBySerialNumber = async (req, res) => {
     }
 };
 
-exports.statusChangeToFinish = async (req, res) => {
-    const deviceId = escape(req.params.id);
-    const status = escape(req.body.status);
-    const fixedBy = escape(req.body.fixedBy);
-    const notes = escape(req.body.notes);
+exports.returnDevice = async (req, res) => {
+    const serialNumber = escape(req.body.serialNumber);
     let updateDevice;
     try {
-        const checkDeviceId = validation.addSlashes(deviceId);
-        const checkStatus = validation.addSlashes(status);
-        const checkFixedBy = validation.addSlashes(fixedBy);
-        const checkNotes = validation.addSlashes(notes);
-
-        if (!checkFixedBy) {
-            return res.status(401).json({ message: "יש למלא שם טכנאי" });
+        const serialNumber = validation.addSlashes(serialNumber);
+        const device = await deviceService.findDeviceBySerialNumber(checkSerialNumber);
+        if (!device) {
+            return res.status(400).json({ message: "לא נמצא מכשיר" });
         }
-
-        if (checkStatus == DeviceStatus.WAIT_TO_WORK || checkStatus == DeviceStatus.AT_WORK || checkStatus == DeviceStatus.RETURNED) {
+        if (device.status != DeviceStatus.FIXED || device.status != DeviceStatus.DEFECTIVE) {
             return res.status(401).json({ message: "יש לדווח סטטוס תקין / תקול" });
         }
-
-        updateDevice = await deviceService.updateDeviceDatailsInFinish({
-            checkDeviceId,
-            checkStatus,
-            checkFixedBy,
-            checkNotes,
-        });
-        if (!updateDevice) return res.status(401).json({ message: "הדיווח נכשל - יש לנסות שוב" });
-        await updatecategory.save();
-
+        device.status = device.status == DeviceStatus.DEFECTIVE ? DeviceStatus.DEFECTIVE_RETURN : DeviceStatus.FIXED_RETURN;
+        await device.save();
         return res.status(201).json({ message: "המכשיר עודכן בהצלחה." });
     } catch (err) {
         res.status(401).json({ message: err.message });
@@ -210,13 +195,13 @@ exports.getAllArrivedDevicesInProject = async (req, res) => {
     try {
         const projectId = escape(req.params.id);
         const devices = await deviceService.findAllDevicesByProject(projectId);
-        const allArrivedDevices = devices.filter((device) => device.voucherNumber.type == true);
-        const allDeliveredDevices = devices.filter((device) => device.voucherNumber.type == false).map((device) => device._id);
-        const notDeliveredDevices = allArrivedDevices.filter((arrivedDevice) => {
-            return !allDeliveredDevices.some((deliveredDevice) => deliveredDevice.deviceId === arrivedDevice.deviceId);
-        });
+        // const allArrivedDevices = devices.filter((device) => device.voucherNumber.type == true);
+        // const allDeliveredDevices = devices.filter((device) => device.voucherNumber.type == false).map((device) => device._id);
+        // const notDeliveredDevices = allArrivedDevices.filter((arrivedDevice) => {
+        //     return !allDeliveredDevices.some((deliveredDevice) => deliveredDevice.deviceId === arrivedDevice.deviceId);
+        // });
 
-        return res.status(200).json(notDeliveredDevices);
+        return res.status(200).json(devices);
     } catch (err) {
         return res.status(500).json({ message: err.message });
     }

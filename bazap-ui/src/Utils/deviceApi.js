@@ -9,6 +9,15 @@ export const addNewDevice = async (device) => {
         throw new Error(error.response.data.message);
     }
 };
+
+export const returnDevice = async (devices) => {
+    try {
+        return await deviceAPI.post("return-device", devices);
+    } catch (error) {
+        throw new Error(error.response.data.message);
+    }
+};
+
 export const addNewDevices = async (devices) => {
     try {
         return await deviceAPI.post("add-new-devices", devices);

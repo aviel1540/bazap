@@ -12,6 +12,6 @@ router.post("/add-new-devices", deviceController.addNewDevices);
 
 router.patch("/update-status/:id", deviceController.changeStatus);
 
-router.patch("/update-report/:id", deviceController.statusChangeToFinish);
+router.patch("/return-device", deviceController.returnDevice);
 
 module.exports = router;

@@ -6,6 +6,7 @@ import TableActions from "../../UI/CustomTable/TableActions";
 import CustomTable from "../../UI/CustomTable/CustomTable";
 import { useAlert } from "../../store/AlertContext";
 import { replaceApostrophe } from "../../../Utils/utils";
+import { swalFire } from "../../UI/Swal";
 
 const DeviceTypeTable = ({ deviceTypes, isLoading }) => {
     const { onAlert } = useAlert();
@@ -17,11 +18,18 @@ const DeviceTypeTable = ({ deviceTypes, isLoading }) => {
             icon: "warning",
             confirmButtonText: "כן, מחק",
             handleConfirm: () => {
-                deleteDeviceMutation.mutate(rowId);
+                
             },
         };
-        const message = "האם אתה בטוח מעוניין למחוק את סוג המכשיר?";
-        onAlert({ message, options });
+        // const message = "";
+        // onAlert({ message, options });
+        swalFire({
+            html: "האם אתה בטוח מעוניין למחוק את סוג המכשיר?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, Delete",
+            onConfirmHandler: () => deleteDeviceMutation.mutate(rowId),
+        });
     };
     const actions = [{ title: "מחק", handler: onDeleteDeviceTypeHandler }];
     const columns = [

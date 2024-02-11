@@ -7,10 +7,10 @@ import VoucherStep2 from "./VoucherStep2";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAlert } from "../../../../store/AlertContext";
-import { addNewDevices } from "../../../../../Utils/deviceApi";
+import { addNewDevices, returnDevice } from "../../../../../Utils/deviceApi";
 import { addVoucher } from "../../../../../Utils/voucherApi";
 
-const VoucherStepper = ({ onCancel, projectId, formDefaultValues }) => {
+const VoucherStepper = ({ onCancel, projectId, formDefaultValues, isReturned }) => {
     const { onAlert } = useAlert();
     const [activeStep, setActiveStep] = useState(0);
     const queryClient = useQueryClient();
@@ -43,7 +43,18 @@ const VoucherStepper = ({ onCancel, projectId, formDefaultValues }) => {
             }
         }
     };
-    const addNewDevicesMutation = useMutation(addNewDevices, {
+    const addNewDevicesMutation = useMutation(returnDevice, {
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["vouchers", projectId] });
+            queryClient.invalidateQueries({ queryKey: ["arrivedDevices", projectId] });
+        },
+        onError: ({ message }) => {
+            const options = { showCancel: false, icon: "error" };
+            const error = { message, options };
+            onAlert(error);
+        },
+    });
+    const editDevicesMutation = useMutation(addNewDevices, {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["vouchers", projectId] });
             queryClient.invalidateQueries({ queryKey: ["arrivedDevices", projectId] });
@@ -64,8 +75,11 @@ const VoucherStepper = ({ onCancel, projectId, formDefaultValues }) => {
                 voucherId: voucherId,
                 unitId: voucherData.unit,
             }));
-
-            addNewDevicesMutation.mutate(devices);
+            if (isReturned) {
+                addNewDevicesMutation.mutate(devices);
+            } else {
+                editDevicesMutation.mutate(devices);
+            }
         },
         onError: ({ message }) => {
             const options = { showCancel: false, icon: "error" };
@@ -115,6 +129,7 @@ VoucherStepper.propTypes = {
     onCancel: PropTypes.func.isRequired,
     formDefaultValues: PropTypes.object,
     projectId: PropTypes.string.isRequired,
+    isReturned: PropTypes.bool,
 };
 
 export default VoucherStepper;
