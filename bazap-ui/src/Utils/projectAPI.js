@@ -13,26 +13,26 @@ export const getProjectData = async ({ queryKey }) => {
     return response.data;
 };
 
-export const addUnit = async (unit) => {
+export const addProject = async (project) => {
     try {
-        return await projectAPI.post("add-new-unit", unit);
+        return await projectAPI.post("add-new-project", project);
     } catch (error) {
         throw new Error(error.response.data.message);
     }
 };
 
-export const deleteUnit = async (deleteUnit) => {
+export const deleteProject = async (deleteProject) => {
     try {
-        return await projectAPI.delete("delete-unit", { data: { unitId: deleteUnit } });
+        return await projectAPI.delete("delete-project", { data: { projectId: deleteProject } });
     } catch (error) {
         throw new Error(error.response.data.message);
     }
 };
 
-export const updateUnit = async (unit) => {
+export const updateProject = async (project) => {
     try {
-        const { id } = unit;
-        return await projectAPI.patch(`/update-unit/${id}`, unit);
+        const { id } = project;
+        return await projectAPI.patch(`/update-project/${id}`, project);
     } catch (error) {
         throw new Error(error.response.data.message);
     }

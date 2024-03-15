@@ -2,10 +2,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import CustomForm from "../../UI/CustomForm/CustomForm";
 import { addDeviceType } from "../../../Utils/deviceTypeApi";
 import propTypes from "prop-types";
-import { useAlert } from "../../store/AlertContext";
+import { useUserAlert } from "../../store/UserAlertContext";
 
 const DeviceTypeForm = ({ onCancel, formValues = null, isEdit }) => {
-    const { onAlert } = useAlert();
+    const { onAlert, error } = useUserAlert();
     const queryClient = useQueryClient();
     const onSubmit = (data) => {
         if (!isEdit) {
@@ -17,7 +17,6 @@ const DeviceTypeForm = ({ onCancel, formValues = null, isEdit }) => {
                 deviceName: data.deviceTypeName,
             };
             alert("edit: " + JSON.stringify(editDeviceType));
-            //editDeviceTypeMutation.mutate(editDeviceType);
         }
     };
     const addDeviceTypeMutation = useMutation(addDeviceType, {
@@ -26,9 +25,7 @@ const DeviceTypeForm = ({ onCancel, formValues = null, isEdit }) => {
             onCancel();
         },
         onError: ({ message }) => {
-            const options = { showCancel: false, icon: "error" };
-            const error = { message, options };
-            onAlert(error);
+            onAlert(message, error);
         },
     });
     const deviceNameInputObj = [
@@ -48,7 +45,13 @@ const DeviceTypeForm = ({ onCancel, formValues = null, isEdit }) => {
     ];
     return (
         <>
-            <CustomForm inputs={deviceNameInputObj} onSubmit={onSubmit} onCancel={onCancel} values={formValues}></CustomForm>
+            <CustomForm
+                inputs={deviceNameInputObj}
+                isLoading={addDeviceTypeMutation.isLoading}
+                onSubmit={onSubmit}
+                onCancel={onCancel}
+                values={formValues}
+            ></CustomForm>
         </>
     );
 };

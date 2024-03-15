@@ -1,17 +1,24 @@
-import { InputAdornment, TextField } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
-
+import { Input } from "antd";
+import Search from "antd/es/input/Search";
+let timeoutId = null;
 const SearchInput = (props) => {
+    const handleSearch = (event) => {
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
+        timeoutId = setTimeout(() => {
+            props.onSearch(event);
+        }, 300);
+    };
     return (
-        <TextField
+        <Search
+            placeholder="חפש..."
+            allowClear
+            onChange={handleSearch}
             {...props}
-            label="חפש..."
-            InputProps={{
-                startAdornment: (
-                    <InputAdornment position="start">
-                        <SearchIcon />
-                    </InputAdornment>
-                ),
+            style={{
+                width: 200,
             }}
         />
     );

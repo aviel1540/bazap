@@ -27,7 +27,7 @@ const DeviceType = () => {
             <CardHeader
                 action={
                     <LightButton variant="contained" btncolor="primary" onClick={showModal} size="small" icon={<AddIcon />}>
-                        הוסף סוג מכשיר חדש
+                        הוסף סוג מכשיר
                     </LightButton>
                 }
                 titleTypographyProps={{ variant: "h5" }}

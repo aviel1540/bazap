@@ -4,7 +4,7 @@ import DialogContent from "@mui/material/DialogContent";
 import Button from "@mui/material/Button";
 import { useAlert } from "../store/AlertContext";
 import { Box, Typography, Zoom } from "@mui/material";
-import { forwardRef } from "react";
+import { forwardRef, useEffect } from "react";
 import DoNotDisturbAltIcon from "@mui/icons-material/DoNotDisturbAlt";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
@@ -27,6 +27,7 @@ const defualtOptions = {
 };
 export const AlertDialog = () => {
     const { alertRecord, show, clearAlert } = useAlert();
+
     const { showCancel, handleConfirm, handleCancel, icon, confirmButtonText, cancelButtonText } = alertRecord?.options
         ? alertRecord.options
         : defualtOptions;
@@ -35,17 +36,20 @@ export const AlertDialog = () => {
         if (handleConfirm) {
             isValid = handleConfirm();
         }
-        isValid && clearAlert();
+        isValid && handleClearAlert();
     };
     const handleCancelClick = () => {
         let isValid = true;
         if (handleCancel) {
             isValid = handleCancel();
         }
-        isValid && clearAlert();
+        isValid && handleClearAlert();
+    };
+    const handleClearAlert = () => {
+        clearAlert();
     };
     return (
-        <Dialog open={show} TransitionComponent={Transition} fullWidth maxWidth="sm" onClose={clearAlert}>
+        <Dialog open={show} TransitionComponent={Transition} fullWidth maxWidth="sm" onClose={handleClearAlert}>
             <DialogContent>
                 <Box textAlign="center">
                     {icon == "success" && <CheckCircleOutlineIcon color="success" sx={{ fontSize: 80 }} />}

@@ -3,26 +3,29 @@ import MainNavigation from "./Navbar/MainNavigation";
 import { Box, Container } from "@mui/material";
 import Loader from "./Loader";
 import { Suspense } from "react";
+import { useUserAlert } from "../store/UserAlertContext";
+import PageLayout from "./PageLayout";
 function RootLayout() {
+    const { contextHolder } = useUserAlert();
     return (
         <>
-            <MainNavigation />
-            <Box
-                component="main"
-                sx={{
-                    flexGrow: 1,
-                    height: "100vh",
-                    overflow: "auto",
-                }}
-            >
-                <Container maxWidth="lg" sx={{ mt: 15, mb: 4 }}>
+            <PageLayout>
+                <Box
+                    component="main"
+                    sx={{
+                        flexGrow: 1,
+                        height: "100vh",
+                        overflow: "auto",
+                    }}
+                >
                     <Suspense fallback={<Loader />}>
                         <main>
                             <Outlet />
                         </main>
                     </Suspense>
-                </Container>
-            </Box>
+                    {contextHolder}
+                </Box>
+            </PageLayout>
         </>
     );
 }

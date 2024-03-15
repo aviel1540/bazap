@@ -1,20 +1,12 @@
 import { useForm } from "react-hook-form";
-import Button from "@mui/material/Button";
-import LightButton from "../LightButton";
 import PropTypes from "prop-types";
 import { Box, DialogActions, Stack } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import ControlledInput from "./ControlledInput";
-const CustomForm = (props) => {
-    const { inputs, onSubmit, onCancel, values, hideActions, children } = props;
+import { Button } from "antd";
 
-    const {
-        // register,
-        handleSubmit,
-        reset,
-        control,
-        // formState: { errors },
-    } = useForm({
+const CustomForm = ({ inputs, onSubmit, onCancel, values, hideActions, children, isLoading }) => {
+    const { handleSubmit, reset, control } = useForm({
         values,
     });
 
@@ -38,14 +30,13 @@ const CustomForm = (props) => {
             <DialogActions>
                 {hideActions == false && (
                     <>
-                        <Button size="small" type="submit" variant="contained">
+                        <Button loading={isLoading} htmlType="submit" type="primary">
                             שמור
                         </Button>
-                        <LightButton
-                            size="small"
+                        <Button
+                            loading={isLoading}
                             btncolor="dark"
                             onClick={handleCancel}
-                            variant="contained"
                             sx={{
                                 marginX: {
                                     xs: "10px",
@@ -53,7 +44,7 @@ const CustomForm = (props) => {
                             }}
                         >
                             בטל
-                        </LightButton>
+                        </Button>
                     </>
                 )}
                 {hideActions == false && children && { children }}
@@ -68,6 +59,7 @@ CustomForm.propTypes = {
     values: PropTypes.object,
     hideActions: PropTypes.bool,
     children: PropTypes.node,
+    isLoading: PropTypes.bool,
 };
 CustomForm.defaultProps = {
     hideActions: false,

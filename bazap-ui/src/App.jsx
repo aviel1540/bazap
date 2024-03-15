@@ -16,7 +16,8 @@ import { AlertProvider } from "./Components/store/AlertContext";
 import { CustomModalProvider } from "./Components/store/CustomModalContext";
 import CustomModal from "./Components/UI/CustomModal";
 import { ProjectProvider } from "./Components/store/ProjectContext";
-import '@sweetalert2/theme-material-ui/material-ui.scss';
+import "@sweetalert2/theme-material-ui/material-ui.scss";
+import { UserAlertProvider } from "./Components/store/UserAlertContext";
 
 const DeviceType = lazy(() => import("./Components/Pages/DeviceType/DeviceType"));
 const Unit = lazy(() => import("./Components/Pages/Unit/Unit"));
@@ -41,13 +42,15 @@ function App() {
     return (
         <Theme>
             <CustomModalProvider>
-                <AlertProvider>
-                    <ProjectProvider>
-                        <RouterProvider router={router} />
-                        <AlertDialog />
-                        <CustomModal />
-                    </ProjectProvider>
-                </AlertProvider>
+                <UserAlertProvider>
+                    <AlertProvider>
+                        <ProjectProvider>
+                            <RouterProvider router={router} />
+                            <AlertDialog />
+                            <CustomModal />
+                        </ProjectProvider>
+                    </AlertProvider>
+                </UserAlertProvider>
             </CustomModalProvider>
         </Theme>
     );

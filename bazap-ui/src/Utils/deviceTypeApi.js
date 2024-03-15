@@ -13,6 +13,9 @@ export const addDeviceType = async (deviceType) => {
         deviceType = replaceApostropheInObject(deviceType, "deviceName");
         return await deviceTypeApi.post("add-new-deviceType", deviceType);
     } catch (error) {
+        if (error.message) {
+            throw new Error(error.message);
+        }
         throw new Error(error.response.data.message);
     }
 };

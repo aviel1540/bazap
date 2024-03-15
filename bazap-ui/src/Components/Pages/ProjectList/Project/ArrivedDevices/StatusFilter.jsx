@@ -2,56 +2,41 @@ import Chip from "@mui/material/Chip";
 import { Stack } from "@mui/material";
 import PropTypes from "prop-types";
 import { ALL, DeviceStatuses, FIXED_OF_DEFFECTIVE, RETURNED, chipColors } from "../../../../../Utils/utils";
+import { Select } from "antd";
 
 const StatusFilter = ({ checkIfStatusExists, handleStatusChange, selectedStatus }) => {
-    const handleStatusClick = (status) => {
-        handleStatusChange(status === selectedStatus ? null : status);
-    };
-
-    const renderStatusChips = () => {
+    const getStatusesOptions = () => {
+        const options = [];
+        options.push({
+            value: ALL,
+            label: ALL,
+        });
         const filteredStatuses = Object.values(DeviceStatuses).filter(
             (status) =>
                 ![DeviceStatuses.DEFECTIVE_RETURN, DeviceStatuses.FIXED_RETURN, DeviceStatuses.FIXED, DeviceStatuses.DEFECTIVE].includes(
                     status,
                 ) && checkIfStatusExists(status),
         );
-        return filteredStatuses.map((status) => (
-            <Chip
-                key={status}
-                label={status}
-                onClick={() => handleStatusClick(status)}
-                color={chipColors[status]}
-                variant={status === selectedStatus ? "contained" : "outlined"}
-            />
-        ));
+        filteredStatuses.forEach((item) =>
+            options.push({
+                value: item,
+                label: item,
+            }),
+        );
+        return options;
     };
 
     return (
-        <Stack gap={2} direction="row">
-            <Chip
-                label={ALL}
-                onClick={() => handleStatusClick(ALL)}
-                color="info"
-                variant={selectedStatus === ALL ? "contained" : "outlined"}
+        <>
+            <Select
+                defaultValue={selectedStatus}
+                onChange={handleStatusChange}
+                style={{
+                    width: 200,
+                }}
+                options={getStatusesOptions()}
             />
-            {renderStatusChips()}
-            {checkIfStatusExists(FIXED_OF_DEFFECTIVE) && (
-                <Chip
-                    label={FIXED_OF_DEFFECTIVE}
-                    onClick={() => handleStatusClick(FIXED_OF_DEFFECTIVE)}
-                    color="success"
-                    variant={selectedStatus === FIXED_OF_DEFFECTIVE ? "contained" : "outlined"}
-                />
-            )}
-            {checkIfStatusExists(RETURNED) && (
-                <Chip
-                    label={RETURNED}
-                    onClick={() => handleStatusClick(RETURNED)}
-                    color="success"
-                    variant={selectedStatus === RETURNED ? "contained" : "outlined"}
-                />
-            )}
-        </Stack>
+        </>
     );
 };
 

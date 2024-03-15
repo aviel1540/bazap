@@ -16,12 +16,26 @@ import { useProject } from "../../../../store/ProjectContext";
 import { useRenderCount } from "@uidotdev/usehooks";
 import StatusFilter from "./StatusFilter";
 import VoucherStepper from "../NewVoucher/VoucherStepper";
-
+import { Table } from "antd";
+import DeleteIcon from "@mui/icons-material/Delete";
+import CustomDropDown from "../../../../UI/CustomDropDown";
+import { Flex, Input } from "antd";
 const actions = [
     {
         title: "מחק",
         handler: (rowId, handleClose) => {
             alert(rowId, handleClose);
+        },
+    },
+];
+const menuActions = [
+    {
+        key: "2",
+        danger: true,
+        label: "מחק",
+        icon: <DeleteIcon />,
+        handler: (data) => {
+            alert(data);
         },
     },
 ];
@@ -64,7 +78,7 @@ const ArrivedDevices = () => {
     const [searchParam, setSearchParam] = useState("");
     const [selectedStatus, setSelectedStatus] = useState(ALL);
     const [toggledClearRows, setToggleClearRows] = useState(false);
-
+    const [selectedRowKeys, setSelectedRowKeys] = useState([]);
     const clearSelectedRows = () => {
         console.log(toggledClearRows);
         setToggleClearRows(!toggledClearRows);
@@ -79,10 +93,6 @@ const ArrivedDevices = () => {
             clearSelectedRows();
         },
     });
-
-    const handleRowSelected = useCallback((state) => {
-        setSelectedRows(state.selectedRows);
-    }, []);
 
     const handleSearchChange = (event) => {
         const search = event.target.value;
@@ -128,7 +138,19 @@ const ArrivedDevices = () => {
 
         setFilteredDevices(newFilteredDevices);
     };
+    const addKeysToArray = (data, key, fromKey) => {
+        if (!Array.isArray(data)) {
+            throw new Error("First parameter must be an array");
+        }
+        if (!key) {
+            throw new Error("Key parameter is required");
+        }
+        data.forEach((obj) => {
+            obj[key] = obj[fromKey];
+        });
 
+        return data;
+    };
     const checkIfStatusExists = (status) => {
         const devicesStatusesGroup = Object.groupBy(devices, ({ status }) => status);
         if (status == RETURNED) {
@@ -152,8 +174,8 @@ const ArrivedDevices = () => {
             maxWidth: "md",
             body: (
                 <StatusForm
-                    status={selectedRows.length == 0 ? null : selectedRows[0].status}
-                    devices={selectedRows}
+                    status={selectedRowKeys.length == 0 ? null : selectedRowKeys[0].status}
+                    devices={selectedRowKeys}
                     onCacnel={onHide}
                     clearSelectedRows={clearSelectedRows}
                 />
@@ -181,6 +203,36 @@ const ArrivedDevices = () => {
         return <Loader />;
     }
 
+    const columns = [
+        {
+            title: "צ' מכשיר",
+            dataIndex: "serialNumber",
+            key: "serialNumber",
+        },
+        {
+            title: "סטטוס",
+            dataIndex: "status",
+            key: "status",
+        },
+        {
+            title: "סוג מכשיר",
+            dataIndex: "deviceType",
+            render: (_, row) => replaceApostrophe(row.deviceType),
+            key: "deviceType",
+        },
+        {
+            title: "פעולות",
+            key: "menu",
+            render: (_, row) => <CustomDropDown actions={menuActions} data={row} />,
+        },
+    ];
+    const onSelectChange = (newSelectedRowKeys) => {
+        setSelectedRowKeys(newSelectedRowKeys);
+    };
+    const rowSelection = {
+        selectedRowKeys,
+        onChange: onSelectChange,
+    };
     return (
         <Card>
             <div>{renderCount}</div>
@@ -189,7 +241,7 @@ const ArrivedDevices = () => {
                 title='מכשירים בבצ"פ'
                 action={
                     <>
-                        {selectedStatus !== FIXED_OF_DEFFECTIVE && selectedRows.length > 0 && (
+                        {selectedStatus !== FIXED_OF_DEFFECTIVE && selectedRowKeys.length > 0 && (
                             <LightButton
                                 variant="contained"
                                 btncolor="info"
@@ -200,8 +252,7 @@ const ArrivedDevices = () => {
                                 שנה סטטוס
                             </LightButton>
                         )}
-
-                        {selectedStatus === FIXED_OF_DEFFECTIVE && selectedRows.length > 0 && (
+                        {selectedStatus === FIXED_OF_DEFFECTIVE && selectedRowKeys.length > 0 && (
                             <LightButton
                                 variant="contained"
                                 btncolor="info"
@@ -216,19 +267,15 @@ const ArrivedDevices = () => {
                 }
             />
             <CardContent>
-                <SearchInput size="small" sx={{ m: 1, width: "25ch" }} value={searchParam} onChange={handleSearchChange} />
-                <StatusFilter
-                    checkIfStatusExists={checkIfStatusExists}
-                    selectedStatus={selectedStatus}
-                    handleStatusChange={handleStatusChange}
-                />
-                <CustomTable
-                    data={filteredDevices}
-                    columns={columns}
-                    selectableRows={selectedStatus != ALL && selectedStatus != RETURNED && selectedRows}
-                    onSelectedRowsChange={handleRowSelected}
-                    toggledClearRows={toggledClearRows}
-                />
+                <Flex gap={12}>
+                    <SearchInput size="small" onSearch={handleSearchChange} />
+                    <StatusFilter
+                        checkIfStatusExists={checkIfStatusExists}
+                        selectedStatus={selectedStatus}
+                        handleStatusChange={handleStatusChange}
+                    />
+                </Flex>
+                <Table rowSelection={rowSelection} dataSource={filteredDevices} columns={columns} />
             </CardContent>
         </Card>
     );
