@@ -107,23 +107,27 @@ exports.getDeviceBySerialNumber = async (req, res) => {
 };
 
 exports.returnDevice = async (req, res) => {
-    console.log("OUTPUT : ", res.body);
-    const serialNumber = escape(req.body.serialNumber);
-    let updateDevice;
-    try {
-        const serialNumber = validation.addSlashes(serialNumber);
-        const device = await deviceService.findDeviceBySerialNumber(checkSerialNumber);
-        if (!device) {
-            return res.status(400).json({ message: "לא נמצא מכשיר" });
+    const devicesData = req.body;
+    let errors = "";
+    await devicesData.forEach(async (device) => {
+        try {
+            let curDevice = deviceService.findDeviceBySerialNumber(device.serialNumber);
+            if (!device) {
+                return res.status(400).json({ message: "לא נמצא מכשיר" });
+            }
+            if (curDevice.status != DeviceStatus.FIXED && curDevice.status != DeviceStatus.DEFECTIVE) {
+                return res.status(401).json({ message: "יש לדווח סטטוס תקין / תקול" });
+            }
+            curDevice.status = curDevice.status == DeviceStatus.DEFECTIVE ? DeviceStatus.DEFECTIVE_RETURN : DeviceStatus.FIXED_RETURN;
+            await curDevice.save();
+        } catch (error) {
+            errors += error.message + `\n`;
         }
-        if (device.status != DeviceStatus.FIXED || device.status != DeviceStatus.DEFECTIVE) {
-            return res.status(401).json({ message: "יש לדווח סטטוס תקין / תקול" });
-        }
-        device.status = device.status == DeviceStatus.DEFECTIVE ? DeviceStatus.DEFECTIVE_RETURN : DeviceStatus.FIXED_RETURN;
-        await device.save();
+    });
+    if (errors.length == 0) {
         return res.status(201).json({ message: "המכשיר עודכן בהצלחה." });
-    } catch (err) {
-        res.status(401).json({ message: err.message });
+    } else {
+        return res.status(400).json({ message: errors });
     }
 };
 

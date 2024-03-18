@@ -30,7 +30,7 @@ exports.updateStatus = async (request) => {
     });
 };
 
-exports.updateStatusEnd = async (request) => {
+exports.updateStatusEnd = async (request) => {  
     return await Device.findByIdAndUpdate(request.checkDeviceId, {
         status: request.checkPlace,
         endDate: new Date(),

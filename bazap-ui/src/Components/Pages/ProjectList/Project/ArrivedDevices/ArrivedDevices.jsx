@@ -151,7 +151,7 @@ const ArrivedDevices = () => {
 
     const showModalCreateVoucher = () => {
         const formDefaultValues = {
-            type: false,
+            type: "false",
             unit: filteredDevices[0].unit._id,
             devices: selectedRowKeys.map((deviceKey) => {
                 const device = filteredDevices.find((dev) => dev._id === deviceKey);

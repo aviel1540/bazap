@@ -75,6 +75,7 @@ const VoucherTable = ({ vouchers, isLoading }) => {
     const deleteDeviceMutation = useMutation(deleteVoucher, {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["project", projectId] });
+            queryClient.invalidateQueries({ queryKey: ["vouchers", projectId] });
         },
         onError: ({ message }) => {
             onAlert(message, error);

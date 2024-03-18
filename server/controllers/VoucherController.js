@@ -68,6 +68,7 @@ exports.deleteVoucher = async (req, res) => {
     try {
         const voucherId = escape(req.params.id);
         const voucher = await voucherService.findVoucherById(voucherId);
+        console.log('OUTPUT : ',voucher);
         const project = voucher.project;
         if (voucher.deviceList.length == 0) {
             project.vouchersList = project.vouchersList.filter((item) => item._id != voucherId);
