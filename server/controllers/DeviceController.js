@@ -4,7 +4,6 @@ const deviceService = require("../services/deviceServices");
 const voucherService = require("../services/voucherServices");
 const { DeviceStatus } = require("../constants/DeviceStatus");
 
-
 exports.addNewDevices = async (req, res) => {
     try {
         const devicesData = req.body;
@@ -70,7 +69,7 @@ exports.getDeviceBySerialNumber = async (req, res) => {
         const checkSerialNumber = validation.addSlashes(categorySerialNumber);
         deviceFound = await deviceService.findDeviceBySerialNumber(checkSerialNumber);
         if (!deviceFound) {
-            return res.status(400).json({ message: "צ' לא קיים" });
+            return res.status(200).json({ message: "צ' לא קיים" });
         }
         return res.status(200).json(deviceFound);
     } catch (err) {
@@ -84,19 +83,17 @@ exports.returnDevice = async (req, res) => {
     let errors = "";
     let devicesSN = [];
     try {
-
         checkVoucherId = validation.addSlashes(voucherId);
 
         for (const i in devicesData.ids) {
             devicesSN.push(escape(devicesData.ids[i]));
         }
         const devices = devicesSN.map(async (deviceSN) => {
-
-            const voucherOut = voucherService.findVoucherById(checkVoucherId)
-            if (!voucherOut) throw new Error("שובר לא קיים")
+            const voucherOut = voucherService.findVoucherById(checkVoucherId);
+            if (!voucherOut) throw new Error("שובר לא קיים");
             const checkDevice = validation.addSlashes(deviceSN);
             const device = deviceService.findDeviceBySerialNumber(checkDevice);
-            if (!device) throw new Error("מכשיר לא קיים")
+            if (!device) throw new Error("מכשיר לא קיים");
             if (device.status != DeviceStatus.FIXED && device.status != DeviceStatus.DEFECTIVE) {
                 return res.status(401).json({ message: "יש לדווח סטטוס תקין / תקול" });
             }
@@ -107,16 +104,15 @@ exports.returnDevice = async (req, res) => {
             // device.status = device.status == DeviceStatus.DEFECTIVE ? DeviceStatus.DEFECTIVE_RETURN : DeviceStatus.FIXED_RETURN;
             await deviceService.updateReturnDevice({
                 deviceId,
-                checkVoucherId
-            })
+                checkVoucherId,
+            });
 
-            await voucherOut.deviceList.push(deviceId)
-
+            await voucherOut.deviceList.push(deviceId);
         });
         await Promise.all(devices);
-		await voucherOut.save();
+        await voucherOut.save();
 
-		return res.status(201).json({ message: "שובר נוצר בהצלחה", voucherOut });
+        return res.status(201).json({ message: "שובר נוצר בהצלחה", voucherOut });
     } catch (error) {
         errors += error.message + `\n`;
     }
@@ -176,7 +172,7 @@ exports.updateDetails = async (req, res) => {
         const checkDeviceId = validation.addSlashes(deviceId);
         const checkSerialNumber = validation.addSlashes(serialNumber);
         const checkType = validation.addSlashes(type);
-    } catch (err) { }
+    } catch (err) {}
 };
 
 exports.getAllDevices = async (req, res) => {

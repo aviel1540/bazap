@@ -41,13 +41,15 @@
         "react-query": "^3.39.3",
         "react-router": "^6.18.0",
         "react-router-dom": "^6.18.0",
+        "read-excel-file": "^5.7.1",
         "sass": "^1.70.0",
         "styled-component": "^2.8.0",
         "styled-components": "^5.3.11",
         "stylis": "^4.3.0",
         "stylis-plugin-rtl": "^2.1.1",
         "sweetalert2": "^11.10.5",
-        "sweetalert2-react-content": "^5.0.7"
+        "sweetalert2-react-content": "^5.0.7",
+        "xlsx": "^0.18.5"
     },
     "devDependencies": {
         "@types/react": "^18.2.15",
