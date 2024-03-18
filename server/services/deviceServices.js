@@ -30,7 +30,7 @@ exports.updateStatus = async (request) => {
     });
 };
 
-exports.updateStatusEnd = async (request) => {  
+exports.updateStatusEnd = async (request) => {
     return await Device.findByIdAndUpdate(request.checkDeviceId, {
         status: request.checkPlace,
         endDate: new Date(),
@@ -43,3 +43,11 @@ exports.updateStatusReturn = async (request) => {
         returnDate: new Date(),
     });
 };
+
+exports.updateReturnDevice = async (request) => {
+    const { checkDeviceId, checkVoucherId } = request;
+    return await Device.findByIdAndUpdate(checkDeviceId, {
+        voucherOut: checkVoucherId,
+        status: DeviceStatus.DEFECTIVE ? DeviceStatus.DEFECTIVE_RETURN : DeviceStatus.FIXED_RETURN
+    })
+}

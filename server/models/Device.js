@@ -43,7 +43,11 @@ const deviceSchema = new Schema({
         trim: true,
         default: null,
     },
-    voucherNumber: {
+    voucherIn: {
+        type: Schema.Types.ObjectId,
+        ref: "Voucher",
+    },
+    voucherOut: {
         type: Schema.Types.ObjectId,
         ref: "Voucher",
     },

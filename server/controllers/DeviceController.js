@@ -4,35 +4,7 @@ const deviceService = require("../services/deviceServices");
 const voucherService = require("../services/voucherServices");
 const { DeviceStatus } = require("../constants/DeviceStatus");
 
-exports.addNewDevice = async (req, res) => {
-    const serialNumber = escape(req.body.serialNumber);
-    const category = escape(req.body.category);
-    const type = escape(req.body.type);
-    const voucherId = escape(req.body.voucherId);
-    let newDevice;
-    try {
-        if (!serialNumber || !category || !type || !voucherId) {
-            return res.status(400).json({ message: "נא למלא את כל השדות." });
-        }
 
-        const checkSerialNumber = validation.addSlashes(serialNumber);
-        const checkCategory = validation.addSlashes(category);
-        const checkType = validation.addSlashes(type);
-        const checkvoucherId = validation.addSlashes(voucherId);
-
-        newDevice = await deviceService.addNewDevice({
-            checkSerialNumber,
-            checkCategory,
-            checkType,
-        });
-        await newDevice.save();
-        const voucher = await voucherService.findVoucherById(checkvoucherId);
-        voucher.deviceList.push(newDevice);
-        return res.status(200).json(newDevice);
-    } catch (err) {
-        return res.status(401).json({ message: err.message });
-    }
-};
 exports.addNewDevices = async (req, res) => {
     try {
         const devicesData = req.body;
@@ -100,30 +72,54 @@ exports.getDeviceBySerialNumber = async (req, res) => {
         if (!deviceFound) {
             return res.status(400).json({ message: "צ' לא קיים" });
         }
-        return res.status(200).json(deviceFoundv);
+        return res.status(200).json(deviceFound);
     } catch (err) {
         return res.status(404).json({ message: err.message });
     }
 };
 
 exports.returnDevice = async (req, res) => {
+    const voucherId = escape(req.params.voucherId);
     const devicesData = req.body;
     let errors = "";
-    await devicesData.forEach(async (device) => {
-        try {
-            let curDevice = deviceService.findDeviceBySerialNumber(device.serialNumber);
-            if (!device) {
-                return res.status(400).json({ message: "לא נמצא מכשיר" });
-            }
-            if (curDevice.status != DeviceStatus.FIXED && curDevice.status != DeviceStatus.DEFECTIVE) {
+    let devicesSN = [];
+    try {
+
+        checkVoucherId = validation.addSlashes(voucherId);
+
+        for (const i in devicesData.ids) {
+            devicesSN.push(escape(devicesData.ids[i]));
+        }
+        const devices = devicesSN.map(async (deviceSN) => {
+
+            const voucherOut = voucherService.findVoucherById(checkVoucherId)
+            if (!voucherOut) throw new Error("שובר לא קיים")
+            const checkDevice = validation.addSlashes(deviceSN);
+            const device = deviceService.findDeviceBySerialNumber(checkDevice);
+            if (!device) throw new Error("מכשיר לא קיים")
+            if (device.status != DeviceStatus.FIXED && device.status != DeviceStatus.DEFECTIVE) {
                 return res.status(401).json({ message: "יש לדווח סטטוס תקין / תקול" });
             }
-            curDevice.status = curDevice.status == DeviceStatus.DEFECTIVE ? DeviceStatus.DEFECTIVE_RETURN : DeviceStatus.FIXED_RETURN;
-            await curDevice.save();
-        } catch (error) {
-            errors += error.message + `\n`;
-        }
-    });
+            if (!device.voucherIn) {
+                return res.status(401).json({ message: "אין למכשיר שובר כניסה  - לא ניתן לנפק" });
+            }
+            const deviceId = device.id;
+            // device.status = device.status == DeviceStatus.DEFECTIVE ? DeviceStatus.DEFECTIVE_RETURN : DeviceStatus.FIXED_RETURN;
+            await deviceService.updateReturnDevice({
+                deviceId,
+                checkVoucherId
+            })
+
+            await voucherOut.deviceList.push(deviceId)
+
+        });
+        await Promise.all(devices);
+		await voucherOut.save();
+
+		return res.status(201).json({ message: "שובר נוצר בהצלחה", voucherOut });
+    } catch (error) {
+        errors += error.message + `\n`;
+    }
     if (errors.length == 0) {
         return res.status(201).json({ message: "המכשיר עודכן בהצלחה." });
     } else {
@@ -180,7 +176,7 @@ exports.updateDetails = async (req, res) => {
         const checkDeviceId = validation.addSlashes(deviceId);
         const checkSerialNumber = validation.addSlashes(serialNumber);
         const checkType = validation.addSlashes(type);
-    } catch (err) {}
+    } catch (err) { }
 };
 
 exports.getAllDevices = async (req, res) => {
