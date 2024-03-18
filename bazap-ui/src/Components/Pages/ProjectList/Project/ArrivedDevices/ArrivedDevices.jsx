@@ -1,14 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
 import { getAllArrivedDevicesInProject } from "../../../../../Utils/deviceApi";
 import Loader from "../../../../Layout/Loader";
-import CustomTable from "../../../../UI/CustomTable/CustomTable";
-import { ALL, DeviceStatuses, FIXED_OF_DEFFECTIVE, RETURNED, chipColors, replaceApostrophe } from "../../../../../Utils/utils";
-import { useCallback, useState } from "react";
-import { Card, CardContent, CardHeader } from "@mui/material";
+import {
+    ALL,
+    DeviceStatuses,
+    FIXED_OR_DEFFECTIVE,
+    RETURNED,
+    addKeysToArray,
+    replaceApostrophe,
+    tagColors,
+} from "../../../../../Utils/utils";
+import { useEffect, useState } from "react";
+import { Box, Card, CardContent, CardHeader } from "@mui/material";
 import LightButton from "../../../../UI/LightButton";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
-import StatusChip from "../StatusChip";
-import TableActions from "../../../../UI/CustomTable/TableActions";
 import StatusForm from "../StatusForm";
 import { useCustomModal } from "../../../../store/CustomModalContext";
 import SearchInput from "../../../../UI/SearchInput";
@@ -16,21 +21,14 @@ import { useProject } from "../../../../store/ProjectContext";
 import { useRenderCount } from "@uidotdev/usehooks";
 import StatusFilter from "./StatusFilter";
 import VoucherStepper from "../NewVoucher/VoucherStepper";
-import { Table } from "antd";
+import { Space, Table, Tag } from "antd";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CustomDropDown from "../../../../UI/CustomDropDown";
-import { Flex, Input } from "antd";
-const actions = [
-    {
-        title: "מחק",
-        handler: (rowId, handleClose) => {
-            alert(rowId, handleClose);
-        },
-    },
-];
+import EmptyData from "../../../../UI/EmptyData";
+
 const menuActions = [
     {
-        key: "2",
+        key: "1",
         danger: true,
         label: "מחק",
         icon: <DeleteIcon />,
@@ -39,50 +37,16 @@ const menuActions = [
         },
     },
 ];
-const columns = [
-    {
-        name: "צ' מכשיר",
-        sortable: true,
-        selector: (row) => row.serialNumber,
-    },
-    {
-        name: "סטטוס",
-        sortable: true,
-        selector: (row) => row.status,
-        cell: (row) => <StatusChip status={row.status} color={chipColors[row.status]} />,
-    },
-    {
-        name: "סוג מכשיר",
-        sortable: true,
-        selector: (row) => replaceApostrophe(row.deviceType),
-    },
-    {
-        name: "יחידה",
-        sortable: true,
-        selector: (row) => row.unit?.unitsName,
-    },
-    {
-        name: "פעולות",
-        center: true,
-        cell: (row) => <TableActions rowId={row._id} actions={actions} />,
-    },
-];
 const ReturnedStatuses = [DeviceStatuses.DEFECTIVE_RETURN, DeviceStatuses.FIXED_RETURN];
 
 const ArrivedDevices = () => {
     const renderCount = useRenderCount();
     const { projectId } = useProject();
     const { onShow, onHide } = useCustomModal();
-    const [selectedRows, setSelectedRows] = useState([]);
     const [filteredDevices, setFilteredDevices] = useState([]);
     const [searchParam, setSearchParam] = useState("");
     const [selectedStatus, setSelectedStatus] = useState(ALL);
-    const [toggledClearRows, setToggleClearRows] = useState(false);
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
-    const clearSelectedRows = () => {
-        console.log(toggledClearRows);
-        setToggleClearRows(!toggledClearRows);
-    };
 
     const { isLoading, data: devices } = useQuery({
         queryKey: ["arrivedDevices", projectId],
@@ -90,9 +54,20 @@ const ArrivedDevices = () => {
         onSuccess: (data) => {
             setFilteredDevices(data);
             if (devices) handleSearchAndFilter(searchParam, data, selectedStatus);
-            clearSelectedRows();
         },
     });
+
+    useEffect(() => {
+        if (devices) {
+            clearSelectedRows();
+            setSelectedStatus(ALL);
+            handleSearchAndFilter(searchParam, null, ALL);
+        }
+    }, [devices]);
+
+    const clearSelectedRows = () => {
+        setSelectedRowKeys([]);
+    };
 
     const handleSearchChange = (event) => {
         const search = event.target.value;
@@ -111,7 +86,7 @@ const ArrivedDevices = () => {
             if (status == RETURNED) {
                 return ReturnedStatuses.includes(device.status);
             }
-            if (status == FIXED_OF_DEFFECTIVE) {
+            if (status == FIXED_OR_DEFFECTIVE) {
                 return device.status == DeviceStatuses.FIXED || device.status == DeviceStatuses.DEFECTIVE;
             }
             return device.status == status;
@@ -138,19 +113,7 @@ const ArrivedDevices = () => {
 
         setFilteredDevices(newFilteredDevices);
     };
-    const addKeysToArray = (data, key, fromKey) => {
-        if (!Array.isArray(data)) {
-            throw new Error("First parameter must be an array");
-        }
-        if (!key) {
-            throw new Error("Key parameter is required");
-        }
-        data.forEach((obj) => {
-            obj[key] = obj[fromKey];
-        });
 
-        return data;
-    };
     const checkIfStatusExists = (status) => {
         const devicesStatusesGroup = Object.groupBy(devices, ({ status }) => status);
         if (status == RETURNED) {
@@ -159,7 +122,7 @@ const ArrivedDevices = () => {
                 Object.keys(devicesStatusesGroup).includes(DeviceStatuses.FIXED_RETURN)
             );
         }
-        if (status == FIXED_OF_DEFFECTIVE) {
+        if (status == FIXED_OR_DEFFECTIVE) {
             return (
                 Object.keys(devicesStatusesGroup).includes(DeviceStatuses.DEFECTIVE) ||
                 Object.keys(devicesStatusesGroup).includes(DeviceStatuses.FIXED)
@@ -169,13 +132,15 @@ const ArrivedDevices = () => {
     };
 
     const showModalChangeStatus = () => {
+        const device = filteredDevices.find((dev) => dev._id === selectedRowKeys[0]);
+        const devices = filteredDevices.filter((device) => selectedRowKeys.includes(device._id));
         const modalPropertiesChangeStatus = {
             title: "שינוי סטטוס",
             maxWidth: "md",
             body: (
                 <StatusForm
-                    status={selectedRowKeys.length == 0 ? null : selectedRowKeys[0].status}
-                    devices={selectedRowKeys}
+                    status={selectedRowKeys.length == 0 ? null : device.status}
+                    devices={devices}
                     onCacnel={onHide}
                     clearSelectedRows={clearSelectedRows}
                 />
@@ -186,22 +151,20 @@ const ArrivedDevices = () => {
 
     const showModalCreateVoucher = () => {
         const formDefaultValues = {
-            type: "false",
-            devices: selectedRows.map((device) => {
-                return { serialNumber: device.serialNumber, deviceType: device.deviceType };
+            type: false,
+            unit: filteredDevices[0].unit._id,
+            devices: selectedRowKeys.map((deviceKey) => {
+                const device = filteredDevices.find((dev) => dev._id === deviceKey);
+                return { serialNumber: device.serialNumber, deviceType: replaceApostrophe(device.deviceType) };
             }),
         };
         const modalPropertiesCreateVoucher = {
             title: "שובר חדש",
             maxWidth: "md",
-            body: <VoucherStepper onCancel={onHide} projectId={projectId} formDefaultValues={formDefaultValues} />,
+            body: <VoucherStepper onCancel={onHide} projectId={projectId} formDefaultValues={formDefaultValues} isReturnVoucher={true} />,
         };
         onShow(modalPropertiesCreateVoucher);
     };
-
-    if (isLoading) {
-        return <Loader />;
-    }
 
     const columns = [
         {
@@ -213,6 +176,7 @@ const ArrivedDevices = () => {
             title: "סטטוס",
             dataIndex: "status",
             key: "status",
+            render: (_, { status }) => <Tag color={tagColors[status]}>{status}</Tag>,
         },
         {
             title: "סוג מכשיר",
@@ -233,6 +197,9 @@ const ArrivedDevices = () => {
         selectedRowKeys,
         onChange: onSelectChange,
     };
+    if (isLoading) {
+        return <Loader />;
+    }
     return (
         <Card>
             <div>{renderCount}</div>
@@ -241,7 +208,7 @@ const ArrivedDevices = () => {
                 title='מכשירים בבצ"פ'
                 action={
                     <>
-                        {selectedStatus !== FIXED_OF_DEFFECTIVE && selectedRowKeys.length > 0 && (
+                        {selectedStatus !== FIXED_OR_DEFFECTIVE && selectedRowKeys.length > 0 && (
                             <LightButton
                                 variant="contained"
                                 btncolor="info"
@@ -252,7 +219,7 @@ const ArrivedDevices = () => {
                                 שנה סטטוס
                             </LightButton>
                         )}
-                        {selectedStatus === FIXED_OF_DEFFECTIVE && selectedRowKeys.length > 0 && (
+                        {selectedStatus === FIXED_OR_DEFFECTIVE && selectedRowKeys.length > 0 && (
                             <LightButton
                                 variant="contained"
                                 btncolor="info"
@@ -267,15 +234,22 @@ const ArrivedDevices = () => {
                 }
             />
             <CardContent>
-                <Flex gap={12}>
-                    <SearchInput size="small" onSearch={handleSearchChange} />
-                    <StatusFilter
-                        checkIfStatusExists={checkIfStatusExists}
-                        selectedStatus={selectedStatus}
-                        handleStatusChange={handleStatusChange}
-                    />
-                </Flex>
-                <Table rowSelection={rowSelection} dataSource={filteredDevices} columns={columns} />
+                <Box marginBottom={2}>
+                    <Space size="small">
+                        <SearchInput onSearch={handleSearchChange} />
+                        <StatusFilter
+                            checkIfStatusExists={checkIfStatusExists}
+                            selectedStatus={selectedStatus}
+                            handleStatusChange={handleStatusChange}
+                        />
+                    </Space>
+                </Box>
+                <Table
+                    locale={{ emptyText: <EmptyData label="אין מכשירים להצגה" /> }}
+                    rowSelection={selectedStatus != ALL && rowSelection}
+                    dataSource={addKeysToArray(filteredDevices, "key", "_id")}
+                    columns={columns}
+                />
             </CardContent>
         </Card>
     );

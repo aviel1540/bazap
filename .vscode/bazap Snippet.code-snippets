@@ -1,0 +1,13 @@
+{
+	"React PropTypes": {
+		"prefix": "rcpt",
+		"body": [
+			"import PropTypes from 'prop-types';",
+			"",
+			"${TM_FILENAME_BASE}.propTypes = {",
+			"\t$1: PropTypes.$2$3",
+			"};"
+		],
+		"description": "Create PropTypes for React component"
+	}
+}

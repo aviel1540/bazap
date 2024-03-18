@@ -5,6 +5,6 @@ router.get("/", technicianController.getAllTechnicians);
 
 router.post("/add-new-technician", technicianController.addNewTechnician);
 
-router.delete("/delete-technician", technicianController.deleteTechnician);
+router.delete("/delete", technicianController.deleteTechnician);
 
 module.exports = router;

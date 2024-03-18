@@ -1,7 +1,7 @@
-import SearchIcon from "@mui/icons-material/Search";
-import { Input } from "antd";
 import Search from "antd/es/input/Search";
+import PropTypes from "prop-types";
 let timeoutId = null;
+
 const SearchInput = (props) => {
     const handleSearch = (event) => {
         if (timeoutId) {
@@ -24,4 +24,7 @@ const SearchInput = (props) => {
     );
 };
 
+SearchInput.propTypes = {
+    onSearch: PropTypes.func.isRequired,
+};
 export default SearchInput;

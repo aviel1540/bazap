@@ -4,32 +4,21 @@ import { deleteDeviceType } from "../../../Utils/deviceTypeApi";
 import propTypes from "prop-types";
 import TableActions from "../../UI/CustomTable/TableActions";
 import CustomTable from "../../UI/CustomTable/CustomTable";
-import { useAlert } from "../../store/AlertContext";
 import { replaceApostrophe } from "../../../Utils/utils";
-import { swalFire } from "../../UI/Swal";
+import { useUserAlert } from "../../store/UserAlertContext";
 
 const DeviceTypeTable = ({ deviceTypes, isLoading }) => {
-    const { onAlert } = useAlert();
+    const { onAlert, onConfirm, error } = useUserAlert();
     const queryClient = useQueryClient();
     const onDeleteDeviceTypeHandler = (rowId, handleClose) => {
         handleClose(rowId);
-        const options = {
-            showCancel: true,
-            icon: "warning",
-            confirmButtonText: "כן, מחק",
-            handleConfirm: () => {
-                
+        const config = {
+            title: "האם אתה בטוח מעוניין למחוק את סוג המכשיר?",
+            okHandler: () => {
+                deleteDeviceMutation.mutate(rowId);
             },
         };
-        // const message = "";
-        // onAlert({ message, options });
-        swalFire({
-            html: "האם אתה בטוח מעוניין למחוק את סוג המכשיר?",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Yes, Delete",
-            onConfirmHandler: () => deleteDeviceMutation.mutate(rowId),
-        });
+        onConfirm(config);
     };
     const actions = [{ title: "מחק", handler: onDeleteDeviceTypeHandler }];
     const columns = [
@@ -52,8 +41,7 @@ const DeviceTypeTable = ({ deviceTypes, isLoading }) => {
             queryClient.invalidateQueries({ queryKey: ["deviceTypes"] });
         },
         onError: ({ message }) => {
-            const options = { showCancel: false, icon: "error" };
-            onAlert({ message, options });
+            onAlert(message, error);
         },
     });
 

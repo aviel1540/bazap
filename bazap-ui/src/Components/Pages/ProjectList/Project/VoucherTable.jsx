@@ -5,31 +5,30 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteVoucher } from "../../../../Utils/voucherApi";
 import TableActions from "../../../UI/CustomTable/TableActions";
 import CustomTable from "../../../UI/CustomTable/CustomTable";
-import { useAlert } from "../../../store/AlertContext";
 import LightButton from "../../../UI/LightButton";
 import AddIcon from "@mui/icons-material/Add";
 import VoucherStepper from "./NewVoucher/VoucherStepper";
 import { useCustomModal } from "../../../store/CustomModalContext";
 import { useProject } from "../../../store/ProjectContext";
+import { FloatButton } from "antd";
+import EmptyData from "../../../UI/EmptyData";
+import { useUserAlert } from "../../../store/UserAlertContext";
 
 const VoucherTable = ({ vouchers, isLoading }) => {
+    const { onAlert, onConfirm, error } = useUserAlert();
+
     const { projectId } = useProject();
     const { onShow, onHide } = useCustomModal();
-    const { onAlert } = useAlert();
     const queryClient = useQueryClient();
     const onDeleteDeviceTypeHandler = (id, handleClose) => {
         handleClose && handleClose(id);
-        const options = {
-            showCancel: true,
-            icon: "warning",
-            confirmButtonText: "כן, מחק",
-            handleConfirm: () => {
+        const config = {
+            title: "האם אתה בטוח מעוניין למחוק את השובר?",
+            okHandler: () => {
                 deleteDeviceMutation.mutate(id);
             },
         };
-        const message = "האם אתה בטוח מעוניין למחוק את השובר?";
-        const alertRecord = { message, options };
-        onAlert(alertRecord);
+        onConfirm(config);
     };
     const actions = [
         {
@@ -78,9 +77,7 @@ const VoucherTable = ({ vouchers, isLoading }) => {
             queryClient.invalidateQueries({ queryKey: ["project", projectId] });
         },
         onError: ({ message }) => {
-            const options = { showCancel: false, icon: "error" };
-            const error = { message, options };
-            onAlert(error);
+            onAlert(message, error);
         },
     });
     const modalProperties = {
@@ -109,15 +106,17 @@ const VoucherTable = ({ vouchers, isLoading }) => {
                     }
                 />
                 <CardContent>
-                    <CustomTable columns={columns} data={vouchers} />
+                    {vouchers.length > 0 ? <CustomTable columns={columns} data={vouchers} /> : <EmptyData label="אין שוברים להצגה" />}
                 </CardContent>
             </Card>
+            <FloatButton onClick={showModal} />
         </>
     );
 };
 
 VoucherTable.propTypes = {
     vouchers: propTypes.array.isRequired,
-    isLoading: propTypes.bool.isRequired,};
+    isLoading: propTypes.bool.isRequired,
+};
 
 export default VoucherTable;

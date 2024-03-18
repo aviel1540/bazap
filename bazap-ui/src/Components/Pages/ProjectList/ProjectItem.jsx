@@ -9,16 +9,11 @@ import Grid from "@mui/material/Unstable_Grid2";
 const dummyData = { totalDevices: 100, totalWaiting: 20, totalInWork: 35, totalFinished: 10, TotalOut: 35 };
 const ProjectItem = ({ projectData }) => {
     const navigate = useNavigate();
-
     const { projectName, startDate, _id: id } = projectData;
-
     const handleCardClick = () => {
         // Redirect to the specified route when the card is clicked
         navigate(`/Project/${id}`);
     };
-
-    // <NavLink to={`/Project/${id}`}>
-    //         </NavLink>
     return (
         <Grid item="true" xs={12} sm={6} md={4} lg={4}>
             <Card onClick={handleCardClick} style={{ cursor: "pointer" }}>

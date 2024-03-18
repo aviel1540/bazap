@@ -1,54 +1,16 @@
-import React from "react";
-import { Avatar, Layout, Menu, theme } from "antd";
-import { NavLink, useLocation } from "react-router-dom";
-const { Header, Content, Footer } = Layout;
-
-const pages = [
-    { label: "דף הבית", path: "/" },
-    { label: "פרוייקטים", path: "/Project" },
-    { label: "סוגי מכשירים", path: "/DeviceType" },
-    { label: "יחידות", path: "/Unit" },
-    { label: "טכנאים", path: "/Technician" },
-];
+import { Layout, theme } from "antd";
+import MainNavigation from "./Navbar/MainNavigation";
+const { Content, Footer } = Layout;
+import PropTypes from "prop-types";
 
 const PageLayout = ({ children }) => {
     const {
-        token: { colorBgContainer, borderRadiusLG },
+        token: { borderRadiusLG },
     } = theme.useToken();
-
-    const location = useLocation();
 
     return (
         <Layout>
-            <Header
-                style={{
-                    position: "sticky",
-                    top: 0,
-                    zIndex: 1,
-                    width: "100%",
-                    display: "flex",
-                    alignItems: "center",
-                }}
-            >
-                <NavLink to="/">
-                    <Avatar size={45}>
-                        <img src="/logo.jpg" alt="Logo" className="logo" />
-                    </Avatar>
-                </NavLink>
-                <Menu
-                    theme="dark"
-                    mode="horizontal"
-                    selectedKeys={[location.pathname]}
-                    items={pages.map((item) => ({
-                        key: item.path,
-                        label: <NavLink to={item.path}>{item.label}</NavLink>,
-                    }))}
-                    style={{
-                        flex: 1,
-                    }}
-                />
-            </Header>
-
+            <MainNavigation />
             <Content
                 style={{
                     marginTop: "20px",
@@ -59,7 +21,6 @@ const PageLayout = ({ children }) => {
                     style={{
                         padding: 24,
                         minHeight: 380,
-                        background: colorBgContainer,
                         borderRadius: borderRadiusLG,
                     }}
                 >
@@ -77,4 +38,7 @@ const PageLayout = ({ children }) => {
     );
 };
 
+PageLayout.propTypes = {
+    children: PropTypes.node.isRequired,
+};
 export default PageLayout;

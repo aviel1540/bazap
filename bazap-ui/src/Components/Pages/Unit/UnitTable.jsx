@@ -7,9 +7,10 @@ import { deleteUnit } from "../../../Utils/unitAPI";
 import CustomTable from "../../UI/CustomTable/CustomTable";
 import TableActions from "../../UI/CustomTable/TableActions";
 import { useCustomModal } from "../../store/CustomModalContext";
-import { useAlert } from "../../store/AlertContext";
+import { useUserAlert } from "../../store/UserAlertContext";
 const UnitTable = ({ units, isLoading }) => {
-    const { onAlert } = useAlert();
+    const { onAlert, onConfirm, error } = useUserAlert();
+
     const { onShow, onHide } = useCustomModal();
     const [formValues, setFormValues] = useState(null);
     const queryClient = useQueryClient();
@@ -23,16 +24,13 @@ const UnitTable = ({ units, isLoading }) => {
     };
     const onDeleteUnitHandler = (rowId, handleClose) => {
         handleClose(rowId);
-        const message = "האם אתה בטוח מעוניין למחוק את היחידה?";
-        const options = {
-            showCancel: true,
-            icon: "warning",
-            confirmButtonText: "כן, מחק",
-            handleConfirm: () => {
+        const config = {
+            title: "האם אתה בטוח מעוניין למחוק את היחידה?",
+            okHandler: () => {
                 deleteUnitMutation.mutate(rowId);
             },
         };
-        onAlert({ message, options });
+        onConfirm(config);
     };
     const actions = [
         { title: "ערוך", handler: onEditUnitHandler },
@@ -55,8 +53,7 @@ const UnitTable = ({ units, isLoading }) => {
             queryClient.invalidateQueries({ queryKey: ["units"] });
         },
         onError: ({ message }) => {
-            const options = { showCancel: false, icon: "error" };
-            onAlert({ message, options });
+            onAlert(message, error);
         },
     });
     if (isLoading) {

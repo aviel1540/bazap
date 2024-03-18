@@ -19,7 +19,7 @@ export const addTechnician = async (technician) => {
 
 export const deleteTechnician = async (deleteTechnician) => {
     try {
-        return await technicianAPI.delete(`delete/${deleteTechnician}`);
+        return await technicianAPI.delete("delete", { data: { technicianId: deleteTechnician } });
     } catch (error) {
         throw new Error(error.response.data.message);
     }

@@ -4,21 +4,23 @@ import LightButton from "../../../UI/LightButton";
 import Divider from "@mui/material/Divider";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { updateStatus } from "../../../../Utils/deviceApi";
-import { useAlert } from "../../../store/AlertContext";
 import ControlledInput from "../../../UI/CustomForm/ControlledInput";
 import { FormProvider, useForm } from "react-hook-form";
 import PropTypes, { object } from "prop-types";
 import { useProject } from "../../../store/ProjectContext";
 import { DeviceStatuses } from "../../../../Utils/utils";
+import { useUserAlert } from "../../../store/UserAlertContext";
 
-const deviceStatusOptions = Object.values(DeviceStatuses).map((value) => ({
+const statuses = Object.values(DeviceStatuses);
+const filteredStatuses = statuses.filter((status) => ![DeviceStatuses.DEFECTIVE_RETURN, DeviceStatuses.FIXED_RETURN].includes(status));
+const deviceStatusOptions = filteredStatuses.map((value) => ({
     value: value,
     text: value,
 }));
 
 const StatusForm = ({ status, onCacnel, devices, clearSelectedRows }) => {
     const { projectId } = useProject();
-    const { onAlert } = useAlert();
+    const { onAlert, error } = useUserAlert();
     const queryClient = useQueryClient();
     const methods = useForm({
         defaultValues: {
@@ -33,9 +35,7 @@ const StatusForm = ({ status, onCacnel, devices, clearSelectedRows }) => {
             clearSelectedRows();
         },
         onError: ({ message }) => {
-            const options = { showCancel: false, icon: "error" };
-            const error = { message, options };
-            onAlert(error);
+            onAlert(message, error);
         },
     });
 

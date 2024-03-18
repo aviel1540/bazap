@@ -11,8 +11,6 @@ import "@fontsource/rubik/900.css";
 import Technician from "./Components/Pages/Technician/Technician";
 import ErrorPage from "./Components/Layout/ErrorPage/ErrorPage";
 import Theme from "./Components/Layout/Theme";
-import { AlertDialog } from "./Components/UI/AlertDialog";
-import { AlertProvider } from "./Components/store/AlertContext";
 import { CustomModalProvider } from "./Components/store/CustomModalContext";
 import CustomModal from "./Components/UI/CustomModal";
 import { ProjectProvider } from "./Components/store/ProjectContext";
@@ -43,13 +41,10 @@ function App() {
         <Theme>
             <CustomModalProvider>
                 <UserAlertProvider>
-                    <AlertProvider>
-                        <ProjectProvider>
-                            <RouterProvider router={router} />
-                            <AlertDialog />
-                            <CustomModal />
-                        </ProjectProvider>
-                    </AlertProvider>
+                    <ProjectProvider>
+                        <RouterProvider router={router} />
+                        <CustomModal />
+                    </ProjectProvider>
                 </UserAlertProvider>
             </CustomModalProvider>
         </Theme>

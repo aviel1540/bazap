@@ -6,12 +6,12 @@ import VoucherStep1 from "./VoucherStep1";
 import VoucherStep2 from "./VoucherStep2";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useAlert } from "../../../../store/AlertContext";
 import { addNewDevices, returnDevice } from "../../../../../Utils/deviceApi";
 import { addVoucher } from "../../../../../Utils/voucherApi";
+import { useUserAlert } from "../../../../store/UserAlertContext";
 
-const VoucherStepper = ({ onCancel, projectId, formDefaultValues, isReturned }) => {
-    const { onAlert } = useAlert();
+const VoucherStepper = ({ onCancel, projectId, formDefaultValues, isReturnVoucher = false }) => {
+    const { onAlert, error } = useUserAlert();
     const [activeStep, setActiveStep] = useState(0);
     const queryClient = useQueryClient();
 
@@ -43,26 +43,22 @@ const VoucherStepper = ({ onCancel, projectId, formDefaultValues, isReturned }) 
             }
         }
     };
-    const addNewDevicesMutation = useMutation(returnDevice, {
+    const returnDevicesMutation = useMutation(returnDevice, {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["vouchers", projectId] });
             queryClient.invalidateQueries({ queryKey: ["arrivedDevices", projectId] });
         },
         onError: ({ message }) => {
-            const options = { showCancel: false, icon: "error" };
-            const error = { message, options };
-            onAlert(error);
+            onAlert(message, error);
         },
     });
-    const editDevicesMutation = useMutation(addNewDevices, {
+    const addNewDevicesMutation = useMutation(addNewDevices, {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["vouchers", projectId] });
             queryClient.invalidateQueries({ queryKey: ["arrivedDevices", projectId] });
         },
         onError: ({ message }) => {
-            const options = { showCancel: false, icon: "error" };
-            const error = { message, options };
-            onAlert(error);
+            onAlert(message, error);
         },
     });
     const addVoucherMutation = useMutation(addVoucher, {
@@ -75,16 +71,14 @@ const VoucherStepper = ({ onCancel, projectId, formDefaultValues, isReturned }) 
                 voucherId: voucherId,
                 unitId: voucherData.unit,
             }));
-            if (isReturned) {
-                addNewDevicesMutation.mutate(devices);
+            if (isReturnVoucher) {
+                returnDevicesMutation.mutate(devices);
             } else {
-                editDevicesMutation.mutate(devices);
+                addNewDevicesMutation.mutate(devices);
             }
         },
         onError: ({ message }) => {
-            const options = { showCancel: false, icon: "error" };
-            const error = { message, options };
-            onAlert(error);
+            onAlert(message, error);
         },
     });
     const handleBack = () => {
@@ -129,7 +123,7 @@ VoucherStepper.propTypes = {
     onCancel: PropTypes.func.isRequired,
     formDefaultValues: PropTypes.object,
     projectId: PropTypes.string.isRequired,
-    isReturned: PropTypes.bool,
+    isReturnVoucher: PropTypes.bool,
 };
 
 export default VoucherStepper;

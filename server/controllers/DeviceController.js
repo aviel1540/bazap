@@ -107,6 +107,7 @@ exports.getDeviceBySerialNumber = async (req, res) => {
 };
 
 exports.returnDevice = async (req, res) => {
+    console.log("OUTPUT : ", res.body);
     const serialNumber = escape(req.body.serialNumber);
     let updateDevice;
     try {

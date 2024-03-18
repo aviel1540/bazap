@@ -7,10 +7,11 @@ import TechnicianForm from "./TechnicianForm";
 import { deleteTechnician } from "../../../Utils/technicianAPI";
 import { useCustomModal } from "../../store/CustomModalContext";
 import TableActions from "../../UI/CustomTable/TableActions";
-import { useAlert } from "../../store/AlertContext";
+import { useUserAlert } from "../../store/UserAlertContext";
 
 const TechnicianTable = ({ technicians, isLoading }) => {
-    const { onAlert } = useAlert();
+    const { onAlert, error, onConfirm } = useUserAlert();
+
     const { onShow, onHide } = useCustomModal();
     const [formValues, setFormValues] = useState(null);
     const queryClient = useQueryClient();
@@ -24,16 +25,14 @@ const TechnicianTable = ({ technicians, isLoading }) => {
     };
     const onDeleteTechnicianHandler = (rowId, handleClose) => {
         handleClose(rowId);
-        const options = {
-            showCancel: true,
-            icon: "warning",
-            confirmButtonText: "כן, מחק",
-            handleConfirm: () => {
+
+        const config = {
+            title: "האם אתה בטוח מעוניין למחוק את הטכנאי?",
+            okHandler: () => {
                 deleteTechnicianMutation.mutate(rowId);
             },
         };
-        const message = "האם אתה בטוח מעוניין למחוק את הטכנאי?";
-        onAlert({ message, options });
+        onConfirm(config);
     };
     const actions = [
         { title: "ערוך", handler: onEditTechnicianHandler },
@@ -56,8 +55,7 @@ const TechnicianTable = ({ technicians, isLoading }) => {
             queryClient.invalidateQueries({ queryKey: ["technicians"] });
         },
         onError: ({ message }) => {
-            const options = { showCancel: false, icon: "error" };
-            onAlert({ message, options });
+            onAlert(message, error);
         },
     });
     if (isLoading) {

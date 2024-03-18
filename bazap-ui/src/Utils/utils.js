@@ -36,13 +36,27 @@ export const DeviceStatuses = {
 
 export const ALL = "הכל";
 export const RETURNED = "הוחזר ליחידה";
-export const FIXED_OF_DEFFECTIVE = "תקין/מושבת";
+export const FIXED_OR_DEFFECTIVE = "תקין/מושבת";
 
-export const chipColors = {
-    "ממתין לעבודה": "error",
-    בעבודה: "primary",
+export const tagColors = {
+    "ממתין לעבודה": "default",
+    בעבודה: "#2db7f5",
     תקין: "success",
     מושבת: "warning",
     "תקין - הוחזר ליחידה": "success",
-    "מושבת - הוחזר ליחידה": "warning",
+    "מושבת - הוחזר ליחידה": "success",
+};
+
+export const addKeysToArray = (data, key, fromKey) => {
+    if (!Array.isArray(data)) {
+        throw new Error("First parameter must be an array");
+    }
+    if (!key) {
+        throw new Error("Key parameter is required");
+    }
+    data.forEach((obj) => {
+        obj[key] = obj[fromKey];
+    });
+
+    return data;
 };

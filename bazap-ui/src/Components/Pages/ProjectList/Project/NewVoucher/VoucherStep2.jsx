@@ -68,7 +68,7 @@ const VoucherStep2 = () => {
         return { text: device.serialNumber };
     });
 
-    const devicesToDisplay = isArrive ? [{ text: "123" }] : arrivedDevicesText;
+    const devicesToDisplay = isArrive ? [] : arrivedDevicesText;
     const voucherInputs = [
         {
             label: "צ' מכשיר",

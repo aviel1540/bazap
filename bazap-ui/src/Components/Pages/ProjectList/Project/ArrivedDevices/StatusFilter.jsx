@@ -1,8 +1,7 @@
-import Chip from "@mui/material/Chip";
-import { Stack } from "@mui/material";
-import PropTypes from "prop-types";
-import { ALL, DeviceStatuses, FIXED_OF_DEFFECTIVE, RETURNED, chipColors } from "../../../../../Utils/utils";
-import { Select } from "antd";
+import PropTypes from "prop-types"; 
+import { ALL, DeviceStatuses, FIXED_OR_DEFFECTIVE, RETURNED } from "../../../../../Utils/utils";
+import { Avatar, Select, Space, Tooltip } from "antd";
+import { InfoCircleOutlined } from "@ant-design/icons";
 
 const StatusFilter = ({ checkIfStatusExists, handleStatusChange, selectedStatus }) => {
     const getStatusesOptions = () => {
@@ -11,12 +10,16 @@ const StatusFilter = ({ checkIfStatusExists, handleStatusChange, selectedStatus 
             value: ALL,
             label: ALL,
         });
-        const filteredStatuses = Object.values(DeviceStatuses).filter(
+        const statuses = Object.values(DeviceStatuses);
+        statuses.push(FIXED_OR_DEFFECTIVE);
+        statuses.push(RETURNED);
+        const filteredStatuses = statuses.filter(
             (status) =>
                 ![DeviceStatuses.DEFECTIVE_RETURN, DeviceStatuses.FIXED_RETURN, DeviceStatuses.FIXED, DeviceStatuses.DEFECTIVE].includes(
                     status,
                 ) && checkIfStatusExists(status),
         );
+
         filteredStatuses.forEach((item) =>
             options.push({
                 value: item,
@@ -27,16 +30,20 @@ const StatusFilter = ({ checkIfStatusExists, handleStatusChange, selectedStatus 
     };
 
     return (
-        <>
+        <Space>
             <Select
-                defaultValue={selectedStatus}
+                defaultValue={ALL}
+                value={selectedStatus}
                 onChange={handleStatusChange}
                 style={{
                     width: 200,
                 }}
                 options={getStatusesOptions()}
             />
-        </>
+            <Tooltip placement="top" title="כדי שנות סטטוסים של מכשירים יש לסנן לפי סטטוס" arrow={true}>
+                <Avatar size={30} icon={<InfoCircleOutlined />} />
+            </Tooltip>  
+        </Space>
     );
 };
 

@@ -27,6 +27,7 @@ const ControlledAutocomplete = forwardRef((props, ref) => {
                     renderInput={(params) => (
                         <TextField
                             inputRef={ref}
+                            autoComplete="off"
                             {...params}
                             fullWidth
                             type={isNumber ? "number" : "text"}

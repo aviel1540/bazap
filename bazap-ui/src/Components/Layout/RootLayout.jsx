@@ -1,10 +1,9 @@
 import { Outlet } from "react-router-dom";
-import MainNavigation from "./Navbar/MainNavigation";
-import { Box, Container } from "@mui/material";
 import Loader from "./Loader";
 import { Suspense } from "react";
-import { useUserAlert } from "../store/UserAlertContext";
 import PageLayout from "./PageLayout";
+import { Box } from "@mui/material";
+import { useUserAlert } from "../store/UserAlertContext";
 function RootLayout() {
     const { contextHolder } = useUserAlert();
     return (
@@ -14,7 +13,7 @@ function RootLayout() {
                     component="main"
                     sx={{
                         flexGrow: 1,
-                        height: "100vh",
+                        height: "100%",
                         overflow: "auto",
                     }}
                 >

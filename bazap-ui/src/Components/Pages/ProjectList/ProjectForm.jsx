@@ -2,10 +2,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import CustomForm from "../../UI/CustomForm/CustomForm";
 import propTypes from "prop-types";
 import { addProject, updateProject } from "../../../Utils/projectAPI";
-import { useAlert } from "../../store/AlertContext";
+import { useUserAlert } from "../../store/UserAlertContext";
 
 const ProjectForm = ({ onCancel, formValues = null, isEdit }) => {
-    const { onAlert } = useAlert();
+    const { onAlert, error } = useUserAlert();
     const queryClient = useQueryClient();
     const onSubmit = (data) => {
         if (!isEdit) {
@@ -25,8 +25,7 @@ const ProjectForm = ({ onCancel, formValues = null, isEdit }) => {
             onCancel();
         },
         onError: ({ message }) => {
-            const options = { showCancel: false, icon: "error" };
-            onAlert({ message, options });
+            onAlert(message, error);
         },
     });
     const editProjectMutation = useMutation(updateProject, {
@@ -35,8 +34,7 @@ const ProjectForm = ({ onCancel, formValues = null, isEdit }) => {
             onCancel();
         },
         onError: ({ message }) => {
-            const options = { showCancel: false, icon: "error" };
-            onAlert({ message, options });
+            onAlert(message, error);
         },
     });
     const deviceNameInputObj = [

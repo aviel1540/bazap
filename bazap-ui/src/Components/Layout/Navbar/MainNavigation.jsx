@@ -1,55 +1,45 @@
-import { Link as RouterLink } from "react-router-dom";
-import Link from "@mui/material/Link";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import Container from "@mui/material/Container";
-import Avatar from "@mui/material/Avatar";
-import { useEffect, useState } from "react";
-import { Tab, Tabs } from "@mui/material";
+import { NavLink, useLocation } from "react-router-dom";
+import { Header } from "antd/es/layout/layout";
+import { Avatar, Menu } from "antd";
 
 const pages = [
-    { title: "דף הבית", navTo: "/" },
-    { title: "פרוייקטים", navTo: "/Project" },
-    { title: "סוגי מכשירים", navTo: "/DeviceType" },
-    { title: "יחידות", navTo: "/Unit" },
-    { title: "טכנאים", navTo: "/Technician" },
+    { label: "דף הבית", path: "/" },
+    { label: "פרוייקטים", path: "/Project" },
+    { label: "סוגי מכשירים", path: "/DeviceType" },
+    { label: "יחידות", path: "/Unit" },
+    { label: "טכנאים", path: "/Technician" },
 ];
 const MainNavigation = () => {
-    const [currentPage, setCurrentPage] = useState(0);
-    useEffect(() => {
-        const currentPath = `/${window.location.pathname.split("/")[1]}`;
-        const index = pages.findIndex((page) => page.navTo == currentPath);
-        index >= 0 && setCurrentPage(index);
-    }, []);
-
-    const handleChangePage = (event, newPage) => {
-        setCurrentPage(newPage);
-    };
+    const location = useLocation();
+    let index = location.pathname.lastIndexOf("/") > 0;
+    const currentPath = location.pathname.slice("/", index > 0 ? index : undefined);
     return (
-        // <StyledAppBar position="static">
-        <AppBar position="absolute" sx={{ bgcolor: "#fff", boxShadow: "0 .5rem 1rem rgba(0,0,0,.15)" }}>
-            <Container maxWidth="xl">
-                <Toolbar disableGutters>
-                    <Link component={RouterLink} to="/" onClick={() => handleChangePage(null, 0)}>
-                        <Avatar alt="Bazap" src="/logo.jpg" sx={{ m: "10px", width: 56, height: 56 }} />
-                    </Link>
-                    <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
-                        <Tabs value={currentPage} onChange={handleChangePage} aria-label="icon tabs example">
-                            {pages.map((page, index) => (
-                                <Tab
-                                    label={<Box sx={{ fontWeight: "bold", fontSize: 14, m: 1 }}>{page.title}</Box>}
-                                    value={index}
-                                    key={page.title}
-                                    to={page.navTo}
-                                    component={RouterLink}
-                                />
-                            ))}
-                        </Tabs>
-                    </Box>
-                </Toolbar>
-            </Container>
-        </AppBar>
+        <Header
+            style={{
+                position: "sticky",
+                top: 0,
+                zIndex: 1,
+                width: "100%",
+                display: "flex",
+                alignItems: "center",
+            }}
+        >
+            <NavLink to="/">
+                <Avatar size={50} src={<img src={"/logo.jpg"} alt="logo" />} />
+            </NavLink>
+            <Menu
+                theme="dark"
+                mode="horizontal"
+                selectedKeys={[currentPath]}
+                items={pages.map((item) => ({
+                    key: item.path,
+                    label: <NavLink to={item.path}>{item.label}</NavLink>,
+                }))}
+                style={{
+                    flex: 1,
+                }}
+            />
+        </Header>
     );
 };
 

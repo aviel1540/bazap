@@ -21,6 +21,7 @@ exports.addNewVoucher = async (req, res) => {
     const projectId = escape(req.params.projectId);
     const unitName = escape(req.body.unit);
     const type = escape(req.body.type); //boolean
+    console.log(type);
     const arrivedBy = escape(req.body.arrivedBy);
     const receivedBy = escape(req.body.receivedBy);
     let voucher;
