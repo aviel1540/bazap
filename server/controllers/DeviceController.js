@@ -78,13 +78,12 @@ exports.getDeviceBySerialNumber = async (req, res) => {
 };
 
 exports.returnDevice = async (req, res) => {
-    const voucherId = escape(req.params.voucherId);
+    const voucherId = escape(req.params.id);
     const devicesData = req.body;
     let errors = "";
     let devicesSN = [];
     try {
         checkVoucherId = validation.addSlashes(voucherId);
-
         for (const i in devicesData.ids) {
             devicesSN.push(escape(devicesData.ids[i]));
         }
