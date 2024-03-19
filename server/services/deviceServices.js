@@ -1,4 +1,7 @@
 const Device = require("../models/Device");
+const { DeviceStatus } = require("../constants/DeviceStatus");
+
+
 
 exports.findDeviceById = async (DeviceId) => await Device.findById(DeviceId);
 exports.findDeviceBySerialNumber = async (serialNumber) => await Device.findOne({ serialNumber });
@@ -45,9 +48,10 @@ exports.updateStatusReturn = async (request) => {
 };
 
 exports.updateReturnDevice = async (request) => {
-    const { checkDeviceId, checkVoucherId } = request;
-    return await Device.findByIdAndUpdate(checkDeviceId, {
+    const { deviceId, checkVoucherId, deviceStatus } = request;
+    console.log(deviceId)
+    return await Device.findByIdAndUpdate(deviceId, {
         voucherOut: checkVoucherId,
-        status: DeviceStatus.DEFECTIVE ? DeviceStatus.DEFECTIVE_RETURN : DeviceStatus.FIXED_RETURN
+        status: deviceStatus == DeviceStatus.DEFECTIVE ? DeviceStatus.DEFECTIVE_RETURN : DeviceStatus.FIXED_RETURN,
     })
 }

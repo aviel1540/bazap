@@ -81,19 +81,18 @@ exports.returnDevice = async (req, res) => {
     const voucherId = escape(req.params.id);
     const devicesData = req.body;
     let errors = "";
-    // let devicesSN = [];
     try {
-        
+
         checkVoucherId = validation.addSlashes(voucherId);
-        // for (const i in devicesData) {
-        //     devicesSN.push(escape(devicesData[i]));
-        // }
-        const voucherOut = voucherService.findVoucherById(checkVoucherId);
-        if (!voucherOut) throw new Error("שובר לא קיים");
-        
+
+        const voucherOut = await voucherService.findVoucherById(checkVoucherId);
+        if (!voucherOut) return res.status(401).json({ message: "יש לדווח סטטוס תקין / תקול" });
+
+
         const devices = devicesData.map(async (deviceSN) => {
             const checkDevice = validation.addSlashes(escape(deviceSN));
-            const device = deviceService.findDeviceBySerialNumber(checkDevice);
+
+            const device = await deviceService.findDeviceBySerialNumber(checkDevice);
             if (!device) throw new Error("מכשיר לא קיים");
             if (device.status != DeviceStatus.FIXED && device.status != DeviceStatus.DEFECTIVE) {
                 return res.status(401).json({ message: "יש לדווח סטטוס תקין / תקול" });
@@ -101,15 +100,15 @@ exports.returnDevice = async (req, res) => {
             if (!device.voucherIn) {
                 return res.status(401).json({ message: "אין למכשיר שובר כניסה  - לא ניתן לנפק" });
             }
-            const deviceId = device.id;
-            // device.status = device.status == DeviceStatus.DEFECTIVE ? DeviceStatus.DEFECTIVE_RETURN : DeviceStatus.FIXED_RETURN;
+            const deviceId = device._id;
+            const deviceStatus = device.status;
             await deviceService.updateReturnDevice({
                 deviceId,
                 checkVoucherId,
+                deviceStatus
             });
             
-            await voucherOut.deviceList.push(deviceId);
-            // console.log("bbb" + voucherOut.deviceList)
+            voucherOut.deviceList.push(deviceId);
         });
         await Promise.all(devices);
         await voucherOut.save();
@@ -174,7 +173,7 @@ exports.updateDetails = async (req, res) => {
         const checkDeviceId = validation.addSlashes(deviceId);
         const checkSerialNumber = validation.addSlashes(serialNumber);
         const checkType = validation.addSlashes(type);
-    } catch (err) {}
+    } catch (err) { }
 };
 
 exports.getAllDevices = async (req, res) => {
