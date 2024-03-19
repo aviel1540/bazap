@@ -2,7 +2,7 @@ const Project = require("../models/Project");
 const Voucher = require("../models/Voucher");
 
 exports.addVoucher = async (request) => {
-    console.log("OUTPUT : ", Boolean(request.type));
+    // console.log("OUTPUT : ", Boolean(request.type));
     const typeBoolean = request.type === "true";
     return new Voucher({
         unit: request.checkUnitName,
@@ -15,7 +15,7 @@ exports.addVoucher = async (request) => {
 
 exports.showVoucherList = async (projectId) => await Voucher.find({ project: projectId }).populate("deviceList").populate("Units");
 exports.findVoucherById = async (checkVoucherId) => {
-    console.log("OUTPUT : ", checkVoucherId);
+    // console.log("OUTPUT : ", checkVoucherId);
     return await Voucher.findById(checkVoucherId)
         .populate("deviceList")
         .populate({

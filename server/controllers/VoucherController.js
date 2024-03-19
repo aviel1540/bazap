@@ -21,7 +21,7 @@ exports.addNewVoucher = async (req, res) => {
     const projectId = escape(req.params.projectId);
     const unitName = escape(req.body.unit);
     const type = escape(req.body.type); //boolean
-    console.log(type);
+    // console.log(type);
     const arrivedBy = escape(req.body.arrivedBy);
     const receivedBy = escape(req.body.receivedBy);
     let voucher;
@@ -68,7 +68,7 @@ exports.deleteVoucher = async (req, res) => {
     try {
         const voucherId = escape(req.params.id);
         const voucher = await voucherService.findVoucherById(voucherId);
-        console.log('OUTPUT : ',voucher);
+        // console.log('OUTPUT : ',voucher);
         const project = voucher.project;
         if (voucher.deviceList.length == 0) {
             project.vouchersList = project.vouchersList.filter((item) => item._id != voucherId);

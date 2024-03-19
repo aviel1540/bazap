@@ -82,14 +82,17 @@ exports.returnDevice = async (req, res) => {
     const devicesData = req.body;
     let errors = "";
     let devicesSN = [];
+    console.log(voucherId)
     try {
         checkVoucherId = validation.addSlashes(voucherId);
         for (const i in devicesData.ids) {
             devicesSN.push(escape(devicesData.ids[i]));
         }
+        // console.log(voucherId);
+        const voucherOut = voucherService.findVoucherById(checkVoucherId);
+        // console.log("aaaa" + voucherOut);
+        if (!voucherOut) throw new Error("שובר לא קיים");
         const devices = devicesSN.map(async (deviceSN) => {
-            const voucherOut = voucherService.findVoucherById(checkVoucherId);
-            if (!voucherOut) throw new Error("שובר לא קיים");
             const checkDevice = validation.addSlashes(deviceSN);
             const device = deviceService.findDeviceBySerialNumber(checkDevice);
             if (!device) throw new Error("מכשיר לא קיים");
@@ -108,7 +111,7 @@ exports.returnDevice = async (req, res) => {
 
             await voucherOut.deviceList.push(deviceId);
         });
-        await Promise.all(devices);
+        // await Promise.all(devices);
         await voucherOut.save();
 
         return res.status(201).json({ message: "שובר נוצר בהצלחה", voucherOut });
