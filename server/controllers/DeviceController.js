@@ -80,6 +80,7 @@ exports.getDeviceBySerialNumber = async (req, res) => {
 exports.returnDevice = async (req, res) => {
     const voucherId = escape(req.params.id);
     const devicesData = req.body;
+    console.log('OUTPUT : ',voucherId);
     let errors = "";
     let devicesSN = [];
     console.log(voucherId)

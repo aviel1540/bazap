@@ -17,7 +17,7 @@ export const getDeviceBySerialNumber = async (serialnumber) => {
 
 export const returnDevice = async ({ devices, voucherId }) => {
     try {
-        return await deviceAPI.post("return-device", devices);
+        return await deviceAPI.post(`return-device/${voucherId}`, devices);
     } catch (error) {
         throw new Error(error.response.data.message);
     }
