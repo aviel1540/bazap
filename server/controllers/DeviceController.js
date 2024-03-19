@@ -80,21 +80,19 @@ exports.getDeviceBySerialNumber = async (req, res) => {
 exports.returnDevice = async (req, res) => {
     const voucherId = escape(req.params.id);
     const devicesData = req.body;
-    console.log('OUTPUT : ',voucherId);
     let errors = "";
-    let devicesSN = [];
-    console.log(voucherId)
+    // let devicesSN = [];
     try {
+        
         checkVoucherId = validation.addSlashes(voucherId);
-        for (const i in devicesData.ids) {
-            devicesSN.push(escape(devicesData.ids[i]));
-        }
-        // console.log(voucherId);
+        // for (const i in devicesData) {
+        //     devicesSN.push(escape(devicesData[i]));
+        // }
         const voucherOut = voucherService.findVoucherById(checkVoucherId);
-        // console.log("aaaa" + voucherOut);
         if (!voucherOut) throw new Error("שובר לא קיים");
-        const devices = devicesSN.map(async (deviceSN) => {
-            const checkDevice = validation.addSlashes(deviceSN);
+        
+        const devices = devicesData.map(async (deviceSN) => {
+            const checkDevice = validation.addSlashes(escape(deviceSN));
             const device = deviceService.findDeviceBySerialNumber(checkDevice);
             if (!device) throw new Error("מכשיר לא קיים");
             if (device.status != DeviceStatus.FIXED && device.status != DeviceStatus.DEFECTIVE) {
@@ -109,10 +107,11 @@ exports.returnDevice = async (req, res) => {
                 deviceId,
                 checkVoucherId,
             });
-
+            
             await voucherOut.deviceList.push(deviceId);
+            // console.log("bbb" + voucherOut.deviceList)
         });
-        // await Promise.all(devices);
+        await Promise.all(devices);
         await voucherOut.save();
 
         return res.status(201).json({ message: "שובר נוצר בהצלחה", voucherOut });
