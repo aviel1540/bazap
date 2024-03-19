@@ -63,6 +63,7 @@ const VoucherStepper = ({ onCancel, projectId, formDefaultValues, isReturnVouche
     });
     const addVoucherMutation = useMutation(addVoucher, {
         onSuccess: (data) => {
+            queryClient.invalidateQueries({ queryKey: ["vouchers", projectId] });
             const voucherId = data.data.id;
             const voucherData = getValues();
             const devices = voucherData.devices.map((device) => ({
@@ -72,7 +73,7 @@ const VoucherStepper = ({ onCancel, projectId, formDefaultValues, isReturnVouche
                 unitId: voucherData.unit,
             }));
             if (isReturnVoucher) {
-                returnDevicesMutation.mutate(devices);
+                returnDevicesMutation.mutate({ devices, voucherId });
             } else {
                 addNewDevicesMutation.mutate(devices);
             }
