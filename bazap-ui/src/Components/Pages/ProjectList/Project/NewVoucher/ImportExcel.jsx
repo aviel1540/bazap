@@ -1,11 +1,11 @@
 import PropTypes from "prop-types";
-import { Button, Upload, message } from "antd";
+import { Button, Flex, Tooltip, Upload, message } from "antd";
 import { downloadTemplateFile, readDevicesExcelFile } from "../../../../../Utils/excelUtils";
 import { useMutation } from "@tanstack/react-query";
 import { getDeviceBySerialNumber } from "../../../../../Utils/deviceApi";
 import { useUserAlert } from "../../../../store/UserAlertContext";
 import readXlsxFile from "read-excel-file";
-import { UploadOutlined } from "@ant-design/icons";
+import { DownloadOutlined, UploadOutlined } from "@ant-design/icons";
 
 const ImportExcel = ({ fields, remove, append }) => {
     const { onAlert, error } = useUserAlert();
@@ -59,10 +59,16 @@ const ImportExcel = ({ fields, remove, append }) => {
     };
     return (
         <>
-            <Upload {...props}>
-                <Button icon={<UploadOutlined />}>ייבא מאקסל</Button>
-            </Upload>
-            <Button onClick={downloadTemplateFile}>הורד דוגמא</Button>
+            <Flex justify="flex-end" gap="middle" align="flex-start">
+                <Tooltip placement="top" title="הורד קובץ לדוגמא" arrow={true}>
+                    <Button icon={<DownloadOutlined />} onClick={downloadTemplateFile}></Button>
+                </Tooltip>
+                <Tooltip placement="top" title="העלה קובץ אקסל" arrow={true}>
+                    <Upload {...props}>
+                        <Button icon={<UploadOutlined />}></Button>
+                    </Upload>
+                </Tooltip>
+            </Flex>
         </>
     );
 };

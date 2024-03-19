@@ -1,4 +1,4 @@
-import PropTypes from "prop-types"; 
+import PropTypes from "prop-types";
 import { ALL, DeviceStatuses, FIXED_OR_DEFFECTIVE, RETURNED } from "../../../../../Utils/utils";
 import { Avatar, Select, Space, Tooltip } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
@@ -42,7 +42,7 @@ const StatusFilter = ({ checkIfStatusExists, handleStatusChange, selectedStatus 
             />
             <Tooltip placement="top" title="כדי שנות סטטוסים של מכשירים יש לסנן לפי סטטוס" arrow={true}>
                 <Avatar size={30} icon={<InfoCircleOutlined />} />
-            </Tooltip>  
+            </Tooltip>
         </Space>
     );
 };

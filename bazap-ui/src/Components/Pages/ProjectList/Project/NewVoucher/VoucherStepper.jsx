@@ -66,15 +66,16 @@ const VoucherStepper = ({ onCancel, projectId, formDefaultValues, isReturnVouche
             queryClient.invalidateQueries({ queryKey: ["vouchers", projectId] });
             const voucherId = data.data.id;
             const voucherData = getValues();
-            const devices = voucherData.devices.map((device) => ({
-                serialNumber: device.serialNumber,
-                type: device.deviceType,
-                voucherId: voucherId,
-                unitId: voucherData.unit,
-            }));
             if (isReturnVoucher) {
+                const devices = voucherData.devices.map((device) => device.serialNumber);
                 returnDevicesMutation.mutate({ devices, voucherId });
             } else {
+                const devices = voucherData.devices.map((device) => ({
+                    serialNumber: device.serialNumber,
+                    type: device.deviceType,
+                    voucherId: voucherId,
+                    unitId: voucherData.unit,
+                }));
                 addNewDevicesMutation.mutate(devices);
             }
         },
