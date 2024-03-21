@@ -193,6 +193,8 @@ exports.getAllArrivedDevicesInProject = async (req, res) => {
     try {
         const projectId = escape(req.params.id);
         const devices = await deviceService.findAllDevicesByProject(projectId);
+        // console.log(devices);
+        // for(let i in devices) console.log(i.voucherOut)
         // const allArrivedDevices = devices.filter((device) => device.voucherNumber.type == true);
         // const allDeliveredDevices = devices.filter((device) => device.voucherNumber.type == false).map((device) => device._id);
         // const notDeliveredDevices = allArrivedDevices.filter((arrivedDevice) => {

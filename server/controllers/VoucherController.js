@@ -40,7 +40,7 @@ exports.addNewVoucher = async (req, res) => {
         if (!voucher) return res.status(400).json({ message: "לא נוצר שובר נא לנסות שוב" });
         project = await projectService.findProjectById(checkProjectId);
         if (!project) return res.status(404).json({ message: "לא נמצא פרויקט" });
-
+        console.log(voucher.voucherNumber);
         project.vouchersList.push(voucher);
         await project.save();
         return res.status(201).json({ message: "שובר נוצר ושויך בהצלחה !", id: voucher.id });
