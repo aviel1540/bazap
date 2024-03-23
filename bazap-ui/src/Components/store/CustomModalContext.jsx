@@ -17,8 +17,10 @@ export const CustomModalProvider = ({ children }) => {
         }
     }, [show]);
     const onShow = (modalOptions) => {
-        setShow(true);
         setOptions(modalOptions);
+        setTimeout(() => {
+            setShow(true);
+        }, 100);
     };
     const onHide = () => {
         setShow(false);

@@ -1,32 +1,29 @@
 import { useForm } from "react-hook-form";
 import PropTypes from "prop-types";
-import { Box, DialogActions, Stack } from "@mui/material";
+import { DialogActions } from "@mui/material";
 import Divider from "@mui/material/Divider";
-import ControlledInput from "./ControlledInput";
 import { Button } from "antd";
-
+import RenderFields from "./RenderFields";
+import Loader from "../../Layout/Loader";
 const CustomForm = ({ inputs, onSubmit, onCancel, values, hideActions, children, isLoading }) => {
     const { handleSubmit, reset, control } = useForm({
         values,
+        mode: "onChange",
     });
 
-    const populateInputs = () => {
-        return (
-            <Stack spacing={1}>
-                {inputs.map((input) => {
-                    return <ControlledInput key={input.name} {...input} control={control} />;
-                })}
-            </Stack>
-        );
-    };
     const handleCancel = () => {
         onCancel();
         reset();
     };
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
-            <Box padding={2}>{populateInputs()}</Box>
-            <Divider variant="fullWidth" sx={{ paddingTop: 2 }} />
+            {isLoading && <Loader />}
+            {!isLoading && (
+                <>
+                    <RenderFields fields={inputs} control={control} />
+                    <Divider variant="fullWidth" sx={{ paddingTop: 2 }} />
+                </>
+            )}
             <DialogActions>
                 {hideActions == false && (
                     <>

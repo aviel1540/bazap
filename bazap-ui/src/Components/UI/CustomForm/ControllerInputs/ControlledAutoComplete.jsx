@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { forwardRef } from "react";
 
 const ControlledAutocomplete = forwardRef((props, ref) => {
-    const { name, label, control, validators, onFieldChange, options, placeholder, filterOptions, getOptionLabel, isNumber } = props;
+    const { name, label, control, validators, onFieldChange, options, placeholder, filterOptions, getOptionLabel, isNumber, index } = props;
 
     return (
         <Controller
@@ -16,8 +16,8 @@ const ControlledAutocomplete = forwardRef((props, ref) => {
                     options={options}
                     getOptionLabel={getOptionLabel}
                     onChange={(_, newValue) => {
-                        onChange(newValue.inputValue ? newValue.inputValue : newValue.text);
-                        onFieldChange(newValue);
+                        onChange(newValue ? (newValue.inputValue ? newValue.inputValue : newValue.text) : null);
+                        onFieldChange(newValue ? (newValue.inputValue ? newValue.inputValue : newValue.text) : null, index);
                     }}
                     filterOptions={filterOptions}
                     value={value ?? null}
@@ -57,6 +57,7 @@ ControlledAutocomplete.propTypes = {
     getOptionLabel: PropTypes.func,
     isNumber: PropTypes.bool,
     size: PropTypes.string,
+    index: PropTypes.number,
 };
 
 ControlledAutocomplete.defaultProps = {

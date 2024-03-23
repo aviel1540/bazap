@@ -1,12 +1,9 @@
-import { Layout, theme } from "antd";
+import { Layout } from "antd";
 import MainNavigation from "./Navbar/MainNavigation";
-const { Content, Footer } = Layout;
+const { Content } = Layout;
 import PropTypes from "prop-types";
 
 const PageLayout = ({ children }) => {
-    const {
-        token: { borderRadiusLG },
-    } = theme.useToken();
 
     return (
         <Layout>
@@ -14,26 +11,11 @@ const PageLayout = ({ children }) => {
             <Content
                 style={{
                     marginTop: "20px",
-                    padding: "0 48px",
+                    padding: "24px 76px",
                 }}
             >
-                <div
-                    style={{
-                        padding: 24,
-                        minHeight: 380,
-                        borderRadius: borderRadiusLG,
-                    }}
-                >
-                    {children}
-                </div>
+                {children}
             </Content>
-            <Footer
-                style={{
-                    textAlign: "center",
-                }}
-            >
-                Ant Design ©{new Date().getFullYear()} Created by Ant UED
-            </Footer>
         </Layout>
     );
 };

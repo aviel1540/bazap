@@ -1,24 +1,36 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import CustomForm from "../../UI/CustomForm/CustomForm";
-import { addDeviceType } from "../../../Utils/deviceTypeApi";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { addDeviceType, getAllDeviceTypes } from "../../../Utils/deviceTypeApi";
 import propTypes from "prop-types";
 import { useUserAlert } from "../../store/UserAlertContext";
+import CustomForm from "../../UI/CustomForm/CustomForm";
+import { checkDuplicationInForm } from "../../../Utils/formUtils";
 
 const DeviceTypeForm = ({ onCancel, formValues = null, isEdit }) => {
+    const { isLoading, data: deviceTypes } = useQuery({
+        queryKey: ["units"],
+        queryFn: getAllDeviceTypes,
+    });
     const { onAlert, error } = useUserAlert();
     const queryClient = useQueryClient();
-    const onSubmit = (data) => {
+    const handleSave = (data) => {
         if (!isEdit) {
-            let newDeviceType = { deviceName: data.deviceTypeName };
+            let newDeviceType = { deviceName: data.deviceName };
             addDeviceTypeMutation.mutate(newDeviceType);
         } else {
             let editDeviceType = {
                 id: formValues.id,
-                deviceName: data.deviceTypeName,
+                deviceName: data.deviceName,
             };
             alert("edit: " + JSON.stringify(editDeviceType));
         }
     };
+    const validateDeviceTypeDuplication = (value) => {
+        if (value) {
+            if (checkDuplicationInForm(deviceTypes, "deviceName", value, isEdit, formValues?.id)) return "שם סוג משכיר כבר קיים במערכת.";
+        }
+        return true;
+    };
+
     const addDeviceTypeMutation = useMutation(addDeviceType, {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["deviceTypes"] });
@@ -28,10 +40,11 @@ const DeviceTypeForm = ({ onCancel, formValues = null, isEdit }) => {
             onAlert(message, error);
         },
     });
-    const deviceNameInputObj = [
+
+    const fields = [
         {
             label: "שם סוג מכשיר",
-            name: "deviceTypeName",
+            name: "deviceName",
             type: "text",
             placeholder: "לדוגמא RPT",
             validators: {
@@ -40,17 +53,19 @@ const DeviceTypeForm = ({ onCancel, formValues = null, isEdit }) => {
                     value: 2,
                     message: "שדה זה חייב לפחות 2 תווים",
                 },
+                validate: validateDeviceTypeDuplication,
             },
         },
     ];
+
     return (
         <>
             <CustomForm
-                inputs={deviceNameInputObj}
-                isLoading={addDeviceTypeMutation.isLoading}
-                onSubmit={onSubmit}
+                inputs={fields}
+                onSubmit={handleSave}
                 onCancel={onCancel}
                 values={formValues}
+                isLoading={isLoading || addDeviceTypeMutation.isLoading}
             ></CustomForm>
         </>
     );

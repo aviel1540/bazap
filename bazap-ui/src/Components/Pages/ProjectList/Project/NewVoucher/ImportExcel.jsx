@@ -5,9 +5,13 @@ import { useMutation } from "@tanstack/react-query";
 import { getDeviceBySerialNumber } from "../../../../../Utils/deviceApi";
 import { useUserAlert } from "../../../../store/UserAlertContext";
 import readXlsxFile from "read-excel-file";
-import { DownloadOutlined, UploadOutlined } from "@ant-design/icons";
+import { FileExcelOutlined, ImportOutlined } from "@ant-design/icons";
+import { useState } from "react";
+import { replaceApostrophe } from "../../../../../Utils/utils";
 
 const ImportExcel = ({ fields, remove, append }) => {
+    const [loading, setLoading] = useState(false);
+
     const { onAlert, error } = useUserAlert();
     const getDeviceBySerialNumberMutation = useMutation(getDeviceBySerialNumber, {
         onError: ({ message }) => {
@@ -20,39 +24,46 @@ const ImportExcel = ({ fields, remove, append }) => {
         headers: {
             authorization: "authorization-text",
         },
+        showUploadList: false,
+
         maxCount: 1,
         onChange(info) {
             const { file } = info;
-
+            if (info.file.status === "uploading") {
+                setLoading(true);
+                return;
+            }
             if (file.status === "done") {
+                setLoading(false);
                 readXlsxFile(file.originFileObj)
                     .then((rows) => {
                         const excelDevices = readDevicesExcelFile(rows);
+                        if (fields[0].serialNumber == "" && fields[0].deviceType == "") {
+                            remove(0);
+                        }
                         excelDevices.forEach(async (device) => {
                             const data = await getDeviceBySerialNumberMutation.mutateAsync(device.serialNumber);
+                            let deviceType = device.deviceType;
                             if (!data.message) {
-                                if (fields[0].serialNumber == "" && fields[0].deviceType == "") {
-                                    remove(0);
+                                if (device.deviceType == null) {
+                                    deviceType = replaceApostrophe(data.deviceType);
+                                } else if (data.deviceType != device.deviceType) {
+                                    deviceType = "";
                                 }
+                            }
+                            if (fields.findIndex((dev) => dev.serialNumber == device.serialNumber) == -1) {
                                 append({
                                     serialNumber: device.serialNumber,
-                                    deviceType: data.deviceType == device.deviceType ? device.deviceType : "",
-                                });
-                            } else {
-                                append({
-                                    serialNumber: device.serialNumber,
-                                    deviceType: device.deviceType,
+                                    deviceType: deviceType,
                                 });
                             }
                         });
                     })
                     .catch((error) => {
-                        // Handle errors
                         console.error("Error reading file:", error);
                         message.error("Error reading file");
                     });
             } else if (file.status === "error") {
-                // Handle file upload error
                 message.error("File upload failed");
             }
         },
@@ -60,13 +71,13 @@ const ImportExcel = ({ fields, remove, append }) => {
     return (
         <>
             <Flex justify="flex-end" gap="middle" align="flex-start">
-                <Tooltip placement="top" title="הורד קובץ לדוגמא" arrow={true}>
-                    <Button icon={<DownloadOutlined />} onClick={downloadTemplateFile}></Button>
-                </Tooltip>
                 <Tooltip placement="top" title="העלה קובץ אקסל" arrow={true}>
                     <Upload {...props}>
-                        <Button icon={<UploadOutlined />}></Button>
+                        <Button type="primary" loading={loading} icon={<ImportOutlined />}></Button>
                     </Upload>
+                </Tooltip>
+                <Tooltip placement="top" title="הורד קובץ לדוגמא" arrow={true}>
+                    <Button icon={<FileExcelOutlined />} style={{ color: "green" }} onClick={downloadTemplateFile}></Button>
                 </Tooltip>
             </Flex>
         </>

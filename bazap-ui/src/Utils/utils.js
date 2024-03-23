@@ -22,7 +22,8 @@ export const replaceApostropheInObject = (obj, keys) => {
     return obj;
 };
 export const replaceApostrophe = (value) => {
-    return value.replace(/&#39;/g, "'");
+    if (value) return value.replace(/&#39;/g, "'");
+    return value;
 };
 
 export const DeviceStatuses = {

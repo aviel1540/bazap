@@ -2,19 +2,17 @@ import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router";
 import { getProjectData } from "../../../../Utils/projectAPI";
 import Loader from "../../../Layout/Loader";
-import { Stack } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import { getAllVouchers } from "../../../../Utils/voucherApi";
-import VoucherTable from "./VoucherTable";
 import { dateTostring } from "../../../../Utils/utils";
-import LightButton from "../../../UI/LightButton";
-import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import { useProject } from "../../../store/ProjectContext";
 import { useEffect } from "react";
-import ArrivedDevices from "./ArrivedDevices/ArrivedDevices";
-import { Card, Descriptions, Tag } from "antd";
+import ArrivedDevices from "./DevicesInProject/DevicesInProject";
+import { Card, Descriptions, Layout, Tag } from "antd";
+import ProjectSideBar from "./ProjectSideBar";
+import VoucherTable from "./VoucherTable";
 const Project = () => {
     const { id } = useParams();
-
     const { projectId, setProjectId } = useProject();
 
     useEffect(() => {
@@ -35,6 +33,7 @@ const Project = () => {
         enabled: projectId !== null,
     });
     const isLoading = isProjecLoading || isVouchersLoading;
+
     if (isLoading) {
         return <Loader />;
     }
@@ -56,29 +55,26 @@ const Project = () => {
         },
     ];
     return (
-        <Stack spacing={2}>
-            <Card
-                title={`פרוייקט: ${project.projectName}`}
-                bordered={false}
-                extra={
-                    <LightButton
-                        variant="contained"
-                        btncolor="dark"
-                        icon={<SaveAltIcon />}
-                        onClick={() => {
-                            alert("סגור פרוייקט");
-                        }}
-                        size="small"
-                    >
-                        סגור פרויקט
-                    </LightButton>
-                }
-            >
-                <Descriptions items={items} />
-            </Card>
-            <ArrivedDevices />
-            <VoucherTable vouchers={vouchers} isLoading={isLoading} />
-        </Stack>
+        <>
+            <Layout>
+                <ProjectSideBar />
+                <Box
+                    style={{
+                        overflowY: "scroll",
+                        height: "85vh",
+                        padding: "0px 24px 24px",
+                    }}
+                >
+                    <Stack spacing={2}>
+                        <Card title={`פרוייקט: ${project.projectName}`} bordered={false}>
+                            <Descriptions items={items} />
+                        </Card>
+                        <ArrivedDevices />
+                        <VoucherTable vouchers={vouchers} isLoading={isLoading} />
+                    </Stack>
+                </Box>
+            </Layout>
+        </>
     );
 };
 

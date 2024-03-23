@@ -10,11 +10,11 @@ import { addNewDevices, returnDevice } from "../../../../../Utils/deviceApi";
 import { addVoucher } from "../../../../../Utils/voucherApi";
 import { useUserAlert } from "../../../../store/UserAlertContext";
 
-const VoucherStepper = ({ onCancel, projectId, formDefaultValues, isReturnVoucher = false }) => {
+const stepsLength = 2;
+const VoucherStepper = ({ onCancel, projectId, formDefaultValues }) => {
     const { onAlert, error } = useUserAlert();
     const [activeStep, setActiveStep] = useState(0);
     const queryClient = useQueryClient();
-
     const methods = useForm({
         defaultValues: {
             projectId,
@@ -22,10 +22,34 @@ const VoucherStepper = ({ onCancel, projectId, formDefaultValues, isReturnVouche
             ...formDefaultValues,
         },
     });
-    const { handleSubmit, formState, setError, clearErrors, getValues } = methods;
+    const { handleSubmit, formState, setError, clearErrors, getValues, reset } = methods;
     const { isSubmitting, isDirty } = formState;
-    const titles = ["יצירת שובר", "הוספת מכשירים"];
-    const steps = [<VoucherStep1 key={1} />, <VoucherStep2 key={2} />];
+    const steps = [
+        { title: "יצירת שובר", content: <VoucherStep1 /> },
+        { title: "הוספת מכשירים", content: <VoucherStep2 /> },
+    ];
+    const stepperCancel = () => {
+        onCancel();
+        setTimeout(() => {
+            reset(
+                {
+                    projectId,
+                    devices: [{ serialNumber: "", deviceType: "" }],
+                    ...formDefaultValues,
+                },
+                {
+                    keepValues: false,
+                    keepIsSubmitted: false,
+                    keepTouched: false,
+                    keepIsValid: false,
+                    keepDirtyValues: false,
+                    keepDirty: false,
+                    keepErrors: false,
+                },
+            );
+            setActiveStep(0);
+        }, 200);
+    };
     const handleNext = async () => {
         const result = await handleSubmit(() => {})(methods.getValues());
         if (result) {
@@ -35,9 +59,8 @@ const VoucherStepper = ({ onCancel, projectId, formDefaultValues, isReturnVouche
             });
         } else {
             clearErrors();
-            if (activeStep == steps.length - 1) {
+            if (activeStep == stepsLength - 1) {
                 handleSave();
-                onCancel();
             } else {
                 setActiveStep((prevStep) => prevStep + 1);
             }
@@ -47,6 +70,7 @@ const VoucherStepper = ({ onCancel, projectId, formDefaultValues, isReturnVouche
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["vouchers", projectId] });
             queryClient.invalidateQueries({ queryKey: ["arrivedDevices", projectId] });
+            queryClient.invalidateQueries(["project", projectId]);
         },
         onError: ({ message }) => {
             onAlert(message, error);
@@ -56,6 +80,7 @@ const VoucherStepper = ({ onCancel, projectId, formDefaultValues, isReturnVouche
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["vouchers", projectId] });
             queryClient.invalidateQueries({ queryKey: ["arrivedDevices", projectId] });
+            queryClient.invalidateQueries(["project", projectId]);
         },
         onError: ({ message }) => {
             onAlert(message, error);
@@ -63,9 +88,9 @@ const VoucherStepper = ({ onCancel, projectId, formDefaultValues, isReturnVouche
     });
     const addVoucherMutation = useMutation(addVoucher, {
         onSuccess: (data) => {
-            queryClient.invalidateQueries({ queryKey: ["vouchers", projectId] });
             const voucherId = data.data.id;
             const voucherData = getValues();
+            const isReturnVoucher = voucherData.type == "false";
             if (isReturnVoucher) {
                 const devices = voucherData.devices.map((device) => device.serialNumber);
                 returnDevicesMutation.mutate({ devices, voucherId });
@@ -78,6 +103,7 @@ const VoucherStepper = ({ onCancel, projectId, formDefaultValues, isReturnVouche
                 }));
                 addNewDevicesMutation.mutate(devices);
             }
+            stepperCancel();
         },
         onError: ({ message }) => {
             onAlert(message, error);
@@ -88,33 +114,32 @@ const VoucherStepper = ({ onCancel, projectId, formDefaultValues, isReturnVouche
     };
 
     const handleSave = () => {
-        const voucherData = getValues();
-        addVoucherMutation.mutate(voucherData);
+        addVoucherMutation.mutate(getValues());
     };
 
     return (
         <FormProvider {...methods}>
             <form onSubmit={handleSubmit(handleNext)}>
                 <Stepper activeStep={activeStep} alternativeLabel>
-                    {titles.map((label, index) => (
+                    {steps.map((step, index) => (
                         <Step key={index}>
-                            <StepLabel>{label}</StepLabel>
+                            <StepLabel>{step.title}</StepLabel>
                         </Step>
                     ))}
                 </Stepper>
                 <Box p={2} mt={1}>
-                    {steps[activeStep]}
+                    {steps[activeStep].content}
                 </Box>
                 <Divider variant="fullWidth" sx={{ paddingTop: 2 }} />
                 <Stack spacing={2} direction="row" marginTop={2}>
-                    <LightButton size="small" btncolor="dark" onClick={onCancel} variant="contained">
+                    <LightButton size="small" btncolor="dark" onClick={stepperCancel} variant="contained">
                         בטל
                     </LightButton>
                     <Button disabled={activeStep === 0} size="small" onClick={handleBack}>
                         חזור
                     </Button>
                     <Button type="submit" size="small" variant="contained" color="primary" disabled={isSubmitting || !isDirty}>
-                        {activeStep === steps.length - 1 ? "שמור" : "הבא"}
+                        {activeStep === stepsLength - 1 ? "שמור" : "הבא"}
                     </Button>
                 </Stack>
             </form>
@@ -125,7 +150,6 @@ VoucherStepper.propTypes = {
     onCancel: PropTypes.func.isRequired,
     formDefaultValues: PropTypes.object,
     projectId: PropTypes.string.isRequired,
-    isReturnVoucher: PropTypes.bool,
 };
 
 export default VoucherStepper;

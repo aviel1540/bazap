@@ -5,12 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteVoucher } from "../../../../Utils/voucherApi";
 import TableActions from "../../../UI/CustomTable/TableActions";
 import CustomTable from "../../../UI/CustomTable/CustomTable";
-import LightButton from "../../../UI/LightButton";
-import AddIcon from "@mui/icons-material/Add";
-import VoucherStepper from "./NewVoucher/VoucherStepper";
-import { useCustomModal } from "../../../store/CustomModalContext";
 import { useProject } from "../../../store/ProjectContext";
-import { FloatButton } from "antd";
 import EmptyData from "../../../UI/EmptyData";
 import { useUserAlert } from "../../../store/UserAlertContext";
 
@@ -18,7 +13,6 @@ const VoucherTable = ({ vouchers, isLoading }) => {
     const { onAlert, onConfirm, error } = useUserAlert();
 
     const { projectId } = useProject();
-    const { onShow, onHide } = useCustomModal();
     const queryClient = useQueryClient();
     const onDeleteDeviceTypeHandler = (id, handleClose) => {
         handleClose && handleClose(id);
@@ -81,14 +75,6 @@ const VoucherTable = ({ vouchers, isLoading }) => {
             onAlert(message, error);
         },
     });
-    const modalProperties = {
-        title: "שובר חדש",
-        maxWidth: "md",
-        body: <VoucherStepper onCancel={onHide} projectId={projectId} />,
-    };
-    const showModal = () => {
-        onShow(modalProperties);
-    };
 
     if (isLoading) {
         return <Loader />;
@@ -97,20 +83,11 @@ const VoucherTable = ({ vouchers, isLoading }) => {
     return (
         <>
             <Card>
-                <CardHeader
-                    titleTypographyProps={{ variant: "h6" }}
-                    title="שוברים"
-                    action={
-                        <LightButton variant="contained" btncolor="primary" size="small" icon={<AddIcon />} onClick={showModal}>
-                            הוסף שובר
-                        </LightButton>
-                    }
-                />
+                <CardHeader titleTypographyProps={{ variant: "h6" }} title="שוברים" />
                 <CardContent>
                     {vouchers.length > 0 ? <CustomTable columns={columns} data={vouchers} /> : <EmptyData label="אין שוברים להצגה" />}
                 </CardContent>
             </Card>
-            <FloatButton onClick={showModal} />
         </>
     );
 };

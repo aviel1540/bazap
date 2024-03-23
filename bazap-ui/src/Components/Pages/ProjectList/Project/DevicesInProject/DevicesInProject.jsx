@@ -18,7 +18,6 @@ import StatusForm from "../StatusForm";
 import { useCustomModal } from "../../../../store/CustomModalContext";
 import SearchInput from "../../../../UI/SearchInput";
 import { useProject } from "../../../../store/ProjectContext";
-import { useRenderCount } from "@uidotdev/usehooks";
 import StatusFilter from "./StatusFilter";
 import VoucherStepper from "../NewVoucher/VoucherStepper";
 import { Space, Table, Tag } from "antd";
@@ -40,7 +39,6 @@ const menuActions = [
 const ReturnedStatuses = [DeviceStatuses.DEFECTIVE_RETURN, DeviceStatuses.FIXED_RETURN];
 
 const ArrivedDevices = () => {
-    const renderCount = useRenderCount();
     const { projectId } = useProject();
     const { onShow, onHide } = useCustomModal();
     const [filteredDevices, setFilteredDevices] = useState([]);
@@ -161,7 +159,7 @@ const ArrivedDevices = () => {
         const modalPropertiesCreateVoucher = {
             title: "שובר חדש",
             maxWidth: "md",
-            body: <VoucherStepper onCancel={onHide} projectId={projectId} formDefaultValues={formDefaultValues} isReturnVoucher={true} />,
+            body: <VoucherStepper onCancel={onHide} projectId={projectId} formDefaultValues={formDefaultValues} />,
         };
         onShow(modalPropertiesCreateVoucher);
     };
@@ -197,12 +195,22 @@ const ArrivedDevices = () => {
         selectedRowKeys,
         onChange: onSelectChange,
     };
+
+    const paginationOptions = {
+        showSizeChanger: true,
+        pageSizeOptions: ["5", "10", "20", "30"],
+        defaultPageSize: 10,
+        locale: {
+            items_per_page: "/ עמוד",
+        },
+        showTotal: (total, range) => `${range[0]}-${range[1]} מתוך ${total} מכשירים`,
+    };
     if (isLoading) {
         return <Loader />;
     }
+
     return (
         <Card>
-            <div>{renderCount}</div>
             <CardHeader
                 titleTypographyProps={{ variant: "h6" }}
                 title='מכשירים בבצ"פ'
@@ -246,8 +254,9 @@ const ArrivedDevices = () => {
                 </Box>
                 <Table
                     locale={{ emptyText: <EmptyData label="אין מכשירים להצגה" /> }}
-                    rowSelection={selectedStatus != ALL && rowSelection}
+                    rowSelection={selectedStatus != ALL && selectedStatus != RETURNED && rowSelection}
                     dataSource={addKeysToArray(filteredDevices, "key", "_id")}
+                    pagination={paginationOptions}
                     columns={columns}
                 />
             </CardContent>

@@ -2,30 +2,7 @@ import * as XLSX from "xlsx";
 
 export const downloadTemplateFile = () => {
     const data = [["צ' מכשיר", "סוג מכשיר"]];
-
-    // Create a new workbook
-    const wb = XLSX.utils.book_new();
-    // Add a worksheet
-    const ws = XLSX.utils.aoa_to_sheet(data);
-    // Add the worksheet to the workbook
-    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
-
-    // Add RTL orientation setting to the workbook
-    wb.Workbook = {
-        Views: [{ RTL: true }],
-    };
-
-    // Convert the workbook to a binary XLSX file
-    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-    const excelBlob = new Blob([excelBuffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
-
-    // Create a download link
-    const link = document.createElement("a");
-    link.href = window.URL.createObjectURL(excelBlob);
-    link.setAttribute("download", "excel_data.xlsx");
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    createExcel(data, "קובץ_לדוגמא");
 };
 
 export const readDevicesExcelFile = (rows) => {
@@ -39,9 +16,34 @@ export const readDevicesExcelFile = (rows) => {
         if (index > 0) {
             devices.push({
                 serialNumber: String(row[serialIndex]),
-                deviceType: String(row[deviceTypeIndex]),
+                deviceType: row[deviceTypeIndex] ? String(row[deviceTypeIndex]) : null,
             });
         }
     });
     return devices;
+};
+
+export const createVoucherReport = (devices, fileName = "דוח_צ") => {
+    const data = [["צ' מכשיר", "סוג מכשיר"]];
+    devices.forEach((device) => {
+        data.push([device.serialNumber, device.deviceType]);
+    });
+    createExcel(data, fileName);
+};
+
+const createExcel = (data, name) => {
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(data);
+    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+    wb.Workbook = {
+        Views: [{ RTL: true }],
+    };
+    const excelBuffer = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+    const excelBlob = new Blob([excelBuffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+    const link = document.createElement("a");
+    link.href = window.URL.createObjectURL(excelBlob);
+    link.setAttribute("download", `${name}.xlsx`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 };

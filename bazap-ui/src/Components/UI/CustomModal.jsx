@@ -1,17 +1,13 @@
-import { Dialog, DialogContent, DialogTitle, useMediaQuery, useTheme } from "@mui/material";
 import { useCustomModal } from "../store/CustomModalContext";
+import { Modal } from "antd";
 
 const CustomModal = () => {
     const { show, onHide, options } = useCustomModal();
 
-    const theme = useTheme();
-    const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-
     return (
-        <Dialog open={show} onClose={onHide} fullScreen={fullScreen} fullWidth={true} maxWidth={options.maxWidth}>
-            <DialogTitle id="responsive-dialog-title">{options.title}</DialogTitle>
-            <DialogContent>{options.body}</DialogContent>
-        </Dialog>
+        <Modal open={show} title={options.title} onCancel={onHide} width="40%" centered footer={null}>
+            {options.body}
+        </Modal>
     );
 };
 export default CustomModal;

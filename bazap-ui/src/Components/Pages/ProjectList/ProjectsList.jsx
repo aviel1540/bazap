@@ -12,7 +12,6 @@ import ProjectForm from "./ProjectForm";
 
 const ProjectsList = () => {
     const { onShow, onHide } = useCustomModal();
-
     const { isLoading, data: projects } = useQuery({
         queryKey: ["projects"],
         queryFn: getAllProjects,

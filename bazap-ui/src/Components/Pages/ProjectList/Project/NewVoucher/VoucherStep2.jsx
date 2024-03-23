@@ -1,20 +1,22 @@
 import { Box, Button, IconButton, createFilterOptions } from "@mui/material";
 import { Controller, useFieldArray, useFormContext } from "react-hook-form";
-import ControllerInput from "../../../../UI/CustomForm/ControlledInput";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { getAllDeviceTypes } from "../../../../../Utils/deviceTypeApi";
 import Loader from "../../../../Layout/Loader";
-import Grid from "@mui/material/Unstable_Grid2";
 import HighlightOff from "@mui/icons-material/HighlightOff";
 import Add from "@mui/icons-material/Add";
-import { Fragment } from "react";
 import { replaceApostrophe } from "../../../../../Utils/utils";
-import { getAllArrivedDevicesInProject } from "../../../../../Utils/deviceApi";
+import { getAllArrivedDevicesInProject, getDeviceBySerialNumber } from "../../../../../Utils/deviceApi";
 import ImportExcel from "./ImportExcel";
-
+import { useUserAlert } from "../../../../store/UserAlertContext";
+import { Col, Row } from "antd";
+import { Fragment } from "react";
+import ControlledInput from "../../../../UI/CustomForm/ControlledInput";
 const filter = createFilterOptions();
 
 const VoucherStep2 = () => {
+    const { onAlert, error } = useUserAlert();
+
     const { getValues } = useFormContext();
     const projectId = getValues("projectId");
     const isArrive = getValues("type") == "true";
@@ -34,7 +36,7 @@ const VoucherStep2 = () => {
         },
     });
     const isLoading = isLoadingDevicesTypes || isLoadingArrivedDevices;
-    const { control } = useFormContext();
+    const { control, setValue, setError, clearErrors } = useFormContext();
     const { fields, append, remove } = useFieldArray({
         control,
         name: "devices",
@@ -70,6 +72,39 @@ const VoucherStep2 = () => {
     });
 
     const devicesToDisplay = isArrive ? [] : arrivedDevicesText;
+    const checkDuplicateDevice = (serialNumber) => {
+        if (serialNumber == "11") {
+            return false;
+        }
+        return true;
+    };
+    const getDeviceBySerialNumberMutation = useMutation(getDeviceBySerialNumber, {
+        onError: ({ message }) => {
+            onAlert(message, error);
+        },
+    });
+    const handleFieldChange = async (serialNumber, index) => {
+        if (serialNumber) {
+            const duplicationResult = checkDuplicateDevice(serialNumber);
+            if (duplicationResult) {
+                clearErrors(`devices[${index}].serialNumber`);
+                const data = await getDeviceBySerialNumberMutation.mutateAsync(serialNumber);
+                if (!data.message) {
+                    setValue(`devices[${index}].deviceType`, data.deviceType);
+                }
+            } else {
+                setError(`devices[${index}].serialNumber`, { type: "required", message: "asd" });
+            }
+        }
+    };
+    const validateSerialNumber = (value, formValues) => {
+        // validate serial number doesn't exist in the same voucher
+        const foundedDevices = formValues.devices.filter((device) => device.serialNumber === value);
+        if (foundedDevices.length > 1) return "צ' מכשיר לא יכול להופיע פעמיים.";
+        // need to add validation that serial numbe
+        return true;
+    };
+
     const voucherInputs = [
         {
             label: "צ' מכשיר",
@@ -78,10 +113,12 @@ const VoucherStep2 = () => {
             isNumber: true,
             validators: {
                 required: "יש למלא שדה זה.",
+                validate: validateSerialNumber,
             },
             options: devicesToDisplay,
             getOptionLabel: onGetOptionLabel,
             filterOptions: onFilterOptions,
+            onFieldChange: handleFieldChange,
         },
         {
             label: "סוג מכשיר",
@@ -97,48 +134,85 @@ const VoucherStep2 = () => {
     const handleRemoveFields = (index) => {
         remove(index);
     };
-    const combinedFields = fields.map((field, index) => (
-        <Grid key={field.id} container spacing={2}>
-            {voucherInputs.map((input, deviceFieldIndex) => (
-                <Fragment key={input.name}>
-                    <Grid item="true" xs={5}>
-                        <Controller
-                            name={`devices[${index}].${input.name}`}
-                            control={control}
-                            defaultValue=""
-                            render={({ field }) => (
-                                <ControllerInput
-                                    {...field}
-                                    label={input.label}
-                                    type={input.type}
-                                    isNumber={input.isNumber}
-                                    validators={input.validators}
-                                    options={input.options}
-                                    getOptionLabel={onGetOptionLabel}
-                                    filterOptions={onFilterOptions}
-                                    ref={field.ref}
-                                />
-                            )}
-                        />
-                    </Grid>
+    const combinedFields = fields.map((field, index) =>
+        voucherInputs.map((input, deviceFieldIndex) => (
+            <Fragment key={`${field.id}.${index}.${deviceFieldIndex}`}>
+                <Col span={11}>
+                    <Controller
+                        name={`devices[${index}].${input.name}`}
+                        control={control}
+                        defaultValue=""
+                        render={({ field }) => (
+                            <ControlledInput
+                                {...field}
+                                label={input.label}
+                                onFieldChange={input.onFieldChange}
+                                type={input.type}
+                                isNumber={input.isNumber}
+                                validators={input.validators}
+                                options={input.options}
+                                getOptionLabel={onGetOptionLabel}
+                                filterOptions={onFilterOptions}
+                                ref={field.ref}
+                                index={index}
+                            />
+                        )}
+                    />
+                </Col>
+                <Col>
                     {deviceFieldIndex % 2 === 1 && index != 0 && (
-                        <Grid alignItems="center" display="flex" justifyContent="center" item="true" xs={1}>
-                            <IconButton size="large" color="error" aria-label="deleteDevice" onClick={() => handleRemoveFields(index)}>
-                                <HighlightOff fontSize="inherit" />
-                            </IconButton>
-                        </Grid>
+                        <IconButton size="large" color="error" aria-label="deleteDevice" onClick={() => handleRemoveFields(index)}>
+                            <HighlightOff fontSize="inherit" />
+                        </IconButton>
                     )}
-                </Fragment>
-            ))}
-        </Grid>
-    ));
+                </Col>
+            </Fragment>
+        )),
+    );
+    // const combinedFields = fields.map((field, index) => (
+    //     <Grid key={field.id} container spacing={2}>
+    //         {voucherInputs.map((input, deviceFieldIndex) => (
+    //             <Fragment key={input.name}>
+    //                 <Grid item="true" xs={5}>
+    //                     <Controller
+    //                         name={`devices[${index}].${input.name}`}
+    //                         control={control}
+    //                         defaultValue=""
+    //                         render={({ field }) => (
+    //                             <ControllerInput
+    //                                 {...field}
+    //                                 label={input.label}
+    //                                 type={input.type}
+    //                                 isNumber={input.isNumber}
+    //                                 validators={input.validators}
+    //                                 options={input.options}
+    //                                 getOptionLabel={onGetOptionLabel}
+    //                                 filterOptions={onFilterOptions}
+    //                                 ref={field.ref}
+    //                             />
+    //                         )}
+    //                     />
+    //                 </Grid>
+    //                 {deviceFieldIndex % 2 === 1 && index != 0 && (
+    //                     <Grid alignItems="center" display="flex" justifyContent="center" item="true" xs={1}>
+    //                         <IconButton size="large" color="error" aria-label="deleteDevice" onClick={() => handleRemoveFields(index)}>
+    //                             <HighlightOff fontSize="inherit" />
+    //                         </IconButton>
+    //                     </Grid>
+    //                 )}
+    //             </Fragment>
+    //         ))}
+    //     </Grid>
+    // ));
     if (isLoading) {
         return <Loader />;
     }
     return (
         <>
             <ImportExcel fields={fields} append={append} remove={remove} />
-            <Box padding={2}>{combinedFields}</Box>
+            <Box padding={2}>
+                <Row gutter={[10, 10]}>{combinedFields}</Row>
+            </Box>
             <Box textAlign="center" marginTop={1}>
                 <Button type="button" onClick={handleAddFields} variant="contained" color="success" endIcon={<Add />}>
                     הוסף מכשיר

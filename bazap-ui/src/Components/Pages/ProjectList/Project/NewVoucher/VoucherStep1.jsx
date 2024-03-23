@@ -1,5 +1,5 @@
 import { useFormContext } from "react-hook-form";
-import { Box, Stack } from "@mui/material";
+import { Box } from "@mui/material";
 import ControllerInput from "../../../../UI/CustomForm/ControlledInput";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -7,6 +7,7 @@ import { getAllUnits } from "../../../../../Utils/unitAPI";
 import Loader from "../../../../Layout/Loader";
 import { getAllTechnicians } from "../../../../../Utils/technicianAPI";
 import { replaceApostrophe } from "../../../../../Utils/utils";
+import { Col, Row } from "antd";
 
 const VoucherStep1 = () => {
     const { control, getValues, getFieldState } = useFormContext();
@@ -106,11 +107,15 @@ const VoucherStep1 = () => {
     }
     return (
         <Box padding={2}>
-            <Stack spacing={1}>
+            <Row gutter={[10, 10]}>
                 {voucherInputs.map((input) => {
-                    return <ControllerInput key={input.name} {...input} control={control} />;
+                    return (
+                        <Col span={24} key={input.name}>
+                            <ControllerInput {...input} control={control} />
+                        </Col>
+                    );
                 })}
-            </Stack>
+            </Row>
         </Box>
     );
 };

@@ -7,14 +7,20 @@ const UserAlertContext = createContext();
 export const UserAlertProvider = ({ children }) => {
     const [modal, contextHolder] = Modal.useModal();
     const error = "error";
+    const warning = "warning";
     const onAlert = (message, type) => {
         const config = {
             content: message,
+            centered: true,
         };
         switch (type) {
             case error:
                 config.title = "שגיאה!";
                 modal.error(config);
+                break;
+            case warning:
+                config.title = "שם לב!";
+                modal.warning(config);
                 break;
             default:
                 config.title = "שם לב!";
@@ -24,6 +30,7 @@ export const UserAlertProvider = ({ children }) => {
     };
     const onConfirm = async (config) => {
         const { okHandler, okText, cancelText, ...configConfirm } = config;
+        configConfirm["centered"] = true;
         if (!okText) {
             configConfirm["okText"] = "אישור";
         }
@@ -35,7 +42,7 @@ export const UserAlertProvider = ({ children }) => {
             okHandler();
         }
     };
-    return <UserAlertContext.Provider value={{ onAlert, contextHolder, error, onConfirm }}>{children}</UserAlertContext.Provider>;
+    return <UserAlertContext.Provider value={{ onAlert, contextHolder, error, warning, onConfirm }}>{children}</UserAlertContext.Provider>;
 };
 
 UserAlertProvider.propTypes = {

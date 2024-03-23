@@ -1,7 +1,5 @@
-import { useQuery } from "@tanstack/react-query";
 import TechnicianTable from "./TechnicianTable";
 import TechnicianForm from "./TechnicianForm";
-import { getAllTechnicians } from "../../../Utils/technicianAPI";
 import { Card, CardContent, CardHeader } from "@mui/material";
 import LightButton from "../../UI/LightButton";
 import AddIcon from "@mui/icons-material/Add";
@@ -9,16 +7,14 @@ import { useCustomModal } from "../../store/CustomModalContext";
 
 const Technician = () => {
     const { onShow, onHide } = useCustomModal();
-    const { isLoading, data: technicians } = useQuery({
-        queryKey: ["technicians"],
-        queryFn: getAllTechnicians,
-    });
-    const modalProperties = {
-        title: "טכנאי חדש",
-        maxWidth: "md",
-        body: <TechnicianForm onCancel={onHide} />,
-    };
-    const showModal = () => {
+
+    const showModal = (event, data) => {
+        const isEdit = data != undefined;
+        const modalProperties = {
+            title: "טכנאי חדש",
+            maxWidth: "md",
+            body: <TechnicianForm onCancel={onHide} formValues={data} isEdit={isEdit} />,
+        };
         onShow(modalProperties);
     };
 
@@ -34,7 +30,7 @@ const Technician = () => {
                 title="טכנאים"
             />
             <CardContent>
-                <TechnicianTable technicians={technicians} isLoading={isLoading} />
+                <TechnicianTable onEdit={showModal} />
             </CardContent>
         </Card>
     );
