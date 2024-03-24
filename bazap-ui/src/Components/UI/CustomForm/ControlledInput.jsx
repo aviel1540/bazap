@@ -3,10 +3,11 @@ import ControlledButtonRadio from "./ControllerInputs/ControlledButtonRadio";
 import ControlledSelect from "./ControllerInputs/ControlledSelect";
 import ControlledTextField from "./ControllerInputs/ControlledTextField";
 import ControlledAutocomplete from "./ControllerInputs/ControlledAutoComplete";
+import { forwardRef } from "react";
 
 const textInputTypes = ["text", "number", "email"];
 
-const ControlledInput = (props) => {
+const ControlledInput = forwardRef((props, ref) => {
     const { type } = props;
     const lowerType = type.toLowerCase();
     const isTextInput = textInputTypes.includes(type);
@@ -24,14 +25,15 @@ const ControlledInput = (props) => {
         return <ControlledSelect {...props} key={props.name} />;
     }
     if (isTextInput) {
-        return <ControlledTextField {...props} key={props.name} />;
+        return <ControlledTextField inputRef={ref} {...props} key={props.name} />;
     }
     return <div>need to do this {type} type of input </div>;
-};
+});
 
 ControlledInput.propTypes = {
     type: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
 };
 
+ControlledInput.displayName = "ControlledInput";
 export default ControlledInput;

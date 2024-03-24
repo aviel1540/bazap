@@ -21,7 +21,7 @@ const VoucherStep2 = () => {
     const projectId = getValues("projectId");
     const isArrive = getValues("type") == "true";
     const { isLoading: isLoadingArrivedDevices, data: arrivedDevices } = useQuery({
-        queryKey: ["arrivedDevices", projectId],
+        queryKey: ["devicesInProject", projectId],
         queryFn: getAllArrivedDevicesInProject,
     });
     const { isLoading: isLoadingDevicesTypes, data: deviceTypes } = useQuery({
@@ -36,7 +36,7 @@ const VoucherStep2 = () => {
         },
     });
     const isLoading = isLoadingDevicesTypes || isLoadingArrivedDevices;
-    const { control, setValue, setError, clearErrors } = useFormContext();
+    const { control, setValue } = useFormContext();
     const { fields, append, remove } = useFieldArray({
         control,
         name: "devices",
@@ -72,12 +72,7 @@ const VoucherStep2 = () => {
     });
 
     const devicesToDisplay = isArrive ? [] : arrivedDevicesText;
-    const checkDuplicateDevice = (serialNumber) => {
-        if (serialNumber == "11") {
-            return false;
-        }
-        return true;
-    };
+
     const getDeviceBySerialNumberMutation = useMutation(getDeviceBySerialNumber, {
         onError: ({ message }) => {
             onAlert(message, error);
@@ -85,18 +80,13 @@ const VoucherStep2 = () => {
     });
     const handleFieldChange = async (serialNumber, index) => {
         if (serialNumber) {
-            const duplicationResult = checkDuplicateDevice(serialNumber);
-            if (duplicationResult) {
-                clearErrors(`devices[${index}].serialNumber`);
-                const data = await getDeviceBySerialNumberMutation.mutateAsync(serialNumber);
-                if (!data.message) {
-                    setValue(`devices[${index}].deviceType`, data.deviceType);
-                }
-            } else {
-                setError(`devices[${index}].serialNumber`, { type: "required", message: "asd" });
+            const data = await getDeviceBySerialNumberMutation.mutateAsync(serialNumber);
+            if (!data.message) {
+                setValue(`devices[${index}].deviceType`, data.deviceType);
             }
         }
     };
+
     const validateSerialNumber = (value, formValues) => {
         // validate serial number doesn't exist in the same voucher
         const foundedDevices = formValues.devices.filter((device) => device.serialNumber === value);
@@ -153,7 +143,7 @@ const VoucherStep2 = () => {
                                 options={input.options}
                                 getOptionLabel={onGetOptionLabel}
                                 filterOptions={onFilterOptions}
-                                ref={field.ref}
+                                inputRef={field.ref}
                                 index={index}
                             />
                         )}
@@ -169,41 +159,7 @@ const VoucherStep2 = () => {
             </Fragment>
         )),
     );
-    // const combinedFields = fields.map((field, index) => (
-    //     <Grid key={field.id} container spacing={2}>
-    //         {voucherInputs.map((input, deviceFieldIndex) => (
-    //             <Fragment key={input.name}>
-    //                 <Grid item="true" xs={5}>
-    //                     <Controller
-    //                         name={`devices[${index}].${input.name}`}
-    //                         control={control}
-    //                         defaultValue=""
-    //                         render={({ field }) => (
-    //                             <ControllerInput
-    //                                 {...field}
-    //                                 label={input.label}
-    //                                 type={input.type}
-    //                                 isNumber={input.isNumber}
-    //                                 validators={input.validators}
-    //                                 options={input.options}
-    //                                 getOptionLabel={onGetOptionLabel}
-    //                                 filterOptions={onFilterOptions}
-    //                                 ref={field.ref}
-    //                             />
-    //                         )}
-    //                     />
-    //                 </Grid>
-    //                 {deviceFieldIndex % 2 === 1 && index != 0 && (
-    //                     <Grid alignItems="center" display="flex" justifyContent="center" item="true" xs={1}>
-    //                         <IconButton size="large" color="error" aria-label="deleteDevice" onClick={() => handleRemoveFields(index)}>
-    //                             <HighlightOff fontSize="inherit" />
-    //                         </IconButton>
-    //                     </Grid>
-    //                 )}
-    //             </Fragment>
-    //         ))}
-    //     </Grid>
-    // ));
+
     if (isLoading) {
         return <Loader />;
     }

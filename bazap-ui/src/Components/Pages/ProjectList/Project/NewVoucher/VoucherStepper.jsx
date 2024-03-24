@@ -35,7 +35,7 @@ const VoucherStepper = ({ onCancel, projectId, formDefaultValues }) => {
                 {
                     projectId,
                     devices: [{ serialNumber: "", deviceType: "" }],
-                    ...formDefaultValues,
+                    // ...formDefaultValues,
                 },
                 {
                     keepValues: false,
@@ -69,7 +69,7 @@ const VoucherStepper = ({ onCancel, projectId, formDefaultValues }) => {
     const returnDevicesMutation = useMutation(returnDevice, {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["vouchers", projectId] });
-            queryClient.invalidateQueries({ queryKey: ["arrivedDevices", projectId] });
+            queryClient.invalidateQueries({ queryKey: ["devicesInProject", projectId] });
             queryClient.invalidateQueries(["project", projectId]);
         },
         onError: ({ message }) => {
@@ -79,7 +79,7 @@ const VoucherStepper = ({ onCancel, projectId, formDefaultValues }) => {
     const addNewDevicesMutation = useMutation(addNewDevices, {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["vouchers", projectId] });
-            queryClient.invalidateQueries({ queryKey: ["arrivedDevices", projectId] });
+            queryClient.invalidateQueries({ queryKey: ["devicesInProject", projectId] });
             queryClient.invalidateQueries(["project", projectId]);
         },
         onError: ({ message }) => {

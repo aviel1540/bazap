@@ -47,7 +47,7 @@ const ArrivedDevices = () => {
     const [selectedRowKeys, setSelectedRowKeys] = useState([]);
 
     const { isLoading, data: devices } = useQuery({
-        queryKey: ["arrivedDevices", projectId],
+        queryKey: ["devicesInProject", projectId],
         queryFn: getAllArrivedDevicesInProject,
         onSuccess: (data) => {
             setFilteredDevices(data);

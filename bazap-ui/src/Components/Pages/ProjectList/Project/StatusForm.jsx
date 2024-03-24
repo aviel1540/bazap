@@ -31,7 +31,7 @@ const StatusForm = ({ status, onCacnel, devices, clearSelectedRows }) => {
 
     const updateStatusMutation = useMutation(updateStatus, {
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["arrivedDevices", projectId] });
+            queryClient.invalidateQueries({ queryKey: ["devicesInProject", projectId] });
             clearSelectedRows();
         },
         onError: ({ message }) => {

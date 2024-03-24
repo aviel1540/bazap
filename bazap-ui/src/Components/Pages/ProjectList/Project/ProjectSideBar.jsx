@@ -5,33 +5,34 @@ import AddIcon from "@mui/icons-material/Add";
 import IosShareIcon from "@mui/icons-material/IosShare";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import { useProject } from "../../../store/ProjectContext";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useUserAlert } from "../../../store/UserAlertContext";
 import { dateTostring } from "../../../../Utils/utils";
-import { createVoucherReport } from "../../../../Utils/excelUtils";
+import { createProjectReport } from "../../../../Utils/excelUtils";
 import VoucherStepper from "./NewVoucher/VoucherStepper";
 import { useCustomModal } from "../../../store/CustomModalContext";
+import { getAllArrivedDevicesInProject } from "../../../../Utils/deviceApi";
 // import VoucherStepper from "./Voucher/VoucherStepper/VoucherStepper";
 
 const ProjectSideBar = () => {
     const { projectId } = useProject();
     const { onAlert, warning } = useUserAlert();
     const { onShow, onHide } = useCustomModal();
-    const queryClient = useQueryClient();
     const {
         token: { colorBgContainer, borderRadius },
     } = theme.useToken();
-    const getAllDevicesInProject = () => {
-        return [];
+
+    const getAllDevicesInProject = async () => {
+        const devices = await getAllArrivedDevicesInProject({ queryKey: [null, projectId] });
+        const devicesToReport = devices.filter((device) => device.voucherOut != null || device.voucherOut != undefined);
+        return devicesToReport;
     };
     const getAllDevicesInProjectMutation = useMutation(getAllDevicesInProject, {
         onSuccess: (devices) => {
-            queryClient.invalidateQueries({ queryKey: ["project", projectId] });
-            queryClient.invalidateQueries({ queryKey: ["vouchers", projectId] });
             if (devices.length == 0) {
                 onAlert('אין מכשירים בבצ"פ בפרוייקט.');
             } else {
-                createVoucherReport(devices, "דוח_צ'_לתאריך_" + dateTostring(Date.now()));
+                createProjectReport(devices, "דוח_צ'_לתאריך_" + dateTostring(Date.now()));
             }
         },
         onError: ({ message }) => {
