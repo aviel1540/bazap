@@ -37,6 +37,11 @@ export const getAllArrivedDevicesInProject = async ({ queryKey }) => {
     return response.data;
 };
 
+export const getDevices = async () => {
+    const response = await deviceAPI.get();
+    return response.data;
+};
+
 export const updateStatus = async (device) => {
     try {
         const { id } = device;

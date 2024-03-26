@@ -3,14 +3,14 @@ import { Controller } from "react-hook-form";
 import PropTypes, { object } from "prop-types";
 import { forwardRef } from "react";
 const ControlledSelect = forwardRef((props, ref) => {
-    const { name, label, control, validators, onFieldChange, options, placeholder } = props;
+    const { name, label, control, validators, onFieldChange, options, placeholder, disabled } = props;
 
     return (
         <Controller
             name={name}
             control={control}
             rules={validators}
-            render={({ field: { onChange, value, disabled }, fieldState: { error } }) => (
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
                 <TextField
                     inputRef={ref}
                     helperText={error ? error.message : null}
@@ -46,6 +46,7 @@ ControlledSelect.propTypes = {
     control: PropTypes.object,
     options: PropTypes.arrayOf(object),
     onFieldChange: PropTypes.func,
+    disabled: PropTypes.bool,
 };
 ControlledSelect.defaultProps = {
     onFieldChange: () => {},

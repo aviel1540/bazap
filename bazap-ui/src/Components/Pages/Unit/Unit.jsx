@@ -12,7 +12,6 @@ const Unit = () => {
         const isEdit = data != undefined;
         const modalProperties = {
             title: "יחידה חדשה",
-            maxWidth: "md",
             body: <UnitForm formValues={data} onCancel={onHide} isEdit={isEdit} />,
         };
         onShow(modalProperties);

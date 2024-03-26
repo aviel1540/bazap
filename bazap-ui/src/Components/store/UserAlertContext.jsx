@@ -42,7 +42,12 @@ export const UserAlertProvider = ({ children }) => {
             okHandler();
         }
     };
-    return <UserAlertContext.Provider value={{ onAlert, contextHolder, error, warning, onConfirm }}>{children}</UserAlertContext.Provider>;
+    return (
+        <UserAlertContext.Provider value={{ onAlert, error, warning, onConfirm }}>
+            {children}
+            {contextHolder}
+        </UserAlertContext.Provider>
+    );
 };
 
 UserAlertProvider.propTypes = {

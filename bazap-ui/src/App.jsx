@@ -12,7 +12,6 @@ import Technician from "./Components/Pages/Technician/Technician";
 import ErrorPage from "./Components/Layout/ErrorPage/ErrorPage";
 import Theme from "./Components/Layout/Theme";
 import { CustomModalProvider } from "./Components/store/CustomModalContext";
-import CustomModal from "./Components/UI/CustomModal";
 import { ProjectProvider } from "./Components/store/ProjectContext";
 import "@sweetalert2/theme-material-ui/material-ui.scss";
 import { UserAlertProvider } from "./Components/store/UserAlertContext";
@@ -39,14 +38,13 @@ const router = createBrowserRouter(
 function App() {
     return (
         <Theme>
-            <CustomModalProvider>
-                <UserAlertProvider>
-                    <ProjectProvider>
+            <UserAlertProvider>
+                <ProjectProvider>
+                    <CustomModalProvider>
                         <RouterProvider router={router} />
-                        <CustomModal />
-                    </ProjectProvider>
-                </UserAlertProvider>
-            </CustomModalProvider>
+                    </CustomModalProvider>
+                </ProjectProvider>
+            </UserAlertProvider>
         </Theme>
     );
 }

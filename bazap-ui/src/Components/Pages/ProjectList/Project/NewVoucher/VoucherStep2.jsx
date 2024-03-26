@@ -6,23 +6,31 @@ import Loader from "../../../../Layout/Loader";
 import HighlightOff from "@mui/icons-material/HighlightOff";
 import Add from "@mui/icons-material/Add";
 import { replaceApostrophe } from "../../../../../Utils/utils";
-import { getAllArrivedDevicesInProject, getDeviceBySerialNumber } from "../../../../../Utils/deviceApi";
+import { getDeviceBySerialNumber, getDevices } from "../../../../../Utils/deviceApi";
 import ImportExcel from "./ImportExcel";
 import { useUserAlert } from "../../../../store/UserAlertContext";
 import { Col, Row } from "antd";
-import { Fragment } from "react";
+import { Fragment, useState } from "react";
 import ControlledInput from "../../../../UI/CustomForm/ControlledInput";
 const filter = createFilterOptions();
 
-const VoucherStep2 = () => {
-    const { onAlert, error } = useUserAlert();
+const convertDeivcesToACOptions = (data) => {
+    return data.map((device) => {
+        return { text: device.serialNumber };
+    });
+};
 
-    const { getValues } = useFormContext();
-    const projectId = getValues("projectId");
-    const isArrive = getValues("type") == "true";
-    const { isLoading: isLoadingArrivedDevices, data: arrivedDevices } = useQuery({
-        queryKey: ["devicesInProject", projectId],
-        queryFn: getAllArrivedDevicesInProject,
+const VoucherStep2 = () => {
+    const [disabledFields, setDisabledFields] = useState({});
+    const { onAlert, error } = useUserAlert();
+    const { getValues, control, setValue } = useFormContext();
+    const isDeliveryVoucher = getValues("type") == "false";
+    const { isLoading: isLoadingArrivedDevices, data: allDevicesAutoCompleteOptions } = useQuery({
+        queryKey: ["allDevicesAutoCompleteOptions"],
+        queryFn: async () => {
+            const alldevices = await getDevices();
+            return convertDeivcesToACOptions(alldevices);
+        },
     });
     const { isLoading: isLoadingDevicesTypes, data: deviceTypes } = useQuery({
         queryKey: ["deviceTypes"],
@@ -36,8 +44,8 @@ const VoucherStep2 = () => {
         },
     });
     const isLoading = isLoadingDevicesTypes || isLoadingArrivedDevices;
-    const { control, setValue } = useFormContext();
     const { fields, append, remove } = useFieldArray({
+        rules: { minLength: 1 },
         control,
         name: "devices",
     });
@@ -50,7 +58,7 @@ const VoucherStep2 = () => {
 
         const { inputValue } = params;
         const isExisting = options.some((option) => inputValue === option.text);
-        if (isArrive) {
+        if (!isDeliveryVoucher) {
             if (inputValue !== "" && !isExisting) {
                 filtered.push({
                     inputValue,
@@ -67,11 +75,8 @@ const VoucherStep2 = () => {
         }
         return option.text;
     };
-    const arrivedDevicesText = arrivedDevices.map((device) => {
-        return { text: device.serialNumber };
-    });
 
-    const devicesToDisplay = isArrive ? [] : arrivedDevicesText;
+    const devicesToDisplay = isDeliveryVoucher ? [] : allDevicesAutoCompleteOptions;
 
     const getDeviceBySerialNumberMutation = useMutation(getDeviceBySerialNumber, {
         onError: ({ message }) => {
@@ -79,10 +84,16 @@ const VoucherStep2 = () => {
         },
     });
     const handleFieldChange = async (serialNumber, index) => {
+        setDisabledFields((prev) => {
+            const updatedState = { ...prev };
+            delete updatedState[index];
+            return updatedState;
+        });
+        setValue(`devices[${index}].deviceType`, "");
         if (serialNumber) {
             const data = await getDeviceBySerialNumberMutation.mutateAsync(serialNumber);
             if (!data.message) {
-                setValue(`devices[${index}].deviceType`, data.deviceType);
+                setDisabledFields((prev) => ({ ...prev, [index]: true }));
             }
         }
     };
@@ -103,6 +114,7 @@ const VoucherStep2 = () => {
             isNumber: true,
             validators: {
                 required: "יש למלא שדה זה.",
+                minLength: { value: 6, message: "צ' מכשיר צריך לפחות 5 תווים" },
                 validate: validateSerialNumber,
             },
             options: devicesToDisplay,
@@ -123,6 +135,11 @@ const VoucherStep2 = () => {
 
     const handleRemoveFields = (index) => {
         remove(index);
+        setDisabledFields((prev) => {
+            const updatedState = { ...prev };
+            delete updatedState[index];
+            return updatedState;
+        });
     };
     const combinedFields = fields.map((field, index) =>
         voucherInputs.map((input, deviceFieldIndex) => (
@@ -145,6 +162,7 @@ const VoucherStep2 = () => {
                                 filterOptions={onFilterOptions}
                                 inputRef={field.ref}
                                 index={index}
+                                disabled={disabledFields && disabledFields[index]}
                             />
                         )}
                     />
@@ -165,7 +183,7 @@ const VoucherStep2 = () => {
     }
     return (
         <>
-            <ImportExcel fields={fields} append={append} remove={remove} />
+            <ImportExcel fields={fields} getValues={getValues} append={append} remove={remove} setDisabledFields={setDisabledFields} />
             <Box padding={2}>
                 <Row gutter={[10, 10]}>{combinedFields}</Row>
             </Box>

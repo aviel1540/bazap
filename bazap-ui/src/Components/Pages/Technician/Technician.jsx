@@ -12,7 +12,6 @@ const Technician = () => {
         const isEdit = data != undefined;
         const modalProperties = {
             title: "טכנאי חדש",
-            maxWidth: "md",
             body: <TechnicianForm onCancel={onHide} formValues={data} isEdit={isEdit} />,
         };
         onShow(modalProperties);

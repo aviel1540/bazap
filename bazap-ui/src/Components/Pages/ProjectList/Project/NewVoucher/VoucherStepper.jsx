@@ -9,12 +9,14 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addNewDevices, returnDevice } from "../../../../../Utils/deviceApi";
 import { addVoucher } from "../../../../../Utils/voucherApi";
 import { useUserAlert } from "../../../../store/UserAlertContext";
+import { useProject } from "../../../../store/ProjectContext";
 
 const stepsLength = 2;
-const VoucherStepper = ({ onCancel, projectId, formDefaultValues }) => {
+const VoucherStepper = ({ onCancel, formDefaultValues }) => {
     const { onAlert, error } = useUserAlert();
     const [activeStep, setActiveStep] = useState(0);
     const queryClient = useQueryClient();
+    const { projectId } = useProject();
     const methods = useForm({
         defaultValues: {
             projectId,
@@ -22,8 +24,7 @@ const VoucherStepper = ({ onCancel, projectId, formDefaultValues }) => {
             ...formDefaultValues,
         },
     });
-    const { handleSubmit, formState, setError, clearErrors, getValues, reset } = methods;
-    const { isSubmitting, isDirty } = formState;
+    const { handleSubmit, setError, clearErrors, getValues, reset } = methods;
     const steps = [
         { title: "יצירת שובר", content: <VoucherStep1 /> },
         { title: "הוספת מכשירים", content: <VoucherStep2 /> },
@@ -35,7 +36,6 @@ const VoucherStepper = ({ onCancel, projectId, formDefaultValues }) => {
                 {
                     projectId,
                     devices: [{ serialNumber: "", deviceType: "" }],
-                    // ...formDefaultValues,
                 },
                 {
                     keepValues: false,
@@ -138,7 +138,7 @@ const VoucherStepper = ({ onCancel, projectId, formDefaultValues }) => {
                     <Button disabled={activeStep === 0} size="small" onClick={handleBack}>
                         חזור
                     </Button>
-                    <Button type="submit" size="small" variant="contained" color="primary" disabled={isSubmitting || !isDirty}>
+                    <Button type="submit" size="small" variant="contained" color="primary">
                         {activeStep === stepsLength - 1 ? "שמור" : "הבא"}
                     </Button>
                 </Stack>
@@ -149,7 +149,6 @@ const VoucherStepper = ({ onCancel, projectId, formDefaultValues }) => {
 VoucherStepper.propTypes = {
     onCancel: PropTypes.func.isRequired,
     formDefaultValues: PropTypes.object,
-    projectId: PropTypes.string.isRequired,
 };
 
 export default VoucherStepper;

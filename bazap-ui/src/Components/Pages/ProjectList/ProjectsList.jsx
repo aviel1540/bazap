@@ -21,7 +21,6 @@ const ProjectsList = () => {
     }
     const modalProperties = {
         title: "פרוייקט חדש",
-        maxWidth: "md",
         body: <ProjectForm onCancel={onHide} />,
     };
     const showModal = () => {

@@ -3,9 +3,7 @@ import Loader from "./Loader";
 import { Suspense } from "react";
 import PageLayout from "./PageLayout";
 import { Box } from "@mui/material";
-import { useUserAlert } from "../store/UserAlertContext";
 function RootLayout() {
-    const { contextHolder } = useUserAlert();
     return (
         <>
             <PageLayout>
@@ -22,7 +20,6 @@ function RootLayout() {
                             <Outlet />
                         </main>
                     </Suspense>
-                    {contextHolder}
                 </Box>
             </PageLayout>
         </>

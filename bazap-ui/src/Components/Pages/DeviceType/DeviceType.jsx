@@ -15,7 +15,6 @@ const DeviceType = () => {
     });
     const modalProperties = {
         title: "סוג מוצר חדש",
-        maxWidth: "md",
         body: <DeviceTypeForm onCancel={onHide} />,
     };
     const showModal = () => {

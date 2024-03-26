@@ -134,7 +134,6 @@ const ArrivedDevices = () => {
         const devices = filteredDevices.filter((device) => selectedRowKeys.includes(device._id));
         const modalPropertiesChangeStatus = {
             title: "שינוי סטטוס",
-            maxWidth: "md",
             body: (
                 <StatusForm
                     status={selectedRowKeys.length == 0 ? null : device.status}
@@ -158,7 +157,6 @@ const ArrivedDevices = () => {
         };
         const modalPropertiesCreateVoucher = {
             title: "שובר חדש",
-            maxWidth: "md",
             body: <VoucherStepper onCancel={onHide} projectId={projectId} formDefaultValues={formDefaultValues} />,
         };
         onShow(modalPropertiesCreateVoucher);

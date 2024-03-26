@@ -12,8 +12,7 @@ import { createProjectReport } from "../../../../Utils/excelUtils";
 import VoucherStepper from "./NewVoucher/VoucherStepper";
 import { useCustomModal } from "../../../store/CustomModalContext";
 import { getAllArrivedDevicesInProject } from "../../../../Utils/deviceApi";
-// import VoucherStepper from "./Voucher/VoucherStepper/VoucherStepper";
-
+// import VoucherStepper from "./VoucherStepper/VoucherStepper";
 const ProjectSideBar = () => {
     const { projectId } = useProject();
     const { onAlert, warning } = useUserAlert();
@@ -42,10 +41,10 @@ const ProjectSideBar = () => {
     const createDeviceReport = () => {
         getAllDevicesInProjectMutation.mutate(projectId);
     };
+
     const modalProperties = {
         title: "שובר חדש",
-        maxWidth: "md",
-        body: <VoucherStepper onCancel={onHide} projectId={projectId} />,
+        body: <VoucherStepper onCancel={onHide} />,
         // body: <VoucherStepper onCancel={onHide} projectId={projectId} />,
     };
 
