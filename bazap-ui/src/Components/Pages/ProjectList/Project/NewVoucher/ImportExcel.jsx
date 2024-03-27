@@ -9,7 +9,7 @@ import { FileExcelOutlined, ImportOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import { replaceApostrophe } from "../../../../../Utils/utils";
 
-const ImportExcel = ({ remove, append, setDisabledFields, getValues }) => {
+const ImportExcel = ({ remove, append, setDisabledFields, getValues, isDeliveryVoucher, setSelectedRowKeys }) => {
     const [loading, setLoading] = useState(false);
 
     const { onAlert, error } = useUserAlert();
@@ -33,35 +33,66 @@ const ImportExcel = ({ remove, append, setDisabledFields, getValues }) => {
             }
             setLoading(false);
             readXlsxFile(file)
-                .then((rows) => {
+                .then(async (rows) => {
                     const excelDevices = readDevicesExcelFile(rows);
-                    const firstDevice = getValues().devices[0];
-                    if (firstDevice.serialNumber == "" && firstDevice.deviceType == "") {
-                        remove(0);
-                    }
-                    const allDevices = getValues().devices;
-                    let addedIndex = allDevices.length;
-                    excelDevices.forEach(async (device) => {
-                        const deviceFromDb = await getDeviceBySerialNumberMutation.mutateAsync(device.serialNumber);
-                        let deviceType = device.deviceType;
-                        if (!deviceFromDb.message) {
-                            deviceType = replaceApostrophe(deviceFromDb.deviceType);
+                    if (!isDeliveryVoucher) {
+                        const firstDevice = getValues().devices[0];
+                        if (firstDevice.serialNumber == "" && firstDevice.deviceType == "") {
+                            remove(0);
                         }
-                        if (allDevices.findIndex((dev) => dev.serialNumber == device.serialNumber) == -1) {
-                            append({
-                                serialNumber: device.serialNumber,
-                                deviceType: deviceType,
-                            });
-                            if (deviceType) {
-                                setDisabledFields((prev) => {
-                                    const newState = prev;
-                                    newState[addedIndex] = true;
-                                    addedIndex++;
-                                    return newState;
+                        const allDevices = getValues().devices;
+                        let addedIndex = allDevices.length;
+                        const indexes = [];
+                        for (let i = 0; i < excelDevices.length; i++) {
+                            const device = excelDevices[i];
+                            const deviceFromDb = await getDeviceBySerialNumberMutation.mutateAsync(device.serialNumber);
+                            let deviceType = device.deviceType;
+                            if (!deviceFromDb.message) {
+                                deviceType = replaceApostrophe(deviceFromDb.deviceType);
+                            }
+                            if (allDevices.findIndex((dev) => dev.serialNumber == device.serialNumber) == -1) {
+                                append({
+                                    serialNumber: device.serialNumber,
+                                    deviceType: deviceType,
                                 });
+                                if (deviceType) {
+                                    indexes.push(addedIndex);
+                                    addedIndex++;
+                                }
                             }
                         }
-                    });
+                        setDisabledFields((prev) => {
+                            const newState = { ...prev }; 
+                            indexes.forEach((index) => {
+                                newState[index] = true; 
+                            });
+                            return newState;
+                        });
+                    } else {
+                        const notFoundDevices = [];
+                        const foundedDevicesIds = [];
+                        const promises = excelDevices.map(async (device) => {
+                            const deviceFromDb = await getDeviceBySerialNumberMutation.mutateAsync(device.serialNumber);
+                            if (!deviceFromDb.message) {
+                                foundedDevicesIds.add(deviceFromDb._id);
+                            } else {
+                                notFoundDevices.push(device.serialNumber);
+                            }
+                        });
+
+                        await Promise.all(promises);
+
+                        const uniqueIds = Array.from(foundedDevicesIds); 
+
+                        setSelectedRowKeys((prevState) => {
+                            const newIds = uniqueIds.filter((id) => !prevState.includes(id));
+                            return [...prevState, ...newIds]; 
+                        });
+
+                        if (notFoundDevices.length > 0) {
+                            message.info("מכשירים עם הצ': " + notFoundDevices.join(", ") + " לא נמצאו ברשימת המכשירים הזמינים לניפוק");
+                        }
+                    }
                 })
                 .catch((error) => {
                     console.error("Error reading file:", error);
@@ -105,5 +136,7 @@ ImportExcel.propTypes = {
     append: PropTypes.func,
     setDisabledFields: PropTypes.func,
     getValues: PropTypes.func,
+    isDeliveryVoucher: PropTypes.bool,
+    setSelectedRowKeys: PropTypes.func,
 };
 export default ImportExcel;
