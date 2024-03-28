@@ -1,15 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getAllArrivedDevicesInProject } from "../../../../../Utils/deviceApi";
-import Loader from "../../../../Layout/Loader";
-import {
-    ALL,
-    DeviceStatuses,
-    FIXED_OR_DEFFECTIVE,
-    RETURNED,
-    addKeysToArray,
-    replaceApostrophe,
-    tagColors,
-} from "../../../../../Utils/utils";
+import { ALL, DeviceStatuses, FIXED_OR_DEFFECTIVE, RETURNED, replaceApostrophe } from "../../../../../Utils/utils";
 import { useEffect, useState } from "react";
 import { Box, Card, CardContent, CardHeader } from "@mui/material";
 import LightButton from "../../../../UI/LightButton";
@@ -20,10 +11,10 @@ import SearchInput from "../../../../UI/SearchInput";
 import { useProject } from "../../../../store/ProjectContext";
 import StatusFilter from "./StatusFilter";
 import VoucherStepper from "../NewVoucher/VoucherStepper";
-import { Space, Table, Tag } from "antd";
+import { Space } from "antd";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CustomDropDown from "../../../../UI/CustomDropDown";
-import EmptyData from "../../../../UI/EmptyData";
+import DevicesInProjectTable from "./DevicesInProjectTable";
 
 const menuActions = [
     {
@@ -150,10 +141,7 @@ const ArrivedDevices = () => {
         const formDefaultValues = {
             type: "false",
             unit: filteredDevices[0].unit._id,
-            devices: selectedRowKeys.map((deviceKey) => {
-                const device = filteredDevices.find((dev) => dev._id === deviceKey);
-                return { serialNumber: device.serialNumber, deviceType: replaceApostrophe(device.deviceType) };
-            }),
+            devicesIds: selectedRowKeys
         };
         const modalPropertiesCreateVoucher = {
             title: "שובר חדש",
@@ -162,30 +150,12 @@ const ArrivedDevices = () => {
         onShow(modalPropertiesCreateVoucher);
     };
 
-    const columns = [
-        {
-            title: "צ' מכשיר",
-            dataIndex: "serialNumber",
-            key: "serialNumber",
-        },
-        {
-            title: "סטטוס",
-            dataIndex: "status",
-            key: "status",
-            render: (_, { status }) => <Tag color={tagColors[status]}>{status}</Tag>,
-        },
-        {
-            title: "סוג מכשיר",
-            dataIndex: "deviceType",
-            render: (_, row) => replaceApostrophe(row.deviceType),
-            key: "deviceType",
-        },
-        {
-            title: "פעולות",
-            key: "menu",
-            render: (_, row) => <CustomDropDown actions={menuActions} data={row} />,
-        },
-    ];
+    const columns = {
+        title: "פעולות",
+        key: "menu",
+        render: (_, row) => <CustomDropDown actions={menuActions} data={row} />,
+    };
+
     const onSelectChange = (newSelectedRowKeys) => {
         setSelectedRowKeys(newSelectedRowKeys);
     };
@@ -193,19 +163,6 @@ const ArrivedDevices = () => {
         selectedRowKeys,
         onChange: onSelectChange,
     };
-
-    const paginationOptions = {
-        showSizeChanger: true,
-        pageSizeOptions: ["5", "10", "20", "30"],
-        defaultPageSize: 10,
-        locale: {
-            items_per_page: "/ עמוד",
-        },
-        showTotal: (total, range) => `${range[0]}-${range[1]} מתוך ${total} מכשירים`,
-    };
-    if (isLoading) {
-        return <Loader />;
-    }
 
     return (
         <Card>
@@ -241,21 +198,23 @@ const ArrivedDevices = () => {
             />
             <CardContent>
                 <Box marginBottom={2}>
-                    <Space size="small">
-                        <SearchInput onSearch={handleSearchChange} />
-                        <StatusFilter
-                            checkIfStatusExists={checkIfStatusExists}
-                            selectedStatus={selectedStatus}
-                            handleStatusChange={handleStatusChange}
-                        />
-                    </Space>
+                    {!isLoading && (
+                        <Space size="small">
+                            <SearchInput onSearch={handleSearchChange} />
+                            <StatusFilter
+                                checkIfStatusExists={checkIfStatusExists}
+                                selectedStatus={selectedStatus}
+                                handleStatusChange={handleStatusChange}
+                            />
+                        </Space>
+                    )}
                 </Box>
-                <Table
-                    locale={{ emptyText: <EmptyData label="אין מכשירים להצגה" /> }}
-                    rowSelection={selectedStatus != ALL && selectedStatus != RETURNED && rowSelection}
-                    dataSource={addKeysToArray(filteredDevices, "key", "_id")}
-                    pagination={paginationOptions}
-                    columns={columns}
+                <DevicesInProjectTable
+                    filteredDevices={filteredDevices}
+                    rowSelection={selectedStatus != ALL && selectedStatus != RETURNED ? rowSelection : undefined}
+                    defaultPageSize={25}
+                    isLoading={isLoading}
+                    additionalColumns={columns}
                 />
             </CardContent>
         </Card>

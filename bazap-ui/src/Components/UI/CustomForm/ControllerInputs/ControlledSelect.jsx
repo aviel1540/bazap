@@ -28,7 +28,7 @@ const ControlledSelect = forwardRef((props, ref) => {
                     label={label}
                     variant="outlined"
                 >
-                    {options.map((opt) => (
+                    {options?.map((opt) => (
                         <MenuItem key={`${opt.value}${name}`} value={opt.value}>
                             {opt.text}
                         </MenuItem>
