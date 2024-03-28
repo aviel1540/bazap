@@ -6,7 +6,6 @@ const deviceSchema = new Schema({
     catalogNumber: {
         type: String,
         trim: true,
-        // required: true,
     },
     serialNumber: {
         type: String,
