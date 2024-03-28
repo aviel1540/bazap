@@ -74,7 +74,6 @@ const VoucherStep1 = () => {
         {
             label: "חייל מנפק",
             name: "arrivedBy",
-            disabled: isTypeSelected,
             type: technicianType.arrivedBy,
             placeholder: "לדוגמא מור",
             validators: {

@@ -1,15 +1,15 @@
-import { Box, Button, Divider, Stack, Step, StepLabel, Stepper } from "@mui/material";
+import { Box, Divider, Step, StepLabel, Stepper } from "@mui/material";
 import { useForm, FormProvider } from "react-hook-form";
-import LightButton from "../../../../UI/LightButton";
 import PropTypes from "prop-types";
 import VoucherStep1 from "./VoucherStep1";
 import VoucherStep2 from "./VoucherStep2";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { addNewDevices, returnDevice } from "../../../../../Utils/deviceApi";
+import { returnDevice } from "../../../../../Utils/deviceApi";
 import { addVoucher } from "../../../../../Utils/voucherApi";
 import { useUserAlert } from "../../../../store/UserAlertContext";
 import { useProject } from "../../../../store/ProjectContext";
+import { Button, Flex, Space } from "antd";
 
 const stepsLength = 2;
 const VoucherStepper = ({ onCancel, formDefaultValues }) => {
@@ -24,34 +24,15 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
             ...formDefaultValues,
         },
     });
-    const { handleSubmit, setError, clearErrors, getValues, reset } = methods;
+    const { handleSubmit, setError, clearErrors, getValues } = methods;
+
     const steps = [
         { title: "יצירת שובר", content: <VoucherStep1 /> },
         { title: "הוספת מכשירים", content: <VoucherStep2 /> },
     ];
-    const stepperCancel = () => {
-        onCancel();
-        setTimeout(() => {
-            reset(
-                {
-                    projectId,
-                    devices: [{ serialNumber: "", deviceType: "" }],
-                },
-                {
-                    keepValues: false,
-                    keepIsSubmitted: false,
-                    keepTouched: false,
-                    keepIsValid: false,
-                    keepDirtyValues: false,
-                    keepDirty: false,
-                    keepErrors: false,
-                },
-            );
-            setActiveStep(0);
-        }, 200);
-    };
+
     const handleNext = async () => {
-        const result = await handleSubmit(() => {})(methods.getValues());
+        const result = await handleSubmit(() => {})(getValues());
         if (result) {
             setError(Object.keys(result)[0], {
                 type: "manual",
@@ -60,7 +41,12 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
         } else {
             clearErrors();
             if (activeStep == stepsLength - 1) {
-                handleSave();
+                const isDeliveryVoucher = getValues("type") == "false";
+                if (isDeliveryVoucher) {
+                    returnDevicesMutation.mutate(getValues());
+                } else {
+                    addVoucherMutation.mutate(getValues());
+                }
             } else {
                 setActiveStep((prevStep) => prevStep + 1);
             }
@@ -76,34 +62,13 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
             onAlert(message, error);
         },
     });
-    const addNewDevicesMutation = useMutation(addNewDevices, {
+
+    const addVoucherMutation = useMutation(addVoucher, {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["vouchers", projectId] });
             queryClient.invalidateQueries({ queryKey: ["devicesInProject", projectId] });
             queryClient.invalidateQueries(["project", projectId]);
-        },
-        onError: ({ message }) => {
-            onAlert(message, error);
-        },
-    });
-    const addVoucherMutation = useMutation(addVoucher, {
-        onSuccess: (data) => {
-            const voucherId = data.data.id;
-            const voucherData = getValues();
-            const isReturnVoucher = voucherData.type == "false";
-            if (isReturnVoucher) {
-                const devices = voucherData.devices.map((device) => device.serialNumber);
-                returnDevicesMutation.mutate({ devices, voucherId });
-            } else {
-                const devices = voucherData.devices.map((device) => ({
-                    serialNumber: device.serialNumber,
-                    type: device.deviceType,
-                    voucherId: voucherId,
-                    unitId: voucherData.unit,
-                }));
-                addNewDevicesMutation.mutate(devices);
-            }
-            stepperCancel();
+            onCancel();
         },
         onError: ({ message }) => {
             onAlert(message, error);
@@ -112,11 +77,7 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
     const handleBack = () => {
         setActiveStep((prevStep) => prevStep - 1);
     };
-
-    const handleSave = () => {
-        addVoucherMutation.mutate(getValues());
-    };
-
+    const isLoading = returnDevicesMutation.isLoading || addVoucherMutation.isLoading;
     return (
         <FormProvider {...methods}>
             <form onSubmit={handleSubmit(handleNext)}>
@@ -130,18 +91,22 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
                 <Box p={2} mt={1}>
                     {steps[activeStep].content}
                 </Box>
-                <Divider variant="fullWidth" sx={{ paddingTop: 2 }} />
-                <Stack spacing={2} direction="row" marginTop={2}>
-                    <LightButton size="small" btncolor="dark" onClick={stepperCancel} variant="contained">
-                        בטל
-                    </LightButton>
-                    <Button disabled={activeStep === 0} size="small" onClick={handleBack}>
-                        חזור
-                    </Button>
-                    <Button type="submit" size="small" variant="contained" color="primary">
-                        {activeStep === stepsLength - 1 ? "שמור" : "הבא"}
-                    </Button>
-                </Stack>
+                <Divider />
+                <Flex justify="flex-end" style={{ padding: "8px" }} salign="center">
+                    <Space>
+                        <Button onClick={onCancel} style={{ marginLeft: 8 }}>
+                            בטל
+                        </Button>
+                        <Button onClick={handleBack} disabled={activeStep == 0}>
+                            חזור
+                        </Button>
+                        {!isLoading && (
+                            <Button type="primary" htmlType="submit">
+                                {activeStep === stepsLength - 1 ? "שמור" : "הבא"}
+                            </Button>
+                        )}
+                    </Space>
+                </Flex>
             </form>
         </FormProvider>
     );

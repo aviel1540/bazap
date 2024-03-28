@@ -45,7 +45,6 @@ const ProjectSideBar = () => {
     const modalProperties = {
         title: "שובר חדש",
         body: <VoucherStepper onCancel={onHide} />,
-        // body: <VoucherStepper onCancel={onHide} projectId={projectId} />,
     };
 
     const addVoucher = () => {

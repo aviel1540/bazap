@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import propTypes from "prop-types";
 import { Modal } from "antd";
+import { v4 as uuidv4 } from "uuid";
 
 const CustomModalContext = createContext();
 
@@ -11,6 +12,7 @@ const defaultOptions = {
 };
 export const CustomModalProvider = ({ children }) => {
     const [show, setShow] = useState(false);
+    const [keyProp, setKeyProp] = useState(uuidv4());
     const [options, setOptions] = useState(defaultOptions);
     useEffect(() => {
         if (show == false) {
@@ -25,12 +27,13 @@ export const CustomModalProvider = ({ children }) => {
     };
     const onHide = () => {
         setShow(false);
+        setKeyProp(uuidv4());
     };
     return (
         <CustomModalContext.Provider value={{ show, onShow, onHide, options, setOptions }}>
             {children}
             <Modal open={show} title={options.title} onCancel={onHide} width="40%" centered footer={null}>
-                {options.body}
+                <div key={keyProp}>{options.body}</div>
             </Modal>
         </CustomModalContext.Provider>
     );
