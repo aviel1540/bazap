@@ -62,7 +62,7 @@ exports.addNewVoucherIn = async (req, res) => {
 
         for (const deviceData of devicesData) {
             const serialNumber = escape(deviceData.serialNumber);
-            const type = escape(deviceData.type);
+            const type = escape(deviceData.deviceType);
 
             if (!serialNumber || !type) {
                 return res.status(400).json({ message: "נא למלא את כל השדות" });
