@@ -40,7 +40,7 @@ exports.addNewVoucherIn = async (req, res) => {
 
         project = await projectService.findProjectById(checkProjectId);
         if (!project) return res.status(404).json({ message: "לא נמצא פרויקט" });
-        const autoNumber = await autoNumberService.findAutoNumber();
+        let autoNumber = await autoNumberService.findAutoNumber();
 
         if (autoNumber.length == 0) {
             autoNumber = await autoNumberService.createAutoNumber();
