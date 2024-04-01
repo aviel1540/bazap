@@ -24,18 +24,18 @@ exports.addNewVoucherIn = async (req, res) => {
     const unit = escape(req.body.unit);
     const type = escape(req.body.type); //boolean - true
     const arrivedBy = escape(req.body.arrivedBy);
-    const recievedBy = escape(req.body.recievedBy);
+    const receivedBy = escape(req.body.receivedBy);
     const devicesData = req.body.devicesData;
     let newVoucher;
     let project;
     try {
-        if (![unit, type, arrivedBy, recievedBy].every(Boolean)) {
+        if (![unit, type, arrivedBy, receivedBy].every(Boolean)) {
             return res.status(400).json({ message: "נא למלא את כל השדות." });
         }
         if(type === false) return res.status(400).json({ message:"לא ניתן ליצור שובר ניפוק דרך חלון זה"})
         const checkUnitName = validation.addSlashes(unit);
         const checkArrivedBy = validation.addSlashes(arrivedBy);
-        const checkreceivedBy = validation.addSlashes(recievedBy);
+        const checkreceivedBy = validation.addSlashes(receivedBy);
         const checkProjectId = validation.addSlashes(projectId);
 
         project = await projectService.findProjectById(checkProjectId);
@@ -129,19 +129,19 @@ exports.addNewVoucherOut = async(req,res) => {
     const unit = escape(req.body.unit);
     const type = escape(req.body.type); //boolean - false
     const arrivedBy = escape(req.body.arrivedBy);
-    const recievedBy = escape(req.body.recievedBy);
+    const receivedBy = escape(req.body.receivedBy);
     const devicesIds = req.body.devicesIds;
     let newVoucher;
     let project;
     try { 
-        if (![unit, type, arrivedBy, recievedBy].every(Boolean)) {
+        if (![unit, type, arrivedBy, receivedBy].every(Boolean)) {
             return res.status(400).json({ message: "נא למלא את כל השדות." });
         }
         if(type === true) return res.status(400).json({ message:"לא ניתן ליצור שובר קבלה דרך חלון זה"})
         console.log(type)
         const checkUnitName = validation.addSlashes(unit);
         const checkArrivedBy = validation.addSlashes(arrivedBy);
-        const checkreceivedBy = validation.addSlashes(recievedBy);
+        const checkreceivedBy = validation.addSlashes(receivedBy);
         const checkProjectId = validation.addSlashes(projectId);
     } catch(err)  {
 
