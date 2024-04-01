@@ -45,7 +45,10 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
                 if (isDeliveryVoucher) {
                     returnDevicesMutation.mutate(getValues());
                 } else {
-                    addVoucherMutation.mutate(getValues());
+                    let values = getValues();
+                    values = { ...values, devicesData: values.devices };
+                    delete values.devices;
+                    addVoucherMutation.mutate(values);
                 }
             } else {
                 setActiveStep((prevStep) => prevStep + 1);
