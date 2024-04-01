@@ -31,7 +31,7 @@ export const deleteVoucher = async (voucherId) => {
 export const addVoucher = async (voucher) => {
     try {
         const { projectId } = voucher;
-        return await voucherAPI.post(`/add-new-voucher/${projectId}`, voucher);
+        return await voucherAPI.post(`/add-new-voucher-in/${projectId}`, voucher);
     } catch (error) {
         throw new Error(error.response.data.message);
     }

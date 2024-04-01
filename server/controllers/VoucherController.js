@@ -5,7 +5,6 @@ const voucherService = require("../services/voucherServices");
 const projectService = require("../services/projectServices");
 const autoNumberService = require("../services/autoNumberServices");
 
-
 exports.getVoucherById = async (req, res) => {
     const voucherId = escape(req.params.id);
     let voucher;
@@ -32,7 +31,7 @@ exports.addNewVoucherIn = async (req, res) => {
         if (![unit, type, arrivedBy, receivedBy].every(Boolean)) {
             return res.status(400).json({ message: "נא למלא את כל השדות." });
         }
-        if(type === false) return res.status(400).json({ message:"לא ניתן ליצור שובר ניפוק דרך חלון זה"})
+        if (type === false) return res.status(400).json({ message: "לא ניתן ליצור שובר ניפוק דרך חלון זה" });
         const checkUnitName = validation.addSlashes(unit);
         const checkArrivedBy = validation.addSlashes(arrivedBy);
         const checkreceivedBy = validation.addSlashes(receivedBy);
@@ -41,20 +40,28 @@ exports.addNewVoucherIn = async (req, res) => {
         project = await projectService.findProjectById(checkProjectId);
         if (!project) return res.status(404).json({ message: "לא נמצא פרויקט" });
         let autoNumber = await autoNumberService.findAutoNumber();
-
-        if (autoNumber.length == 0) {
+        if (!autoNumber) {
             autoNumber = await autoNumberService.createAutoNumber();
+            await autoNumber.save();
         }
-        number = autoNumber[0].voucherNumber;
+
+        number = autoNumber.voucherNumber;
 
         const voucherNumber = validation.leftPadWithZero(number + 1);
 
-        newVoucher = await voucherService.addVoucherIn({ voucherNumber, checkUnitName, checkArrivedBy, checkreceivedBy, type, checkProjectId })
+        newVoucher = await voucherService.addVoucherIn({
+            voucherNumber,
+            checkUnitName,
+            checkArrivedBy,
+            checkreceivedBy,
+            type,
+            checkProjectId,
+        });
         if (!newVoucher) {
             return res.status(400).json({ message: "לא נוצר שובר נא לנסות שוב" });
         }
-        const updatedAutoNumber = await autoNumberService.findAutoNumberAndUpdate(autoNumber[0]._id, number);
-        await updatedAutoNumber.save()
+        const updatedAutoNumber = await autoNumberService.findAutoNumberAndUpdate(autoNumber._id, number);
+        await updatedAutoNumber.save();
 
         if (!devicesData || !Array.isArray(devicesData) || devicesData.length === 0) {
             return res.status(400).json({ message: "לא נמצאו מכשירים" });
@@ -82,7 +89,7 @@ exports.addNewVoucherIn = async (req, res) => {
         await newVoucher.save();
         project.vouchersList.push(newVoucher);
         await project.save(newVoucher);
-        console.log(newVoucher)
+        console.log(newVoucher);
         return res.status(201).json({ message: "שובר נוצר ושויך בהצלחה !", id: newVoucher.id });
     } catch (err) {
         return res.status(500).json({ message: err.message });
@@ -124,7 +131,7 @@ exports.deleteVoucher = async (req, res) => {
     }
 };
 
-exports.addNewVoucherOut = async(req,res) => {
+exports.addNewVoucherOut = async (req, res) => {
     const projectId = escape(req.params.projectId);
     const unit = escape(req.body.unit);
     const type = escape(req.body.type); //boolean - false
@@ -133,19 +140,15 @@ exports.addNewVoucherOut = async(req,res) => {
     const devicesIds = req.body.devicesIds;
     let newVoucher;
     let project;
-    try { 
+    try {
         if (![unit, type, arrivedBy, receivedBy].every(Boolean)) {
             return res.status(400).json({ message: "נא למלא את כל השדות." });
         }
-        if(type === true) return res.status(400).json({ message:"לא ניתן ליצור שובר קבלה דרך חלון זה"})
-        console.log(type)
+        if (type === true) return res.status(400).json({ message: "לא ניתן ליצור שובר קבלה דרך חלון זה" });
+        console.log(type);
         const checkUnitName = validation.addSlashes(unit);
         const checkArrivedBy = validation.addSlashes(arrivedBy);
         const checkreceivedBy = validation.addSlashes(receivedBy);
         const checkProjectId = validation.addSlashes(projectId);
-    } catch(err)  {
-
-    }
-}
-
-
+    } catch (err) {}
+};
