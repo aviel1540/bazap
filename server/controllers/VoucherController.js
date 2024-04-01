@@ -1,12 +1,9 @@
 const escape = require("escape-html");
 const validation = require("../utils/validation");
-const leftPadWithZero = require("../utils/validation");
 const deviceService = require("../services/deviceServices");
 const voucherService = require("../services/voucherServices");
 const projectService = require("../services/projectServices");
 const autoNumberService = require("../services/autoNumberServices");
-
-
 
 
 exports.getVoucherById = async (req, res) => {
@@ -24,12 +21,8 @@ exports.getVoucherById = async (req, res) => {
 
 exports.addNewVoucherIn = async (req, res) => {
     const projectId = escape(req.params.projectId);
-    // const unitName = escape(req.body.unit);
-    // // console.log(type);
-    // const arrivedBy = escape(req.body.arrivedBy);
-    // const receivedBy = escape(req.body.receivedBy);
     const unit = escape(req.body.unit);
-    const type = escape(req.body.type); //boolean
+    const type = escape(req.body.type); //boolean - true
     const arrivedBy = escape(req.body.arrivedBy);
     const recievedBy = escape(req.body.recievedBy);
     const devicesData = req.body.devicesData;
@@ -39,6 +32,7 @@ exports.addNewVoucherIn = async (req, res) => {
         if (![unit, type, arrivedBy, recievedBy].every(Boolean)) {
             return res.status(400).json({ message: "נא למלא את כל השדות." });
         }
+        if(type === false) return res.status(400).json({ message:"לא ניתן ליצור שובר ניפוק דרך חלון זה"})
         const checkUnitName = validation.addSlashes(unit);
         const checkArrivedBy = validation.addSlashes(arrivedBy);
         const checkreceivedBy = validation.addSlashes(recievedBy);
@@ -129,5 +123,29 @@ exports.deleteVoucher = async (req, res) => {
         return res.status(401).json({ message: err.message });
     }
 };
+
+exports.addNewVoucherOut = async(req,res) => {
+    const projectId = escape(req.params.projectId);
+    const unit = escape(req.body.unit);
+    const type = escape(req.body.type); //boolean - false
+    const arrivedBy = escape(req.body.arrivedBy);
+    const recievedBy = escape(req.body.recievedBy);
+    const devicesIds = req.body.devicesIds;
+    let newVoucher;
+    let project;
+    try { 
+        if (![unit, type, arrivedBy, recievedBy].every(Boolean)) {
+            return res.status(400).json({ message: "נא למלא את כל השדות." });
+        }
+        if(type === true) return res.status(400).json({ message:"לא ניתן ליצור שובר קבלה דרך חלון זה"})
+        console.log(type)
+        const checkUnitName = validation.addSlashes(unit);
+        const checkArrivedBy = validation.addSlashes(arrivedBy);
+        const checkreceivedBy = validation.addSlashes(recievedBy);
+        const checkProjectId = validation.addSlashes(projectId);
+    } catch(err)  {
+
+    }
+}
 
 

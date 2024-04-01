@@ -6,6 +6,8 @@ router.get("/:id", voucherController.getVoucherById);
 
 router.get("/find-all-vouchers/:projectId", voucherController.getAllVouchersInProject);
 
-router.post("/add-new-voucher/:projectId", voucherController.addNewVoucherIn);
+router.post("/add-new-voucher-in/:projectId", voucherController.addNewVoucherIn);
+
+router.post("/add-new-voucher-out/:projectId" , voucherController.addNewVoucherOut);
 
 router.delete("/delete/:id", voucherController.deleteVoucher);
