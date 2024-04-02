@@ -90,7 +90,7 @@ exports.updateProject = async (req, res) => {
     }
 };
 
-exports.closeProject = async(req,res) => {
+exports.closeProject = async (req, res) => {
     const projectId = escape(req.params.id);
 
     let project;
@@ -99,16 +99,26 @@ exports.closeProject = async(req,res) => {
         project = await projectService.findProjectById(checkProjectId);
 
         const checkIfDevicesInLab = await deviceService.findAllDevicesInLab(projectId);
-        if(checkIfDevicesInLab.length > 0) {
-            return res.status(400).json({message: "לא ניתן לסגור - קיימים מכשירים במעבדה"});
+        if (checkIfDevicesInLab.length > 0) {
+            return res.status(400).json({ message: "לא ניתן לסגור - קיימים מכשירים במעבדה" });
         }
         project = await projectService.updateDateToClose(projectId);
-        if(!project) {
-            return res.status(401).json({message:"לא נמצא פרויקט"});
+        if (!project) {
+            return res.status(401).json({ message: "לא נמצא פרויקט" });
         }
         await project.save();
-        return res.status(201).json({message:"Success"})
-    } catch(err) {
-        return res.status(500).json({message:"Failed"})
+        return res.status(201).json({ message: "Success" })
+    } catch (err) {
+        return res.status(500).json({ message: "Failed" })
+    }
+}
+
+exports.openOldProject = async (req, res) => {
+    const projectId = escape(req.params.id)
+    let project;
+    try {
+        
+    } catch (err) {
+
     }
 }
