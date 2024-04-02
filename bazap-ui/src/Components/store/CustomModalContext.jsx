@@ -1,40 +1,75 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import propTypes from "prop-types";
 import { Modal } from "antd";
 import { v4 as uuidv4 } from "uuid";
 
 const CustomModalContext = createContext();
 
-const defaultOptions = {
-    title: "מודל חדש",
-    body: <></>,
-    // onCancelHandler: () => {},
-};
 export const CustomModalProvider = ({ children }) => {
-    const [show, setShow] = useState(false);
-    const [keyProp, setKeyProp] = useState(uuidv4());
-    const [options, setOptions] = useState(defaultOptions);
-    useEffect(() => {
-        if (show == false) {
-            setOptions(defaultOptions);
-        }
-    }, [show]);
+    const [modalState, setModalState] = useState([]);
+
     const onShow = (modalOptions) => {
-        setOptions(modalOptions);
-        setTimeout(() => {
-            setShow(true);
-        }, 100);
+        const { name } = modalOptions;
+        const checkIfModalExist = modalState.find((item) => item.name === name);
+        if (checkIfModalExist) {
+            setModalState((prevState) => {
+                const newState = [...prevState];
+                const curModal = newState.find((mState) => mState.name === name);
+                curModal.options = modalOptions;
+                return newState;
+            });
+            setTimeout(() => {
+                setModalState((prevState) => {
+                    const newState = [...prevState];
+                    const curModal = newState.find((mState) => mState.name === name);
+                    curModal.show = true;
+                    return newState;
+                });
+            }, 100);
+        } else {
+            setModalState((prevState) => [...prevState, { show: false, name: name, options: modalOptions, key: uuidv4() }]);
+            setTimeout(() => {
+                setModalState((prevState) => {
+                    const newState = [...prevState];
+                    const curModal = newState.find((item) => item.name === name);
+                    curModal.show = true;
+                    return newState;
+                });
+            }, 100);
+        }
     };
-    const onHide = () => {
-        setShow(false);
-        setKeyProp(uuidv4());
+    const onHide = (name) => {
+        setModalState((prevState) => {
+            const newState = [...prevState];
+            const curModal = newState.find((item) => item.name === name);
+            curModal.show = false;
+            return newState;
+        });
+        setTimeout(() => {
+            setModalState((prevState) => {
+                const newState = [...prevState];
+                const curModal = newState.find((item) => item.name === name);
+                curModal.key = uuidv4();
+                return newState;
+            });
+        }, 200);
     };
     return (
-        <CustomModalContext.Provider value={{ show, onShow, onHide, options, setOptions }}>
+        <CustomModalContext.Provider value={{ onShow, onHide }}>
             {children}
-            <Modal open={show} title={options.title} onCancel={onHide} width="40%" centered footer={null}>
-                <div key={keyProp}>{options.body}</div>
-            </Modal>
+            {modalState.map((mState) => (
+                <Modal
+                    key={mState.key}
+                    open={mState.show}
+                    title={mState.options.title}
+                    onCancel={() => onHide(mState.name)}
+                    width="40%"
+                    centered
+                    footer={null}
+                >
+                    <div key={mState.key}>{mState.options.body}</div>
+                </Modal>
+            ))}
         </CustomModalContext.Provider>
     );
 };

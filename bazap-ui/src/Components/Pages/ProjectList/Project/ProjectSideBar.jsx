@@ -44,7 +44,8 @@ const ProjectSideBar = () => {
 
     const modalProperties = {
         title: "שובר חדש",
-        body: <VoucherStepper onCancel={onHide} />,
+        name: "voucherStepper",
+        body: <VoucherStepper onCancel={() => onHide("voucherStepper")} />,
     };
 
     const addVoucher = () => {

@@ -5,8 +5,7 @@ import VoucherStep1 from "./VoucherStep1";
 import VoucherStep2 from "./VoucherStep2";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { returnDevice } from "../../../../../Utils/deviceApi";
-import { addVoucher } from "../../../../../Utils/voucherApi";
+import { addVoucherIn, addVoucherOut } from "../../../../../Utils/voucherApi";
 import { useUserAlert } from "../../../../store/UserAlertContext";
 import { useProject } from "../../../../store/ProjectContext";
 import { Button, Flex, Space } from "antd";
@@ -43,7 +42,7 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
             if (activeStep == stepsLength - 1) {
                 const isDeliveryVoucher = getValues("type") == "false";
                 if (isDeliveryVoucher) {
-                    returnDevicesMutation.mutate(getValues());
+                    addVoucherOutMutation.mutate(getValues());
                 } else {
                     let values = getValues();
                     values = { ...values, devicesData: values.devices };
@@ -55,7 +54,7 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
             }
         }
     };
-    const returnDevicesMutation = useMutation(returnDevice, {
+    const addVoucherOutMutation = useMutation(addVoucherOut, {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["vouchers", projectId] });
             queryClient.invalidateQueries({ queryKey: ["devicesInProject", projectId] });
@@ -67,7 +66,7 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
         },
     });
 
-    const addVoucherMutation = useMutation(addVoucher, {
+    const addVoucherMutation = useMutation(addVoucherIn, {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["vouchers", projectId] });
             queryClient.invalidateQueries({ queryKey: ["devicesInProject", projectId] });
@@ -81,7 +80,7 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
     const handleBack = () => {
         setActiveStep((prevStep) => prevStep - 1);
     };
-    const isLoading = returnDevicesMutation.isLoading || addVoucherMutation.isLoading;
+    const isLoading = addVoucherOutMutation.isLoading || addVoucherMutation.isLoading;
     return (
         <FormProvider {...methods}>
             <form onSubmit={handleSubmit(handleNext)}>

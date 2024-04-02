@@ -4,7 +4,7 @@ import { addKeysToArray, replaceApostrophe, tagColors } from "../../../../../Uti
 import PropTypes from "prop-types";
 import Loader from "../../../../Layout/Loader";
 
-const DevicesInProjectTable = ({ rowSelection, filteredDevices, additionalColumns, defaultPageSize, isLoading }) => {
+const DevicesInProjectTable = ({ rowSelection, filteredDevices, additionalColumns, defaultPageSize, isLoading, handleStatusChange }) => {
     const paginationOptions = {
         showSizeChanger: true,
         pageSizeOptions: ["5", "10", "25", "50"],
@@ -25,7 +25,17 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, additionalColumn
             title: "סטטוס",
             dataIndex: "status",
             key: "status",
-            render: (_, { status }) => <Tag color={tagColors[status]}>{status}</Tag>,
+            render: (_, { status }) => (
+                <>
+                    <Tag color={tagColors[status]}>{status}</Tag>
+                    {/* {handleStatusChange == undefined && <Tag color={tagColors[status]}>{status}</Tag>} */}
+                    {/* {handleStatusChange != undefined && (
+                        <Tag.CheckableTag color={tagColors[status]} onChange={() => handleStatusChange(status)}>
+                            {status}
+                        </Tag.CheckableTag>
+                    )} */}
+                </>
+            ),
         },
         {
             title: "סוג מכשיר",
@@ -55,5 +65,6 @@ DevicesInProjectTable.propTypes = {
     additionalColumns: PropTypes.object,
     defaultPageSize: PropTypes.number,
     isLoading: PropTypes.bool,
+    handleStatusChange: PropTypes.func,
 };
 export default DevicesInProjectTable;

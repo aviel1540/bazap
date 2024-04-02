@@ -28,10 +28,19 @@ export const deleteVoucher = async (voucherId) => {
     }
 };
 
-export const addVoucher = async (voucher) => {
+export const addVoucherIn = async (voucher) => {
     try {
         const { projectId } = voucher;
         return await voucherAPI.post(`/add-new-voucher-in/${projectId}`, voucher);
+    } catch (error) {
+        throw new Error(error.response.data.message);
+    }
+};
+
+export const addVoucherOut = async (voucher) => {
+    const { projectId } = voucher;
+    try {
+        return await voucherAPI.post(`add-new-voucher-out/${projectId}`, voucher);
     } catch (error) {
         throw new Error(error.response.data.message);
     }

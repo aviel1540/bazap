@@ -12,7 +12,8 @@ const Unit = () => {
         const isEdit = data != undefined;
         const modalProperties = {
             title: "יחידה חדשה",
-            body: <UnitForm formValues={data} onCancel={onHide} isEdit={isEdit} />,
+            name: "unit",
+            body: <UnitForm formValues={data} onCancel={() => onHide("unit")} isEdit={isEdit} />,
         };
         onShow(modalProperties);
     };

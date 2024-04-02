@@ -10,12 +10,13 @@ const dummyData = { totalDevices: 100, totalWaiting: 20, totalInWork: 35, totalF
 const ProjectItem = ({ projectData }) => {
     const navigate = useNavigate();
     const { projectName, startDate, _id: id } = projectData;
+    
     const handleCardClick = () => {
         // Redirect to the specified route when the card is clicked
         navigate(`/Project/${id}`);
     };
     return (
-        <Grid item="true" xs={12} sm={6} md={4} lg={4}>
+        <Grid item="true" xs={12} sm={6} md={4} lg={3}>
             <Card onClick={handleCardClick} style={{ cursor: "pointer" }}>
                 <CardHeader titleTypographyProps={{ variant: "h6" }} title={projectName} />
                 <CardContent>

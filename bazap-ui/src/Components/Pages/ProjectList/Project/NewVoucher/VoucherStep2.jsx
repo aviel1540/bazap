@@ -157,7 +157,7 @@ const VoucherStep2 = () => {
                 isNumber: true,
                 validators: {
                     required: "יש למלא שדה זה.",
-                    minLength: { value: 6, message: "צ' מכשיר צריך לפחות 5 תווים" },
+                    minLength: { value: 4, message: "צ' מכשיר צריך לפחות 4 תווים" },
                     validate: validateSerialNumber,
                 },
                 options: isDeliveryVoucher ? [] : convertDeivcesToACOptions(allDevices),

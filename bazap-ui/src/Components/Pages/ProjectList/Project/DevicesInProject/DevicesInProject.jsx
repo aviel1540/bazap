@@ -141,7 +141,7 @@ const ArrivedDevices = () => {
         const formDefaultValues = {
             type: "false",
             unit: filteredDevices[0].unit._id,
-            devicesIds: selectedRowKeys
+            devicesIds: selectedRowKeys,
         };
         const modalPropertiesCreateVoucher = {
             title: "שובר חדש",
@@ -213,6 +213,7 @@ const ArrivedDevices = () => {
                     filteredDevices={filteredDevices}
                     rowSelection={selectedStatus != ALL && selectedStatus != RETURNED ? rowSelection : undefined}
                     defaultPageSize={25}
+                    handleStatusChange={handleStatusChange}
                     isLoading={isLoading}
                     additionalColumns={columns}
                 />

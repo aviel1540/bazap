@@ -15,7 +15,8 @@ const DeviceType = () => {
     });
     const modalProperties = {
         title: "סוג מוצר חדש",
-        body: <DeviceTypeForm onCancel={onHide} />,
+        name: "deviceType",
+        body: <DeviceTypeForm onCancel={() => onHide("deviceType")} />,
     };
     const showModal = () => {
         onShow(modalProperties);

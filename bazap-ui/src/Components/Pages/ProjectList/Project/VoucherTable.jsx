@@ -34,6 +34,11 @@ const VoucherTable = ({ vouchers, isLoading }) => {
     ];
     const columns = [
         {
+            name: "מספר שובר",
+            sortable: true,
+            selector: (row) => row.voucherNumber,
+        },
+        {
             name: "יחידה",
             sortable: true,
             selector: (row) => row.unit?.unitsName,
