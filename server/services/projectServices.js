@@ -31,3 +31,10 @@ exports.updateProjectDetails = async (request) => {
         projectName: checkProjectName,
     });
 };
+
+exports.updateDateToClose = async(projectId) => {
+    return await Project.findByIdAndUpdate(projectId, {
+        endDate: Date.now(),
+        finished: true
+    })
+}

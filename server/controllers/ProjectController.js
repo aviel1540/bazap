@@ -1,6 +1,7 @@
-const projectService = require("../services/projectServices");
 const escape = require("escape-html");
 const validation = require("../utils/validation");
+const projectService = require("../services/projectServices");
+const deviceService = require("../services/deviceServices");
 
 exports.addNewProject = async (req, res) => {
     const projectName = escape(req.body.projectName);
@@ -88,3 +89,26 @@ exports.updateProject = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
+
+exports.closeProject = async(req,res) => {
+    const projectId = escape(req.params.id);
+
+    let project;
+    try {
+        const checkProjectId = validation.addSlashes(projectId);
+        project = await projectService.findProjectById(checkProjectId);
+
+        const checkIfDevicesInLab = await deviceService.findAllDevicesInLab(projectId);
+        if(checkIfDevicesInLab.length > 0) {
+            return res.status(400).json({message: "לא ניתן לסגור - קיימים מכשירים במעבדה"});
+        }
+        project = await projectService.updateDateToClose(projectId);
+        if(!project) {
+            return res.status(401).json({message:"לא נמצא פרויקט"});
+        }
+        await project.save();
+        return res.status(201).json({message:"Success"})
+    } catch(err) {
+        return res.status(500).json({message:"Failed"})
+    }
+}

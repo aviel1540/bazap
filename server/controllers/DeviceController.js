@@ -189,20 +189,25 @@ exports.getAllDevices = async (req, res) => {
     }
 };
 
-exports.getAllArrivedDevicesInProject = async (req, res) => {
+exports.getAllDevicesInProject = async (req, res) => {
     try {
         const projectId = escape(req.params.id);
         const devices = await deviceService.findAllDevicesByProject(projectId);
-        // console.log(devices);
-        // for(let i in devices) console.log(i.voucherOut)
-        // const allArrivedDevices = devices.filter((device) => device.voucherNumber.type == true);
-        // const allDeliveredDevices = devices.filter((device) => device.voucherNumber.type == false).map((device) => device._id);
-        // const notDeliveredDevices = allArrivedDevices.filter((arrivedDevice) => {
-        //     return !allDeliveredDevices.some((deliveredDevice) => deliveredDevice.deviceId === arrivedDevice.deviceId);
-        // });
 
         return res.status(200).json(devices);
     } catch (err) {
         return res.status(500).json({ message: err.message });
     }
 };
+
+exports.getAllDevicesInLab = async(req,res) => {
+    try {
+        const projectId = escape(req.params.id);
+        const devices = await deviceService.findAllDevicesInLab(projectId);
+        console.log(devices)
+
+        return res.status(200).json(devices);
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
+    }
+}

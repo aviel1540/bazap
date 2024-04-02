@@ -7,6 +7,7 @@ exports.findDeviceById = async (DeviceId) => await Device.findById(DeviceId);
 exports.findDeviceBySerialNumber = async (serialNumber) => await Device.findOne({ serialNumber });
 exports.findAllDevices = async () => await Device.find();
 exports.findAllDevicesByProject = async (projectId) => await Device.find({ project: projectId }).populate("unit");
+exports.findAllDevicesInLab = async (projectId) => await Device.find({ project: projectId, voucherOut: null });
 exports.addNewDevice = async (request) => {
     return new Device({
         serialNumber: request.checkSerialNumber,
