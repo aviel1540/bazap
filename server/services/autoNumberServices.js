@@ -1,6 +1,6 @@
 const AutoNumber = require('../models/autoNumber');
 
-exports.findAutoNumber = async() => await AutoNumber.find();
+exports.findAutoNumber = async() => await AutoNumber.findOne();
 
 exports.findAutoNumberAndUpdate = async(autoId,number) => {
     return await AutoNumber.findByIdAndUpdate(autoId, {

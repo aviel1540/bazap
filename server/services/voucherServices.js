@@ -1,15 +1,14 @@
 const Project = require("../models/Project");
 const Voucher = require("../models/Voucher");
 
-exports.addVoucherIn = async (request) => {
-    // console.log("OUTPUT : ", Boolean(request.type));
-    const typeBoolean = request.type === "true";
+exports.addVoucher = async (request) => {
+    
     return new Voucher({
         voucherNumber: request.voucherNumber,
         unit: request.checkUnitName,
         receivedBy: request.checkreceivedBy,
         arrivedBy: request.checkArrivedBy,
-        type: typeBoolean,
+        type: request.type,
         project: request.checkProjectId,
     });
 };
