@@ -115,7 +115,6 @@ exports.addNewVoucherOut = async (req, res) => {
         receivedBy: escape(req.body.receivedBy),
     }
     const devicesIds = req.body.devicesIds;
-    let newVoucher;
     let project;
     try {
         const checkProjectId = validation.addSlashes(projectId);
@@ -124,7 +123,6 @@ exports.addNewVoucherOut = async (req, res) => {
         const { newVoucher, autoNumber } = await createVoucher(detailes, false, checkProjectId);
         const updatedAutoNumber = await autoNumberService.findAutoNumberAndUpdate(autoNumber._id, number);
         await updatedAutoNumber.save();
-        // console.log(updatedAutoNumber)
         if (!devicesIds || !Array.isArray(devicesIds) || devicesIds.length === 0) {
             return res.status(400).json({ message: "לא נמצאו מכשירים" });
         }
@@ -134,12 +132,13 @@ exports.addNewVoucherOut = async (req, res) => {
             const deviceSN = device.serialNumber;
             if (!device) return res.status(400).json({ message: deviceSN + " צ' לא קיים !" });
             if (device.status != DeviceStatus.FIXED && device.status != DeviceStatus.DEFECTIVE) {
-                return res.status(401).json({ message: deviceSN + "יש לדווח סטטוס תקין / תקול" });
+                return res.status(401).json({ message: deviceSN + " יש לדווח סטטוס תקין / תקול" });
             }
             if (!device.voucherIn) {
                 return res.status(401).json({ message: "אין למכשיר שובר כניסה  - לא ניתן לנפק" });
             }
-            const voucherId = newVoucher._id
+            const voucherId = newVoucher._id.toHexString();
+          
             const deviceStatus = device.status;
             await deviceService.updateReturnDevice({
                 deviceId,
@@ -150,8 +149,9 @@ exports.addNewVoucherOut = async (req, res) => {
         })
         await Promise.all(devices);
         await newVoucher.save();
+        project.vouchersList.push(newVoucher);
         await project.save(newVoucher);
-        return res.status(201).json({ message: "שובר יציאה נוצר בהצלחה", voucherId });
+        return res.status(201).json({ message: "שובר יציאה נוצר בהצלחה", newVoucher });
     } catch (err) {
         return res.status(400).json(err.message);
 
@@ -194,5 +194,6 @@ const createVoucher = async (detailes, type, checkProjectId) => {
     if (!newVoucher) {
         throw new Error('שגיאה ביצירת שובר');
     }
+    await newVoucher.save();
     return { newVoucher, autoNumber };
 }

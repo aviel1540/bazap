@@ -48,10 +48,10 @@ exports.updateStatusReturn = async (request) => {
 };
 
 exports.updateReturnDevice = async (request) => {
-    const { deviceId, checkVoucherId, deviceStatus } = request;
-    console.log(deviceId)
+    const { deviceId, voucherId, deviceStatus } = request;
+
     return await Device.findByIdAndUpdate(deviceId, {
-        voucherOut: checkVoucherId,
+        voucherOut: voucherId,
         status: deviceStatus == DeviceStatus.DEFECTIVE ? DeviceStatus.DEFECTIVE_RETURN : DeviceStatus.FIXED_RETURN,
     })
 }
