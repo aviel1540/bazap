@@ -7,7 +7,11 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 const queryClient = new QueryClient({
     defaultOptions: {
         queries: {
+            networkMode: "always",
             staleTime: Infinity,
+        },
+        mutations: {
+            networkMode: "always",
         },
     },
 });

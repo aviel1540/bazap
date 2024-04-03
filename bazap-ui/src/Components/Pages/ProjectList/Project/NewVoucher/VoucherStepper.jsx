@@ -59,6 +59,7 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
             queryClient.invalidateQueries({ queryKey: ["vouchers", projectId] });
             queryClient.invalidateQueries({ queryKey: ["devicesInProject", projectId] });
             queryClient.invalidateQueries(["project", projectId]);
+            queryClient.invalidateQueries(["projects"]);
             onCancel();
         },
         onError: ({ message }) => {
@@ -71,6 +72,7 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
             queryClient.invalidateQueries({ queryKey: ["vouchers", projectId] });
             queryClient.invalidateQueries({ queryKey: ["devicesInProject", projectId] });
             queryClient.invalidateQueries(["project", projectId]);
+            queryClient.invalidateQueries(["projects"]);
             onCancel();
         },
         onError: ({ message }) => {

@@ -1,6 +1,6 @@
 import EmptyData from "../../../../UI/EmptyData";
 import { Table, Tag } from "antd";
-import { addKeysToArray, replaceApostrophe, tagColors } from "../../../../../Utils/utils";
+import { DeviceStatuses, FIXED_OR_DEFFECTIVE, RETURNED, addKeysToArray, replaceApostrophe, tagColors } from "../../../../../Utils/utils";
 import PropTypes from "prop-types";
 import Loader from "../../../../Layout/Loader";
 
@@ -14,7 +14,18 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, additionalColumn
         },
         showTotal: (total, range) => `${range[0]}-${range[1]} מתוך ${total} מכשירים`,
     };
-
+    const handleTagClick = (status) => {
+        if ([DeviceStatuses.DEFECTIVE_RETURN, DeviceStatuses.FIXED_RETURN].includes(status)) {
+            handleStatusChange(RETURNED);
+            return;
+        }
+        if ([DeviceStatuses.FIXED, DeviceStatuses.DEFECTIVE].includes(status)) {
+            handleStatusChange(FIXED_OR_DEFFECTIVE);
+            return;
+        }
+        handleStatusChange(status);
+        return;
+    };
     const columns = [
         {
             title: "צ' מכשיר",
@@ -27,7 +38,9 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, additionalColumn
             key: "status",
             render: (_, { status }) => (
                 <>
-                    <Tag color={tagColors[status]}>{status}</Tag>
+                    <Tag color={tagColors[status]} onClick={() => handleTagClick(status)} style={{ cursor: "pointer" }}>
+                        {status}
+                    </Tag>
                     {/* {handleStatusChange == undefined && <Tag color={tagColors[status]}>{status}</Tag>} */}
                     {/* {handleStatusChange != undefined && (
                         <Tag.CheckableTag color={tagColors[status]} onChange={() => handleStatusChange(status)}>

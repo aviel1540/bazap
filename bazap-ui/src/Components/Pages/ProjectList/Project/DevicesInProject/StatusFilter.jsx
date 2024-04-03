@@ -32,6 +32,7 @@ const StatusFilter = ({ checkIfStatusExists, handleStatusChange, selectedStatus 
     return (
         <Space>
             <Select
+                allowClear
                 defaultValue={ALL}
                 value={selectedStatus}
                 onChange={handleStatusChange}
