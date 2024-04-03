@@ -6,7 +6,6 @@ const projectService = require("../services/projectServices");
 const autoNumberService = require("../services/autoNumberServices");
 const { DeviceStatus } = require("../constants/DeviceStatus");
 
-
 exports.getVoucherById = async (req, res) => {
     const voucherId = escape(req.params.id);
     let voucher;
@@ -22,11 +21,12 @@ exports.getVoucherById = async (req, res) => {
 
 exports.addNewVoucherIn = async (req, res) => {
     const projectId = escape(req.params.projectId);
+    const unit = escape(req.body.unit);
     const detailes = {
-        unit: escape(req.body.unit),
+        unit: unit,
         arrivedBy: escape(req.body.arrivedBy),
         receivedBy: escape(req.body.receivedBy),
-    }
+    };
     const devicesData = req.body.devicesData;
     let project;
     try {
@@ -52,9 +52,11 @@ exports.addNewVoucherIn = async (req, res) => {
             }
             const checkSerialNumber = validation.addSlashes(serialNumber);
             const checkType = validation.addSlashes(type);
+            const checkUnit = validation.addSlashes(unit);
             const newDevice = await deviceService.addNewDevice({
                 checkSerialNumber,
                 checkType,
+                checkUnitId: checkUnit,
                 checkVoucherId: newVoucher._id,
                 projectId,
             });
@@ -113,7 +115,7 @@ exports.addNewVoucherOut = async (req, res) => {
         unit: escape(req.body.unit),
         arrivedBy: escape(req.body.arrivedBy),
         receivedBy: escape(req.body.receivedBy),
-    }
+    };
     const devicesIds = req.body.devicesIds;
     let project;
     try {
@@ -126,7 +128,7 @@ exports.addNewVoucherOut = async (req, res) => {
         if (!devicesIds || !Array.isArray(devicesIds) || devicesIds.length === 0) {
             return res.status(400).json({ message: "לא נמצאו מכשירים" });
         }
-        const devices = devicesIds.map(async(deviceId) => {
+        const devices = devicesIds.map(async (deviceId) => {
             const checkDeviceId = validation.addSlashes(escape(deviceId));
             const device = await deviceService.findDeviceById(checkDeviceId);
             const deviceSN = device.serialNumber;
@@ -138,15 +140,15 @@ exports.addNewVoucherOut = async (req, res) => {
                 return res.status(401).json({ message: "אין למכשיר שובר כניסה  - לא ניתן לנפק" });
             }
             const voucherId = newVoucher._id.toHexString();
-          
+
             const deviceStatus = device.status;
             await deviceService.updateReturnDevice({
                 deviceId,
                 voucherId,
-                deviceStatus
+                deviceStatus,
             });
             newVoucher.deviceList.push(deviceId);
-        })
+        });
         await Promise.all(devices);
         await newVoucher.save();
         project.vouchersList.push(newVoucher);
@@ -154,20 +156,13 @@ exports.addNewVoucherOut = async (req, res) => {
         return res.status(201).json({ message: "שובר יציאה נוצר בהצלחה", newVoucher });
     } catch (err) {
         return res.status(400).json(err.message);
-
     }
 };
 
-
 const createVoucher = async (detailes, type, checkProjectId) => {
-    const {
-        unit,
-        arrivedBy,
-        receivedBy,
-    } = detailes;
+    const { unit, arrivedBy, receivedBy } = detailes;
     if (![unit, arrivedBy, receivedBy].every(Boolean)) {
-        throw new Error('יש למלא את כל השדות');
-
+        throw new Error("יש למלא את כל השדות");
     }
     const checkUnitName = validation.addSlashes(unit);
     const checkArrivedBy = validation.addSlashes(arrivedBy);
@@ -192,8 +187,8 @@ const createVoucher = async (detailes, type, checkProjectId) => {
         checkProjectId,
     });
     if (!newVoucher) {
-        throw new Error('שגיאה ביצירת שובר');
+        throw new Error("שגיאה ביצירת שובר");
     }
     await newVoucher.save();
     return { newVoucher, autoNumber };
-}
+};

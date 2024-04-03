@@ -11,7 +11,7 @@ const ProjectItem = ({ projectData }) => {
     let allDevices = [];
 
     projectData.vouchersList.forEach((voucher) => {
-        allDevices = allDevices.concat(voucher.deviceList);
+        if (voucher.type) allDevices = allDevices.concat(voucher.deviceList);
     });
     const data = {
         totalDevices: allDevices.length,
