@@ -38,15 +38,12 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, additionalColumn
             key: "status",
             render: (_, { status }) => (
                 <>
-                    <Tag color={tagColors[status]} onClick={() => handleTagClick(status)} style={{ cursor: "pointer" }}>
-                        {status}
-                    </Tag>
-                    {/* {handleStatusChange == undefined && <Tag color={tagColors[status]}>{status}</Tag>} */}
-                    {/* {handleStatusChange != undefined && (
-                        <Tag.CheckableTag color={tagColors[status]} onChange={() => handleStatusChange(status)}>
+                    {handleStatusChange == undefined && <Tag color={tagColors[status]}>{status}</Tag>}
+                    {handleStatusChange != undefined && (
+                        <Tag color={tagColors[status]} onClick={() => handleTagClick(status)} style={{ cursor: "pointer" }}>
                             {status}
-                        </Tag.CheckableTag>
-                    )} */}
+                        </Tag>
+                    )}
                 </>
             ),
         },
