@@ -4,6 +4,7 @@ import { List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui
 import AddIcon from "@mui/icons-material/Add";
 import IosShareIcon from "@mui/icons-material/IosShare";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
+import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
 import { useProject } from "../../../store/ProjectContext";
 import { useMutation } from "@tanstack/react-query";
 import { useUserAlert } from "../../../store/UserAlertContext";
@@ -11,8 +12,8 @@ import { dateTostring } from "../../../../Utils/utils";
 import { createProjectReport } from "../../../../Utils/excelUtils";
 import VoucherStepper from "./NewVoucher/VoucherStepper";
 import { useCustomModal } from "../../../store/CustomModalContext";
-import { getAllArrivedDevicesInProject } from "../../../../Utils/deviceApi";
-// import VoucherStepper from "./VoucherStepper/VoucherStepper";
+import { getAllDevicesInProject, getAllDevicesInLab } from "../../../../Utils/deviceApi";
+
 const ProjectSideBar = () => {
     const { projectId } = useProject();
     const { onAlert, warning } = useUserAlert();
@@ -21,12 +22,16 @@ const ProjectSideBar = () => {
         token: { colorBgContainer, borderRadius },
     } = theme.useToken();
 
-    const getAllDevicesInProject = async () => {
-        const devices = await getAllArrivedDevicesInProject({ queryKey: [null, projectId] });
-        const devicesToReport = devices.filter((device) => device.voucherOut != null || device.voucherOut != undefined);
-        return devicesToReport;
+    const getDevicesInLab = async () => {
+        const devices = await getAllDevicesInLab({ queryKey: [null, projectId] });
+        return devices;
     };
-    const getAllDevicesInProjectMutation = useMutation(getAllDevicesInProject, {
+    const getAllDevicesInProjectAction = async () => {
+        const devices = await getAllDevicesInProject({ queryKey: [null, projectId] });
+        const filteredDevices = devices.filter((device) => device.voucherOut != null);
+        return filteredDevices;
+    };
+    const getAllDevicesInProjectMutation = useMutation(getDevicesInLab, {
         onSuccess: (devices) => {
             if (devices.length == 0) {
                 onAlert('אין מכשירים בבצ"פ בפרוייקט.');
@@ -38,10 +43,25 @@ const ProjectSideBar = () => {
             onAlert(message, warning);
         },
     });
+    const getAllDevicesOutMutation = useMutation(getAllDevicesInProjectAction, {
+        onSuccess: (devices) => {
+            if (devices.length == 0) {
+                onAlert('אין מכשירים בבצ"פ בפרוייקט.');
+            } else {
+                createProjectReport(devices, "דוח_מכשירים_שנופקו" + dateTostring(Date.now()));
+            }
+        },
+        onError: ({ message }) => {
+            onAlert(message, warning);
+        },
+    });
     const createDeviceReport = () => {
-        getAllDevicesInProjectMutation.mutate(projectId);
+        getAllDevicesInProjectMutation.mutate();
     };
 
+    const createOutDevicesReport = () => {
+        getAllDevicesOutMutation.mutate();
+    };
     const modalProperties = {
         title: "שובר חדש",
         name: "voucherStepper",
@@ -58,6 +78,7 @@ const ProjectSideBar = () => {
         { title: "הוסף שובר", icon: <AddIcon />, handler: addVoucher },
         { title: "הפק דוח צ'", icon: <IosShareIcon />, handler: createDeviceReport },
         { title: "סגור פרוייקט", icon: <BorderColorIcon />, handler: closeProject },
+        { title: "דוח מכשירים שנופקו", icon: <ArrowOutwardIcon />, handler: createOutDevicesReport },
     ];
     return (
         <Sider

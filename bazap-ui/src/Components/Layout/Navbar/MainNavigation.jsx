@@ -11,7 +11,7 @@ const pages = [
 ];
 const MainNavigation = () => {
     const location = useLocation();
-    let index = location.pathname.lastIndexOf("/") > 0;
+    let index = location.pathname.lastIndexOf("/");
     const currentPath = location.pathname.slice("/", index > 0 ? index : undefined);
     return (
         <Header

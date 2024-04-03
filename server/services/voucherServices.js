@@ -15,7 +15,6 @@ exports.addVoucher = async (request) => {
 
 exports.showVoucherList = async (projectId) => await Voucher.find({ project: projectId }).populate("deviceList").populate("Units");
 exports.findVoucherById = async (checkVoucherId) => {
-    // console.log("OUTPUT : ", checkVoucherId);
     return await Voucher.findById(checkVoucherId)
         .populate("deviceList")
         .populate({

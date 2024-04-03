@@ -82,12 +82,10 @@ exports.returnDevice = async (req, res) => {
     const devicesData = req.body;
     let errors = "";
     try {
-
         checkVoucherId = validation.addSlashes(voucherId);
 
         const voucherOut = await voucherService.findVoucherById(checkVoucherId);
         if (!voucherOut) return res.status(401).json({ message: "יש לדווח סטטוס תקין / תקול" });
-
 
         const devices = devicesData.map(async (deviceSN) => {
             const checkDevice = validation.addSlashes(escape(deviceSN));
@@ -105,9 +103,9 @@ exports.returnDevice = async (req, res) => {
             await deviceService.updateReturnDevice({
                 deviceId,
                 checkVoucherId,
-                deviceStatus
+                deviceStatus,
             });
-            
+
             voucherOut.deviceList.push(deviceId);
         });
         await Promise.all(devices);
@@ -173,7 +171,7 @@ exports.updateDetails = async (req, res) => {
         const checkDeviceId = validation.addSlashes(deviceId);
         const checkSerialNumber = validation.addSlashes(serialNumber);
         const checkType = validation.addSlashes(type);
-    } catch (err) { }
+    } catch (err) {}
 };
 
 exports.getAllDevices = async (req, res) => {
@@ -200,14 +198,12 @@ exports.getAllDevicesInProject = async (req, res) => {
     }
 };
 
-exports.getAllDevicesInLab = async(req,res) => {
+exports.getAllDevicesInLab = async (req, res) => {
     try {
         const projectId = escape(req.params.id);
         const devices = await deviceService.findAllDevicesInLab(projectId);
-        console.log(devices)
-
         return res.status(200).json(devices);
     } catch (err) {
         return res.status(500).json({ message: err.message });
     }
-}
+};

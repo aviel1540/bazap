@@ -34,6 +34,7 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, additionalColumn
         },
         {
             title: "סטטוס",
+
             dataIndex: "status",
             key: "status",
             render: (_, { status }) => (
@@ -46,12 +47,16 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, additionalColumn
                     )}
                 </>
             ),
+            sorter: (a, b) => a.status.length - b.status.length,
+            sortDirections: ["descend"],
         },
         {
             title: "סוג מכשיר",
             dataIndex: "deviceType",
             render: (_, row) => replaceApostrophe(row.deviceType),
             key: "deviceType",
+            sorter: (a, b) => a.deviceType.length - b.deviceType.length,
+            sortDirections: ["descend"],
         },
         { ...additionalColumns },
     ];

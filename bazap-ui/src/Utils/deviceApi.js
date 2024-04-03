@@ -11,8 +11,12 @@ export const addNewDevice = async (device) => {
 };
 
 export const getDeviceBySerialNumber = async (serialnumber) => {
-    const response = await deviceAPI.get(`find-by-serialNumber/${serialnumber}`);
-    return response.data;
+    try {
+        const response = await deviceAPI.get(`find-by-serialNumber/${serialnumber}`);
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response.data.message);
+    }
 };
 
 export const addNewDevices = async (devices) => {
@@ -22,16 +26,34 @@ export const addNewDevices = async (devices) => {
         throw new Error(error.response.data.message);
     }
 };
+``
+export const getAllDevicesInProject = async ({ queryKey }) => {
+    try {
+        const [_, id] = queryKey;
+        const response = await deviceAPI.get(`get-all-devices-in-project/${id}`);
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response.data.message);
+    }
+};
 
-export const getAllArrivedDevicesInProject = async ({ queryKey }) => {
-    const [_, id] = queryKey;
-    const response = await deviceAPI.get(`get-all-arrived-devices-in-project/${id}`);
-    return response.data;
+export const getAllDevicesInLab = async ({ queryKey }) => {
+    try {
+        const [_, id] = queryKey;
+        const response = await deviceAPI.get(`get-all-devices-in-lab/${id}`);
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response.data.message);
+    }
 };
 
 export const getDevices = async () => {
-    const response = await deviceAPI.get();
-    return response.data;
+    try {
+        const response = await deviceAPI.get();
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response.data.message);
+    }
 };
 
 export const updateStatus = async (device) => {

@@ -5,7 +5,7 @@ import { getAllDeviceTypes } from "../../../../../Utils/deviceTypeApi";
 import HighlightOff from "@mui/icons-material/HighlightOff";
 import Add from "@mui/icons-material/Add";
 import { DeviceStatuses, FIXED_OR_DEFFECTIVE, replaceApostrophe } from "../../../../../Utils/utils";
-import { getAllArrivedDevicesInProject, getDeviceBySerialNumber, getDevices } from "../../../../../Utils/deviceApi";
+import { getAllDevicesInProject, getDeviceBySerialNumber, getDevices } from "../../../../../Utils/deviceApi";
 import ImportExcel from "./ImportExcel";
 import { useUserAlert } from "../../../../store/UserAlertContext";
 import { Col, Row } from "antd";
@@ -44,7 +44,7 @@ const VoucherStep2 = () => {
 
     const { isLoading: isLaodingDevicesInProject, refetch } = useQuery({
         queryKey: ["fixedOrReturnedDevicesInProject", projectId],
-        queryFn: getAllArrivedDevicesInProject,
+        queryFn: getAllDevicesInProject,
         enabled: false,
         onSuccess: (data) => {
             let newFilteredDevices = data.filter((device) => {
@@ -101,6 +101,7 @@ const VoucherStep2 = () => {
             const data = await getDeviceBySerialNumberMutation.mutateAsync(serialNumber);
             if (!data.message) {
                 setDisabledFields((prev) => ({ ...prev, [index]: true }));
+                setValue(`devices[${index}].deviceType`, data.deviceType);
             }
         }
     };

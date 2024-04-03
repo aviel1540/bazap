@@ -89,7 +89,6 @@ exports.deleteUnits = async (req, res) => {
 exports.deleteUnit = async (req, res) => {
     try {
         const { unitId } = req.body;
-        // console.log(req.body);
         await unitsServices.deleteUnit(unitId);
         return res.status(200).json();
     } catch (err) {

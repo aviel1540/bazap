@@ -108,7 +108,6 @@ const ImportExcel = ({ remove, append, setDisabledFields, getValues, isDeliveryV
                 return;
             }
             if (file.status === "done") {
-                console.log("uploaded");
             } else if (file.status === "error") {
                 setLoading(false);
                 message.error("File upload failed");

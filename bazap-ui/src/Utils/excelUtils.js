@@ -27,7 +27,7 @@ export const readDevicesExcelFile = (rows) => {
 export const createProjectReport = (devices, fileName = "דוח_צ") => {
     const data = [["צ' מכשיר", "סוג מכשיר"]];
     devices.forEach((device) => {
-        data.push([device.serialNumber, replaceApostrophe(device.deviceType)]);
+        data.push([device.serialNumber, replaceApostrophe(device.deviceType), device.status]);
     });
     createExcel(data, fileName);
 };
