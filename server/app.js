@@ -9,6 +9,7 @@ const deviceTypeRouter = require("./routers/deviceTypeRouter");
 const technicianRouter = require("./routers/technicianRouter");
 const unitsRouter = require("./routers/unitsRouter");
 const voucherRouter = require("./routers/voucherRouter");
+const passwordRouter = require("./routers/passwordRouter");
 
 // const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
@@ -42,6 +43,7 @@ app.use("/api/deviceType/", deviceTypeRouter);
 app.use("/api/technician/", technicianRouter);
 app.use("/api/units/", unitsRouter);
 app.use("/api/voucher/", voucherRouter);
+app.use("/api/password/", passwordRouter);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {

@@ -11,4 +11,6 @@ router.post("/add-new-project", projectController.addNewProject);
 
 router.patch("/update-project/:id", projectController.updateProject);
 
+router.patch("/close-project/:id", projectController.closeProject)
+
 module.exports = router;

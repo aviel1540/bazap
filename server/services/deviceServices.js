@@ -7,6 +7,7 @@ exports.findDeviceById = async (DeviceId) => await Device.findById(DeviceId);
 exports.findDeviceBySerialNumber = async (serialNumber) => await Device.findOne({ serialNumber });
 exports.findAllDevices = async () => await Device.find();
 exports.findAllDevicesByProject = async (projectId) => await Device.find({ project: projectId }).populate("unit");
+exports.findAllDevicesInLab = async (projectId) => await Device.find({ project: projectId, voucherOut: null });
 exports.addNewDevice = async (request) => {
     return new Device({
         serialNumber: request.checkSerialNumber,
@@ -48,10 +49,10 @@ exports.updateStatusReturn = async (request) => {
 };
 
 exports.updateReturnDevice = async (request) => {
-    const { deviceId, checkVoucherId, deviceStatus } = request;
-    console.log(deviceId)
+    const { deviceId, voucherId, deviceStatus } = request;
+
     return await Device.findByIdAndUpdate(deviceId, {
-        voucherOut: checkVoucherId,
+        voucherOut: voucherId,
         status: deviceStatus == DeviceStatus.DEFECTIVE ? DeviceStatus.DEFECTIVE_RETURN : DeviceStatus.FIXED_RETURN,
     })
 }
