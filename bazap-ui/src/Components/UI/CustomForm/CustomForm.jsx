@@ -7,24 +7,35 @@ import RenderFields from "./RenderFields";
 import Loader from "../../Layout/Loader";
 import { useState } from "react";
 import { Typography } from "antd";
+import { useMutation } from "@tanstack/react-query";
+import { validatePassword } from "../../../Utils/passwordAPI";
 
 const { Text } = Typography;
 
 const CustomForm = ({ inputs, onSubmit, onCancel, values, hideActions, children, isLoading, isPasswordRequired }) => {
-    const { handleSubmit, reset, control } = useForm({
+    const { handleSubmit, reset, control, getValues } = useForm({
         values,
         mode: "onChange",
     });
     const [password, setPassword] = useState("");
     const [open, setOpen] = useState(false);
     const [validPassword, setValidPassowrd] = useState();
+    const validatePasswordMutation = useMutation(validatePassword, {
+        onSuccess: (isValid) => {
+            if (isValid == true) {
+                onSubmit(getValues());
+                setPassword("");
+                setOpen(false);
+            } else {
+                setValidPassowrd(false);
+            }
+        },
+        onError: () => {
+            setValidPassowrd(false);
+        },
+    });
     const handlePasswordSubmit = () => {
-        // const validate valid password
-        setValidPassowrd(false);
-
-        // setPassword("");
-        // setOpen(false);
-        // onSubmit(getValues());
+        validatePasswordMutation.mutate(password);
     };
 
     const handlePopupCancel = () => {

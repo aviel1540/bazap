@@ -75,7 +75,7 @@ const TechnicianForm = ({ onCancel, formValues = null, isEdit }) => {
             inputs={fields}
             onSubmit={handleSave}
             onCancel={onCancel}
-            // isPasswordRequired
+            isPasswordRequired
             values={formValues}
             isLoading={isLoading}
         ></CustomForm>

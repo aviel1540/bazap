@@ -2,10 +2,7 @@ const escape = require("escape-html");
 const validation = require("../utils/validation");
 const passwordService = require("../services/passwordServices");
 
-
-exports.getAdminPassword = async (req, res) => {
-
-}
+exports.getAdminPassword = async (req, res) => {};
 
 exports.updateAdminPassword = async (req, res) => {
     const masterPass = escape(req.body.masterPass);
@@ -18,29 +15,29 @@ exports.updateAdminPassword = async (req, res) => {
             return res.status(401).json({ message: "יש להזין סיסמת מאסטר !" });
         }
         if (![oldAdminPass, newPassword].every(Boolean)) {
-            throw new Error('יש למלא את כל השדות');
+            throw new Error("יש למלא את כל השדות");
         }
         const checkMasterPass = validation.addSlashes(masterPass);
         const masterPassword = await passwordService.findMasterPassword(checkMasterPass);
-        if(!masterPassword || !password.type) {
+        if (!masterPassword || !password.type) {
             return res.status(401).json({ message: "סיסמא שגויה !" });
         }
         const checkNewPassword = validation.addSlashes(newPassword);
         const checkAdminPassword = validation.addSlashes(oldAdminPass);
         password = await passwordService.findAdminPassword(checkAdminPassword);
         if (!password || password.type) {
-            return res.status(401).json({ message: "סיסמא שגויה !" })
+            return res.status(401).json({ message: "סיסמא שגויה !" });
         }
         newAdminPassword = await passwordService.updateAdminPass({
             checkAdminPassword,
-            checkNewPassword
-        })
+            checkNewPassword,
+        });
         await newAdminPassword.save();
-        return res.status(200).json(true)
+        return res.status(200).json(true);
     } catch (err) {
-        return res.status(500).json(err.message)
+        return res.status(500).json(err.message);
     }
-}
+};
 
 exports.validatePassword = async (req, res) => {
     const adminPass = escape(req.body.password);
@@ -52,11 +49,10 @@ exports.validatePassword = async (req, res) => {
         const checkAdminPassword = validation.addSlashes(adminPass);
         password = await passwordService.findAdminPassword(checkAdminPassword);
         if (!password || password.type) {
-            return res.status(401).json({ message: "סיסמא שגויה !" })
+            return res.status(401).json({ message: "סיסמא שגויה !" });
         }
-        return res.status(200).json(true)
-
+        return res.status(200).json(true);
     } catch (err) {
-        return res.status(500).json(err.message)
+        return res.status(500).json(err.message);
     }
-}
+};
