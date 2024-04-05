@@ -30,17 +30,11 @@ const ProjectForm = ({ onCancel, formValues = null, isEdit }) => {
             queryClient.invalidateQueries({ queryKey: ["projects"] });
             onCancel();
         },
-        onError: ({ message }) => {
-            onAlert(message, error);
-        },
     });
     const editProjectMutation = useMutation(updateProject, {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["projects"] });
             onCancel();
-        },
-        onError: ({ message }) => {
-            onAlert(message, error);
         },
     });
     const validateProjectDuplication = (value) => {

@@ -37,3 +37,11 @@ export const updateProject = async (project) => {
         throw new Error(error.response.data.message);
     }
 };
+
+export const closeProject = async (id) => {
+    try {
+        return await projectAPI.patch(`/close-project/${id}`);
+    } catch (error) {
+        throw new Error(error.response.data.message);
+    }
+};

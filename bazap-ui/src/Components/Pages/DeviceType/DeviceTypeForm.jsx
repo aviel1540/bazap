@@ -36,9 +36,6 @@ const DeviceTypeForm = ({ onCancel, formValues = null, isEdit }) => {
             queryClient.invalidateQueries({ queryKey: ["deviceTypes"] });
             onCancel();
         },
-        onError: ({ message }) => {
-            onAlert(message, error);
-        },
     });
 
     const fields = [

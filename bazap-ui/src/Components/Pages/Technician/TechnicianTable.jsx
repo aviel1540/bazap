@@ -52,9 +52,6 @@ const TechnicianTable = ({ onEdit }) => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["technicians"] });
         },
-        onError: ({ message }) => {
-            onAlert(message, error);
-        },
     });
     if (isLoading) {
         return <Loader />;

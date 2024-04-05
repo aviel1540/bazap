@@ -85,11 +85,7 @@ const VoucherStep2 = () => {
         append({ serialNumber: "", deviceType: "" });
     };
 
-    const getDeviceBySerialNumberMutation = useMutation(getDeviceBySerialNumber, {
-        onError: ({ message }) => {
-            onAlert(message, error);
-        },
-    });
+    const getDeviceBySerialNumberMutation = useMutation(getDeviceBySerialNumber);
     const handleFieldChange = async (serialNumber, index) => {
         setDisabledFields((prev) => {
             const updatedState = { ...prev };

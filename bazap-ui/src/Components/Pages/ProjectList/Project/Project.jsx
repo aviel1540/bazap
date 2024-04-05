@@ -1,16 +1,17 @@
-import { useQuery } from "@tanstack/react-query";
+import React, { useEffect } from "react";
 import { useParams } from "react-router";
+import { useQuery } from "@tanstack/react-query";
 import { getProjectData } from "../../../../Utils/projectAPI";
-import Loader from "../../../Layout/Loader";
-import { Box, Stack } from "@mui/material";
 import { getAllVouchers } from "../../../../Utils/voucherApi";
 import { dateTostring } from "../../../../Utils/utils";
 import { useProject } from "../../../store/ProjectContext";
-import { useEffect } from "react";
-import ArrivedDevices from "./DevicesInProject/DevicesInProject";
-import { Card, Descriptions, Layout, Tag } from "antd";
+import Loader from "../../../Layout/Loader";
 import ProjectSideBar from "./ProjectSideBar";
+import ArrivedDevices from "./DevicesInProject/DevicesInProject";
 import VoucherTable from "./VoucherTable";
+import { Box, Stack } from "@mui/material";
+import { Card, Descriptions, Layout, Tag } from "antd";
+
 const Project = () => {
     const { id } = useParams();
     const { projectId, setProjectId } = useProject();
@@ -22,21 +23,24 @@ const Project = () => {
         };
     }, [id, setProjectId]);
 
-    const { isLoading: isProjecLoading, data: project } = useQuery({
+    const { isLoading: isProjectLoading, data: project } = useQuery({
         queryKey: ["project", projectId],
         queryFn: getProjectData,
         enabled: projectId !== null,
     });
+
     const { isLoading: isVouchersLoading, data: vouchers } = useQuery({
         queryKey: ["vouchers", projectId],
         queryFn: getAllVouchers,
         enabled: projectId !== null,
     });
-    const isLoading = isProjecLoading || isVouchersLoading;
+
+    const isLoading = isProjectLoading || isVouchersLoading;
 
     if (isLoading) {
         return <Loader />;
     }
+
     const items = [
         {
             key: "1",
@@ -54,27 +58,26 @@ const Project = () => {
             children: <Tag>{project.vouchersList.length}</Tag>,
         },
     ];
+
     return (
-        <>
-            <Layout>
-                <ProjectSideBar />
-                <Box
-                    style={{
-                        overflowY: "scroll",
-                        height: "85vh",
-                        padding: "0px 24px 24px",
-                    }}
-                >
-                    <Stack spacing={2}>
-                        <Card title={`פרוייקט: ${project.projectName}`} bordered={false}>
-                            <Descriptions items={items} />
-                        </Card>
-                        <ArrivedDevices />
-                        <VoucherTable vouchers={vouchers} isLoading={isLoading} />
-                    </Stack>
-                </Box>
-            </Layout>
-        </>
+        <Layout>
+            <ProjectSideBar isProjectIsClosed={project.finished} />
+            <Box
+                style={{
+                    overflowY: "scroll",
+                    height: "85vh",
+                    padding: "0px 24px 24px",
+                }}
+            >
+                <Stack spacing={2}>
+                    <Card title={`פרוייקט: ${project.projectName}`} bordered={false}>
+                        <Descriptions items={items} />
+                    </Card>
+                    <ArrivedDevices />
+                    <VoucherTable vouchers={vouchers} isLoading={isLoading} />
+                </Stack>
+            </Box>
+        </Layout>
     );
 };
 

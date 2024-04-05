@@ -18,7 +18,7 @@ const deviceStatusOptions = filteredStatuses.map((value) => ({
     text: value,
 }));
 
-const StatusForm = ({ status, onCacnel, devices, clearSelectedRows }) => {
+const StatusForm = ({ status, onCancel, devices, clearSelectedRows }) => {
     const { projectId } = useProject();
     const { onAlert, error } = useUserAlert();
     const queryClient = useQueryClient();
@@ -34,9 +34,7 @@ const StatusForm = ({ status, onCacnel, devices, clearSelectedRows }) => {
             queryClient.invalidateQueries({ queryKey: ["devicesInProject", projectId] });
             clearSelectedRows();
         },
-        onError: ({ message }) => {
-            onAlert(message, error);
-        },
+       
     });
 
     const handelSave = async () => {
@@ -46,7 +44,7 @@ const StatusForm = ({ status, onCacnel, devices, clearSelectedRows }) => {
                 const device = getValues();
                 updateStatusMutation.mutate({ id: selectedDevice._id, status: device.status });
             });
-            onCacnel();
+            onCancel();
         }
     };
     const newStatusInputObj = [
@@ -81,7 +79,7 @@ const StatusForm = ({ status, onCacnel, devices, clearSelectedRows }) => {
                         <LightButton
                             size="small"
                             btncolor="dark"
-                            onClick={onCacnel}
+                            onClick={onCancel}
                             variant="contained"
                             sx={{
                                 marginX: {
@@ -99,7 +97,7 @@ const StatusForm = ({ status, onCacnel, devices, clearSelectedRows }) => {
 };
 
 StatusForm.propTypes = {
-    onCacnel: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
     status: PropTypes.string,
     devices: PropTypes.arrayOf(object).isRequired,
     clearSelectedRows: PropTypes.func.isRequired,

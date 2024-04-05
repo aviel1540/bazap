@@ -14,7 +14,9 @@ import Theme from "./Components/Layout/Theme";
 import { CustomModalProvider } from "./Components/store/CustomModalContext";
 import { ProjectProvider } from "./Components/store/ProjectContext";
 import "@sweetalert2/theme-material-ui/material-ui.scss";
-import { UserAlertProvider } from "./Components/store/UserAlertContext";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { useUserAlert } from "./Components/store/UserAlertContext";
 
 const DeviceType = lazy(() => import("./Components/Pages/DeviceType/DeviceType"));
 const Unit = lazy(() => import("./Components/Pages/Unit/Unit"));
@@ -36,16 +38,37 @@ const router = createBrowserRouter(
 );
 
 function App() {
+    const { onAlert, error } = useUserAlert();
+    const queryClient = new QueryClient({
+        defaultOptions: {
+            queries: {
+                networkMode: "always",
+                staleTime: 300000,
+                onError: ({ message }) => {
+                    onAlert(message, error);
+                },
+            },
+            mutations: {
+                networkMode: "always",
+                staleTime: 300000,
+                onError: ({ message }) => {
+                    onAlert(message, error);
+                },
+            },
+        },
+    });
+
     return (
-        <Theme>
-            <UserAlertProvider>
+        <QueryClientProvider client={queryClient}>
+            <Theme>
                 <ProjectProvider>
                     <CustomModalProvider>
                         <RouterProvider router={router} />
                     </CustomModalProvider>
                 </ProjectProvider>
-            </UserAlertProvider>
-        </Theme>
+                <ReactQueryDevtools initialIsOpen={false} />
+            </Theme>
+        </QueryClientProvider>
     );
 }
 

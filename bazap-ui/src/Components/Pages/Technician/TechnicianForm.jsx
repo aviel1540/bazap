@@ -38,17 +38,11 @@ const TechnicianForm = ({ onCancel, formValues = null, isEdit }) => {
             queryClient.invalidateQueries({ queryKey: ["technicians"] });
             onCancel();
         },
-        onError: ({ message }) => {
-            onAlert(message, error);
-        },
     });
     const editTechnicianMutation = useMutation(updateTechnician, {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["technicians"] });
             onCancel();
-        },
-        onError: ({ message }) => {
-            onAlert(message, error);
         },
     });
     const fields = [

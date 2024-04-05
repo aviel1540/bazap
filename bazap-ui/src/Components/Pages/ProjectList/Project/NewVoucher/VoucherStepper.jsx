@@ -62,9 +62,6 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
             queryClient.invalidateQueries(["projects"]);
             onCancel();
         },
-        onError: ({ message }) => {
-            onAlert(message, error);
-        },
     });
 
     const addVoucherMutation = useMutation(addVoucherIn, {
@@ -74,9 +71,6 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
             queryClient.invalidateQueries(["project", projectId]);
             queryClient.invalidateQueries(["projects"]);
             onCancel();
-        },
-        onError: ({ message }) => {
-            onAlert(message, error);
         },
     });
     const handleBack = () => {
@@ -99,9 +93,7 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
                 <Divider />
                 <Flex justify="flex-end" style={{ padding: "8px" }} salign="center">
                     <Space>
-                        <Button onClick={onCancel} style={{ marginLeft: 8 }}>
-                            בטל
-                        </Button>
+                        <Button onClick={onCancel}>בטל</Button>
                         <Button onClick={handleBack} disabled={activeStep == 0}>
                             חזור
                         </Button>

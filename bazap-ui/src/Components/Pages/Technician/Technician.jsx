@@ -4,35 +4,31 @@ import { Card, CardContent, CardHeader } from "@mui/material";
 import LightButton from "../../UI/LightButton";
 import AddIcon from "@mui/icons-material/Add";
 import { useCustomModal } from "../../store/CustomModalContext";
+import CustomCard from "../../UI/CustomCard";
 
 const Technician = () => {
     const { onShow, onHide } = useCustomModal();
 
     const showModal = (event, data) => {
         const isEdit = data != undefined;
-        const modalProperties = {
+        onShow({
             title: "טכנאי חדש",
             name: "technician",
             body: <TechnicianForm onCancel={() => onHide("technician")} formValues={data} isEdit={isEdit} />,
-        };
-        onShow(modalProperties);
+        });
     };
 
     return (
-        <Card>
-            <CardHeader
-                action={
-                    <LightButton variant="contained" btncolor="primary" onClick={showModal} size="small" icon={<AddIcon />}>
-                        הוסף טכנאי
-                    </LightButton>
-                }
-                titleTypographyProps={{ variant: "h5" }}
-                title="טכנאים"
-            />
-            <CardContent>
-                <TechnicianTable onEdit={showModal} />
-            </CardContent>
-        </Card>
+        <CustomCard
+            action={
+                <LightButton variant="contained" btncolor="primary" onClick={showModal} size="small" icon={<AddIcon />}>
+                    הוסף טכנאי
+                </LightButton>
+            }
+            title="טכנאים"
+        >
+            <TechnicianTable onEdit={showModal} />
+        </CustomCard>
     );
 };
 

@@ -1,44 +1,10 @@
 import { useTheme } from "@mui/material";
 import ReactApexChart from "react-apexcharts";
+import { DeviceStatuses } from "../../../../Utils/utils";
 
-const DevicesChart = () => {
+const DevicesChart = ({ projects }) => {
     const theme = useTheme();
-    // Sample data, replace this with your actual data
-    function generateRandomProjectsData(numProjects, maxDevicesPerProject) {
-        const projectNames = ["מיפוי", "חרבות ברזל", "תחבורה", "בנייה", "מדעים", "טכנולוגיה", "אמנות", "ספורט"];
 
-        const getRandomProjectName = () => {
-            const randomIndex = Math.floor(Math.random() * projectNames.length);
-            return `${projectNames[randomIndex]} ${Math.floor(Math.random() * 1000)}`;
-        };
-
-        const getRandomStatus = () => {
-            const statuses = ["FIXED_RETURN", "DEFECTIVE_RETURN"];
-            const randomIndex = Math.floor(Math.random() * statuses.length);
-            return statuses[randomIndex];
-        };
-
-        const generateRandomDevices = () => {
-            const numDevices = Math.ceil(Math.random() * maxDevicesPerProject);
-            return Array.from({ length: numDevices }, () => ({ status: getRandomStatus() }));
-        };
-
-        const projectsData = [];
-
-        for (let i = 0; i < numProjects; i++) {
-            const project = {
-                projectName: getRandomProjectName(),
-                devices: generateRandomDevices(),
-            };
-            projectsData.push(project);
-        }
-
-        return projectsData;
-    }
-
-    // Example usage:
-    const projectsData = generateRandomProjectsData(7, 20);
-    // Prepare data for ApexChart
     const options = {
         chart: {
             height: 350,
@@ -62,7 +28,7 @@ const DevicesChart = () => {
             },
         },
         xaxis: {
-            categories: projectsData.map((project) => project.projectName),
+            categories: projects.map((project) => project.projectName),
         },
         yaxis: {
             labels: {
@@ -87,18 +53,20 @@ const DevicesChart = () => {
     const series = [
         {
             name: "מושבת",
-            data: projectsData.map((project) =>
-                project.devices.reduce((acc, device) => {
-                    return acc + (device.status === "DEFECTIVE_RETURN" ? 1 : 0);
-                }, 0),
+            data: projects.map((project) =>
+                project.vouchersList.reduce(
+                    (acc, voucher) => acc + voucher.deviceList.filter((device) => device.status === DeviceStatuses.DEFECTIVE_RETURN).length,
+                    0,
+                ),
             ),
         },
         {
             name: "תקין",
-            data: projectsData.map((project) =>
-                project.devices.reduce((acc, device) => {
-                    return acc + (device.status === "FIXED_RETURN" ? 1 : 0);
-                }, 0),
+            data: projects.map((project) =>
+                project.vouchersList.reduce(
+                    (acc, voucher) => acc + voucher.deviceList.filter((device) => device.status === DeviceStatuses.FIXED_RETURN).length,
+                    0,
+                ),
             ),
         },
     ];

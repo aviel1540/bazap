@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { getAllDeviceTypes } from "../../../Utils/deviceTypeApi";
-import { Card, CardContent, CardHeader } from "@mui/material";
 import LightButton from "../../UI/LightButton";
 import DeviceTypeTable from "./DeviceTypeTable";
 import DeviceTypeForm from "./DeviceTypeForm";
 import AddIcon from "@mui/icons-material/Add";
 import { useCustomModal } from "../../store/CustomModalContext";
+import CustomCard from "../../UI/CustomCard";
 
 const DeviceType = () => {
     const { onShow, onHide } = useCustomModal();
@@ -13,30 +13,25 @@ const DeviceType = () => {
         queryKey: ["deviceTypes"],
         queryFn: getAllDeviceTypes,
     });
-    const modalProperties = {
-        title: "סוג מוצר חדש",
-        name: "deviceType",
-        body: <DeviceTypeForm onCancel={() => onHide("deviceType")} />,
-    };
     const showModal = () => {
-        onShow(modalProperties);
+        onShow({
+            title: "סוג מוצר חדש",
+            name: "deviceType",
+            body: <DeviceTypeForm onCancel={() => onHide("deviceType")} />,
+        });
     };
 
     return (
-        <Card>
-            <CardHeader
-                action={
-                    <LightButton variant="contained" btncolor="primary" onClick={showModal} size="small" icon={<AddIcon />}>
-                        הוסף סוג מכשיר
-                    </LightButton>
-                }
-                titleTypographyProps={{ variant: "h5" }}
-                title="סוגי מכשירים"
-            />
-            <CardContent>
-                <DeviceTypeTable deviceTypes={deviceTypes} isLoading={isLoading} />
-            </CardContent>
-        </Card>
+        <CustomCard
+            action={
+                <LightButton variant="contained" btncolor="primary" onClick={showModal} size="small" icon={<AddIcon />}>
+                    הוסף סוג מכשיר
+                </LightButton>
+            }
+            title="סוגי מכשירים"
+        >
+            <DeviceTypeTable deviceTypes={deviceTypes} isLoading={isLoading} />
+        </CustomCard>
     );
 };
 

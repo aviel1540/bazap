@@ -8,6 +8,7 @@ import CustomTable from "../../../UI/CustomTable/CustomTable";
 import { useProject } from "../../../store/ProjectContext";
 import EmptyData from "../../../UI/EmptyData";
 import { useUserAlert } from "../../../store/UserAlertContext";
+import CustomCard from "../../../UI/CustomCard";
 
 const VoucherTable = ({ vouchers, isLoading }) => {
     const { onAlert, onConfirm, error } = useUserAlert();
@@ -76,9 +77,6 @@ const VoucherTable = ({ vouchers, isLoading }) => {
             queryClient.invalidateQueries({ queryKey: ["project", projectId] });
             queryClient.invalidateQueries({ queryKey: ["vouchers", projectId] });
         },
-        onError: ({ message }) => {
-            onAlert(message, error);
-        },
     });
 
     if (isLoading) {
@@ -86,14 +84,9 @@ const VoucherTable = ({ vouchers, isLoading }) => {
     }
 
     return (
-        <>
-            <Card>
-                <CardHeader titleTypographyProps={{ variant: "h6" }} title="שוברים" />
-                <CardContent>
-                    {vouchers.length > 0 ? <CustomTable columns={columns} data={vouchers} /> : <EmptyData label="אין שוברים להצגה" />}
-                </CardContent>
-            </Card>
-        </>
+        <CustomCard title="שוברים">
+            {vouchers.length > 0 ? <CustomTable columns={columns} data={vouchers} /> : <EmptyData label="אין שוברים להצגה" />}
+        </CustomCard>
     );
 };
 

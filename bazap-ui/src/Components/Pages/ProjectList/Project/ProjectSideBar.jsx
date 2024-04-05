@@ -1,36 +1,39 @@
+import React from "react";
 import Sider from "antd/es/layout/Sider";
-import { theme } from "antd";
 import { List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import IosShareIcon from "@mui/icons-material/IosShare";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
 import { useProject } from "../../../store/ProjectContext";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useUserAlert } from "../../../store/UserAlertContext";
 import { dateTostring } from "../../../../Utils/utils";
 import { createProjectReport } from "../../../../Utils/excelUtils";
 import VoucherStepper from "./NewVoucher/VoucherStepper";
 import { useCustomModal } from "../../../store/CustomModalContext";
 import { getAllDevicesInProject, getAllDevicesInLab } from "../../../../Utils/deviceApi";
+import { closeProject } from "../../../../Utils/projectAPI";
+import { theme } from "antd";
 
-const ProjectSideBar = () => {
-    const { projectId } = useProject();
-    const { onAlert, warning } = useUserAlert();
-    const { onShow, onHide } = useCustomModal();
+const getDevicesInLab = async (projectId) => {
+    const devices = await getAllDevicesInLab({ queryKey: [null, projectId] });
+    return devices;
+};
+const getAllDevicesInProjectAction = async (projectId) => {
+    const devices = await getAllDevicesInProject({ queryKey: [null, projectId] });
+    const filteredDevices = devices.filter((device) => device.voucherOut != null);
+    return filteredDevices;
+};
+
+const ProjectSideBar = ({ isProjectIsClosed }) => {
     const {
         token: { colorBgContainer, borderRadius },
     } = theme.useToken();
-
-    const getDevicesInLab = async () => {
-        const devices = await getAllDevicesInLab({ queryKey: [null, projectId] });
-        return devices;
-    };
-    const getAllDevicesInProjectAction = async () => {
-        const devices = await getAllDevicesInProject({ queryKey: [null, projectId] });
-        const filteredDevices = devices.filter((device) => device.voucherOut != null);
-        return filteredDevices;
-    };
+    const { projectId } = useProject();
+    const queryClient = useQueryClient();
+    const { onAlert, warning, success } = useUserAlert();
+    const { onShow, onHide } = useCustomModal();
     const getAllDevicesInProjectMutation = useMutation(getDevicesInLab, {
         onSuccess: (devices) => {
             if (devices.length == 0) {
@@ -39,8 +42,12 @@ const ProjectSideBar = () => {
                 createProjectReport(devices, "דוח_צ'_לתאריך_" + dateTostring(Date.now()));
             }
         },
-        onError: ({ message }) => {
-            onAlert(message, warning);
+    });
+    const closeProjectMutation = useMutation(closeProject, {
+        onSuccess: () => {
+            queryClient.invalidateQueries(["project", projectId]);
+            queryClient.invalidateQueries(["projects"]);
+            onAlert("הפרוייקט נסגר בהצלחה!", success, true);
         },
     });
     const getAllDevicesOutMutation = useMutation(getAllDevicesInProjectAction, {
@@ -55,31 +62,34 @@ const ProjectSideBar = () => {
             onAlert(message, warning);
         },
     });
+
     const createDeviceReport = () => {
-        getAllDevicesInProjectMutation.mutate();
+        getAllDevicesInProjectMutation.mutate(projectId);
     };
 
     const createOutDevicesReport = () => {
-        getAllDevicesOutMutation.mutate();
-    };
-    const modalProperties = {
-        title: "שובר חדש",
-        name: "voucherStepper",
-        body: <VoucherStepper onCancel={() => onHide("voucherStepper")} />,
+        getAllDevicesOutMutation.mutate(projectId);
     };
 
     const addVoucher = () => {
-        onShow(modalProperties);
+        onShow({
+            title: "שובר חדש",
+            name: "voucherStepper",
+            body: <VoucherStepper onCancel={() => onHide("voucherStepper")} />,
+        });
     };
-    const closeProject = () => {
-        alert("סגור פרוייקט");
+    const closeProjectHandler = () => {
+        closeProjectMutation.mutate(projectId);
     };
     const actions = [
-        { title: "הוסף שובר", icon: <AddIcon />, handler: addVoucher },
-        { title: "הפק דוח צ'", icon: <IosShareIcon />, handler: createDeviceReport },
-        { title: "סגור פרוייקט", icon: <BorderColorIcon />, handler: closeProject },
-        { title: "דוח מכשירים שנופקו", icon: <ArrowOutwardIcon />, handler: createOutDevicesReport },
+        { title: "הוסף שובר", icon: <AddIcon />, handler: addVoucher, shouldAppearOnClosedProject: false },
+        { title: "הפק דוח צ'", icon: <IosShareIcon />, handler: createDeviceReport, shouldAppearOnClosedProject: false },
+        { title: "סגור פרוייקט", icon: <BorderColorIcon />, handler: closeProjectHandler, shouldAppearOnClosedProject: false },
+        { title: "דוח מכשירים שנופקו", icon: <ArrowOutwardIcon />, handler: createOutDevicesReport, shouldAppearOnClosedProject: true },
     ];
+    const filteredActions = actions.filter(
+        (action) => action.shouldAppearOnClosedProject == isProjectIsClosed || action.shouldAppearOnClosedProject == true,
+    );
     return (
         <Sider
             style={{
@@ -89,16 +99,14 @@ const ProjectSideBar = () => {
             width={200}
         >
             <List>
-                {actions.map((action, index) => {
-                    return (
-                        <ListItem key={index} disablePadding>
-                            <ListItemButton onClick={action.handler}>
-                                <ListItemIcon>{action.icon}</ListItemIcon>
-                                <ListItemText primary={action.title} />
-                            </ListItemButton>
-                        </ListItem>
-                    );
-                })}
+                {filteredActions.map((action, index) => (
+                    <ListItem key={index} disablePadding>
+                        <ListItemButton onClick={action.handler}>
+                            <ListItemIcon>{action.icon}</ListItemIcon>
+                            <ListItemText primary={action.title} />
+                        </ListItemButton>
+                    </ListItem>
+                ))}
             </List>
         </Sider>
     );

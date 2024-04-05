@@ -50,9 +50,6 @@ const UnitTable = ({ onEdit }) => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["units"] });
         },
-        onError: ({ message }) => {
-            onAlert(message, error);
-        },
     });
     if (isLoading) {
         return <Loader />;

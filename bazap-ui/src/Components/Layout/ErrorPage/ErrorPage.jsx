@@ -1,12 +1,10 @@
 import { Box, CardContent, CardHeader, Container, Typography } from "@mui/material";
-import MainNavigation from "../Navbar/MainNavigation";
 import Card from "@mui/material/Card";
 import PageLayout from "../PageLayout";
 
 const ErrorPage = () => {
     return (
         <>
-            {/* <MainNavigation /> */}
             <PageLayout>
                 <Box
                     component="main"

@@ -37,17 +37,11 @@ const UnitForm = ({ onCancel, formValues = null, isEdit }) => {
             queryClient.invalidateQueries({ queryKey: ["units"] });
             onCancel();
         },
-        onError: ({ message }) => {
-            onAlert(message, error);
-        },
     });
     const editUnitMutation = useMutation(updateUnit, {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["units"] });
             onCancel();
-        },
-        onError: ({ message }) => {
-            onAlert(message, error);
         },
     });
 

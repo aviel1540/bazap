@@ -14,9 +14,7 @@ const ImportExcel = ({ remove, append, setDisabledFields, getValues, isDeliveryV
 
     const { onAlert, error } = useUserAlert();
     const getDeviceBySerialNumberMutation = useMutation(getDeviceBySerialNumber, {
-        onError: ({ message }) => {
-            onAlert(message, error);
-        },
+        
     });
 
     const config = {

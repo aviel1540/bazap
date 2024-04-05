@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { getAllArrivedDevicesInProject } from "../../../../../Utils/deviceApi";
 import { ALL, DeviceStatuses, FIXED_OR_DEFFECTIVE, RETURNED, replaceApostrophe } from "../../../../../Utils/utils";
 import { useEffect, useState } from "react";
 import { Box, Card, CardContent, CardHeader } from "@mui/material";
@@ -15,6 +14,8 @@ import { Space } from "antd";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CustomDropDown from "../../../../UI/CustomDropDown";
 import DevicesInProjectTable from "./DevicesInProjectTable";
+import { getAllDevicesInProject } from "../../../../../Utils/deviceApi";
+import CustomCard from "../../../../UI/CustomCard";
 
 const menuActions = [
     {
@@ -39,7 +40,7 @@ const ArrivedDevices = () => {
 
     const { isLoading, data: devices } = useQuery({
         queryKey: ["devicesInProject", projectId],
-        queryFn: getAllArrivedDevicesInProject,
+        queryFn: getAllDevicesInProject,
         onSuccess: (data) => {
             setFilteredDevices(data);
             if (devices) handleSearchAndFilter(searchParam, data, selectedStatus);
@@ -123,18 +124,18 @@ const ArrivedDevices = () => {
     const showModalChangeStatus = () => {
         const device = filteredDevices.find((dev) => dev._id === selectedRowKeys[0]);
         const devices = filteredDevices.filter((device) => selectedRowKeys.includes(device._id));
-        const modalPropertiesChangeStatus = {
+        onShow({
             title: "שינוי סטטוס",
+            name: "status",
             body: (
                 <StatusForm
                     status={selectedRowKeys.length == 0 ? null : device.status}
                     devices={devices}
-                    onCacnel={onHide}
+                    onCancel={() => onHide("status")}
                     clearSelectedRows={clearSelectedRows}
                 />
             ),
-        };
-        onShow(modalPropertiesChangeStatus);
+        });
     };
 
     const showModalCreateVoucher = () => {
@@ -143,11 +144,11 @@ const ArrivedDevices = () => {
             unit: filteredDevices[0].unit._id,
             devicesIds: selectedRowKeys,
         };
-        const modalPropertiesCreateVoucher = {
+        onShow({
             title: "שובר חדש",
-            body: <VoucherStepper onCancel={onHide} projectId={projectId} formDefaultValues={formDefaultValues} />,
-        };
-        onShow(modalPropertiesCreateVoucher);
+            name: "voucherStepper",
+            body: <VoucherStepper onCancel={() => onHide("voucherStepper")} projectId={projectId} formDefaultValues={formDefaultValues} />,
+        });
     };
 
     const columns = {
@@ -165,60 +166,56 @@ const ArrivedDevices = () => {
     };
 
     return (
-        <Card>
-            <CardHeader
-                titleTypographyProps={{ variant: "h6" }}
-                title='מכשירים בבצ"פ'
-                action={
-                    <>
-                        {selectedStatus !== FIXED_OR_DEFFECTIVE && selectedRowKeys.length > 0 && (
-                            <LightButton
-                                variant="contained"
-                                btncolor="info"
-                                onClick={showModalChangeStatus}
-                                icon={<SwapHorizIcon />}
-                                size="small"
-                            >
-                                שנה סטטוס
-                            </LightButton>
-                        )}
-                        {selectedStatus === FIXED_OR_DEFFECTIVE && selectedRowKeys.length > 0 && (
-                            <LightButton
-                                variant="contained"
-                                btncolor="info"
-                                onClick={showModalCreateVoucher}
-                                icon={<SwapHorizIcon />}
-                                size="small"
-                            >
-                                צור שובר ניפוק
-                            </LightButton>
-                        )}
-                    </>
-                }
-            />
-            <CardContent>
-                <Box marginBottom={2}>
-                    {!isLoading && (
-                        <Space size="small">
-                            <SearchInput onSearch={handleSearchChange} />
-                            <StatusFilter
-                                checkIfStatusExists={checkIfStatusExists}
-                                selectedStatus={selectedStatus}
-                                handleStatusChange={handleStatusChange}
-                            />
-                        </Space>
+        <CustomCard
+            title='מכשירים בבצ"פ'
+            action={
+                <>
+                    {selectedStatus !== FIXED_OR_DEFFECTIVE && selectedRowKeys.length > 0 && (
+                        <LightButton
+                            variant="contained"
+                            btncolor="info"
+                            onClick={showModalChangeStatus}
+                            icon={<SwapHorizIcon />}
+                            size="small"
+                        >
+                            שנה סטטוס
+                        </LightButton>
                     )}
-                </Box>
-                <DevicesInProjectTable
-                    filteredDevices={filteredDevices}
-                    rowSelection={selectedStatus != ALL && selectedStatus != RETURNED ? rowSelection : undefined}
-                    defaultPageSize={25}
-                    handleStatusChange={handleStatusChange}
-                    isLoading={isLoading}
-                    additionalColumns={columns}
-                />
-            </CardContent>
-        </Card>
+                    {selectedStatus === FIXED_OR_DEFFECTIVE && selectedRowKeys.length > 0 && (
+                        <LightButton
+                            variant="contained"
+                            btncolor="info"
+                            onClick={showModalCreateVoucher}
+                            icon={<SwapHorizIcon />}
+                            size="small"
+                        >
+                            צור שובר ניפוק
+                        </LightButton>
+                    )}
+                </>
+            }
+        >
+            <Box marginBottom={2}>
+                {!isLoading && (
+                    <Space size="small">
+                        <SearchInput onSearch={handleSearchChange} />
+                        <StatusFilter
+                            checkIfStatusExists={checkIfStatusExists}
+                            selectedStatus={selectedStatus}
+                            handleStatusChange={handleStatusChange}
+                        />
+                    </Space>
+                )}
+            </Box>
+            <DevicesInProjectTable
+                filteredDevices={filteredDevices}
+                rowSelection={selectedStatus != ALL && selectedStatus != RETURNED ? rowSelection : undefined}
+                defaultPageSize={25}
+                handleStatusChange={handleStatusChange}
+                isLoading={isLoading}
+                additionalColumns={columns}
+            />
+        </CustomCard>
     );
 };
 export default ArrivedDevices;

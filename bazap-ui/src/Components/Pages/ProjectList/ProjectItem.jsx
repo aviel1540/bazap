@@ -3,9 +3,9 @@ import { DeviceStatuses, dateTostring } from "../../../Utils/utils";
 import CustomInfoLabel from "../../UI/CustomForm/CustomInfoLabel";
 import ProjectChart from "./ProjectChart";
 import { Link } from "react-router-dom";
-import { Box, Card, CardContent, CardHeader } from "@mui/material";
+import { Box } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
-
+import CustomCard from "../../UI/CustomCard";
 const ProjectItem = ({ projectData }) => {
     const { projectName, startDate, _id: id } = projectData;
     let allDevices = [];
@@ -23,15 +23,12 @@ const ProjectItem = ({ projectData }) => {
     };
     return (
         <Grid item="true" xs={12} sm={6} md={4} lg={3}>
-            <Card>
-                <CardHeader titleTypographyProps={{ variant: "h6" }} title={<Link to={`/Project/${id}`}> {projectName}</Link>} />
-                <CardContent>
-                    <CustomInfoLabel label="תאריך התחלה" value={dateTostring(startDate)} />
-                    <Box margin={3}>
-                        <ProjectChart data={data} />
-                    </Box>
-                </CardContent>
-            </Card>
+            <CustomCard title={<Link to={`/Project/${id}`}> {projectName}</Link>}>
+                <CustomInfoLabel label="תאריך התחלה" value={dateTostring(startDate)} />
+                <Box margin={3}>
+                    <ProjectChart data={data} />
+                </Box>
+            </CustomCard>
         </Grid>
     );
 };

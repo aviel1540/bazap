@@ -5,10 +5,10 @@ import ProjectItem from "./ProjectItem";
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import EmptyData from "../../UI/EmptyData";
 import LightButton from "../../UI/LightButton";
-import { Card, CardContent, CardHeader } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import { useCustomModal } from "../../store/CustomModalContext";
 import ProjectForm from "./ProjectForm";
+import CustomCard from "../../UI/CustomCard";
 
 const ProjectsList = () => {
     const { onShow, onHide } = useCustomModal();
@@ -19,33 +19,29 @@ const ProjectsList = () => {
     if (isLoading) {
         return <Loader />;
     }
-    const modalProperties = {
-        title: "פרוייקט חדש",
-        body: <ProjectForm onCancel={onHide} />,
-    };
     const showModal = () => {
-        onShow(modalProperties);
+        onShow({
+            title: "פרוייקט חדש",
+            name: "project",
+            body: <ProjectForm onCancel={() => onHide("project")} />,
+        });
     };
     return (
-        <Card>
-            <CardHeader
-                titleTypographyProps={{ variant: "h6" }}
-                title="פרוייקטים"
-                action={
-                    <LightButton variant="contained" btncolor="primary" onClick={showModal} size="small" icon={<AddIcon />}>
-                        הוסף פרוייקט
-                    </LightButton>
-                }
-            />
-            <CardContent>
-                <Grid container spacing={2}>
-                    {projects.length == 0 && <EmptyData label="אין פרוייקטים להצגה" />}
-                    {projects.map((project) => (
-                        <ProjectItem key={project._id} projectData={project} />
-                    ))}
-                </Grid>
-            </CardContent>
-        </Card>
+        <CustomCard
+            title="פרוייקטים"
+            action={
+                <LightButton variant="contained" btncolor="primary" onClick={showModal} size="small" icon={<AddIcon />}>
+                    הוסף פרוייקט
+                </LightButton>
+            }
+        >
+            <Grid container spacing={2}>
+                {projects.length == 0 && <EmptyData label="אין פרוייקטים להצגה" />}
+                {projects.map((project) => (
+                    <ProjectItem key={project._id} projectData={project} />
+                ))}
+            </Grid>
+        </CustomCard>
     );
 };
 

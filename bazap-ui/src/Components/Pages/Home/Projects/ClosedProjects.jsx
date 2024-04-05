@@ -1,10 +1,9 @@
-import Card from "@mui/material/Card";
-import { Box, CardContent, CardHeader, Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { getAllProjects } from "../../../../Utils/projectAPI";
 import Loader from "../../../Layout/Loader";
 import DevicesChart from "./DevicesChart";
-
+import CustomCard from "../../../UI/CustomCard";
 const ClosedProjects = () => {
     const { isLoading, data: projects } = useQuery({
         queryKey: ["projects"],
@@ -13,20 +12,17 @@ const ClosedProjects = () => {
     if (isLoading) {
         return <Loader />;
     }
-    const closedprojects = projects.filter((project) => project.finished == false);
+    const closedprojects = projects.filter((project) => project.finished == true);
     return (
-        <Card>
-            <CardHeader titleTypographyProps={{ variant: "h5" }} title="פרוייקטים סגורים" />
-            <CardContent>
-                {closedprojects.length == 0 && (
-                    <Box textAlign="center" fontWeight="600">
-                        <Typography>לא נמצאו פרוייקטים סגורים!</Typography>
-                    </Box>
-                )}
+        <CustomCard title="פרוייקטים סגורים">
+            {closedprojects.length == 0 && (
+                <Box textAlign="center" fontWeight="600">
+                    <Typography>לא נמצאו פרוייקטים סגורים!</Typography>
+                </Box>
+            )}
 
-                {closedprojects.length > 0 && <DevicesChart />}
-            </CardContent>
-        </Card>
+            {closedprojects.length > 0 && <DevicesChart projects={closedprojects} />}
+        </CustomCard>
     );
 };
 
