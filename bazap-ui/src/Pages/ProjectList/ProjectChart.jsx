@@ -1,5 +1,5 @@
 import ReactApexChart from "react-apexcharts";
-import { DeviceStatuses, FIXED_OR_DEFFECTIVE, RETURNED } from "../../../Utils/utils";
+import { DeviceStatuses, FIXED_OR_DEFFECTIVE, RETURNED } from "../../Utils/utils";
 
 const ProjectChart = (props) => {
     const { data } = props;

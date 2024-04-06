@@ -1,18 +1,16 @@
-import PropTypes from "prop-types";
-import { Button, Flex, Tooltip, Upload, message } from "antd";
-import { downloadTemplateFile, readDevicesExcelFile } from "../../../../../Utils/excelUtils";
-import { useMutation } from "@tanstack/react-query";
-import { getDeviceBySerialNumber } from "../../../../../Utils/deviceApi";
-import { useUserAlert } from "../../../../store/UserAlertContext";
-import readXlsxFile from "read-excel-file";
 import { FileExcelOutlined, ImportOutlined } from "@ant-design/icons";
+import { useMutation } from "@tanstack/react-query";
+import { Button, Flex, Tooltip, Upload, message } from "antd";
+import PropTypes from "prop-types";
 import { useState } from "react";
-import { replaceApostrophe } from "../../../../../Utils/utils";
+import readXlsxFile from "read-excel-file";
+import { getDeviceBySerialNumber } from "../../../../Utils/deviceApi";
+import { downloadTemplateFile, readDevicesExcelFile } from "../../../../Utils/excelUtils";
+import { replaceApostrophe } from "../../../../Utils/utils";
 
 const ImportExcel = ({ remove, append, setDisabledFields, getValues, isDeliveryVoucher, setSelectedRowKeys }) => {
     const [loading, setLoading] = useState(false);
 
-    const { onAlert, error } = useUserAlert();
     const getDeviceBySerialNumberMutation = useMutation(getDeviceBySerialNumber, {});
 
     const config = {

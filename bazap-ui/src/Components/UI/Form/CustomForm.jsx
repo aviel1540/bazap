@@ -1,5 +1,5 @@
 import { Form, Button, Space, Flex, Divider } from "antd";
-import Loader from "../../Layout/Loader";
+import Loader from "../../Components/Layout/Loader";
 import PropTypes from "prop-types";
 import { useEffect } from "react";
 import RenderFields from "./RenderFields";

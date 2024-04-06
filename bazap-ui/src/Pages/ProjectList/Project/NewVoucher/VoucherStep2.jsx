@@ -1,20 +1,19 @@
-import { Box, Button, IconButton, createFilterOptions } from "@mui/material";
-import { Controller, useFieldArray, useFormContext } from "react-hook-form";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { getAllDeviceTypes } from "../../../../../Utils/deviceTypeApi";
-import HighlightOff from "@mui/icons-material/HighlightOff";
 import Add from "@mui/icons-material/Add";
-import { DeviceStatuses, FIXED_OR_DEFFECTIVE, replaceApostrophe } from "../../../../../Utils/utils";
-import { getAllDevicesInProject, getDeviceBySerialNumber, getDevices } from "../../../../../Utils/deviceApi";
-import ImportExcel from "./ImportExcel";
-import { useUserAlert } from "../../../../store/UserAlertContext";
+import HighlightOff from "@mui/icons-material/HighlightOff";
+import { Box, Button, IconButton, createFilterOptions } from "@mui/material";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Col, Row } from "antd";
 import { Fragment, useEffect, useState } from "react";
-import ControlledInput from "../../../../UI/CustomForm/ControlledInput";
-import { useProject } from "../../../../store/ProjectContext";
+import { Controller, useFieldArray, useFormContext } from "react-hook-form";
+import Loader from "../../../../Components/Layout/Loader";
+import ControlledInput from "../../../../Components/UI/CustomForm/ControlledInput";
+import { useProject } from "../../../../Components/store/ProjectContext";
+import { getAllDevicesInProject, getDeviceBySerialNumber, getDevices } from "../../../../Utils/deviceApi";
+import { getAllDeviceTypes } from "../../../../Utils/deviceTypeApi";
+import { checkDuplicationInForm } from "../../../../Utils/formUtils";
+import { DeviceStatuses, FIXED_OR_DEFFECTIVE, replaceApostrophe } from "../../../../Utils/utils";
 import DevicesInProjectTable from "../DevicesInProject/DevicesInProjectTable";
-import { checkDuplicationInForm } from "../../../../../Utils/formUtils";
-import Loader from "../../../../Layout/Loader";
+import ImportExcel from "./ImportExcel";
 const filter = createFilterOptions();
 
 const convertDeivcesToACOptions = (data) => {
@@ -31,7 +30,6 @@ const convertDeivcesToACOptions = (data) => {
 
 const VoucherStep2 = () => {
     const [disabledFields, setDisabledFields] = useState({});
-    const { onAlert, error } = useUserAlert();
     const { projectId } = useProject();
     const { getValues, control, setValue } = useFormContext();
     const [filteredDevices, setFilteredDevices] = useState([]);

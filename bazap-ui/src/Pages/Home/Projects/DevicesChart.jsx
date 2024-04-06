@@ -1,6 +1,6 @@
 import { useTheme } from "@mui/material";
 import ReactApexChart from "react-apexcharts";
-import { DeviceStatuses } from "../../../../Utils/utils";
+import { DeviceStatuses } from "../../../Utils/utils";
 
 const DevicesChart = ({ projects }) => {
     const theme = useTheme();

@@ -1,12 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import CustomForm from "../../UI/CustomForm/CustomForm";
+import CustomForm from "../../Components/UI/CustomForm/CustomForm";
 import propTypes from "prop-types";
-import { addProject, getAllProjects, updateProject } from "../../../Utils/projectAPI";
-import { useUserAlert } from "../../store/UserAlertContext";
-import { checkDuplicationInForm } from "../../../Utils/formUtils";
+import { addProject, getAllProjects, updateProject } from "../../Utils/projectAPI";
+import { checkDuplicationInForm } from "../../Utils/formUtils";
 
 const ProjectForm = ({ onCancel, formValues = null, isEdit }) => {
-    const { onAlert, error } = useUserAlert();
     const queryClient = useQueryClient();
     const { isLoading, data: projects } = useQuery({
         queryKey: ["projects"],

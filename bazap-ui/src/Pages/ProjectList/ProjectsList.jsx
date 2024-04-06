@@ -1,14 +1,14 @@
-import { getAllProjects } from "../../../Utils/projectAPI";
-import { useQuery } from "@tanstack/react-query";
-import Loader from "../../Layout/Loader";
-import ProjectItem from "./ProjectItem";
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import EmptyData from "../../UI/EmptyData";
-import LightButton from "../../UI/LightButton";
 import AddIcon from "@mui/icons-material/Add";
-import { useCustomModal } from "../../store/CustomModalContext";
+import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+import { useQuery } from "@tanstack/react-query";
+import Loader from "../../Components/Layout/Loader";
+import CustomCard from "../../Components/UI/CustomCard";
+import EmptyData from "../../Components/UI/EmptyData";
+import LightButton from "../../Components/UI/LightButton";
+import { useCustomModal } from "../../Components/store/CustomModalContext";
+import { getAllProjects } from "../../Utils/projectAPI";
 import ProjectForm from "./ProjectForm";
-import CustomCard from "../../UI/CustomCard";
+import ProjectItem from "./ProjectItem";
 
 const ProjectsList = () => {
     const { onShow, onHide } = useCustomModal();

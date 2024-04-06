@@ -1,7 +1,7 @@
-import PropTypes from "prop-types";
-import { ALL, DeviceStatuses, FIXED_OR_DEFFECTIVE, RETURNED } from "../../../../../Utils/utils";
-import { Avatar, Select, Space, Tooltip } from "antd";
 import { InfoCircleOutlined } from "@ant-design/icons";
+import { Avatar, Select, Space, Tooltip } from "antd";
+import PropTypes from "prop-types";
+import { ALL, DeviceStatuses, FIXED_OR_DEFFECTIVE, RETURNED } from "../../../../Utils/utils";
 
 const StatusFilter = ({ checkIfStatusExists, handleStatusChange, selectedStatus }) => {
     const getStatusesOptions = () => {

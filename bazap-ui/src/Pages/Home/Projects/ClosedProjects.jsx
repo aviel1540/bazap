@@ -1,9 +1,9 @@
 import { Box, Typography } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
-import { getAllProjects } from "../../../../Utils/projectAPI";
-import Loader from "../../../Layout/Loader";
 import DevicesChart from "./DevicesChart";
-import CustomCard from "../../../UI/CustomCard";
+import CustomCard from "../../../Components/UI/CustomCard";
+import { getAllProjects } from "../../../Utils/projectAPI";
+import Loader from "../../../Components/Layout/Loader";
 const ClosedProjects = () => {
     const { isLoading, data: projects } = useQuery({
         queryKey: ["projects"],

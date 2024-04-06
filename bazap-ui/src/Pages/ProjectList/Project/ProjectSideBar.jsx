@@ -7,13 +7,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { theme } from "antd";
 import Sider from "antd/es/layout/Sider";
 import PropTypes from "prop-types";
-import { getAllDevicesInLab, getAllDevicesInProject } from "../../../../Utils/deviceApi";
-import { createProjectReport } from "../../../../Utils/excelUtils";
-import { closeProject } from "../../../../Utils/projectAPI";
-import { dateTostring } from "../../../../Utils/utils";
-import { useCustomModal } from "../../../store/CustomModalContext";
-import { useProject } from "../../../store/ProjectContext";
-import { useUserAlert } from "../../../store/UserAlertContext";
+import { useCustomModal } from "../../../Components/store/CustomModalContext";
+import { useProject } from "../../../Components/store/ProjectContext";
+import { getAllDevicesInLab, getAllDevicesInProject } from "../../../Utils/deviceApi";
+import { createProjectReport } from "../../../Utils/excelUtils";
+import { closeProject } from "../../../Utils/projectAPI";
+import { dateTostring } from "../../../Utils/utils";
+import { useUserAlert } from "../../../Components/store/UserAlertContext";
 import VoucherStepper from "./NewVoucher/VoucherStepper";
 
 const getDevicesInLab = async (projectId) => {

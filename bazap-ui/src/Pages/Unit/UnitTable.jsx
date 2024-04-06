@@ -1,13 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import Loader from "../../Layout/Loader";
 import propTypes from "prop-types";
-import { deleteUnit, getAllUnits } from "../../../Utils/unitAPI";
-import CustomTable from "../../UI/CustomTable/CustomTable";
-import TableActions from "../../UI/CustomTable/TableActions";
-import { useUserAlert } from "../../store/UserAlertContext";
+import Loader from "../../Components/Layout/Loader";
+import TableActions from "../../Components/UI/CustomTable/TableActions";
+import { useUserAlert } from "../../Components/store/UserAlertContext";
+import { deleteUnit, getAllUnits } from "../../Utils/unitAPI";
+import CustomTable from "../../Components/UI/CustomTable/CustomTable"
+
 const UnitTable = ({ onEdit }) => {
     const queryClient = useQueryClient();
-    const { onAlert, onConfirm, error } = useUserAlert();
+    const { onConfirm } = useUserAlert();
     const { isLoading, data: units } = useQuery({
         queryKey: ["units"],
         queryFn: getAllUnits,

@@ -1,16 +1,16 @@
-import React, { useEffect } from "react";
-import { useParams } from "react-router";
-import { useQuery } from "@tanstack/react-query";
-import { getProjectData } from "../../../../Utils/projectAPI";
-import { getAllVouchers } from "../../../../Utils/voucherApi";
-import { dateTostring } from "../../../../Utils/utils";
-import { useProject } from "../../../store/ProjectContext";
-import Loader from "../../../Layout/Loader";
-import ProjectSideBar from "./ProjectSideBar";
-import ArrivedDevices from "./DevicesInProject/DevicesInProject";
-import VoucherTable from "./VoucherTable";
 import { Box, Stack } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
 import { Card, Descriptions, Layout, Tag } from "antd";
+import { useEffect } from "react";
+import { useParams } from "react-router";
+import Loader from "../../../Components/Layout/Loader";
+import { getProjectData } from "../../../Utils/projectAPI";
+import { dateTostring } from "../../../Utils/utils";
+import { getAllVouchers } from "../../../Utils/voucherApi";
+import { useProject } from "../../../Components/store/ProjectContext";
+import ArrivedDevices from "./DevicesInProject/DevicesInProject";
+import ProjectSideBar from "./ProjectSideBar";
+import VoucherTable from "./VoucherTable";
 
 const Project = () => {
     const { id } = useParams();

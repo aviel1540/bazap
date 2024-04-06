@@ -1,13 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import propTypes from "prop-types";
-import { addTechnician, getAllTechnicians, updateTechnician } from "../../../Utils/technicianAPI";
-import CustomForm from "../../UI/CustomForm/CustomForm";
-import { checkDuplicationInForm } from "../../../Utils/formUtils";
-import { useUserAlert } from "../../store/UserAlertContext";
+import CustomForm from "../../Components/UI/CustomForm/CustomForm";
+import { checkDuplicationInForm } from "../../Utils/formUtils";
 
+import { addTechnician, getAllTechnicians, updateTechnician } from "../../Utils/technicianAPI";
 const TechnicianForm = ({ onCancel, formValues = null, isEdit }) => {
     const queryClient = useQueryClient();
-    const { onAlert, error } = useUserAlert();
     const { isLoading, data: technicians } = useQuery({
         queryKey: ["technicians"],
         queryFn: getAllTechnicians,

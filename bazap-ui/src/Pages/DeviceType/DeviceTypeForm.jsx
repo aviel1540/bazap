@@ -1,16 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { addDeviceType, getAllDeviceTypes } from "../../../Utils/deviceTypeApi";
 import propTypes from "prop-types";
-import { useUserAlert } from "../../store/UserAlertContext";
-import CustomForm from "../../UI/CustomForm/CustomForm";
-import { checkDuplicationInForm } from "../../../Utils/formUtils";
+import CustomForm from "../../Components/UI/CustomForm/CustomForm";
+import { addDeviceType, getAllDeviceTypes } from "../../Utils/deviceTypeApi";
+import { checkDuplicationInForm } from "../../Utils/formUtils";
 
 const DeviceTypeForm = ({ onCancel, formValues = null, isEdit }) => {
     const { isLoading, data: deviceTypes } = useQuery({
         queryKey: ["units"],
         queryFn: getAllDeviceTypes,
     });
-    const { onAlert, error } = useUserAlert();
     const queryClient = useQueryClient();
     const handleSave = (data) => {
         if (!isEdit) {

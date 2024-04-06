@@ -1,11 +1,11 @@
-import { useQuery } from "@tanstack/react-query";
-import { getAllDeviceTypes } from "../../../Utils/deviceTypeApi";
-import LightButton from "../../UI/LightButton";
-import DeviceTypeTable from "./DeviceTypeTable";
-import DeviceTypeForm from "./DeviceTypeForm";
 import AddIcon from "@mui/icons-material/Add";
-import { useCustomModal } from "../../store/CustomModalContext";
-import CustomCard from "../../UI/CustomCard";
+import { useQuery } from "@tanstack/react-query";
+import CustomCard from "../../Components/UI/CustomCard";
+import LightButton from "../../Components/UI/LightButton";
+import { useCustomModal } from "../../Components/store/CustomModalContext";
+import { getAllDeviceTypes } from "../../Utils/deviceTypeApi";
+import DeviceTypeForm from "./DeviceTypeForm";
+import DeviceTypeTable from "./DeviceTypeTable";
 
 const DeviceType = () => {
     const { onShow, onHide } = useCustomModal();

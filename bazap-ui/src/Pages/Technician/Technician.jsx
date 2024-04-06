@@ -1,10 +1,9 @@
-import TechnicianTable from "./TechnicianTable";
-import TechnicianForm from "./TechnicianForm";
-import { Card, CardContent, CardHeader } from "@mui/material";
-import LightButton from "../../UI/LightButton";
 import AddIcon from "@mui/icons-material/Add";
-import { useCustomModal } from "../../store/CustomModalContext";
-import CustomCard from "../../UI/CustomCard";
+import CustomCard from "../../Components/UI/CustomCard";
+import LightButton from "../../Components/UI/LightButton";
+import { useCustomModal } from "../../Components/store/CustomModalContext";
+import TechnicianForm from "./TechnicianForm";
+import TechnicianTable from "./TechnicianTable";
 
 const Technician = () => {
     const { onShow, onHide } = useCustomModal();

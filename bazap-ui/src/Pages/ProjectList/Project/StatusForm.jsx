@@ -1,16 +1,14 @@
-import { Box, Button, FormControl, Stack, TextField } from "@mui/material";
 import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
-import LightButton from "../../../UI/LightButton";
+import { Box, Button, FormControl, Stack, TextField } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { updateStatus } from "../../../../Utils/deviceApi";
-import ControlledInput from "../../../UI/CustomForm/ControlledInput";
-import { FormProvider, useForm } from "react-hook-form";
 import PropTypes, { object } from "prop-types";
-import { useProject } from "../../../store/ProjectContext";
-import { DeviceStatuses } from "../../../../Utils/utils";
-import { useUserAlert } from "../../../store/UserAlertContext";
-
+import { FormProvider, useForm } from "react-hook-form";
+import ControlledInput from "../../../Components/UI/CustomForm/ControlledInput";
+import LightButton from "../../../Components/UI/LightButton";
+import { useProject } from "../../../Components/store/ProjectContext";
+import { DeviceStatuses } from "../../../Utils/utils";
+import { updateStatus } from "../../../Utils/deviceApi";
 const statuses = Object.values(DeviceStatuses);
 const filteredStatuses = statuses.filter((status) => ![DeviceStatuses.DEFECTIVE_RETURN, DeviceStatuses.FIXED_RETURN].includes(status));
 const deviceStatusOptions = filteredStatuses.map((value) => ({
@@ -20,7 +18,6 @@ const deviceStatusOptions = filteredStatuses.map((value) => ({
 
 const StatusForm = ({ status, onCancel, devices, clearSelectedRows }) => {
     const { projectId } = useProject();
-    const { onAlert, error } = useUserAlert();
     const queryClient = useQueryClient();
     const methods = useForm({
         defaultValues: {

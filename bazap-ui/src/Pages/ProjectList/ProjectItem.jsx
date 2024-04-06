@@ -1,11 +1,11 @@
-import propTypes from "prop-types";
-import { DeviceStatuses, dateTostring } from "../../../Utils/utils";
-import CustomInfoLabel from "../../UI/CustomForm/CustomInfoLabel";
-import ProjectChart from "./ProjectChart";
-import { Link } from "react-router-dom";
 import { Box } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
-import CustomCard from "../../UI/CustomCard";
+import propTypes from "prop-types";
+import { Link } from "react-router-dom";
+import CustomCard from "../../Components/UI/CustomCard";
+import CustomInfoLabel from "../../Components/UI/CustomForm/CustomInfoLabel";
+import { DeviceStatuses, dateTostring } from "../../Utils/utils";
+import ProjectChart from "./ProjectChart";
 const ProjectItem = ({ projectData }) => {
     const { projectName, startDate, _id: id } = projectData;
     let allDevices = [];

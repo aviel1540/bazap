@@ -4,12 +4,11 @@ import { DialogActions } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import { Button, Input, Popconfirm } from "antd";
 import RenderFields from "./RenderFields";
-import Loader from "../../Layout/Loader";
 import { useState } from "react";
 import { Typography } from "antd";
 import { useMutation } from "@tanstack/react-query";
 import { validatePassword } from "../../../Utils/passwordAPI";
-
+import Loader from "../../../Components/Layout/Loader";
 const { Text } = Typography;
 
 const CustomForm = ({ inputs, onSubmit, onCancel, values, hideActions, children, isLoading, isPasswordRequired }) => {

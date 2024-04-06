@@ -1,8 +1,8 @@
-import EmptyData from "../../../../UI/EmptyData";
 import { Table, Tag } from "antd";
-import { DeviceStatuses, FIXED_OR_DEFFECTIVE, RETURNED, addKeysToArray, replaceApostrophe, tagColors } from "../../../../../Utils/utils";
 import PropTypes from "prop-types";
-import Loader from "../../../../Layout/Loader";
+import { DeviceStatuses, FIXED_OR_DEFFECTIVE, RETURNED, addKeysToArray, replaceApostrophe, tagColors } from "../../../../Utils/utils";
+import Loader from "../../../../Components/Layout/Loader";
+import EmptyData from "../../../../Components/UI/EmptyData";
 
 const DevicesInProjectTable = ({ rowSelection, filteredDevices, additionalColumns, defaultPageSize, isLoading, handleStatusChange }) => {
     const paginationOptions = {

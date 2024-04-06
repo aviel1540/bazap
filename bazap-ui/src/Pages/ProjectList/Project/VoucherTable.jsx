@@ -1,17 +1,17 @@
-import Loader from "../../../Layout/Loader";
-import propTypes from "prop-types";
-import { Card, CardContent, CardHeader, Chip } from "@mui/material";
+import { Chip } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteVoucher } from "../../../../Utils/voucherApi";
-import TableActions from "../../../UI/CustomTable/TableActions";
-import CustomTable from "../../../UI/CustomTable/CustomTable";
-import { useProject } from "../../../store/ProjectContext";
-import EmptyData from "../../../UI/EmptyData";
-import { useUserAlert } from "../../../store/UserAlertContext";
-import CustomCard from "../../../UI/CustomCard";
+import propTypes from "prop-types";
+import Loader from "../../../Components/Layout/Loader";
+import CustomCard from "../../../Components/UI/CustomCard";
+import CustomTable from "../../../Components/UI/CustomTable/CustomTable";
+import TableActions from "../../../Components/UI/CustomTable/TableActions";
+import EmptyData from "../../../Components/UI/EmptyData";
+import { useProject } from "../../../Components/store/ProjectContext";
+import { useUserAlert } from "../../../Components/store/UserAlertContext";
+import { deleteVoucher } from "../../../Utils/voucherApi";
 
 const VoucherTable = ({ vouchers, isLoading }) => {
-    const { onAlert, onConfirm, error } = useUserAlert();
+    const { onConfirm } = useUserAlert();
 
     const { projectId } = useProject();
     const queryClient = useQueryClient();

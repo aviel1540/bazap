@@ -8,7 +8,7 @@ import "@fontsource/rubik/600.css";
 import "@fontsource/rubik/700.css";
 import "@fontsource/rubik/800.css";
 import "@fontsource/rubik/900.css";
-import Technician from "./Components/Pages/Technician/Technician";
+import Technician from "./Pages/Technician/Technician";
 import ErrorPage from "./Components/Layout/ErrorPage/ErrorPage";
 import Theme from "./Components/Layout/Theme";
 import { CustomModalProvider } from "./Components/store/CustomModalContext";
@@ -18,11 +18,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useUserAlert } from "./Components/store/UserAlertContext";
 
-const DeviceType = lazy(() => import("./Components/Pages/DeviceType/DeviceType"));
-const Unit = lazy(() => import("./Components/Pages/Unit/Unit"));
-const Home = lazy(() => import("./Components/Pages/Home/Home"));
-const ProjectsList = lazy(() => import("./Components/Pages/ProjectList/ProjectsList"));
-const Project = lazy(() => import("./Components/Pages/ProjectList/Project/Project"));
+const DeviceType = lazy(() => import("./Pages/DeviceType/DeviceType"));
+const Unit = lazy(() => import("./Pages/Unit/Unit"));
+const Home = lazy(() => import("./Pages/Home/Home"));
+const ProjectsList = lazy(() => import("./Pages/ProjectList/ProjectsList"));
+const Project = lazy(() => import("./Pages/ProjectList/Project/Project"));
 
 const router = createBrowserRouter(
     createRoutesFromElements(

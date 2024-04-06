@@ -1,14 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import DataTable from "react-data-table-component";
-import Loader from "../../Layout/Loader";
 import propTypes from "prop-types";
-import { deleteTechnician, getAllTechnicians } from "../../../Utils/technicianAPI";
-import TableActions from "../../UI/CustomTable/TableActions";
-import { useUserAlert } from "../../store/UserAlertContext";
+import DataTable from "react-data-table-component";
+import Loader from "../../Components/Layout/Loader";
+import TableActions from "../../Components/UI/CustomTable/TableActions";
+import { useUserAlert } from "../../Components/store/UserAlertContext";
+import { deleteTechnician, getAllTechnicians } from "../../Utils/technicianAPI";
 
 const TechnicianTable = ({ onEdit }) => {
     const queryClient = useQueryClient();
-    const { onAlert, error, onConfirm } = useUserAlert();
+    const { onConfirm } = useUserAlert();
     const { isLoading, data: technicians } = useQuery({
         queryKey: ["technicians"],
         queryFn: getAllTechnicians,

@@ -5,14 +5,12 @@ import VoucherStep1 from "./VoucherStep1";
 import VoucherStep2 from "./VoucherStep2";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { addVoucherIn, addVoucherOut } from "../../../../../Utils/voucherApi";
-import { useUserAlert } from "../../../../store/UserAlertContext";
-import { useProject } from "../../../../store/ProjectContext";
+import { addVoucherIn, addVoucherOut } from "../../../../Utils/voucherApi";
+import { useProject } from "../../../../Components/store/ProjectContext";
 import { Button, Flex, Space } from "antd";
 
 const stepsLength = 2;
 const VoucherStepper = ({ onCancel, formDefaultValues }) => {
-    const { onAlert, error } = useUserAlert();
     const [activeStep, setActiveStep] = useState(0);
     const queryClient = useQueryClient();
     const { projectId } = useProject();

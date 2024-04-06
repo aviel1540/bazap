@@ -1,21 +1,21 @@
-import { useQuery } from "@tanstack/react-query";
-import { ALL, DeviceStatuses, FIXED_OR_DEFFECTIVE, RETURNED, replaceApostrophe } from "../../../../../Utils/utils";
-import { useEffect, useState } from "react";
-import { Box, Card, CardContent, CardHeader } from "@mui/material";
-import LightButton from "../../../../UI/LightButton";
-import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
-import StatusForm from "../StatusForm";
-import { useCustomModal } from "../../../../store/CustomModalContext";
-import SearchInput from "../../../../UI/SearchInput";
-import { useProject } from "../../../../store/ProjectContext";
-import StatusFilter from "./StatusFilter";
-import VoucherStepper from "../NewVoucher/VoucherStepper";
-import { Space } from "antd";
 import DeleteIcon from "@mui/icons-material/Delete";
-import CustomDropDown from "../../../../UI/CustomDropDown";
+import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
+import { Box } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
+import { Space } from "antd";
+import { useEffect, useState } from "react";
+import { getAllDevicesInProject } from "../../../../Utils/deviceApi";
+import { ALL, DeviceStatuses, FIXED_OR_DEFFECTIVE, RETURNED, replaceApostrophe } from "../../../../Utils/utils";
+import { useCustomModal } from "../../../../Components/store/CustomModalContext";
+import { useProject } from "../../../../Components/store/ProjectContext";
+import CustomCard from "../../../../Components/UI/CustomCard";
+import CustomDropDown from "../../../../Components/UI/CustomDropDown";
+import LightButton from "../../../../Components/UI/LightButton";
+import SearchInput from "../../../../Components/UI/SearchInput";
+import VoucherStepper from "../NewVoucher/VoucherStepper";
+import StatusForm from "../StatusForm";
 import DevicesInProjectTable from "./DevicesInProjectTable";
-import { getAllDevicesInProject } from "../../../../../Utils/deviceApi";
-import CustomCard from "../../../../UI/CustomCard";
+import StatusFilter from "./StatusFilter";
 
 const menuActions = [
     {

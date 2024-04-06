@@ -1,11 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import propTypes from "prop-types";
-import { deleteDeviceType } from "../../../Utils/deviceTypeApi";
-import { replaceApostrophe } from "../../../Utils/utils";
-import Loader from "../../Layout/Loader";
-import CustomTable from "../../UI/CustomTable/CustomTable";
-import TableActions from "../../UI/CustomTable/TableActions";
-import { useUserAlert } from "../../store/UserAlertContext";
+import { replaceApostrophe } from "../../Utils/utils";
+import Loader from "../../Components/Layout/Loader";
+import CustomTable from "../../Components/UI/CustomTable/CustomTable";
+import TableActions from "../../Components/UI/CustomTable/TableActions";
+import { useUserAlert } from "../../Components/store/UserAlertContext";
+import { deleteDeviceType } from "../../Utils/deviceTypeApi";
 
 const DeviceTypeTable = ({ deviceTypes, isLoading }) => {
     const { onConfirm } = useUserAlert();

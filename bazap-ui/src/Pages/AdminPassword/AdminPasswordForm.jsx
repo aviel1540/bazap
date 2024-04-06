@@ -1,7 +1,7 @@
 // import { useQueryClient } from "@tanstack/react-query";
-// import { useUserAlert } from "../../store/UserAlertContext";
+// import { useUserAlert } from "../../Components/store/UserAlertContext";
 import propTypes from "prop-types";
-import CustomForm from "../../UI/CustomForm/CustomForm";
+import CustomForm from "../../Components/UI/CustomForm/CustomForm";
 
 const AdminPasswordForm = ({ onCancel }) => {
     // const queryClient = useQueryClient();
