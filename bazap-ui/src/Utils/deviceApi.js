@@ -26,7 +26,7 @@ export const addNewDevices = async (devices) => {
         throw new Error(error.response.data.message);
     }
 };
-``
+``;
 export const getAllDevicesInProject = async ({ queryKey }) => {
     try {
         const [_, id] = queryKey;

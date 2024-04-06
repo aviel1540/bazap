@@ -13,9 +13,7 @@ const ImportExcel = ({ remove, append, setDisabledFields, getValues, isDeliveryV
     const [loading, setLoading] = useState(false);
 
     const { onAlert, error } = useUserAlert();
-    const getDeviceBySerialNumberMutation = useMutation(getDeviceBySerialNumber, {
-        
-    });
+    const getDeviceBySerialNumberMutation = useMutation(getDeviceBySerialNumber, {});
 
     const config = {
         name: "file",
@@ -60,9 +58,9 @@ const ImportExcel = ({ remove, append, setDisabledFields, getValues, isDeliveryV
                             }
                         }
                         setDisabledFields((prev) => {
-                            const newState = { ...prev }; 
+                            const newState = { ...prev };
                             indexes.forEach((index) => {
-                                newState[index] = true; 
+                                newState[index] = true;
                             });
                             return newState;
                         });
@@ -80,11 +78,11 @@ const ImportExcel = ({ remove, append, setDisabledFields, getValues, isDeliveryV
 
                         await Promise.all(promises);
 
-                        const uniqueIds = Array.from(foundedDevicesIds); 
+                        const uniqueIds = Array.from(foundedDevicesIds);
 
                         setSelectedRowKeys((prevState) => {
                             const newIds = uniqueIds.filter((id) => !prevState.includes(id));
-                            return [...prevState, ...newIds]; 
+                            return [...prevState, ...newIds];
                         });
 
                         if (notFoundDevices.length > 0) {

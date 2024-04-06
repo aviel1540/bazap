@@ -4,7 +4,6 @@ const { Content } = Layout;
 import PropTypes from "prop-types";
 
 const PageLayout = ({ children }) => {
-
     return (
         <Layout>
             <MainNavigation />

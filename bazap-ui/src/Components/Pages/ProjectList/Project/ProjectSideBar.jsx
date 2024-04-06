@@ -1,20 +1,20 @@
-import React from "react";
-import Sider from "antd/es/layout/Sider";
-import { List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import IosShareIcon from "@mui/icons-material/IosShare";
-import BorderColorIcon from "@mui/icons-material/BorderColor";
 import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
-import { useProject } from "../../../store/ProjectContext";
+import BorderColorIcon from "@mui/icons-material/BorderColor";
+import IosShareIcon from "@mui/icons-material/IosShare";
+import { List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useUserAlert } from "../../../store/UserAlertContext";
-import { dateTostring } from "../../../../Utils/utils";
-import { createProjectReport } from "../../../../Utils/excelUtils";
-import VoucherStepper from "./NewVoucher/VoucherStepper";
-import { useCustomModal } from "../../../store/CustomModalContext";
-import { getAllDevicesInProject, getAllDevicesInLab } from "../../../../Utils/deviceApi";
-import { closeProject } from "../../../../Utils/projectAPI";
 import { theme } from "antd";
+import Sider from "antd/es/layout/Sider";
+import PropTypes from "prop-types";
+import { getAllDevicesInLab, getAllDevicesInProject } from "../../../../Utils/deviceApi";
+import { createProjectReport } from "../../../../Utils/excelUtils";
+import { closeProject } from "../../../../Utils/projectAPI";
+import { dateTostring } from "../../../../Utils/utils";
+import { useCustomModal } from "../../../store/CustomModalContext";
+import { useProject } from "../../../store/ProjectContext";
+import { useUserAlert } from "../../../store/UserAlertContext";
+import VoucherStepper from "./NewVoucher/VoucherStepper";
 
 const getDevicesInLab = async (projectId) => {
     const devices = await getAllDevicesInLab({ queryKey: [null, projectId] });
@@ -84,8 +84,8 @@ const ProjectSideBar = ({ isProjectIsClosed }) => {
     const actions = [
         { title: "הוסף שובר", icon: <AddIcon />, handler: addVoucher, shouldAppearOnClosedProject: false },
         { title: "הפק דוח צ'", icon: <IosShareIcon />, handler: createDeviceReport, shouldAppearOnClosedProject: false },
-        { title: "סגור פרוייקט", icon: <BorderColorIcon />, handler: closeProjectHandler, shouldAppearOnClosedProject: false },
         { title: "דוח מכשירים שנופקו", icon: <ArrowOutwardIcon />, handler: createOutDevicesReport, shouldAppearOnClosedProject: true },
+        { title: "סגור פרוייקט", icon: <BorderColorIcon />, handler: closeProjectHandler, shouldAppearOnClosedProject: false },
     ];
     const filteredActions = actions.filter(
         (action) => action.shouldAppearOnClosedProject == isProjectIsClosed || action.shouldAppearOnClosedProject == true,
@@ -112,4 +112,7 @@ const ProjectSideBar = ({ isProjectIsClosed }) => {
     );
 };
 
+ProjectSideBar.propTypes = {
+    isProjectIsClosed: PropTypes.bool,
+};
 export default ProjectSideBar;

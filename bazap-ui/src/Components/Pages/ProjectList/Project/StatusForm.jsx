@@ -34,7 +34,6 @@ const StatusForm = ({ status, onCancel, devices, clearSelectedRows }) => {
             queryClient.invalidateQueries({ queryKey: ["devicesInProject", projectId] });
             clearSelectedRows();
         },
-       
     });
 
     const handelSave = async () => {

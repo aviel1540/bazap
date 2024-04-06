@@ -1,14 +1,14 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import Loader from "../../Layout/Loader";
-import { deleteDeviceType } from "../../../Utils/deviceTypeApi";
 import propTypes from "prop-types";
-import TableActions from "../../UI/CustomTable/TableActions";
-import CustomTable from "../../UI/CustomTable/CustomTable";
+import { deleteDeviceType } from "../../../Utils/deviceTypeApi";
 import { replaceApostrophe } from "../../../Utils/utils";
+import Loader from "../../Layout/Loader";
+import CustomTable from "../../UI/CustomTable/CustomTable";
+import TableActions from "../../UI/CustomTable/TableActions";
 import { useUserAlert } from "../../store/UserAlertContext";
 
 const DeviceTypeTable = ({ deviceTypes, isLoading }) => {
-    const { onAlert, onConfirm, error } = useUserAlert();
+    const { onConfirm } = useUserAlert();
     const queryClient = useQueryClient();
     const onDeleteDeviceTypeHandler = (rowId, handleClose) => {
         handleClose(rowId);
