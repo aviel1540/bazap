@@ -97,6 +97,9 @@ exports.closeProject = async (req, res) => {
     try {
         const checkProjectId = validation.addSlashes(projectId);
         project = await projectService.findProjectById(checkProjectId);
+        if(project.vouchersList.length == 0) {
+            return res.status(400).json({ message: "לא ניתן לסגור פרוייקט ריק" });
+        }
 
         const checkIfDevicesInLab = await deviceService.findAllDevicesInLab(projectId);
         if (checkIfDevicesInLab.length > 0) {
@@ -118,8 +121,29 @@ exports.openOldProject = async (req, res) => {
     const projectId = escape(req.params.id)
     let project;
     try {
-        
-    } catch (err) {
+        const checkProjectId = validation.addSlashes(projectId);
+        project = await projectService.findProjectById(checkProjectId);
 
+        await projectService.updateDateToRestart(checkProjectId);
+        return res.status(200).json({message: "הפרויקט נפתח בהצלחה "})
+    } catch (err) {
+        return res.status(500).json({ message: message.err })
+    }
+}
+
+exports.deleteProject = async(req,res) => {
+    const projectId = escape(req.params.id);
+    let project;
+    try {
+        const checkProjectId = validation.addSlashes(projectId);
+        project = await projectService.findProjectById(checkProjectId)
+        if(project.vouchersList.length > 0) {
+            return res.status(400).json({ message: "לא ניתן לסגור קיימים  שוברים" });
+        }
+        await projectService.deleteProjectById(checkProjectId);
+
+        return res.status(200).json({message: "מחיקה בוצעה בהצלחה !"})
+    } catch(err) {
+        return res.status(500).json({ message: message.err })
     }
 }

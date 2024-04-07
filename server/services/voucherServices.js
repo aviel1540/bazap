@@ -2,7 +2,7 @@ const Project = require("../models/Project");
 const Voucher = require("../models/Voucher");
 
 exports.addVoucher = async (request) => {
-    
+
     return new Voucher({
         voucherNumber: request.voucherNumber,
         unit: request.checkUnitName,
@@ -27,4 +27,5 @@ exports.findVoucherById = async (checkVoucherId) => {
 };
 
 exports.deleteVoucher = async (checkVoucherId) => await Voucher.findByIdAndDelete(checkVoucherId);
+
 

@@ -171,7 +171,7 @@ exports.updateDetails = async (req, res) => {
         const checkDeviceId = validation.addSlashes(deviceId);
         const checkSerialNumber = validation.addSlashes(serialNumber);
         const checkType = validation.addSlashes(type);
-    } catch (err) {}
+    } catch (err) { }
 };
 
 exports.getAllDevices = async (req, res) => {
@@ -207,3 +207,28 @@ exports.getAllDevicesInLab = async (req, res) => {
         return res.status(500).json({ message: err.message });
     }
 };
+
+exports.deleteDevice = async (req, res) => {
+    const deviceId = escape(req.params.id);
+    let device;
+    let voucher;
+    try {
+        const checkDeviceId = validation.addSlashes(deviceId);
+        device = await deviceService.findDeviceById(checkDeviceId);
+        if (!device) return res.status(401).json({ messgae: "לא נמצא מכשיר !" })
+        if (device.voucherOut) return res.status(400).json({ message: "לא ניתן למחוק משוברים מכשיר שיצא" });
+
+        voucher = await voucherService.findVoucherById(device.voucherIn)
+        if (!voucher) return res.status(401).json({ messgae: "לא נמצא שובר !" })
+        else {
+            voucher.deviceList = voucher.deviceList.filter(device => device.id != checkDeviceId);
+            voucher.save();
+        }
+
+        await deviceService.deleteDeviceById(checkDeviceId);
+        return res.status(201).json({message:"נמחק בהצלחה"})
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
+
+    }
+}

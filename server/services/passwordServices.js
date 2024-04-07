@@ -1,12 +1,9 @@
 const Password = require('../models/Password')
 
 
-exports.findSuperPassByValue = async(superPassValue) => {
-    
+exports.showAdminPass = async() => {
+    return await Password.findOne({ type: false});
 }
-
-
-
 
 exports.updateAdminPass = async(request) => {
     const {checkAdminPassword, checkNewPassword} = request;
@@ -15,8 +12,8 @@ exports.updateAdminPass = async(request) => {
     })
 }
 
-exports.findAdminPassword = async(adminPass) => {
-    return await Password.findOne({pass_value : adminPass})
+exports.findPasswordByValue = async(pass) => {
+    return await Password.findOne({pass_value : pass})
 
 }
 

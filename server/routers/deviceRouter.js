@@ -15,4 +15,6 @@ router.post("/return-device/:id", deviceController.returnDevice);
 
 router.get("/get-all-devices-in-lab/:id", deviceController.getAllDevicesInLab);
 
+router.delete("/delete-device/:id", deviceController.deleteDevice)
+
 module.exports = router;

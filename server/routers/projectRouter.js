@@ -13,4 +13,7 @@ router.patch("/update-project/:id", projectController.updateProject);
 
 router.patch("/close-project/:id", projectController.closeProject)
 
+router.patch("/open-old-project/:id", projectController.openOldProject)
+
+router.delete("/delete-project/:id", projectController.deleteProject)
 module.exports = router;

@@ -56,3 +56,5 @@ exports.updateReturnDevice = async (request) => {
         status: deviceStatus == DeviceStatus.DEFECTIVE ? DeviceStatus.DEFECTIVE_RETURN : DeviceStatus.FIXED_RETURN,
     })
 }
+
+exports.deleteDeviceById = async(checkDeviceId) => await Device.findByIdAndRemove(checkDeviceId)
