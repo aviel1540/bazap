@@ -1,6 +1,7 @@
 import AddIcon from "@mui/icons-material/Add";
 import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
+import DeleteIcon from "@mui/icons-material/Delete";
 import IosShareIcon from "@mui/icons-material/IosShare";
 import { List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -9,12 +10,13 @@ import Sider from "antd/es/layout/Sider";
 import PropTypes from "prop-types";
 import { useCustomModal } from "../../../Components/store/CustomModalContext";
 import { useProject } from "../../../Components/store/ProjectContext";
+import { useUserAlert } from "../../../Components/store/UserAlertContext";
 import { getAllDevicesInLab, getAllDevicesInProject } from "../../../Utils/deviceApi";
 import { createProjectReport } from "../../../Utils/excelUtils";
 import { closeProject } from "../../../Utils/projectAPI";
 import { dateTostring } from "../../../Utils/utils";
-import { useUserAlert } from "../../../Components/store/UserAlertContext";
 import VoucherStepper from "./NewVoucher/VoucherStepper";
+import ConfirmWithPasswordPopconfirm from "../../../Components/UI/ConfirmWithPasswordPopconfirm";
 
 const getDevicesInLab = async (projectId) => {
     const devices = await getAllDevicesInLab({ queryKey: [null, projectId] });
@@ -30,6 +32,7 @@ const ProjectSideBar = ({ isProjectIsClosed }) => {
     const {
         token: { colorBgContainer, borderRadius },
     } = theme.useToken();
+    const { onConfirm } = useUserAlert();
     const { projectId } = useProject();
     const queryClient = useQueryClient();
     const { onAlert, warning, success } = useUserAlert();
@@ -44,6 +47,13 @@ const ProjectSideBar = ({ isProjectIsClosed }) => {
         },
     });
     const closeProjectMutation = useMutation(closeProject, {
+        onSuccess: () => {
+            queryClient.invalidateQueries(["project", projectId]);
+            queryClient.invalidateQueries(["projects"]);
+            onAlert("הפרוייקט נסגר בהצלחה!", success, true);
+        },
+    });
+    const deleteProjectMutation = useMutation(closeProject, {
         onSuccess: () => {
             queryClient.invalidateQueries(["project", projectId]);
             queryClient.invalidateQueries(["projects"]);
@@ -79,13 +89,36 @@ const ProjectSideBar = ({ isProjectIsClosed }) => {
         });
     };
     const closeProjectHandler = () => {
-        closeProjectMutation.mutate(projectId);
+        const config = {
+            title: "האם אתה בטוח לסגור את הפרוייקט?",
+            okHandler: () => {
+                closeProjectMutation.mutate(projectId);
+            },
+        };
+        onConfirm(config);
+    };
+    const deleteProjecHandler = () => {
+        const config = {
+            title: "האם אתה בטוח למחוק את הפרוייקט?",
+            okHandler: () => {
+                alert("delete");
+                // deleteProjectMutation.mutate(projectId);
+            },
+        };
+        onConfirm(config);
     };
     const actions = [
         { title: "הוסף שובר", icon: <AddIcon />, handler: addVoucher, shouldAppearOnClosedProject: false },
         { title: "הפק דוח צ'", icon: <IosShareIcon />, handler: createDeviceReport, shouldAppearOnClosedProject: false },
         { title: "דוח מכשירים שנופקו", icon: <ArrowOutwardIcon />, handler: createOutDevicesReport, shouldAppearOnClosedProject: true },
         { title: "סגור פרוייקט", icon: <BorderColorIcon />, handler: closeProjectHandler, shouldAppearOnClosedProject: false },
+        {
+            title: "מחק פרוייקט",
+            icon: <DeleteIcon />,
+            handler: deleteProjecHandler,
+            shouldAppearOnClosedProject: true,
+            isPasswordRequired: true,
+        },
     ];
     const filteredActions = actions.filter(
         (action) => action.shouldAppearOnClosedProject == isProjectIsClosed || action.shouldAppearOnClosedProject == true,
@@ -101,10 +134,20 @@ const ProjectSideBar = ({ isProjectIsClosed }) => {
             <List>
                 {filteredActions.map((action, index) => (
                     <ListItem key={index} disablePadding>
-                        <ListItemButton onClick={action.handler}>
-                            <ListItemIcon>{action.icon}</ListItemIcon>
-                            <ListItemText primary={action.title} />
-                        </ListItemButton>
+                        {action.isPasswordRequired && (
+                            <ConfirmWithPasswordPopconfirm onConfirm={action.handler}>
+                                <ListItemButton>
+                                    <ListItemIcon>{action.icon}</ListItemIcon>
+                                    <ListItemText primary={action.title} />
+                                </ListItemButton>
+                            </ConfirmWithPasswordPopconfirm>
+                        )}
+                        {!action.isPasswordRequired && (
+                            <ListItemButton onClick={action.handler}>
+                                <ListItemIcon>{action.icon}</ListItemIcon>
+                                <ListItemText primary={action.title} />
+                            </ListItemButton>
+                        )}
                     </ListItem>
                 ))}
             </List>

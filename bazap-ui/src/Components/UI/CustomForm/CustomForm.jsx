@@ -97,7 +97,7 @@ const CustomForm = ({ inputs, onSubmit, onCancel, values, hideActions, children,
                                         value={password}
                                         onChange={(e) => setPassword(e.target.value)}
                                     />
-                                    {validPassword == false && <Text type="danger">סיסמת מנהל לא נכונה.</Text>}{" "}
+                                    {validPassword == false && <Text type="danger">סיסמת מנהל לא נכונה.</Text>}
                                 </>
                             }
                             onConfirm={handlePasswordSubmit}

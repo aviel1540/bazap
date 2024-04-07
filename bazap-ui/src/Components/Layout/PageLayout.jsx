@@ -1,8 +1,8 @@
-import { Layout } from "antd";
+import { Layout, Space } from "antd";
+import PropTypes from "prop-types";
+import Breadcrumbs from "./Breadcrumbs";
 import MainNavigation from "./Navbar/MainNavigation";
 const { Content } = Layout;
-import PropTypes from "prop-types";
-
 const PageLayout = ({ children }) => {
     return (
         <Layout>
@@ -13,6 +13,7 @@ const PageLayout = ({ children }) => {
                     padding: "24px 76px",
                 }}
             >
+                <Breadcrumbs />
                 {children}
             </Content>
         </Layout>

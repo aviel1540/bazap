@@ -102,6 +102,7 @@ exports.closeProject = async (req, res) => {
         if (checkIfDevicesInLab.length > 0) {
             return res.status(400).json({ message: "לא ניתן לסגור - קיימים מכשירים במעבדה" });
         }
+        
         project = await projectService.updateDateToClose(projectId);
         if (!project) {
             return res.status(401).json({ message: "לא נמצא פרויקט" });
