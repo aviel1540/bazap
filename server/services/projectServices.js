@@ -38,3 +38,12 @@ exports.updateDateToClose = async(projectId) => {
         finished: true
     })
 }
+
+exports.updateDateToRestart = async(projectId) => {
+    return await Project.findByIdAndUpdate(projectId, {
+        endDate: null,
+        finished: false
+    })
+}
+
+exports.deleteProjectById = async(projectId) => await Project.findByIdAndRemove(projectId);
