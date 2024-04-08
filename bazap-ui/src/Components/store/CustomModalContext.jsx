@@ -2,11 +2,18 @@ import { createContext, useContext, useState } from "react";
 import propTypes from "prop-types";
 import { Modal } from "antd";
 import { v4 as uuidv4 } from "uuid";
+import { useMediaQuery } from "@mui/material";
 
 const CustomModalContext = createContext();
 
 export const CustomModalProvider = ({ children }) => {
     const [modalState, setModalState] = useState([]);
+    const isXs = useMediaQuery((theme) => theme.breakpoints.down("sm"));
+    const isSm = useMediaQuery((theme) => theme.breakpoints.down("md"));
+    const isMd = useMediaQuery((theme) => theme.breakpoints.down("lg"));
+    const isLg = useMediaQuery((theme) => theme.breakpoints.down("xl"));
+    
+    const modalWidth = isXs ? "90%" : isSm ? "80%" : isMd ? "70%" : isLg ? "60%" : "50%";
 
     const onShow = (modalOptions) => {
         const { name } = modalOptions;
@@ -63,7 +70,7 @@ export const CustomModalProvider = ({ children }) => {
                     open={mState.show}
                     title={mState.options.title}
                     onCancel={() => onHide(mState.name)}
-                    width="40%"
+                    width={modalWidth}
                     centered
                     footer={null}
                 >

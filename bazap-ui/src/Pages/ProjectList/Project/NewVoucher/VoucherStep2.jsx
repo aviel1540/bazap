@@ -182,7 +182,7 @@ const VoucherStep2 = () => {
         return fields.map((field, index) =>
             voucherInputs.map((input, deviceFieldIndex) => (
                 <Fragment key={`${field.id}.${index}.${deviceFieldIndex}`}>
-                    <Col span={11}>
+                    <Col span={10}>
                         <Controller
                             name={`devices[${index}].${input.name}`}
                             control={control}
