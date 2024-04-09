@@ -4,10 +4,13 @@ import PropTypes from "prop-types";
 import VoucherStep1 from "./VoucherStep1";
 import VoucherStep2 from "./VoucherStep2";
 import { useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { addVoucherIn, addVoucherOut } from "../../../../Utils/voucherApi";
 import { useProject } from "../../../../Components/store/ProjectContext";
 import { Button, Flex, Space } from "antd";
+import { createProjectReport } from "../../../../Utils/excelUtils";
+import { dateTostring } from "../../../../Utils/utils";
+import { getAllDevicesInProject } from "../../../../Utils/deviceApi";
 
 const stepsLength = 2;
 const VoucherStepper = ({ onCancel, formDefaultValues }) => {
@@ -22,7 +25,10 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
         },
     });
     const { handleSubmit, setError, clearErrors, getValues } = methods;
-
+    const { isLoading: isLaodingDevicesInProject, data: fixedOrReturnedDevicesInProject } = useQuery({
+        queryKey: ["fixedOrReturnedDevicesInProject", projectId],
+        queryFn: getAllDevicesInProject,
+    });
     const steps = [
         { title: "יצירת שובר", content: <VoucherStep1 /> },
         { title: "הוספת מכשירים", content: <VoucherStep2 /> },
@@ -58,6 +64,9 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
             queryClient.invalidateQueries({ queryKey: ["devicesInProject", projectId] });
             queryClient.invalidateQueries(["project", projectId]);
             queryClient.invalidateQueries(["projects"]);
+            const { devicesIds } = getValues();
+            const deviesToExcel = fixedOrReturnedDevicesInProject.filter((dev) => devicesIds.includes(dev._id));
+            createProjectReport(deviesToExcel, "שובר_ניפוק_" + dateTostring(Date.now()));
             onCancel();
         },
     });
