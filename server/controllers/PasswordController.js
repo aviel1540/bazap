@@ -2,6 +2,14 @@ const escape = require("escape-html");
 const validation = require("../utils/validation");
 const passwordService = require("../services/passwordServices");
 
+exports.checkPasswordsExistence = async () => {
+    try {
+        passwordService.checkPasswordsExistence();
+    } catch (error) {
+        console.error("Error checking passwords existence:", error);
+    }
+};
+
 exports.getAdminPassword = async (req, res) => {
     const masterPass = escape(req.body.masterPass);
     let master;
@@ -9,21 +17,19 @@ exports.getAdminPassword = async (req, res) => {
     try {
         if (!masterPass) {
             return res.status(401).json({ message: "יש להזין סיסמת מאסטר !" });
-        } 
+        }
         const checkMasterPass = validation.addSlashes(masterPass);
         master = await passwordService.findPasswordByValue(checkMasterPass);
         if (!master || !master.type) {
             return res.status(401).json({ message: "סיסמא שגויה !" });
         }
         admin = await passwordService.showAdminPass();
-        if(!admin) return res.status(404).json({message:"לא נמצאה סיסמת אדמין"})
+        if (!admin) return res.status(404).json({ message: "לא נמצאה סיסמת אדמין" });
 
-        return res.status(201).json({password : admin.pass_value})
-    } catch(err) {
+        return res.status(201).json({ password: admin.pass_value });
+    } catch (err) {
         return res.status(500).json(err.message);
-
     }
-
 };
 
 exports.updateAdminPassword = async (req, res) => {
@@ -62,7 +68,9 @@ exports.updateAdminPassword = async (req, res) => {
 };
 
 exports.validatePassword = async (req, res) => {
+    console.log(req.body);
     const adminPass = escape(req.body.password);
+    console.log(adminPass);
     let password;
     try {
         if (!adminPass) {

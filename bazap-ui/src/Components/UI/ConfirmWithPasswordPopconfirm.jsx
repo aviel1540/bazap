@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Popconfirm, Input, Typography } from "antd";
 import PropTypes from "prop-types";
+import { useMutation } from "@tanstack/react-query";
+import { validatePassword } from "../../Utils/passwordAPI";
 
 const { Text } = Typography;
 
@@ -9,17 +11,23 @@ const ConfirmWithPasswordPopconfirm = ({ children, onConfirm }) => {
     const [password, setPassword] = useState("");
     const [validPassword, setValidPassword] = useState(true);
 
-    const handlePasswordSubmit = () => {
-        const isValidPassword = password === "admin";
+    const validatePasswordMutation = useMutation(validatePassword, {
+        onSuccess: (isValid) => {
+            if (isValid == true) {
+                onConfirm();
+                setOpen(false);
+                setPassword("");
+                setValidPassword(true);
+            }
+            setValidPassword(isValid);
+        },
+        onError: () => {
+            setValidPassword(false);
+        },
+    });
 
-        if (isValidPassword) {
-            onConfirm();
-            setOpen(false);
-            setPassword("");
-            setValidPassword(true);
-        } else {
-            setValidPassword(isValidPassword);
-        }
+    const handlePasswordSubmit = () => {
+        validatePasswordMutation.mutate(password);
     };
 
     const handlePopupCancel = () => {

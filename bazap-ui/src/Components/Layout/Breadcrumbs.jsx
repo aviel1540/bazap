@@ -1,6 +1,6 @@
+import React, { useEffect, useState } from "react";
 import { Breadcrumb } from "antd";
-import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getAllProjects } from "../../Utils/projectAPI";
 import Box from "@mui/material/Box";
@@ -13,13 +13,16 @@ const breadcrumbNameMap = {
     "/Unit": "יחידות",
     "/Technician": "טכנאים",
 };
+
 const Breadcrumbs = () => {
+    const navigate = useNavigate();
     const location = useLocation();
     const [breadcrumbItems, setBreadcrumbItems] = useState([]);
     const { isLoading, data: projects } = useQuery({
         queryKey: ["projects"],
         queryFn: getAllProjects,
     });
+
     const fetchProjectNameById = async (id) => {
         const project = projects.find((project) => project._id === id);
         return project.projectName;
@@ -40,19 +43,13 @@ const Breadcrumbs = () => {
                         breadcrumbName = await fetchProjectNameById(pathSnippets[i]);
                     }
 
-                    extraBreadcrumbItems.push(
-                        <Breadcrumb.Item key={url}>
-                            <Link to={url}>{breadcrumbName}</Link>
-                        </Breadcrumb.Item>,
-                    );
+                    extraBreadcrumbItems.push({
+                        path: url,
+                        title: breadcrumbName,
+                    });
                 }
 
-                setBreadcrumbItems([
-                    <Breadcrumb.Item key="home">
-                        <Link to="/">דף הבית</Link>
-                    </Breadcrumb.Item>,
-                    ...extraBreadcrumbItems,
-                ]);
+                setBreadcrumbItems(extraBreadcrumbItems);
             };
 
             generateBreadcrumbItems();
@@ -63,7 +60,18 @@ const Breadcrumbs = () => {
         <>
             {!isLoading && (
                 <Box sx={{ marginBottom: "1rem" }}>
-                    <Breadcrumb>{breadcrumbItems}</Breadcrumb>
+                    <Breadcrumb
+                        separator="/"
+                        itemRender={(route, params, routes, paths) => {
+                            const isLast = routes[routes.length - 1].path == route.path;
+                            if (isLast) {
+                                return <span>{route.title}</span>;
+                            } else {
+                                return <Link to={paths.join("/")}>{route.title}</Link>;
+                            }
+                        }}
+                        items={[{ path: "/", title: "דף הבית" }, ...breadcrumbItems]}
+                    />
                 </Box>
             )}
         </>
