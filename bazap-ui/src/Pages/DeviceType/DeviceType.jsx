@@ -1,18 +1,13 @@
 import AddIcon from "@mui/icons-material/Add";
-import { useQuery } from "@tanstack/react-query";
 import CustomCard from "../../Components/UI/CustomCard";
 import LightButton from "../../Components/UI/LightButton";
 import { useCustomModal } from "../../Components/store/CustomModalContext";
-import { getAllDeviceTypes } from "../../Utils/deviceTypeApi";
 import DeviceTypeForm from "./DeviceTypeForm";
 import DeviceTypeTable from "./DeviceTypeTable";
 
 const DeviceType = () => {
     const { onShow, onHide } = useCustomModal();
-    const { isLoading, data: deviceTypes } = useQuery({
-        queryKey: ["deviceTypes"],
-        queryFn: getAllDeviceTypes,
-    });
+
     const showModal = () => {
         onShow({
             title: "סוג מוצר חדש",
@@ -30,7 +25,7 @@ const DeviceType = () => {
             }
             title="סוגי מכשירים"
         >
-            <DeviceTypeTable deviceTypes={deviceTypes} isLoading={isLoading} />
+            <DeviceTypeTable />
         </CustomCard>
     );
 };

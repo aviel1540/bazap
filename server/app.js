@@ -17,15 +17,18 @@ const swaggerUi = require("swagger-ui-express");
 const customCss = fs.readFileSync(process.cwd() + "/documentation/swagger.css", "utf8");
 
 const swaggerDocument = require("./documentation/openapi.json");
+const { dataFix } = require("./loadScripts");
 
 // mongoose.set("strictQuery", true);
 const app = express();
 
 mongoose
     .connect(process.env.URI)
-    .then(() => {
+    .then(async () => {
         console.log("Connected to DataBase");
         passwordController.checkPasswordsExistence();
+        // await load.run(); // Run the load scripts after successful database connection
+        await dataFix();
     })
     .catch((err) => console.log(err.message));
 

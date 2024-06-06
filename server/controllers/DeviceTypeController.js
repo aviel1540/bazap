@@ -16,16 +16,20 @@ exports.getAllDeviceTypes = async (req, res) => {
 };
 
 exports.addNewDeviceType = async (req, res) => {
-    const deviceName = escape(req.body.deviceName);
+    let deviceName = escape(req.body.deviceName);
+    let catalogNumber = escape(req.body.catalogNumber);
+
     let newDeviceType;
     try {
-        if (!deviceName) return res.status(400).json({ message: "יש למלא את כל השדות" });
-        const checkDeviceName = validation.addSlashes(deviceName);
-        newDeviceType = await deviceTypeServices.addDeviceType(checkDeviceName);
+        if (!deviceName || !catalogNumber) return res.status(400).json({ message: "יש למלא את כל השדות" });
+        deviceName = validation.addSlashes(deviceName);
+        catalogNumber = validation.addSlashes(catalogNumber);
+        newDeviceType = await deviceTypeServices.addDeviceType({ deviceName, catalogNumber });
         await newDeviceType.save();
         return res.status(200).json(newDeviceType);
     } catch (err) {
-        return res.status(401).json({ message: err.message });
+        console.log(err);
+        return res.status(400).json({ message: err });
     }
 };
 

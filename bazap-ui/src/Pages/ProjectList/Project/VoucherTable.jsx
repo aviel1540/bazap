@@ -1,6 +1,5 @@
 import { Chip } from "@mui/material";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import propTypes from "prop-types";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Loader from "../../../Components/Layout/Loader";
 import CustomCard from "../../../Components/UI/CustomCard";
 import CustomTable from "../../../Components/UI/CustomTable/CustomTable";
@@ -8,12 +7,19 @@ import TableActions from "../../../Components/UI/CustomTable/TableActions";
 import EmptyData from "../../../Components/UI/EmptyData";
 import { useProject } from "../../../Components/store/ProjectContext";
 import { useUserAlert } from "../../../Components/store/UserAlertContext";
-import { deleteVoucher } from "../../../Utils/voucherApi";
+import { deleteVoucher, exportVoucherToExcel, getAllVouchers } from "../../../Utils/voucherApi";
 
-const VoucherTable = ({ vouchers, isLoading }) => {
+const VoucherTable = () => {
+    const { projectId } = useProject();
+
+    const { isLoading, data: vouchers } = useQuery({
+        queryKey: ["vouchers", projectId],
+        queryFn: getAllVouchers,
+        enabled: projectId !== null,
+    });
+
     const { onConfirm } = useUserAlert();
 
-    const { projectId } = useProject();
     const queryClient = useQueryClient();
     const onDeleteDeviceTypeHandler = (id, handleClose) => {
         handleClose && handleClose(id);
@@ -25,6 +31,10 @@ const VoucherTable = ({ vouchers, isLoading }) => {
         };
         onConfirm(config);
     };
+    const exportVoucherHandler = (id, handleClose) => {
+        handleClose && handleClose(id);
+        exportVoucherMutation.mutate(id);
+    };
     const actions = [
         {
             title: "מחק",
@@ -32,7 +42,14 @@ const VoucherTable = ({ vouchers, isLoading }) => {
                 onDeleteDeviceTypeHandler(rowId, handleClose);
             },
         },
+        {
+            title: "יצר שובר Excel",
+            handler: (rowId, handleClose) => {
+                exportVoucherHandler(rowId, handleClose);
+            },
+        },
     ];
+
     const columns = [
         {
             name: "מספר שובר",
@@ -78,6 +95,11 @@ const VoucherTable = ({ vouchers, isLoading }) => {
             queryClient.invalidateQueries({ queryKey: ["vouchers", projectId] });
         },
     });
+    const exportVoucherMutation = useMutation(exportVoucherToExcel, {
+        onSuccess: (data) => {
+            console.log(data);
+        },
+    });
 
     if (isLoading) {
         return <Loader />;
@@ -88,11 +110,6 @@ const VoucherTable = ({ vouchers, isLoading }) => {
             {vouchers.length > 0 ? <CustomTable columns={columns} data={vouchers} /> : <EmptyData label="אין שוברים להצגה" />}
         </CustomCard>
     );
-};
-
-VoucherTable.propTypes = {
-    vouchers: propTypes.array.isRequired,
-    isLoading: propTypes.bool.isRequired,
 };
 
 export default VoucherTable;

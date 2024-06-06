@@ -6,7 +6,6 @@ import { useParams } from "react-router";
 import Loader from "../../../Components/Layout/Loader";
 import { getProjectData } from "../../../Utils/projectAPI";
 import { dateTostring } from "../../../Utils/utils";
-import { getAllVouchers } from "../../../Utils/voucherApi";
 import { useProject } from "../../../Components/store/ProjectContext";
 import ArrivedDevices from "./DevicesInProject/DevicesInProject";
 import ProjectSideBar from "./ProjectSideBar";
@@ -28,14 +27,7 @@ const Project = () => {
         queryFn: getProjectData,
         enabled: projectId !== null,
     });
-
-    const { isLoading: isVouchersLoading, data: vouchers } = useQuery({
-        queryKey: ["vouchers", projectId],
-        queryFn: getAllVouchers,
-        enabled: projectId !== null,
-    });
-
-    const isLoading = isProjectLoading || isVouchersLoading;
+    const isLoading = isProjectLoading;
 
     if (isLoading) {
         return <Loader />;
@@ -74,7 +66,7 @@ const Project = () => {
                         <Descriptions items={items} />
                     </Card>
                     <ArrivedDevices />
-                    <VoucherTable vouchers={vouchers} isLoading={isLoading} />
+                    <VoucherTable />
                 </Stack>
             </Box>
         </Layout>

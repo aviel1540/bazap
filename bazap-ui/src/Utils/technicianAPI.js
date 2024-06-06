@@ -1,35 +1,22 @@
 import axios from "axios";
-import { replaceApostropheInObject } from "./utils";
+import { errorHandle, responseHandle } from "./axiosUtils";
 
 const technicianAPI = axios.create({ baseURL: "http://localhost:5000/api/technician" });
+technicianAPI.interceptors.response.use(responseHandle, errorHandle);
 
 export const getAllTechnicians = async () => {
-    const response = await technicianAPI.get("");
-    return response.data;
+    return await technicianAPI.get("");
 };
 
 export const addTechnician = async (technician) => {
-    try {
-        technician = replaceApostropheInObject(technician, "techName");
-        return await technicianAPI.post("add-new-technician", technician);
-    } catch (error) {
-        throw new Error(error.response.data.message);
-    }
+    return await technicianAPI.post("add-new-technician", technician);
 };
 
 export const deleteTechnician = async (deleteTechnician) => {
-    try {
-        return await technicianAPI.delete("delete", { data: { technicianId: deleteTechnician } });
-    } catch (error) {
-        throw new Error(error.response.data.message);
-    }
+    return await technicianAPI.delete("delete", { data: { technicianId: deleteTechnician } });
 };
 
 export const updateTechnician = async (technician) => {
-    try {
-        const { id } = technician;
-        return await technicianAPI.patch(`/update-technician/${id}`, technician);
-    } catch (error) {
-        throw new Error(error.response.data.message);
-    }
+    const { id } = technician;
+    return await technicianAPI.patch(`/update-technician/${id}`, technician);
 };

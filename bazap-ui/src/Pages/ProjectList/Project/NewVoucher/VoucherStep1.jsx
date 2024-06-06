@@ -7,7 +7,6 @@ import Loader from "../../../../Components/Layout/Loader";
 import ControllerInput from "../../../../Components/UI/CustomForm/ControlledInput";
 import { getAllTechnicians } from "../../../../Utils/technicianAPI";
 import { getAllUnits } from "../../../../Utils/unitAPI";
-import { replaceApostrophe } from "../../../../Utils/utils";
 
 const VoucherStep1 = () => {
     const { control, getValues, getFieldState } = useFormContext();
@@ -17,26 +16,20 @@ const VoucherStep1 = () => {
         arrivedBy: getValues("type") == "true" ? "text" : "select",
         receivedBy: getValues("type") == "true" ? "select" : "text",
     });
+
     const { isLoading: isLoadingUnits, data: units } = useQuery({
         queryKey: ["units"],
-        queryFn: async () => {
-            const unitsData = await getAllUnits();
-            const units = unitsData.map((unit) => {
-                return { text: replaceApostrophe(unit.unitsName), value: unit._id, ...unit };
-            });
-            return units;
-        },
+        queryFn: getAllUnits,
     });
     const { isLoading: isLoadingTechnician, data: technicians } = useQuery({
         queryKey: ["technicians"],
-        queryFn: async () => {
-            const techniciansData = await getAllTechnicians();
-            const technicians = techniciansData.map((technician) => {
-                const formattedName = replaceApostrophe(technician.techName);
-                return { text: formattedName, value: formattedName };
-            });
-            return technicians;
-        },
+        queryFn: getAllTechnicians,
+    });
+    const unitOptions = units?.map((unit) => {
+        return { text: unit.unitsName, value: unit._id, ...unit };
+    });
+    const technicianOptions = technicians?.map((technician) => {
+        return { text: technician.techName, value: technician.techName };
     });
     const isLoading = isLoadingUnits || isLoadingTechnician;
 
@@ -69,7 +62,7 @@ const VoucherStep1 = () => {
             validators: {
                 required: "יש למלא שדה זה.",
             },
-            options: units,
+            options: unitOptions,
         },
         {
             label: "חייל מנפק",
@@ -83,7 +76,7 @@ const VoucherStep1 = () => {
                     message: "שדה זה חייב לפחות 2 תווים",
                 },
             },
-            options: technicians,
+            options: technicianOptions,
         },
         {
             label: "חייל מקבל",
@@ -98,7 +91,7 @@ const VoucherStep1 = () => {
                     message: "שדה זה חייב לפחות 2 תווים",
                 },
             },
-            options: technicians,
+            options: technicianOptions,
         },
     ];
     if (isLoading) {

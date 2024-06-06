@@ -11,7 +11,7 @@ import { useProject } from "../../../../Components/store/ProjectContext";
 import { getAllDevicesInProject, getDeviceBySerialNumber, getDevices } from "../../../../Utils/deviceApi";
 import { getAllDeviceTypes } from "../../../../Utils/deviceTypeApi";
 import { checkDuplicationInForm } from "../../../../Utils/formUtils";
-import { DeviceStatuses, FIXED_OR_DEFFECTIVE, replaceApostrophe } from "../../../../Utils/utils";
+import { DeviceStatuses, FIXED_OR_DEFFECTIVE } from "../../../../Utils/utils";
 import DevicesInProjectTable from "../DevicesInProject/DevicesInProjectTable";
 import ImportExcel from "./ImportExcel";
 const filter = createFilterOptions();
@@ -54,14 +54,11 @@ const VoucherStep2 = () => {
     });
     const { isLoading: isLoadingDevicesTypes, data: deviceTypes } = useQuery({
         queryKey: ["deviceTypes"],
-        queryFn: async () => {
-            const deviceTypesData = await getAllDeviceTypes();
-            const newArray = deviceTypesData.map((dType) => {
-                const formattedName = replaceApostrophe(dType.deviceName);
-                return { text: formattedName, value: formattedName, ...dType };
-            });
-            return newArray;
-        },
+        queryFn: getAllDeviceTypes,
+    });
+    const deviceTypeOptions = deviceTypes?.map((dType) => {
+        const formattedName = dType.deviceName;
+        return { text: formattedName, value: formattedName, ...dType };
     });
     useEffect(() => {
         if (isDeliveryVoucher) {
@@ -167,7 +164,7 @@ const VoucherStep2 = () => {
                 validators: {
                     required: "יש למלא שדה זה.",
                 },
-                options: deviceTypes,
+                options: deviceTypeOptions,
             },
         ];
 

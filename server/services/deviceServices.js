@@ -1,12 +1,10 @@
 const Device = require("../models/Device");
 const { DeviceStatus } = require("../constants/DeviceStatus");
 
-
-
 exports.findDeviceById = async (DeviceId) => await Device.findById(DeviceId);
 exports.findDeviceBySerialNumber = async (serialNumber) => await Device.findOne({ serialNumber });
 exports.findAllDevices = async () => await Device.find();
-exports.findAllDevicesByProject = async (projectId) => await Device.find({ project: projectId }).populate("unit");
+exports.findAllDevicesByProject = async (projectId) => await Device.find({ project: projectId }).populate("unit").populate("deviceTypeId");
 exports.findAllDevicesInLab = async (projectId) => await Device.find({ project: projectId, voucherOut: null });
 exports.addNewDevice = async (request) => {
     return new Device({
@@ -54,7 +52,7 @@ exports.updateReturnDevice = async (request) => {
     return await Device.findByIdAndUpdate(deviceId, {
         voucherOut: voucherId,
         status: deviceStatus == DeviceStatus.DEFECTIVE ? DeviceStatus.DEFECTIVE_RETURN : DeviceStatus.FIXED_RETURN,
-    })
-}
+    });
+};
 
-exports.deleteDeviceById = async(checkDeviceId) => await Device.findByIdAndRemove(checkDeviceId)
+exports.deleteDeviceById = async (checkDeviceId) => await Device.findByIdAndRemove(checkDeviceId);

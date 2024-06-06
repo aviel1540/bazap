@@ -5,8 +5,11 @@ import Loader from "../../Components/Layout/Loader";
 import TableActions from "../../Components/UI/CustomTable/TableActions";
 import { useUserAlert } from "../../Components/store/UserAlertContext";
 import { deleteTechnician, getAllTechnicians } from "../../Utils/technicianAPI";
+import { useCustomModal } from "../../Components/store/CustomModalContext";
+import TechnicianForm from "./TechnicianForm";
 
-const TechnicianTable = ({ onEdit }) => {
+const TechnicianTable = () => {
+    const { onShow, onHide } = useCustomModal();
     const queryClient = useQueryClient();
     const { onConfirm } = useUserAlert();
     const { isLoading, data: technicians } = useQuery({
@@ -14,11 +17,19 @@ const TechnicianTable = ({ onEdit }) => {
         queryFn: getAllTechnicians,
     });
 
+    const showModal = (data) => {
+        onShow({
+            title: "עריכת טכנאי",
+            name: "technician",
+            body: <TechnicianForm onCancel={() => onHide("technician")} formValues={data} isEdit={true} />,
+        });
+    };
+
     const onEditTechnicianHandler = (rowId, handleClose) => {
         const technician = technicians.find((item) => item._id == rowId);
         if (technician) {
             handleClose(rowId);
-            onEdit(null, { techName: technician.techName, id: technician._id });
+            showModal({ techName: technician.techName, id: technician._id });
         }
     };
     const onDeleteTechnicianHandler = (rowId, handleClose) => {

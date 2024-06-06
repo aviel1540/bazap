@@ -1,13 +1,15 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import propTypes from "prop-types";
-import { replaceApostrophe } from "../../Utils/utils";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Loader from "../../Components/Layout/Loader";
 import CustomTable from "../../Components/UI/CustomTable/CustomTable";
 import TableActions from "../../Components/UI/CustomTable/TableActions";
 import { useUserAlert } from "../../Components/store/UserAlertContext";
-import { deleteDeviceType } from "../../Utils/deviceTypeApi";
+import { deleteDeviceType, getAllDeviceTypes } from "../../Utils/deviceTypeApi";
 
-const DeviceTypeTable = ({ deviceTypes, isLoading }) => {
+const DeviceTypeTable = () => {
+    const { isLoading, data: deviceTypes } = useQuery({
+        queryKey: ["deviceTypes"],
+        queryFn: getAllDeviceTypes,
+    });
     const { onConfirm } = useUserAlert();
     const queryClient = useQueryClient();
     const onDeleteDeviceTypeHandler = (rowId, handleClose) => {
@@ -26,9 +28,11 @@ const DeviceTypeTable = ({ deviceTypes, isLoading }) => {
             name: "שם מכשיר",
             sortable: true,
             selector: (row) => row.deviceName,
-            cell: (row) => {
-                return <div>{replaceApostrophe(row.deviceName)}</div>;
-            },
+        },
+        {
+            name: 'מק"ט',
+            sortable: true,
+            selector: (row) => row.catalogNumber,
         },
         {
             name: "פעולות",
@@ -47,11 +51,6 @@ const DeviceTypeTable = ({ deviceTypes, isLoading }) => {
     }
 
     return <CustomTable className="table" columns={columns} data={deviceTypes} />;
-};
-
-DeviceTypeTable.propTypes = {
-    deviceTypes: propTypes.array,
-    isLoading: propTypes.bool.isRequired,
 };
 
 export default DeviceTypeTable;

@@ -6,7 +6,6 @@ import { useState } from "react";
 import readXlsxFile from "read-excel-file";
 import { getDeviceBySerialNumber } from "../../../../Utils/deviceApi";
 import { downloadTemplateFile, readDevicesExcelFile } from "../../../../Utils/excelUtils";
-import { replaceApostrophe } from "../../../../Utils/utils";
 
 const ImportExcel = ({ remove, append, setDisabledFields, getValues, isDeliveryVoucher, setSelectedRowKeys }) => {
     const [loading, setLoading] = useState(false);
@@ -42,7 +41,7 @@ const ImportExcel = ({ remove, append, setDisabledFields, getValues, isDeliveryV
                             const deviceFromDb = await getDeviceBySerialNumberMutation.mutateAsync(device.serialNumber);
                             let deviceType = device.deviceType;
                             if (!deviceFromDb.message) {
-                                deviceType = replaceApostrophe(deviceFromDb.deviceType);
+                                deviceType = deviceFromDb.deviceType;
                             }
                             if (allDevices.findIndex((dev) => dev.serialNumber == device.serialNumber) == -1) {
                                 append({

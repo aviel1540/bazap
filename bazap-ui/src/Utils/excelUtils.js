@@ -1,5 +1,4 @@
 import * as XLSX from "xlsx";
-import { replaceApostrophe } from "./utils";
 
 export const downloadTemplateFile = () => {
     const data = [["צ' מכשיר", "סוג מכשיר"]];
@@ -27,7 +26,7 @@ export const readDevicesExcelFile = (rows) => {
 export const createProjectReport = (devices, fileName = "דוח_צ") => {
     const data = [["צ' מכשיר", "סוג מכשיר", "סטטוס "]];
     devices.forEach((device) => {
-        data.push([device.serialNumber, replaceApostrophe(device.deviceType), device.status]);
+        data.push([device.serialNumber, device.deviceType, device.status]);
     });
     createExcel(data, fileName);
 };

@@ -1,6 +1,6 @@
 import { Table, Tag } from "antd";
 import PropTypes from "prop-types";
-import { DeviceStatuses, FIXED_OR_DEFFECTIVE, RETURNED, addKeysToArray, replaceApostrophe, tagColors } from "../../../../Utils/utils";
+import { DeviceStatuses, FIXED_OR_DEFFECTIVE, RETURNED, addKeysToArray, tagColors } from "../../../../Utils/utils";
 import Loader from "../../../../Components/Layout/Loader";
 import EmptyData from "../../../../Components/UI/EmptyData";
 
@@ -52,9 +52,8 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, additionalColumn
         },
         {
             title: "סוג מכשיר",
-            dataIndex: "deviceType",
-            render: (_, row) => replaceApostrophe(row.deviceType),
             key: "deviceType",
+            render: ({ deviceTypeId }) => deviceTypeId.deviceName,
             sorter: (a, b) => a.deviceType.length - b.deviceType.length,
             sortDirections: ["descend"],
         },

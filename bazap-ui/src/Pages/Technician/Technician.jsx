@@ -8,12 +8,11 @@ import TechnicianTable from "./TechnicianTable";
 const Technician = () => {
     const { onShow, onHide } = useCustomModal();
 
-    const showModal = (event, data) => {
-        const isEdit = data != undefined;
+    const showModal = () => {
         onShow({
             title: "טכנאי חדש",
             name: "technician",
-            body: <TechnicianForm onCancel={() => onHide("technician")} formValues={data} isEdit={isEdit} />,
+            body: <TechnicianForm onCancel={() => onHide("technician")} />,
         });
     };
 
@@ -26,7 +25,7 @@ const Technician = () => {
             }
             title="טכנאים"
         >
-            <TechnicianTable onEdit={showModal} />
+            <TechnicianTable />
         </CustomCard>
     );
 };
