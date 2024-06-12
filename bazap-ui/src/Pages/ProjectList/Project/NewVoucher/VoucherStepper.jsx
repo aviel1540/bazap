@@ -67,6 +67,7 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
             const { devicesIds } = getValues();
             const deviesToExcel = fixedOrReturnedDevicesInProject.filter((dev) => devicesIds.includes(dev._id));
             createProjectReport(deviesToExcel, "שובר_ניפוק_" + dateTostring(Date.now()));
+            alert("לקרוא לפונקציה שמייצרת שובר");
             onCancel();
         },
     });
