@@ -14,14 +14,16 @@ exports.addVoucher = async (request) => {
 
 exports.showVoucherList = async (projectId) => await Voucher.find({ project: projectId }).populate("deviceList").populate("Units");
 exports.findVoucherById = async (checkVoucherId) => {
-    return await Voucher.findById(checkVoucherId).populate("unit").populate("deviceList").populate("project");
-    // .populate({
-    //     path: "deviceList",
-    //     populate: {
-    //         path: "vouchersList",
-    //         model: "Voucher",
-    //     },
-    // })
+    return await Voucher.findById(checkVoucherId)
+        .populate("unit")
+        .populate("project")
+        .populate({
+            path: "deviceList",
+            populate: {
+                path: "deviceTypeId",
+                model: "DeviceType",
+            },
+        });
 };
 
 exports.deleteVoucher = async (checkVoucherId) => await Voucher.findByIdAndDelete(checkVoucherId);

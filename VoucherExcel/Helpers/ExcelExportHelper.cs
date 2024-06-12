@@ -72,8 +72,8 @@ namespace VoucherExcel.Helpers
                 Device device = devices[i];
                 FillCell(worksheet, "SerialNumber", device.SerialNumber, startRow + i, devicePositions);
                 worksheet.Cells[$"C{startRow + i}"].Value = 1;
-                FillCell(worksheet, "TypeName", device.DeviceType, startRow + i, devicePositions);
-                FillCell(worksheet, "TypeId", device.CatalogNumber, startRow + i, devicePositions);
+                FillCell(worksheet, "DeviceType", device.DeviceType, startRow + i, devicePositions);
+                FillCell(worksheet, "CatalogNumber", device.CatalogNumber, startRow + i, devicePositions);
             }
         }
     }

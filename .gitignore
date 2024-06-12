@@ -1,17 +1,15 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
+# Node.js dependencies
 /node_modules
 /.pnp
 .pnp.js
 
-# testing
+# Node.js testing
 /coverage
 
-# production
+# Node.js production
 /build
 
-# misc
+# Misc
 .DS_Store
 **/.env
 .env.local
@@ -23,7 +21,27 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-
+# Additional rules
 ../files
 node_modules
 .history
+
+# .NET Core build outputs
+bin/
+obj/
+
+# .NET Core user-specific files
+*.user
+*.suo
+.vscode/
+.idea/
+*.swp
+
+# .NET Core build artifacts
+*.dll
+*.exe
+*.pdb
+*.apphost.exe
+
+# Log files
+*.log
