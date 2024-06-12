@@ -19,7 +19,7 @@ export const addProject = async (project) => {
 };
 
 export const deleteProject = async (deleteProject) => {
-    return await projectAPI.delete("delete-project", { data: { projectId: deleteProject } });
+    return await projectAPI.delete(`delete-project/${deleteProject}`);
 };
 
 export const updateProject = async (project) => {

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Breadcrumb } from "antd";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getAllProjects } from "../../Utils/projectAPI";
 import Box from "@mui/material/Box";
@@ -15,7 +15,6 @@ const breadcrumbNameMap = {
 };
 
 const Breadcrumbs = () => {
-    const navigate = useNavigate();
     const location = useLocation();
     const [breadcrumbItems, setBreadcrumbItems] = useState([]);
     const { isLoading, data: projects } = useQuery({

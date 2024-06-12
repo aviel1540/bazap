@@ -12,7 +12,7 @@ export const CustomModalProvider = ({ children }) => {
     const isSm = useMediaQuery((theme) => theme.breakpoints.down("md"));
     const isMd = useMediaQuery((theme) => theme.breakpoints.down("lg"));
     const isLg = useMediaQuery((theme) => theme.breakpoints.down("xl"));
-    
+
     const modalWidth = isXs ? "90%" : isSm ? "80%" : isMd ? "70%" : isLg ? "60%" : "50%";
 
     const onShow = (modalOptions) => {

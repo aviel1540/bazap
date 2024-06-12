@@ -41,7 +41,7 @@ const StatusFilter = ({ checkIfStatusExists, handleStatusChange, selectedStatus 
                 }}
                 options={getStatusesOptions()}
             />
-            <Tooltip placement="top" title="כדי שנות סטטוסים של מכשירים יש לסנן לפי סטטוס" arrow={true}>
+            <Tooltip placement="top" title="כדי לשנות סטטוסים של מכשירים יש לסנן לפי סטטוס" arrow={true}>
                 <Avatar size={30} icon={<InfoCircleOutlined />} />
             </Tooltip>
         </Space>

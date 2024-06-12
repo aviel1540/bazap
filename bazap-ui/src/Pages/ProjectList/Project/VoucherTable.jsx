@@ -98,11 +98,7 @@ const VoucherTable = () => {
             queryClient.invalidateQueries({ queryKey: ["vouchers", projectId] });
         },
     });
-    const exportVoucherMutation = useMutation(exportVoucherToExcel, {
-        onSuccess: (data) => {
-            console.log(data);
-        },
-    });
+    const exportVoucherMutation = useMutation(exportVoucherToExcel, {});
 
     if (isLoading) {
         return <Loader />;

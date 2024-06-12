@@ -137,14 +137,6 @@ const ArrivedDevices = () => {
             body: <VoucherStepper onCancel={() => onHide("voucherStepper")} projectId={projectId} formDefaultValues={formDefaultValues} />,
         });
     };
-
-    // const columns = {
-    //     title: "פעולות",
-    // align: "center",
-    //     key: "menu",
-    //     render: (_, row) => <CustomDropDown actions={menuActions} data={row} />,
-    // };
-
     const onSelectChange = (newSelectedRowKeys) => {
         setSelectedRowKeys(newSelectedRowKeys);
     };
@@ -157,8 +149,8 @@ const ArrivedDevices = () => {
         <CustomCard
             title='מכשירים בבצ"פ'
             action={
-                <>
-                    {selectedStatus !== FIXED_OR_DEFFECTIVE && selectedRowKeys.length > 0 && (
+                <Space size="small">
+                    {selectedRowKeys.length > 0 && (
                         <CustomButton type="light-info" onClick={showModalChangeStatus} iconPosition="end" icon={<SwapOutlined />}>
                             שנה סטטוס
                         </CustomButton>
@@ -168,7 +160,7 @@ const ArrivedDevices = () => {
                             צור שובר ניפוק
                         </CustomButton>
                     )}
-                </>
+                </Space>
             }
         >
             <Box marginBottom={2}>

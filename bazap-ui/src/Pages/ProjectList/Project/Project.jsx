@@ -1,6 +1,6 @@
 import { Box, Stack } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
-import { Card, Descriptions, Layout, Tag } from "antd";
+import { Badge, Card, Descriptions, Layout, Tag } from "antd";
 import { useEffect } from "react";
 import { useParams } from "react-router";
 import Loader from "../../../Components/Layout/Loader";
@@ -62,9 +62,11 @@ const Project = () => {
                 }}
             >
                 <Stack spacing={2}>
-                    <Card title={`פרוייקט: ${project.projectName}`} bordered={false}>
-                        <Descriptions items={items} />
-                    </Card>
+                    <Badge.Ribbon color={project.finished ? "red" : "green"} text={project.finished ? "פרוייקט סגור" : "פרוייקט פתוח"}>
+                        <Card title={`פרוייקט: ${project.projectName}`} bordered={false}>
+                            <Descriptions items={items} />
+                        </Card>
+                    </Badge.Ribbon>
                     <ArrivedDevices />
                     <VoucherTable />
                 </Stack>

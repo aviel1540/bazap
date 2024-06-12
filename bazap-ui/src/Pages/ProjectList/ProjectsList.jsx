@@ -38,7 +38,7 @@ const ProjectsList = () => {
             <Grid container spacing={2}>
                 {projects.length == 0 && <EmptyData label="אין פרוייקטים להצגה" />}
                 {projects.map((project) => (
-                    <ProjectItem key={project._id} projectData={project} />
+                    <ProjectItem key={project._id} project={project} />
                 ))}
             </Grid>
         </CustomCard>

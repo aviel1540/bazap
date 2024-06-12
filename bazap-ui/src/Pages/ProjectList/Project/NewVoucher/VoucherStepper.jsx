@@ -83,7 +83,7 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
     const handleBack = () => {
         setActiveStep((prevStep) => prevStep - 1);
     };
-    const isLoading = addVoucherOutMutation.isLoading || addVoucherMutation.isLoading;
+    const isLoading = addVoucherOutMutation.isLoading || addVoucherMutation.isLoading || isLaodingDevicesInProject;
     return (
         <FormProvider {...methods}>
             <form onSubmit={handleSubmit(handleNext)}>
