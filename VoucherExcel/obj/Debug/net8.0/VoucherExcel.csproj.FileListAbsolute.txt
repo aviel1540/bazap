@@ -1,0 +1,82 @@
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\obj\Debug\net8.0\VoucherExcel.csproj.AssemblyReference.cache
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\obj\Debug\net8.0\VoucherExcel.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\obj\Debug\net8.0\VoucherExcel.AssemblyInfoInputs.cache
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\obj\Debug\net8.0\VoucherExcel.AssemblyInfo.cs
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\obj\Debug\net8.0\VoucherExcel.csproj.CoreCompileInputs.cache
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\obj\Debug\net8.0\VoucherExcel.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\obj\Debug\net8.0\VoucherExcel.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\bin\Debug\net8.0\appsettings.Development.json
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\bin\Debug\net8.0\appsettings.json
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\bin\Debug\net8.0\VoucherExcel.exe
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\bin\Debug\net8.0\VoucherExcel.deps.json
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\bin\Debug\net8.0\VoucherExcel.runtimeconfig.json
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\bin\Debug\net8.0\VoucherExcel.dll
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\bin\Debug\net8.0\VoucherExcel.pdb
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\bin\Debug\net8.0\EPPlus.dll
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\bin\Debug\net8.0\EPPlus.Interfaces.dll
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\bin\Debug\net8.0\EPPlus.System.Drawing.dll
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\bin\Debug\net8.0\Microsoft.IO.RecyclableMemoryStream.dll
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\bin\Debug\net8.0\Microsoft.OpenApi.dll
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\bin\Debug\net8.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\bin\Debug\net8.0\System.Drawing.Common.dll
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\bin\Debug\net8.0\runtimes\win\lib\net7.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Drawing.Common.dll
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\obj\Debug\net8.0\VoucherExcel.sourcelink.json
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\obj\Debug\net8.0\staticwebassets.build.json
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\obj\Debug\net8.0\staticwebassets.development.json
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\obj\Debug\net8.0\staticwebassets\msbuild.VoucherExcel.Microsoft.AspNetCore.StaticWebAssets.props
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\obj\Debug\net8.0\staticwebassets\msbuild.build.VoucherExcel.props
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.VoucherExcel.props
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.VoucherExcel.props
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\obj\Debug\net8.0\staticwebassets.pack.json
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\obj\Debug\net8.0\scopedcss\bundle\VoucherExcel.styles.css
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\obj\Debug\net8.0\VoucherE.B9FE93B7.Up2Date
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\obj\Debug\net8.0\VoucherExcel.dll
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\obj\Debug\net8.0\refint\VoucherExcel.dll
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\obj\Debug\net8.0\VoucherExcel.pdb
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\obj\Debug\net8.0\VoucherExcel.genruntimeconfig.cache
+C:\Users\Nir\source\repos\VoucherExcelApi\VoucherExcel\obj\Debug\net8.0\ref\VoucherExcel.dll
+C:\VS Code Projects\bazap\VoucherExcel\bin\Debug\net8.0\appsettings.Development.json
+C:\VS Code Projects\bazap\VoucherExcel\bin\Debug\net8.0\appsettings.json
+C:\VS Code Projects\bazap\VoucherExcel\bin\Debug\net8.0\VoucherExcel.exe
+C:\VS Code Projects\bazap\VoucherExcel\bin\Debug\net8.0\VoucherExcel.deps.json
+C:\VS Code Projects\bazap\VoucherExcel\bin\Debug\net8.0\VoucherExcel.runtimeconfig.json
+C:\VS Code Projects\bazap\VoucherExcel\bin\Debug\net8.0\VoucherExcel.dll
+C:\VS Code Projects\bazap\VoucherExcel\bin\Debug\net8.0\VoucherExcel.pdb
+C:\VS Code Projects\bazap\VoucherExcel\bin\Debug\net8.0\EPPlus.dll
+C:\VS Code Projects\bazap\VoucherExcel\bin\Debug\net8.0\EPPlus.Interfaces.dll
+C:\VS Code Projects\bazap\VoucherExcel\bin\Debug\net8.0\EPPlus.System.Drawing.dll
+C:\VS Code Projects\bazap\VoucherExcel\bin\Debug\net8.0\Microsoft.IO.RecyclableMemoryStream.dll
+C:\VS Code Projects\bazap\VoucherExcel\bin\Debug\net8.0\Microsoft.OpenApi.dll
+C:\VS Code Projects\bazap\VoucherExcel\bin\Debug\net8.0\Microsoft.Win32.SystemEvents.dll
+C:\VS Code Projects\bazap\VoucherExcel\bin\Debug\net8.0\Swashbuckle.AspNetCore.Swagger.dll
+C:\VS Code Projects\bazap\VoucherExcel\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerGen.dll
+C:\VS Code Projects\bazap\VoucherExcel\bin\Debug\net8.0\Swashbuckle.AspNetCore.SwaggerUI.dll
+C:\VS Code Projects\bazap\VoucherExcel\bin\Debug\net8.0\System.Drawing.Common.dll
+C:\VS Code Projects\bazap\VoucherExcel\bin\Debug\net8.0\runtimes\win\lib\net7.0\Microsoft.Win32.SystemEvents.dll
+C:\VS Code Projects\bazap\VoucherExcel\bin\Debug\net8.0\runtimes\win\lib\net7.0\System.Drawing.Common.dll
+C:\VS Code Projects\bazap\VoucherExcel\obj\Debug\net8.0\VoucherExcel.csproj.AssemblyReference.cache
+C:\VS Code Projects\bazap\VoucherExcel\obj\Debug\net8.0\VoucherExcel.GeneratedMSBuildEditorConfig.editorconfig
+C:\VS Code Projects\bazap\VoucherExcel\obj\Debug\net8.0\VoucherExcel.AssemblyInfoInputs.cache
+C:\VS Code Projects\bazap\VoucherExcel\obj\Debug\net8.0\VoucherExcel.AssemblyInfo.cs
+C:\VS Code Projects\bazap\VoucherExcel\obj\Debug\net8.0\VoucherExcel.csproj.CoreCompileInputs.cache
+C:\VS Code Projects\bazap\VoucherExcel\obj\Debug\net8.0\VoucherExcel.MvcApplicationPartsAssemblyInfo.cs
+C:\VS Code Projects\bazap\VoucherExcel\obj\Debug\net8.0\VoucherExcel.MvcApplicationPartsAssemblyInfo.cache
+C:\VS Code Projects\bazap\VoucherExcel\obj\Debug\net8.0\VoucherExcel.sourcelink.json
+C:\VS Code Projects\bazap\VoucherExcel\obj\Debug\net8.0\staticwebassets.build.json
+C:\VS Code Projects\bazap\VoucherExcel\obj\Debug\net8.0\staticwebassets.development.json
+C:\VS Code Projects\bazap\VoucherExcel\obj\Debug\net8.0\staticwebassets\msbuild.VoucherExcel.Microsoft.AspNetCore.StaticWebAssets.props
+C:\VS Code Projects\bazap\VoucherExcel\obj\Debug\net8.0\staticwebassets\msbuild.build.VoucherExcel.props
+C:\VS Code Projects\bazap\VoucherExcel\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.VoucherExcel.props
+C:\VS Code Projects\bazap\VoucherExcel\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.VoucherExcel.props
+C:\VS Code Projects\bazap\VoucherExcel\obj\Debug\net8.0\staticwebassets.pack.json
+C:\VS Code Projects\bazap\VoucherExcel\obj\Debug\net8.0\scopedcss\bundle\VoucherExcel.styles.css
+C:\VS Code Projects\bazap\VoucherExcel\obj\Debug\net8.0\VoucherE.B9FE93B7.Up2Date
+C:\VS Code Projects\bazap\VoucherExcel\obj\Debug\net8.0\VoucherExcel.dll
+C:\VS Code Projects\bazap\VoucherExcel\obj\Debug\net8.0\refint\VoucherExcel.dll
+C:\VS Code Projects\bazap\VoucherExcel\obj\Debug\net8.0\VoucherExcel.pdb
+C:\VS Code Projects\bazap\VoucherExcel\obj\Debug\net8.0\VoucherExcel.genruntimeconfig.cache
+C:\VS Code Projects\bazap\VoucherExcel\obj\Debug\net8.0\ref\VoucherExcel.dll

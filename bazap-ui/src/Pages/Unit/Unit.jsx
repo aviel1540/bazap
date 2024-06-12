@@ -1,9 +1,9 @@
-import AddIcon from "@mui/icons-material/Add";
 import { useCustomModal } from "../../Components/store/CustomModalContext";
 import CustomCard from "../../Components/UI/CustomCard";
-import LightButton from "../../Components/UI/LightButton";
 import UnitForm from "./UnitForm";
 import UnitTable from "./UnitTable";
+import { PlusOutlined } from "@ant-design/icons";
+import CustomButton from "../../Components/UI/CustomButton/CustomButton";
 
 const Unit = () => {
     const { onShow, onHide } = useCustomModal();
@@ -20,9 +20,9 @@ const Unit = () => {
     return (
         <CustomCard
             action={
-                <LightButton variant="contained" btncolor="primary" onClick={showModal} size="small" icon={<AddIcon />}>
+                <CustomButton type="light-primary" onClick={showModal} iconPosition="end" icon={<PlusOutlined />}>
                     הוסף יחידה
-                </LightButton>
+                </CustomButton>
             }
             title="יחידות"
         >

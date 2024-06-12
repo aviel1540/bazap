@@ -1,9 +1,9 @@
-import AddIcon from "@mui/icons-material/Add";
 import CustomCard from "../../Components/UI/CustomCard";
-import LightButton from "../../Components/UI/LightButton";
 import { useCustomModal } from "../../Components/store/CustomModalContext";
 import DeviceTypeForm from "./DeviceTypeForm";
 import DeviceTypeTable from "./DeviceTypeTable";
+import CustomButton from "../../Components/UI/CustomButton/CustomButton";
+import { PlusOutlined } from "@ant-design/icons";
 
 const DeviceType = () => {
     const { onShow, onHide } = useCustomModal();
@@ -19,9 +19,9 @@ const DeviceType = () => {
     return (
         <CustomCard
             action={
-                <LightButton variant="contained" btncolor="primary" onClick={showModal} size="small" icon={<AddIcon />}>
+                <CustomButton type="light-primary" iconPosition="end" onClick={showModal} icon={<PlusOutlined />}>
                     הוסף סוג מכשיר
-                </LightButton>
+                </CustomButton>
             }
             title="סוגי מכשירים"
         >

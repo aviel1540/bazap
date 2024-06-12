@@ -1,10 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import propTypes from "prop-types";
 import Loader from "../../Components/Layout/Loader";
-import TableActions from "../../Components/UI/CustomTable/TableActions";
+import { Table, Typography } from "antd";
+import CustomDropDown from "../../Components/UI/CustomDropDown";
+const { Text } = Typography;
 import { useUserAlert } from "../../Components/store/UserAlertContext";
 import { deleteUnit, getAllUnits } from "../../Utils/unitAPI";
-import CustomTable from "../../Components/UI/CustomTable/CustomTable"
+import BorderColorIcon from "@mui/icons-material/BorderColor";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EmptyData from "../../Components/UI/EmptyData";
 
 const UnitTable = ({ onEdit }) => {
     const queryClient = useQueryClient();
@@ -14,37 +18,52 @@ const UnitTable = ({ onEdit }) => {
         queryFn: getAllUnits,
     });
 
-    const onEditUnitHandler = (rowId, handleClose) => {
-        const unit = units.find((item) => item._id == rowId);
+    const onEditUnitHandler = (id) => {
+        const unit = units.find((item) => item._id == id);
         if (unit) {
-            handleClose(rowId);
             onEdit(null, { unitName: unit.unitsName, id: unit._id });
         }
     };
-    const onDeleteUnitHandler = (rowId, handleClose) => {
-        handleClose(rowId);
+    const onDeleteUnitHandler = (id) => {
         const config = {
             title: "האם אתה בטוח מעוניין למחוק את היחידה?",
             okHandler: () => {
-                deleteUnitMutation.mutate(rowId);
+                deleteUnitMutation.mutate(id);
             },
         };
         onConfirm(config);
     };
-    const actions = [
-        { title: "ערוך", handler: onEditUnitHandler },
-        { title: "מחק", handler: onDeleteUnitHandler },
+    const menuActions = [
+        {
+            key: "1",
+            label: "ערוך",
+            icon: <BorderColorIcon />,
+            handler: (data) => {
+                onEditUnitHandler(data._id);
+            },
+        },
+        {
+            key: "2",
+            label: "מחק",
+            danger: true,
+            icon: <DeleteIcon />,
+            handler: (data) => {
+                onDeleteUnitHandler(data._id);
+            },
+        },
     ];
     const columns = [
         {
-            name: "שם יחידה",
-            sortable: true,
-            selector: (row) => row.unitsName,
+            title: "שם יחידה",
+            dataIndex: "unitsName",
+            key: "unitsName",
+            render: (text) => <Text strong>{text}</Text>,
         },
         {
-            name: "פעולות",
-            center: true,
-            cell: (row) => <TableActions rowId={row._id} actions={actions} />,
+            title: "פעולות",
+            key: "menu",
+            align: "center",
+            render: (_, row) => <CustomDropDown key={row._id} actions={menuActions} data={row} />,
         },
     ];
     const deleteUnitMutation = useMutation(deleteUnit, {
@@ -56,7 +75,14 @@ const UnitTable = ({ onEdit }) => {
         return <Loader />;
     }
 
-    return <CustomTable columns={columns} data={units} />;
+    return (
+        <Table
+            locale={{ emptyText: <EmptyData label="אין יחידות להצגה" /> }}
+            dataSource={units}
+            columns={columns}
+            rowKey={(record) => record._id}
+        />
+    );
 };
 
 UnitTable.propTypes = {

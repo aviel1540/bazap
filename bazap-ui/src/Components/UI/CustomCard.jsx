@@ -9,4 +9,11 @@ const CustomCard = ({ title, action, children }) => {
     );
 };
 
+import PropTypes from "prop-types";
+
+CustomCard.propTypes = {
+    title: PropTypes.any,
+    action: PropTypes.node,
+    children: PropTypes.node,
+};
 export default CustomCard;

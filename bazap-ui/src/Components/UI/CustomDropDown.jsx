@@ -1,5 +1,4 @@
-import { Button, Dropdown, Space } from "antd";
-import React from "react";
+import { Dropdown, Space } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 
 const CustomDropDown = ({ actions, data }) => {
@@ -7,6 +6,7 @@ const CustomDropDown = ({ actions, data }) => {
         const action = actions.find((action) => action.key == key);
         if (action) action.handler(data);
     };
+    // eslint-disable-next-line no-unused-vars
     const items = actions.map(({ handler, ...rest }) => rest);
     return (
         <Dropdown
@@ -15,14 +15,20 @@ const CustomDropDown = ({ actions, data }) => {
                 onClick: (key) => onClick(key.key, data),
             }}
         >
-            <Button onClick={(e) => e.preventDefault()}>
+            <CustomButton onClick={(e) => e.preventDefault()} size="small" type="light-primary">
                 <Space>
                     פעולות
                     <DownOutlined />
                 </Space>
-            </Button>
+            </CustomButton>
         </Dropdown>
     );
 };
+import PropTypes from "prop-types";
+import CustomButton from "./CustomButton/CustomButton";
 
+CustomDropDown.propTypes = {
+    actions: PropTypes.array.isRequired,
+    data: PropTypes.object.isRequired,
+};
 export default CustomDropDown;

@@ -9,6 +9,7 @@ import LightButton from "../../../Components/UI/LightButton";
 import { useProject } from "../../../Components/store/ProjectContext";
 import { DeviceStatuses } from "../../../Utils/utils";
 import { updateStatus } from "../../../Utils/deviceApi";
+import CustomForm from "../../../Components/UI/CustomForm/CustomForm";
 const statuses = Object.values(DeviceStatuses);
 const filteredStatuses = statuses.filter((status) => ![DeviceStatuses.DEFECTIVE_RETURN, DeviceStatuses.FIXED_RETURN].includes(status));
 const deviceStatusOptions = filteredStatuses.map((value) => ({
@@ -55,40 +56,51 @@ const StatusForm = ({ status, onCancel, devices, clearSelectedRows }) => {
         },
     ];
     return (
-        <FormProvider {...methods}>
-            <form onSubmit={handleSubmit(handelSave)}>
-                <Stack direction="row" p={3} justifyContent="center" alignItems="center">
-                    <TextField disabled id="outlined-disabled" label="סטטוס נוכחי" defaultValue={status} />
-                    <KeyboardDoubleArrowLeftIcon fontSize="large" color="success" />
-                    <FormControl fullWidth>
-                        {newStatusInputObj.map((input) => {
-                            return <ControlledInput key={input.name} {...input} control={control} />;
-                        })}
-                    </FormControl>
-                </Stack>
-                <Box>
-                    <Divider variant="fullWidth" sx={{ paddingTop: 2 }} />
-                    <Stack spacing={2} direction="row" marginTop={2}>
-                        <Button size="small" onClick={handelSave} variant="contained">
-                            שמור
-                        </Button>
-                        <LightButton
-                            size="small"
-                            btncolor="dark"
-                            onClick={onCancel}
-                            variant="contained"
-                            sx={{
-                                marginX: {
-                                    xs: "10px",
-                                },
-                            }}
-                        >
-                            בטל
-                        </LightButton>
-                    </Stack>
-                </Box>
-            </form>
-        </FormProvider>
+        <CustomForm onSave={handelSave} onCancel={onCancel}>
+            <Stack direction="row" p={3} justifyContent="center" alignItems="center">
+                <TextField disabled id="outlined-disabled" label="סטטוס נוכחי" defaultValue={status} />
+                <KeyboardDoubleArrowLeftIcon fontSize="large" color="success" />
+                <FormControl fullWidth>
+                    {newStatusInputObj.map((input) => {
+                        return <ControlledInput key={input.name} {...input} control={control} />;
+                    })}
+                </FormControl>
+            </Stack>
+        </CustomForm>
+        // <FormProvider {...methods}>
+        //     <form onSubmit={handleSubmit(handelSave)}>
+        //         <Stack direction="row" p={3} justifyContent="center" alignItems="center">
+        //             <TextField disabled id="outlined-disabled" label="סטטוס נוכחי" defaultValue={status} />
+        //             <KeyboardDoubleArrowLeftIcon fontSize="large" color="success" />
+        //             <FormControl fullWidth>
+        //                 {newStatusInputObj.map((input) => {
+        //                     return <ControlledInput key={input.name} {...input} control={control} />;
+        //                 })}
+        //             </FormControl>
+        //         </Stack>
+        //         <Box>
+        //             <Divider variant="fullWidth" sx={{ paddingTop: 2 }} />
+        //             <Stack spacing={2} direction="row" marginTop={2}>
+        //                 <Button size="small" onClick={handelSave} variant="contained">
+        //                     שמור
+        //                 </Button>
+        //                 <LightButton
+        //                     size="small"
+        //                     btncolor="dark"
+        //                     onClick={onCancel}
+        //                     variant="contained"
+        //                     sx={{
+        //                         marginX: {
+        //                             xs: "10px",
+        //                         },
+        //                     }}
+        //                 >
+        //                     בטל
+        //                 </LightButton>
+        //             </Stack>
+        //         </Box>
+        //     </form>
+        // </FormProvider>
     );
 };
 

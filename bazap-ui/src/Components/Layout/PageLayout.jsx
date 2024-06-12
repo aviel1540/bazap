@@ -1,4 +1,4 @@
-import { Layout, Space } from "antd";
+import { Layout } from "antd";
 import PropTypes from "prop-types";
 import Breadcrumbs from "./Breadcrumbs";
 import MainNavigation from "./Navbar/MainNavigation";

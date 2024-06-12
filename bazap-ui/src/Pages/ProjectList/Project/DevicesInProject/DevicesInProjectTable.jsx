@@ -1,9 +1,9 @@
-import { Table, Tag } from "antd";
+import { Table, Tag, Typography } from "antd";
 import PropTypes from "prop-types";
 import { DeviceStatuses, FIXED_OR_DEFFECTIVE, RETURNED, addKeysToArray, tagColors } from "../../../../Utils/utils";
 import Loader from "../../../../Components/Layout/Loader";
 import EmptyData from "../../../../Components/UI/EmptyData";
-
+const { Text } = Typography;
 const DevicesInProjectTable = ({ rowSelection, filteredDevices, additionalColumns, defaultPageSize, isLoading, handleStatusChange }) => {
     const paginationOptions = {
         showSizeChanger: true,
@@ -31,10 +31,10 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, additionalColumn
             title: "צ' מכשיר",
             dataIndex: "serialNumber",
             key: "serialNumber",
+            render: (text) => <Text strong>{text}</Text>,
         },
         {
             title: "סטטוס",
-
             dataIndex: "status",
             key: "status",
             render: (_, { status }) => (
@@ -53,8 +53,8 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, additionalColumn
         {
             title: "סוג מכשיר",
             key: "deviceType",
-            render: ({ deviceTypeId }) => deviceTypeId.deviceName,
-            sorter: (a, b) => a.deviceType.length - b.deviceType.length,
+            render: ({ deviceTypeId }) => deviceTypeId?.deviceName,
+            sorter: (a, b) => a.deviceType.deviceName?.length - b.deviceType?.deviceName.length,
             sortDirections: ["descend"],
         },
         { ...additionalColumns },

@@ -68,7 +68,7 @@ const CustomForm = ({ inputs, onSubmit, onCancel, values, hideActions, children,
             {isLoading && <Loader />}
             {!isLoading && (
                 <>
-                    <RenderFields fields={inputs} control={control} />
+                    {inputs && <RenderFields fields={inputs} control={control} />}
                     <Divider variant="fullWidth" sx={{ paddingTop: 2 }} />
                 </>
             )}

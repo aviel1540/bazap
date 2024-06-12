@@ -1,5 +1,3 @@
-import DeleteIcon from "@mui/icons-material/Delete";
-import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import { Box } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { Space } from "antd";
@@ -9,25 +7,14 @@ import { ALL, DeviceStatuses, FIXED_OR_DEFFECTIVE, RETURNED, replaceApostrophe }
 import { useCustomModal } from "../../../../Components/store/CustomModalContext";
 import { useProject } from "../../../../Components/store/ProjectContext";
 import CustomCard from "../../../../Components/UI/CustomCard";
-import CustomDropDown from "../../../../Components/UI/CustomDropDown";
-import LightButton from "../../../../Components/UI/LightButton";
 import SearchInput from "../../../../Components/UI/SearchInput";
 import VoucherStepper from "../NewVoucher/VoucherStepper";
 import StatusForm from "../StatusForm";
 import DevicesInProjectTable from "./DevicesInProjectTable";
 import StatusFilter from "./StatusFilter";
+import CustomButton from "../../../../Components/UI/CustomButton/CustomButton";
+import { SwapOutlined } from "@ant-design/icons";
 
-const menuActions = [
-    {
-        key: "1",
-        danger: true,
-        label: "מחק",
-        icon: <DeleteIcon />,
-        handler: (data) => {
-            alert(data);
-        },
-    },
-];
 const ReturnedStatuses = [DeviceStatuses.DEFECTIVE_RETURN, DeviceStatuses.FIXED_RETURN];
 
 const ArrivedDevices = () => {
@@ -151,11 +138,12 @@ const ArrivedDevices = () => {
         });
     };
 
-    const columns = {
-        title: "פעולות",
-        key: "menu",
-        render: (_, row) => <CustomDropDown actions={menuActions} data={row} />,
-    };
+    // const columns = {
+    //     title: "פעולות",
+    // align: "center",
+    //     key: "menu",
+    //     render: (_, row) => <CustomDropDown actions={menuActions} data={row} />,
+    // };
 
     const onSelectChange = (newSelectedRowKeys) => {
         setSelectedRowKeys(newSelectedRowKeys);
@@ -171,26 +159,14 @@ const ArrivedDevices = () => {
             action={
                 <>
                     {selectedStatus !== FIXED_OR_DEFFECTIVE && selectedRowKeys.length > 0 && (
-                        <LightButton
-                            variant="contained"
-                            btncolor="info"
-                            onClick={showModalChangeStatus}
-                            icon={<SwapHorizIcon />}
-                            size="small"
-                        >
+                        <CustomButton type="light-info" onClick={showModalChangeStatus} iconPosition="end" icon={<SwapOutlined />}>
                             שנה סטטוס
-                        </LightButton>
+                        </CustomButton>
                     )}
                     {selectedStatus === FIXED_OR_DEFFECTIVE && selectedRowKeys.length > 0 && (
-                        <LightButton
-                            variant="contained"
-                            btncolor="info"
-                            onClick={showModalCreateVoucher}
-                            icon={<SwapHorizIcon />}
-                            size="small"
-                        >
+                        <CustomButton type="light-success" onClick={showModalCreateVoucher} iconPosition="end" icon={<SwapOutlined />}>
                             צור שובר ניפוק
-                        </LightButton>
+                        </CustomButton>
                     )}
                 </>
             }
@@ -213,7 +189,7 @@ const ArrivedDevices = () => {
                 defaultPageSize={25}
                 handleStatusChange={handleStatusChange}
                 isLoading={isLoading}
-                additionalColumns={columns}
+                // additionalColumns={columns}
             />
         </CustomCard>
     );

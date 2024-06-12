@@ -1,42 +1,17 @@
+import CssBaseline from "@mui/material/CssBaseline";
 import { CacheProvider } from "@emotion/react";
-import { ThemeProvider, createTheme } from "@mui/material";
+import { ThemeProvider } from "@mui/material";
+import createTheme from "@mui/material/styles/createTheme";
 import { heIL } from "@mui/material/locale";
-// import { blue, amber } from "@mui/material/colors";
 import createCache from "@emotion/cache";
 import rtlPlugin from "stylis-plugin-rtl";
 import { prefixer } from "stylis";
 import propTypes from "prop-types";
-import CssBaseline from "@mui/material/CssBaseline";
 
 const cacheRtl = createCache({
     key: "muirtl",
     stylisPlugins: [prefixer, rtlPlugin],
 });
-
-// const theme = createTheme({
-//     typography: {
-//         fontFamily: "Rubik, sans-serif",
-//     },
-//     palette: {
-//         mode: "light",
-//         // primary: {
-
-//         // },
-//         secondary: amber,
-//         lightPrimary: {
-//             light: "#ffffff",
-//             main: "#f1faff",
-//             dark: "#00b2ff",
-//             contrastText: "#ffffff",
-//         },
-//     },
-//     background: {
-//         // default: "#f8f9fa",
-//         default: "#04255c",
-//     },
-//     direction: "rtl",
-//     heIL,
-// });
 const theme = createTheme({
     palette: {
         mode: "light",
