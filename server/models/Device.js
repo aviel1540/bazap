@@ -8,6 +8,9 @@ const deviceSchema = new Schema({
         trim: true,
         required: true,
     },
+    deviceName: {
+        type: String,
+    },
     deviceTypeId: {
         type: Schema.Types.ObjectId,
         ref: "DeviceType",
@@ -20,7 +23,6 @@ const deviceSchema = new Schema({
     unit: {
         type: Schema.Types.ObjectId,
         ref: "Units",
-        required: true,
     },
     status: {
         type: String,
