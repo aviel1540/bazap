@@ -21,7 +21,7 @@ const swaggerDocument = require("./documentation/openapi.json");
 const app = express();
 
 mongoose
-    .connect(process.env.URI)
+    .connect("mongodb://mongo-db/BazapProduction")
     .then(() => console.log("Connected to DataBase"))
     .catch((err) => console.log(err.message));
 
