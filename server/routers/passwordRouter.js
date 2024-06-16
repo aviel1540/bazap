@@ -5,7 +5,6 @@ router.get("/get-admin-password", passwordController.getAdminPassword);
 
 router.post("/validate-password", passwordController.validatePassword);
 
-router.patch("/update-admin-password" , passwordController.updateAdminPassword);
-
+router.patch("/update-admin-password", passwordController.updateAdminPassword);
 
 module.exports = router;

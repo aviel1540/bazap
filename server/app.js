@@ -10,6 +10,7 @@ const technicianRouter = require("./routers/technicianRouter");
 const unitsRouter = require("./routers/unitsRouter");
 const voucherRouter = require("./routers/voucherRouter");
 const passwordRouter = require("./routers/passwordRouter");
+const passwordController = require("./controllers/PasswordController");
 
 // const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
@@ -22,7 +23,10 @@ const app = express();
 
 mongoose
     .connect("mongodb://mongo-db/BazapProduction")
-    .then(() => console.log("Connected to DataBase"))
+    .then(() => {
+        console.log("Connected to DataBase");
+        passwordController.checkPasswordsExistence();
+    })
     .catch((err) => console.log(err.message));
 
 app.use(express.json());

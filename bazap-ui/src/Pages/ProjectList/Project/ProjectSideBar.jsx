@@ -111,7 +111,13 @@ const ProjectSideBar = ({ isProjectIsClosed }) => {
         { title: "הוסף שובר", icon: <AddIcon />, handler: addVoucher, shouldAppearOnClosedProject: false },
         { title: "הפק דוח צ'", icon: <IosShareIcon />, handler: createDeviceReport, shouldAppearOnClosedProject: false },
         { title: "דוח מכשירים שנופקו", icon: <ArrowOutwardIcon />, handler: createOutDevicesReport, shouldAppearOnClosedProject: true },
-        { title: "סגור פרוייקט", icon: <BorderColorIcon />, handler: closeProjectHandler, shouldAppearOnClosedProject: false },
+        {
+            title: "סגור פרוייקט",
+            icon: <BorderColorIcon />,
+            handler: closeProjectHandler,
+            shouldAppearOnClosedProject: false,
+            isPasswordRequired: true,
+        },
         {
             title: "מחק פרוייקט",
             icon: <DeleteIcon />,
