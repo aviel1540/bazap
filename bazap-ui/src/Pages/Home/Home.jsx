@@ -1,10 +1,6 @@
 import ClosedProjects from "./Projects/ClosedProjects";
 function Home() {
-    return (
-        <>
-            <ClosedProjects />
-        </>
-    );
+    return <ClosedProjects />;
 }
 
 export default Home;

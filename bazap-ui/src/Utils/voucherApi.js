@@ -1,8 +1,11 @@
 import axios from "axios";
 import { errorHandle, responseHandle } from "./axiosUtils";
 const BAZAP = "גדוד 388";
-const voucherAPI = axios.create({ baseURL: "http://localhost:5000/api/voucher" });
-const ExportAPI = axios.create({ baseURL: "http://localhost:5257/api" });
+const VOCUHER_URL = import.meta.env.VITE_VOUCHER_DOTNET_URL;
+const be_URL = import.meta.env.VITE_BE_API_URL;
+
+const voucherAPI = axios.create({ baseURL: `http://${be_URL}:5000/api/voucher` });
+const ExportAPI = axios.create({ baseURL: `http://${VOCUHER_URL}:5257/api` });
 voucherAPI.interceptors.response.use(responseHandle, errorHandle);
 // ExportAPI.interceptors.response.use(responseHandle, errorHandle);
 
@@ -42,6 +45,7 @@ export const exportVoucherToExcel = async (voucherId) => {
                 serialNumber: device.serialNumber,
                 deviceType: device.deviceTypeId.deviceName,
                 catalogNumber: device.deviceTypeId.catalogNumber,
+                notes: device.notes,
             };
         }),
         issuingTechnician: voucher.arrivedBy,

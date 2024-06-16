@@ -1,4 +1,4 @@
-require("dotenv").config();
+const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const express = require("express");
 const fs = require("fs");
@@ -19,9 +19,16 @@ const customCss = fs.readFileSync(process.cwd() + "/documentation/swagger.css", 
 const swaggerDocument = require("./documentation/openapi.json");
 const { dataFix } = require("./loadScripts");
 
+console.log(`Comparison: ${process.env.NODE_ENV === "production"}`);
+
+if (process.env.NODE_ENV === "production") {
+    dotenv.config({ path: ".env.production" });
+} else {
+    dotenv.config();
+}
 // mongoose.set("strictQuery", true);
 const app = express();
-
+console.log(process.env.URI);
 mongoose
     .connect(process.env.URI)
     .then(async () => {

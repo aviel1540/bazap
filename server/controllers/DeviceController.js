@@ -165,17 +165,17 @@ exports.changeStatus = async (req, res) => {
 
 exports.updateNote = async (req, res) => {
     const deviceId = escape(req.params.id);
-    const deviceNote = escape(req.body.deviceNote)
+    const notes = escape(req.body.notes);
     let deviceFound;
     try {
         const checkDeviceId = validation.addSlashes(deviceId);
-        const checkDeviceNote = validation.addSlashes(deviceNote);
-        deviceFound = await deviceService.updateDeviceNote({checkDeviceId, checkDeviceNote})
-        if(!deviceFound) return res.status(404).json({message: "לא נמצא מכשיר לעידכון"})        
-        
-        return res.status(201).json({message: "המכשיר עודכן בהצלחה"})
+        const checkNote = validation.addSlashes(notes);
+        deviceFound = await deviceService.updateDeviceNote({ checkDeviceId, checkNote });
+        if (!deviceFound) return res.status(404).json({ message: "לא נמצא מכשיר לעידכון" });
+
+        return res.status(201).json({ message: "המכשיר עודכן בהצלחה" });
     } catch (err) {
-        return res.status(500).json({message: err.message})
+        return res.status(500).json({ message: err.message });
     }
 };
 

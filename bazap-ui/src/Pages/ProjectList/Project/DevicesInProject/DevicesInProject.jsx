@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Space } from "antd";
 import { useEffect, useState } from "react";
 import { getAllDevicesInProject } from "../../../../Utils/deviceApi";
-import { ALL, DeviceStatuses, FIXED_OR_DEFFECTIVE, RETURNED, replaceApostrophe } from "../../../../Utils/utils";
+import { ALL, DeviceStatuses, FIXED_OR_DEFFECTIVE, RETURNED, ReturnedStatuses, replaceApostrophe } from "../../../../Utils/utils";
 import { useCustomModal } from "../../../../Components/store/CustomModalContext";
 import { useProject } from "../../../../Components/store/ProjectContext";
 import CustomCard from "../../../../Components/UI/CustomCard";
@@ -14,8 +14,6 @@ import DevicesInProjectTable from "./DevicesInProjectTable";
 import StatusFilter from "./StatusFilter";
 import CustomButton from "../../../../Components/UI/CustomButton/CustomButton";
 import { SwapOutlined } from "@ant-design/icons";
-
-const ReturnedStatuses = [DeviceStatuses.DEFECTIVE_RETURN, DeviceStatuses.FIXED_RETURN];
 
 const ArrivedDevices = () => {
     const { projectId } = useProject();
@@ -181,7 +179,6 @@ const ArrivedDevices = () => {
                 defaultPageSize={25}
                 handleStatusChange={handleStatusChange}
                 isLoading={isLoading}
-                // additionalColumns={columns}
             />
         </CustomCard>
     );

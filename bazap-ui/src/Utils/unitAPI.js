@@ -1,7 +1,8 @@
 import axios from "axios";
 import { errorHandle, responseHandle } from "./axiosUtils";
+const be_URL = import.meta.env.BE_API_URL;
 
-const unitAPI = axios.create({ baseURL: "http://localhost:5000/api/units" });
+const unitAPI = axios.create({ baseURL: `http://${be_URL}:5000/api/units` });
 unitAPI.interceptors.response.use(responseHandle, errorHandle);
 
 export const getAllUnits = async () => {

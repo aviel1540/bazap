@@ -1,15 +1,19 @@
 import { FileExcelOutlined, ImportOutlined } from "@ant-design/icons";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Button, Flex, Tooltip, Upload, message } from "antd";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import readXlsxFile from "read-excel-file";
 import { getDeviceBySerialNumber } from "../../../../Utils/deviceApi";
 import { downloadTemplateFile, readDevicesExcelFile } from "../../../../Utils/excelUtils";
+import { getAllDeviceTypes } from "../../../../Utils/deviceTypeApi";
 
 const ImportExcel = ({ remove, append, setDisabledFields, getValues, isDeliveryVoucher, setSelectedRowKeys }) => {
-    const [loading, setLoading] = useState(false);
-
+    const { isLoading, data: deviceTypes } = useQuery({
+        queryKey: ["deviceTypes"],
+        queryFn: getAllDeviceTypes,
+    });
+    const [loading, setLoading] = useState(isLoading);
     const getDeviceBySerialNumberMutation = useMutation(getDeviceBySerialNumber, {});
 
     const config = {
@@ -39,19 +43,31 @@ const ImportExcel = ({ remove, append, setDisabledFields, getValues, isDeliveryV
                         for (let i = 0; i < excelDevices.length; i++) {
                             const device = excelDevices[i];
                             const deviceFromDb = await getDeviceBySerialNumberMutation.mutateAsync(device.serialNumber);
-                            let deviceType = device.deviceType;
-                            if (!deviceFromDb.message) {
-                                deviceType = deviceFromDb.deviceType;
-                            }
-                            if (allDevices.findIndex((dev) => dev.serialNumber == device.serialNumber) == -1) {
+                            let deviceType = device.deviceType; // device type from excel
+                            if (deviceFromDb.message != null) {
+                                if (!deviceFromDb.message) {
+                                    if (allDevices.findIndex((dev) => dev.serialNumber == device.serialNumber) == -1) {
+                                        append({
+                                            serialNumber: device.serialNumber,
+                                            deviceType: device.deviceTypeId._id,
+                                        });
+                                        if (deviceType) {
+                                            indexes.push(addedIndex);
+                                            addedIndex++;
+                                        }
+                                    }
+                                }
+                            } else {
+                                let deviceTypeId = undefined;
+                                // check if device type exist
+                                if (deviceType) {
+                                    let deviceTypeObj = deviceTypes.find((deviceType) => deviceType._id === deviceType);
+                                    deviceTypeId = deviceTypeObj?._id;
+                                }
                                 append({
                                     serialNumber: device.serialNumber,
-                                    deviceType: deviceType,
+                                    deviceType: deviceTypeId,
                                 });
-                                if (deviceType) {
-                                    indexes.push(addedIndex);
-                                    addedIndex++;
-                                }
                             }
                         }
                         setDisabledFields((prev) => {
@@ -101,6 +117,7 @@ const ImportExcel = ({ remove, append, setDisabledFields, getValues, isDeliveryV
                 return;
             }
             if (file.status === "done") {
+                setLoading(false);
             } else if (file.status === "error") {
                 setLoading(false);
                 message.error("File upload failed");

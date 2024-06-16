@@ -87,3 +87,6 @@ export const addKeysToArray = (data, key, fromKey) => {
 
     return data;
 };
+
+
+export const ReturnedStatuses = [DeviceStatuses.DEFECTIVE_RETURN, DeviceStatuses.FIXED_RETURN];

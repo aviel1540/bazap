@@ -57,10 +57,10 @@ exports.updateReturnDevice = async (request) => {
 
 exports.deleteDeviceById = async (checkDeviceId) => await Device.findByIdAndRemove(checkDeviceId);
 
-exports.updateDeviceNote = async(request) => {
-    const {checkDeviceId, checkDeviceNote} = request;
+exports.updateDeviceNote = async (request) => {
+    const { checkDeviceId, checkNote } = request;
 
     return await Device.findByIdAndUpdate(checkDeviceId, {
-        notes: checkDeviceNote
-    })
-}
+        notes: checkNote,
+    });
+};

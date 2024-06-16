@@ -1,7 +1,8 @@
 import axios from "axios";
 import { errorHandle, responseHandle } from "./axiosUtils";
+const be_URL = import.meta.env.VITE_BE_API_URL;
 
-const deviceAPI = axios.create({ baseURL: "http://localhost:5000/api/device" });
+const deviceAPI = axios.create({ baseURL: `http://${be_URL}:5000/api/device` });
 deviceAPI.interceptors.response.use(responseHandle, errorHandle);
 
 export const addNewDevice = async (device) => {
@@ -34,4 +35,9 @@ export const getDevices = async () => {
 export const updateStatus = async (device) => {
     const { id } = device;
     return await deviceAPI.patch(`/update-status/${id}`, device);
+};
+
+export const updateNotes = async (device) => {
+    const { id } = device;
+    return await deviceAPI.patch(`/update-note/${id}`, device);
 };

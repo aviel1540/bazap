@@ -1,13 +1,19 @@
-# server/Dockerfile
-FROM node:14-alpine
+# Use an appropriate base image that includes both Node.js and MongoDB
+FROM node:18-alpine
 
+# Set up a directory for your Node.js application
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm install
+# Copy package.json and package-lock.json to the working directory
+COPY package.json .
 
+# Install Node.js dependencies
+RUN npm install -force
+
+# Bundle app source
 COPY . .
 
-EXPOSE 3000
+EXPOSE 5000
 
-CMD ["node", "server.js"]
+# Start MongoDB and Node.js
+CMD ["npm", "start"]

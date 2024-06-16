@@ -12,16 +12,15 @@ const ClosedProjects = () => {
     if (isLoading) {
         return <Loader />;
     }
-    const closedprojects = projects.filter((project) => project.finished == true);
     return (
         <CustomCard title="פרוייקטים סגורים">
-            {closedprojects.length == 0 && (
+            {projects.length == 0 && (
                 <Box textAlign="center" fontWeight="600">
                     <Typography>לא נמצאו פרוייקטים סגורים!</Typography>
                 </Box>
             )}
 
-            {closedprojects.length > 0 && <DevicesChart projects={closedprojects} />}
+            {projects.length > 0 && <DevicesChart projects={projects} />}
         </CustomCard>
     );
 };

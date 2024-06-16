@@ -1,10 +1,10 @@
 # version: "3"
 
 # services:
-#   frontend: 
+#   frontend:
 #     build: ./bazap-ui
 #     container_name: bazap-ui
-#     ports: 
+#     ports:
 #       - "5173:5173"
 #     stdin_open: true
 #     tty: true
@@ -17,7 +17,7 @@
 #     build: ./server
 #     container_name: bazap-api
 #     restart: always
-#     ports: 
+#     ports:
 #       - "5000:5000"
 #     depends_on:
 #       - database
@@ -27,67 +27,63 @@
 #   database:
 #     image: mongo
 #     container_name: mongo-db
-#     ports: 
+#     ports:
 #       - "27017:27017"
 #     volumes:
 #       - C:\Users\AvielYakov\mongo-backup:\data\db
 #     networks:
 #       - mern-network
 
-# networks: 
+# networks:
 #   mern-network:
-#     driver: bridge  
-
-
-
+#     driver: bridge
 
 version: "3"
 
 services:
-  frontend: 
-    build: ./bazap-ui
-    container_name: bazap-ui
-    ports: 
-      - "5173:5173"
-    stdin_open: true
-    tty: true
-    depends_on:
-      - backend
-    networks:
-      - mern-network
+    frontend:
+        build: ./bazap-ui
+        container_name: bazap-ui
+        ports:
+            - "5173:5173"
+        stdin_open: true
+        tty: true
+        depends_on:
+            - backend
+        networks:
+            - mern-network
 
-  backend:
-    build: ./server
-    container_name: bazap-api
-    restart: always
-    ports: 
-      - "5000:5000"
-    depends_on:
-      - database
-      - dotnet
-    networks:
-      - mern-network
+    backend:
+        build: ./server
+        container_name: bazap-api
+        restart: always
+        ports:
+            - "5000:5000"
+        depends_on:
+            - database
+        networks:
+            - mern-network
 
-  database:
-    image: mongo
-    container_name: mongo-db
-    ports: 
-      - "27017:27017"
-    volumes:
-      - C:\Users\AvielYakov\mongo-backup:\data\db
-    networks:
-      - mern-network
+    database:
+        image: mongo
+        container_name: mongo-db
+        ports:
+            - "27017:27017"
+        volumes:
+            - C:\Users\AvielYakov\mongo-backup:\data\db
+        networks:
+            - mern-network
 
-  dotnet:
-    build: ./dotnet-app  # Assuming your .NET app is in the ./dotnet-app directory
-    container_name: dotnet-app
-    ports:
-      - "5257:5257"  # Adjust according to your .NET app's configuration
-    depends_on:
-      - database
-    networks:
-      - mern-network
+    dotnet:
+        build: ./VoucherExcel # Assuming your .NET app is in the ./dotnet-app directory
+        container_name: VoucherExcel
+        ports:
+            - "5257:5257" # Adjust according to your .NET app's configuration
+        depends_on:
+            - database
+        networks:
+            - mern-network
 
-networks: 
-  mern-network:
-    driver: bridge
+networks:
+    mern-network:
+        driver: bridge
