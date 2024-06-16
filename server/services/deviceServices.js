@@ -9,7 +9,7 @@ exports.findAllDevicesInLab = async (projectId) => await Device.find({ project: 
 exports.addNewDevice = async (request) => {
     return new Device({
         serialNumber: request.checkSerialNumber,
-        deviceType: request.checkType,
+        deviceTypeId: request.checkDeviceTypeId,
         unit: request.checkUnitId,
         voucherIn: request.checkVoucherId,
         project: request.projectId,

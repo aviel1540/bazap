@@ -16,11 +16,11 @@ namespace VoucherExcel.Modals
 		[Voucher(rowPosition: 2, columnPosition: "K")]
 		public string? VoucherNumber { get; set; }
 
-		[Voucher(rowPosition: 6, columnPosition: "B")]
+		[Voucher(rowPosition: 6, columnPosition: "D")]
 		public List<Device>? Devices { get; set; }
-		[Voucher(rowPosition: 12, columnPosition: "I")]
+		[Voucher(rowPosition: 31, columnPosition: "C")]
 		public string? IssuingTechnician { get; set; }
-		[Voucher(rowPosition: 24, columnPosition: "I")]
+		[Voucher(rowPosition: 31, columnPosition: "J")]
 		public string? ReceivingTechnician { get; set; }
 
 	}

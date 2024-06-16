@@ -8,7 +8,7 @@ namespace VoucherExcel.Helpers
     {
         private static readonly Dictionary<string, (int RowPosition, string ColumnPosition)> voucherPositions = Utils.Utils.GetVoucherPropertyPositions<Voucher>();
         private static readonly Dictionary<string, (int RowPosition, string ColumnPosition)> devicePositions = Utils.Utils.GetVoucherPropertyPositions<Device>();
-        private static readonly int devicesPerPage = 23;
+        private static readonly int devicesPerPage = 20;
 
         public static FileResult ExportToExcel(ControllerBase controller, Voucher voucher)
         {
@@ -30,8 +30,8 @@ namespace VoucherExcel.Helpers
                 voucher.Devices.OrderBy(device => device.DeviceType).ThenBy(device => device.SerialNumber);
                 for (int page = 0; page < pages; page++)
                 {
-                    int startRow = (page * 30) + 1;
-                    worksheet.Cells["1:30"].Copy(worksheet.Cells[$"{startRow}:{startRow + 29}"]);
+                    int startRow = (page * 33) + 1;
+                    worksheet.Cells["1:33"].Copy(worksheet.Cells[$"{startRow}:{startRow + 32}"]);
                     FillVoucherInWorksheet(worksheet, voucher, startRow - 1, page + 1, pages);
                 }
 

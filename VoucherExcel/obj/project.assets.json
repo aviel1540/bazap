@@ -1595,19 +1595,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Nir\\.nuget\\packages\\": {}
+    "C:\\Users\\nir.kusan_novideasof\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\VS Code Projects\\bazap\\VoucherExcel\\VoucherExcel.csproj",
+      "projectUniqueName": "C:\\Users\\nir.kusan_novideasof\\Desktop\\personal\\Bazap\\bazap\\VoucherExcel\\VoucherExcel.csproj",
       "projectName": "VoucherExcel",
-      "projectPath": "C:\\VS Code Projects\\bazap\\VoucherExcel\\VoucherExcel.csproj",
-      "packagesPath": "C:\\Users\\Nir\\.nuget\\packages\\",
-      "outputPath": "C:\\VS Code Projects\\bazap\\VoucherExcel\\obj\\",
+      "projectPath": "C:\\Users\\nir.kusan_novideasof\\Desktop\\personal\\Bazap\\bazap\\VoucherExcel\\VoucherExcel.csproj",
+      "packagesPath": "C:\\Users\\nir.kusan_novideasof\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\nir.kusan_novideasof\\Desktop\\personal\\Bazap\\bazap\\VoucherExcel\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+      ],
       "configFilePaths": [
-        "C:\\Users\\Nir\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\nir.kusan_novideasof\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -1615,7 +1620,6 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -1671,7 +1675,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.301/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

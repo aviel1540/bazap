@@ -57,9 +57,9 @@ const VoucherStep2 = () => {
         queryFn: getAllDeviceTypes,
     });
     const deviceTypeOptions = deviceTypes?.map((dType) => {
-        const formattedName = dType.deviceName;
-        return { text: formattedName, value: formattedName, ...dType };
+        return { text: dType.deviceName, value: dType._id, ...dType };
     });
+
     useEffect(() => {
         if (isDeliveryVoucher) {
             refetch();
@@ -159,7 +159,7 @@ const VoucherStep2 = () => {
             },
             {
                 label: "סוג מכשיר",
-                name: "deviceType",
+                name: "deviceTypeId",
                 type: "select",
                 validators: {
                     required: "יש למלא שדה זה.",

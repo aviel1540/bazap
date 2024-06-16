@@ -3,8 +3,14 @@ import PropTypes from "prop-types";
 import { DeviceStatuses, FIXED_OR_DEFFECTIVE, RETURNED, addKeysToArray, tagColors } from "../../../../Utils/utils";
 import Loader from "../../../../Components/Layout/Loader";
 import EmptyData from "../../../../Components/UI/EmptyData";
+import { useQuery } from "@tanstack/react-query";
+import { getAllUnits } from "../../../../Utils/unitAPI";
 const { Text } = Typography;
 const DevicesInProjectTable = ({ rowSelection, filteredDevices, additionalColumns, defaultPageSize, isLoading, handleStatusChange }) => {
+    const { data: units, isLoading: isUnitsLoading } = useQuery({
+        queryKey: ["units"],
+        queryFn: getAllUnits,
+    });
     const paginationOptions = {
         showSizeChanger: true,
         pageSizeOptions: ["5", "10", "25", "50"],
@@ -26,12 +32,24 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, additionalColumn
         handleStatusChange(status);
         return;
     };
-    const columns = [
+
+    const columns = () => [
         {
             title: "צ' מכשיר",
             dataIndex: "serialNumber",
             key: "serialNumber",
             render: (text) => <Text strong>{text}</Text>,
+        },
+        {
+            title: "יחידה",
+            dataIndex: "unit",
+            key: "unit",
+            filters: units.map((unit) => {
+                return { text: unit.unitsName, value: unit._id };
+            }),
+            onFilter: (value, record) => record.unit._id == value,
+            sorter: (a, b) => a?.unit?.unitsName.length - b?.unit?.unitsName.length,
+            render: (unit) => unit?.unitsName,
         },
         {
             title: "סטטוס",
@@ -59,7 +77,7 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, additionalColumn
         },
         { ...additionalColumns },
     ];
-    if (isLoading) {
+    if (isLoading || isUnitsLoading) {
         return <Loader />;
     }
     return (
@@ -68,7 +86,7 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, additionalColumn
             rowSelection={rowSelection}
             dataSource={addKeysToArray(filteredDevices, "key", "_id")}
             pagination={paginationOptions}
-            columns={columns}
+            columns={columns()}
         />
     );
 };

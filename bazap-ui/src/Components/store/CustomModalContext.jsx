@@ -69,10 +69,12 @@ export const CustomModalProvider = ({ children }) => {
                     key={mState.key}
                     open={mState.show}
                     title={mState.options.title}
-                    onCancel={() => onHide(mState.name)}
                     width={modalWidth}
                     centered
                     footer={null}
+                    onCancel={() => onHide(mState.name)}
+                    closable={true}
+                    maskClosable={false}
                 >
                     <div key={mState.key}>{mState.options.body}</div>
                 </Modal>

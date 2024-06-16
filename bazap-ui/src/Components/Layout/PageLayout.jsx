@@ -9,8 +9,8 @@ const PageLayout = ({ children }) => {
             <MainNavigation />
             <Content
                 style={{
-                    marginTop: "20px",
-                    padding: "24px 76px",
+                    padding: "0px 76px",
+                    margin: "15px 0px",
                 }}
             >
                 <Breadcrumbs />

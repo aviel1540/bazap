@@ -11,7 +11,12 @@ import CustomDropDown from "../../../Components/UI/CustomDropDown";
 const { Text } = Typography;
 
 import IosShareIcon from "@mui/icons-material/IosShare";
+import { getAllUnits } from "../../../Utils/unitAPI";
 const VoucherTable = () => {
+    const { data: units, isLoading: isUnitsLoading } = useQuery({
+        queryKey: ["units"],
+        queryFn: getAllUnits,
+    });
     const { projectId } = useProject();
     const { isLoading, data: vouchers } = useQuery({
         queryKey: ["vouchers", projectId],
@@ -49,7 +54,7 @@ const VoucherTable = () => {
             },
         },
     ];
-    const columns = [
+    const columns = () => [
         {
             title: "מספר שובר",
             dataIndex: "voucherNumber",
@@ -59,6 +64,12 @@ const VoucherTable = () => {
         {
             title: "יחידה",
             key: "voucherNumber",
+            filters: !isUnitsLoading
+                ? units.map((unit) => {
+                      return { text: unit.unitsName, value: unit._id };
+                  })
+                : [],
+            onFilter: (value, record) => record.unit._id == value,
             render: ({ unit }) => unit.unitsName,
         },
         {
@@ -100,7 +111,7 @@ const VoucherTable = () => {
     });
     const exportVoucherMutation = useMutation(exportVoucherToExcel, {});
 
-    if (isLoading) {
+    if (isLoading || isUnitsLoading) {
         return <Loader />;
     }
 
@@ -109,7 +120,7 @@ const VoucherTable = () => {
             <Table
                 locale={{ emptyText: <EmptyData label="אין שוברים להצגה" /> }}
                 dataSource={vouchers}
-                columns={columns}
+                columns={columns()}
                 rowKey={(record) => record._id}
             />
         </CustomCard>
