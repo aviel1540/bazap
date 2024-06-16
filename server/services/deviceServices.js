@@ -56,3 +56,11 @@ exports.updateReturnDevice = async (request) => {
 };
 
 exports.deleteDeviceById = async (checkDeviceId) => await Device.findByIdAndRemove(checkDeviceId);
+
+exports.updateDeviceNote = async(request) => {
+    const {checkDeviceId, checkDeviceNote} = request;
+
+    return await Device.findByIdAndUpdate(checkDeviceId, {
+        notes: checkDeviceNote
+    })
+}
