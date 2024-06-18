@@ -1,49 +1,10 @@
-# version: "3"
-
-# services:
-#   frontend:
-#     build: ./bazap-ui
-#     container_name: bazap-ui
-#     ports:
-#       - "5173:5173"
-#     stdin_open: true
-#     tty: true
-#     depends_on:
-#       - backend
-#     networks:
-#       - mern-network
-
-#   backend:
-#     build: ./server
-#     container_name: bazap-api
-#     restart: always
-#     ports:
-#       - "5000:5000"
-#     depends_on:
-#       - database
-#     networks:
-#       - mern-network
-
-#   database:
-#     image: mongo
-#     container_name: mongo-db
-#     ports:
-#       - "27017:27017"
-#     volumes:
-#       - C:\Users\AvielYakov\mongo-backup:\data\db
-#     networks:
-#       - mern-network
-
-# networks:
-#   mern-network:
-#     driver: bridge
-
 version: "3"
 
 services:
     frontend:
         build: ./bazap-ui
         container_name: bazap-ui
+        image: frontend
         ports:
             - "5173:5173"
         stdin_open: true
@@ -55,7 +16,8 @@ services:
 
     backend:
         build: ./server
-        container_name: bazap-api
+        container_name: backend
+        image: backend
         restart: always
         ports:
             - "5000:5000"
@@ -65,25 +27,25 @@ services:
             - mern-network
 
     database:
-        image: mongo
         container_name: mongo-db
+        image: mongo
         ports:
             - "27017:27017"
         volumes:
-            - C:\Users\AvielYakov\mongo-backup:\data\db
+            - C:\mongo:\data\db
         networks:
             - mern-network
 
     dotnet:
-        build: ./VoucherExcel # Assuming your .NET app is in the ./dotnet-app directory
-        container_name: VoucherExcel
+        build: ./voucherExcel
+        container_name: voucherexcel
+        image: dotnet
         ports:
-            - "5257:5257" # Adjust according to your .NET app's configuration
-        depends_on:
-            - database
+            - "5257:5257"
         networks:
             - mern-network
 
 networks:
     mern-network:
+        name: mern-network
         driver: bridge

@@ -14,6 +14,7 @@ namespace VoucherExcel.Controllers
 		[HttpPost]
 		public FileResult Post(Voucher voucher)
 		{
+			Console.WriteLine("Exporting" + voucher);
 			return ExcelExportHelper.ExportToExcel(this, voucher);
 		}
 

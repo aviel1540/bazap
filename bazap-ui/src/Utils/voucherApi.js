@@ -61,7 +61,8 @@ export const exportVoucherToExcel = async (voucherId) => {
     const blob = new Blob([response.data]);
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = "exported_file.xlsx";
+    let fileName = `שובר_${voucher.voucherNumber}_${voucher.project.projectName}_${voucher.type ? "קבלה" : "ניפוק"}.xlsx`;
+    link.download = fileName;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

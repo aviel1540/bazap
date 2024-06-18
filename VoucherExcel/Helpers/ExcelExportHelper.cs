@@ -13,6 +13,7 @@ namespace VoucherExcel.Helpers
         public static FileResult ExportToExcel(ControllerBase controller, Voucher voucher)
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            Console.WriteLine("Directory: " + Directory.GetCurrentDirectory());
             string templatePath = Path.Combine(Directory.GetCurrentDirectory(), "source", "shovar.xlsx");
 
             if (!File.Exists(templatePath))
@@ -74,6 +75,7 @@ namespace VoucherExcel.Helpers
                 worksheet.Cells[$"C{startRow + i}"].Value = 1;
                 FillCell(worksheet, "DeviceType", device.DeviceType, startRow + i, devicePositions);
                 FillCell(worksheet, "CatalogNumber", device.CatalogNumber, startRow + i, devicePositions);
+                FillCell(worksheet, "Notes", device.Notes, startRow + i, devicePositions);
             }
         }
     }
