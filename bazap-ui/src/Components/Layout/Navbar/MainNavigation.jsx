@@ -25,7 +25,7 @@ const MainNavigation = () => {
             }}
         >
             <NavLink to="/">
-                <Avatar size={50} src={<img src={"/logo.jpg"} alt="logo" />} />
+                <Avatar size={50} src={<img src={"/bazap-logo.png"} alt="logo" />} />
             </NavLink>
             <Menu
                 theme="dark"

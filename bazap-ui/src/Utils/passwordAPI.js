@@ -1,12 +1,9 @@
 import axios from "axios";
+import { errorHandle, responseHandle } from "./axiosUtils";
+const be_URL = import.meta.env.VITE_BE_API_URL;
 
-const passwordAPI = axios.create({ baseURL: "http://localhost:5000/api/password" });
-
+const passwordAPI = axios.create({ baseURL: `http://${be_URL}:5000/api/password` });
+passwordAPI.interceptors.response.use(responseHandle, errorHandle);
 export const validatePassword = async (password) => {
-    try {
-        const response = await passwordAPI.post("validate-password", { password: password });
-        return response.data;
-    } catch (error) {
-        throw new Error(error.response.data.message);
-    }
+    return await passwordAPI.post("validate-password", { password: password });
 };

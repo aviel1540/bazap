@@ -1,57 +1,121 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import propTypes from "prop-types";
-import { replaceApostrophe } from "../../Utils/utils";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Table, Tag, Typography } from "antd";
+import CustomDropDown from "../../Components/UI/CustomDropDown";
+const { Text } = Typography;
 import Loader from "../../Components/Layout/Loader";
-import CustomTable from "../../Components/UI/CustomTable/CustomTable";
-import TableActions from "../../Components/UI/CustomTable/TableActions";
+import EmptyData from "../../Components/UI/EmptyData";
 import { useUserAlert } from "../../Components/store/UserAlertContext";
-import { deleteDeviceType } from "../../Utils/deviceTypeApi";
+import { deleteDeviceType, getAllDeviceTypes } from "../../Utils/deviceTypeApi";
+import BorderColorIcon from "@mui/icons-material/BorderColor";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { useCustomModal } from "../../Components/store/CustomModalContext";
+import DeviceTypeForm from "./DeviceTypeForm";
 
-const DeviceTypeTable = ({ deviceTypes, isLoading }) => {
+const DeviceTypeTable = () => {
+    const { onShow, onHide } = useCustomModal();
+    const { isLoading, data: deviceTypes } = useQuery({
+        queryKey: ["deviceTypes"],
+        queryFn: getAllDeviceTypes,
+    });
+
     const { onConfirm } = useUserAlert();
     const queryClient = useQueryClient();
-    const onDeleteDeviceTypeHandler = (rowId, handleClose) => {
-        handleClose(rowId);
-        const config = {
-            title: "האם אתה בטוח מעוניין למחוק את סוג המכשיר?",
-            okHandler: () => {
-                deleteDeviceMutation.mutate(rowId);
-            },
-        };
-        onConfirm(config);
-    };
-    const actions = [{ title: "מחק", handler: onDeleteDeviceTypeHandler }];
-    const columns = [
-        {
-            name: "שם מכשיר",
-            sortable: true,
-            selector: (row) => row.deviceName,
-            cell: (row) => {
-                return <div>{replaceApostrophe(row.deviceName)}</div>;
-            },
-        },
-        {
-            name: "פעולות",
-            center: true,
-            cell: (row) => <TableActions rowId={row._id} actions={actions} />,
-        },
-    ];
+
     const deleteDeviceMutation = useMutation(deleteDeviceType, {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["deviceTypes"] });
         },
     });
 
+    const onDeleteDeviceTypeHandler = (id) => {
+        const config = {
+            title: "האם אתה בטוח מעוניין למחוק את סוג המכשיר?",
+            okHandler: () => {
+                deleteDeviceMutation.mutate(id);
+            },
+        };
+        onConfirm(config);
+    };
+    const showModal = (data) => {
+        onShow({
+            title: "סוג מוצר",
+            name: "deviceType",
+            body: <DeviceTypeForm onCancel={() => onHide("deviceType")} formValues={data} isEdit={true} />,
+        });
+    };
+    const onEditUnitHandler = (id) => {
+        const deviceType = deviceTypes.find((item) => item._id == id);
+        if (deviceType) {
+            showModal({
+                deviceName: deviceType.deviceName,
+                catalogNumber: deviceType.catalogNumber,
+                id: deviceType._id,
+                isClassified: deviceType.isClassified.toString(),
+            });
+        }
+    };
+
+    const menuActions = [
+        {
+            key: "1",
+            label: "ערוך",
+            icon: <BorderColorIcon />,
+            handler: (data) => {
+                onEditUnitHandler(data._id);
+            },
+        },
+        {
+            key: "2",
+            label: "מחק",
+            danger: true,
+            icon: <DeleteIcon />,
+            handler: (data) => {
+                onDeleteDeviceTypeHandler(data._id);
+            },
+        },
+    ];
+
+    const columns = [
+        {
+            title: "שם מכשיר",
+            dataIndex: "deviceName",
+            key: "deviceName",
+            render: (text) => <Text strong>{text}</Text>,
+        },
+        {
+            title: 'מק"ט',
+            dataIndex: "catalogNumber",
+            key: "catalogNumber",
+        },
+        {
+            title: "סוג שובר",
+            key: "type",
+            render: ({ isClassified }) => {
+                const label = isClassified ? "מסווג" : 'צל"ם';
+                const color = isClassified ? "#50cd89" : "#ffc700";
+                return <Tag color={color}>{label}</Tag>;
+            },
+        },
+        {
+            title: "פעולות",
+            align: "center",
+            key: "menu",
+            render: (_, row) => <CustomDropDown key={row._id} actions={menuActions} data={row} />,
+        },
+    ];
+
     if (isLoading) {
         return <Loader />;
     }
 
-    return <CustomTable className="table" columns={columns} data={deviceTypes} />;
-};
-
-DeviceTypeTable.propTypes = {
-    deviceTypes: propTypes.array,
-    isLoading: propTypes.bool.isRequired,
+    return (
+        <Table
+            locale={{ emptyText: <EmptyData label="אין סוגי מכשירים להצגה" /> }}
+            dataSource={deviceTypes}
+            columns={columns}
+            rowKey={(record) => record._id}
+        />
+    );
 };
 
 export default DeviceTypeTable;

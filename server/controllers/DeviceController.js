@@ -16,21 +16,22 @@ exports.addNewDevices = async (req, res) => {
         const checkVoucherId = validation.addSlashes(voucherId);
         const voucher = await voucherService.findVoucherById(checkVoucherId);
 
+        console.log(devicesData);
         for (const deviceData of devicesData) {
             const serialNumber = escape(deviceData.serialNumber);
-            const type = escape(deviceData.type);
+            const deviceTypeId = escape(deviceData.deviceTypeId);
             const voucherId = escape(deviceData.voucherId);
             const unitId = escape(deviceData.unitId);
-
-            if (!serialNumber || !type || !voucherId || !unitId) {
+            console.log(deviceData);
+            if (!serialNumber || !deviceTypeId || !voucherId || !unitId) {
                 return res.status(400).json({ message: "נא למלא את כל השדות" });
             }
             const checkSerialNumber = validation.addSlashes(serialNumber);
-            const checkType = validation.addSlashes(type);
+            const checkDeviceTypeId = validation.addSlashes(deviceTypeId);
             const checkUnitId = validation.addSlashes(unitId);
             const newDevice = await deviceService.addNewDevice({
                 checkSerialNumber,
-                checkType,
+                checkDeviceTypeId,
                 checkUnitId,
                 checkVoucherId,
                 projectId: voucher.project._id,
@@ -162,16 +163,20 @@ exports.changeStatus = async (req, res) => {
     }
 };
 
-exports.updateDetails = async (req, res) => {
+exports.updateNote = async (req, res) => {
     const deviceId = escape(req.params.id);
-    const serialNumber = escape(req.body.serialNumber);
-    const type = escape(req.body.type);
+    const notes = escape(req.body.notes);
     let deviceFound;
     try {
         const checkDeviceId = validation.addSlashes(deviceId);
-        const checkSerialNumber = validation.addSlashes(serialNumber);
-        const checkType = validation.addSlashes(type);
-    } catch (err) { }
+        const checkNote = validation.addSlashes(notes);
+        deviceFound = await deviceService.updateDeviceNote({ checkDeviceId, checkNote });
+        if (!deviceFound) return res.status(404).json({ message: "לא נמצא מכשיר לעידכון" });
+
+        return res.status(201).json({ message: "המכשיר עודכן בהצלחה" });
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
+    }
 };
 
 exports.getAllDevices = async (req, res) => {
@@ -215,20 +220,19 @@ exports.deleteDevice = async (req, res) => {
     try {
         const checkDeviceId = validation.addSlashes(deviceId);
         device = await deviceService.findDeviceById(checkDeviceId);
-        if (!device) return res.status(401).json({ messgae: "לא נמצא מכשיר !" })
+        if (!device) return res.status(401).json({ messgae: "לא נמצא מכשיר !" });
         if (device.voucherOut) return res.status(400).json({ message: "לא ניתן למחוק משוברים מכשיר שיצא" });
 
-        voucher = await voucherService.findVoucherById(device.voucherIn)
-        if (!voucher) return res.status(401).json({ messgae: "לא נמצא שובר !" })
+        voucher = await voucherService.findVoucherById(device.voucherIn);
+        if (!voucher) return res.status(401).json({ messgae: "לא נמצא שובר !" });
         else {
-            voucher.deviceList = voucher.deviceList.filter(device => device.id != checkDeviceId);
+            voucher.deviceList = voucher.deviceList.filter((device) => device.id != checkDeviceId);
             voucher.save();
         }
 
         await deviceService.deleteDeviceById(checkDeviceId);
-        return res.status(201).json({message:"נמחק בהצלחה"})
+        return res.status(201).json({ message: "נמחק בהצלחה" });
     } catch (err) {
         return res.status(500).json({ message: err.message });
-
     }
-}
+};

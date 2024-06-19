@@ -6,25 +6,38 @@ import { checkDuplicationInForm } from "../../Utils/formUtils";
 
 const DeviceTypeForm = ({ onCancel, formValues = null, isEdit }) => {
     const { isLoading, data: deviceTypes } = useQuery({
-        queryKey: ["units"],
+        queryKey: ["deviceTypes"],
         queryFn: getAllDeviceTypes,
     });
     const queryClient = useQueryClient();
     const handleSave = (data) => {
         if (!isEdit) {
-            let newDeviceType = { deviceName: data.deviceName };
-            addDeviceTypeMutation.mutate(newDeviceType);
+            let newDevice = data;
+            newDevice.isClassified = newDevice.isClassified == "true";
+            addDeviceTypeMutation.mutate(newDevice);
         } else {
             let editDeviceType = {
                 id: formValues.id,
                 deviceName: data.deviceName,
+                isClassified: data.isClassified == "true",
             };
+            
             alert("edit: " + JSON.stringify(editDeviceType));
         }
     };
-    const validateDeviceTypeDuplication = (value) => {
+    const validateDeviceTypeNameDuplication = (value) => {
         if (value) {
-            if (checkDuplicationInForm(deviceTypes, "deviceName", value, isEdit, formValues?.id)) return "שם סוג משכיר כבר קיים במערכת.";
+            if (checkDuplicationInForm(deviceTypes, "deviceName", value, isEdit, formValues?.id)) {
+                return "שם סוג משכיר כבר קיים במערכת.";
+            }
+        }
+        return true;
+    };
+    const validateDeviceTypeCatalogNumberDuplication = (value) => {
+        if (value) {
+            if (checkDuplicationInForm(deviceTypes, "catalogNumber", value, isEdit, formValues?.id)) {
+                return 'מק"ט כבר קיים במערכת.';
+            }
         }
         return true;
     };
@@ -48,21 +61,48 @@ const DeviceTypeForm = ({ onCancel, formValues = null, isEdit }) => {
                     value: 2,
                     message: "שדה זה חייב לפחות 2 תווים",
                 },
-                validate: validateDeviceTypeDuplication,
+                validate: validateDeviceTypeNameDuplication,
             },
         },
+        {
+            label: 'מק"ט',
+            name: "catalogNumber",
+            type: "text",
+            placeholder: "לדוגמא 12344-555",
+            validators: {
+                required: "יש למלא שדה זה.",
+                minLength: {
+                    value: 2,
+                    message: "שדה זה חייב לפחות 2 תווים",
+                },
+                pattern: {
+                    value: /^[0-9-]*$/,
+                    message: 'מק"ט יכול להכיל רק מספרים ומקפים',
+                },
+                validate: validateDeviceTypeCatalogNumberDuplication,
+            },
+        },
+        {
+            label: "סוג מכשיר",
+            name: "isClassified",
+            type: "buttonRadio",
+            validators: {
+                required: "יש למלא שדה זה.",
+            },
+            options: [
+                { value: "true", text: "מסווג" },
+                { value: "false", text: 'צל"ם' },
+            ],
+        },
     ];
-
     return (
-        <>
-            <CustomForm
-                inputs={fields}
-                onSubmit={handleSave}
-                onCancel={onCancel}
-                values={formValues}
-                isLoading={isLoading || addDeviceTypeMutation.isLoading}
-            ></CustomForm>
-        </>
+        <CustomForm
+            inputs={fields}
+            onSubmit={handleSave}
+            onCancel={onCancel}
+            values={formValues}
+            isLoading={isLoading || addDeviceTypeMutation.isLoading}
+        ></CustomForm>
     );
 };
 

@@ -18,7 +18,7 @@ const ControllerButtonRadio = (props) => {
                         value={value}
                         onChange={(event) => {
                             onChange(event);
-                            onFieldChange(event.currentTarget.value);
+                            onFieldChange && onFieldChange(event.currentTarget.value);
                         }}
                         label={label}
                     >
@@ -43,8 +43,5 @@ ControllerButtonRadio.propTypes = {
     options: PropTypes.arrayOf(object),
     onFieldChange: PropTypes.func,
     disabled: PropTypes.bool,
-};
-ControllerButtonRadio.defaultProps = {
-    onFieldChange: () => {},
 };
 export default ControllerButtonRadio;

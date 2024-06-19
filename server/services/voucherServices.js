@@ -2,7 +2,6 @@ const Project = require("../models/Project");
 const Voucher = require("../models/Voucher");
 
 exports.addVoucher = async (request) => {
-
     return new Voucher({
         voucherNumber: request.voucherNumber,
         unit: request.checkUnitName,
@@ -16,16 +15,15 @@ exports.addVoucher = async (request) => {
 exports.showVoucherList = async (projectId) => await Voucher.find({ project: projectId }).populate("deviceList").populate("Units");
 exports.findVoucherById = async (checkVoucherId) => {
     return await Voucher.findById(checkVoucherId)
-        .populate("deviceList")
+        .populate("unit")
+        .populate("project")
         .populate({
-            path: "project",
+            path: "deviceList",
             populate: {
-                path: "vouchersList",
-                model: "Voucher",
+                path: "deviceTypeId",
+                model: "DeviceType",
             },
         });
 };
 
 exports.deleteVoucher = async (checkVoucherId) => await Voucher.findByIdAndDelete(checkVoucherId);
-
-

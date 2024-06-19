@@ -11,7 +11,7 @@ import { validatePassword } from "../../../Utils/passwordAPI";
 import Loader from "../../../Components/Layout/Loader";
 const { Text } = Typography;
 
-const CustomForm = ({ inputs, onSubmit, onCancel, values, hideActions, children, isLoading, isPasswordRequired }) => {
+const CustomForm = ({ inputs, onSubmit, onCancel, values, children, isLoading, isPasswordRequired }) => {
     const { handleSubmit, reset, control, getValues } = useForm({
         values,
         mode: "onChange",
@@ -68,66 +68,62 @@ const CustomForm = ({ inputs, onSubmit, onCancel, values, hideActions, children,
             {isLoading && <Loader />}
             {!isLoading && (
                 <>
-                    <RenderFields fields={inputs} control={control} />
+                    {inputs && <RenderFields fields={inputs} control={control} />}
                     <Divider variant="fullWidth" sx={{ paddingTop: 2 }} />
+                    {children}
                 </>
             )}
             <DialogActions>
-                {hideActions == false && (
-                    <>
-                        <Button
-                            loading={isLoading}
-                            btncolor="dark"
-                            onClick={handleCancel}
-                            sx={{
-                                marginX: {
-                                    xs: "10px",
-                                },
-                            }}
-                        >
-                            בטל
+                <>
+                    <Button
+                        loading={isLoading}
+                        btncolor="dark"
+                        onClick={handleCancel}
+                        sx={{
+                            marginX: {
+                                xs: "10px",
+                            },
+                        }}
+                    >
+                        בטל
+                    </Button>
+                    <Popconfirm
+                        open={open}
+                        title={
+                            <>
+                                <Input.Password
+                                    placeholder="סיסמה"
+                                    status={validPassword == false && "error"}
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                />
+                                {validPassword == false && <Text type="danger">סיסמת מנהל לא נכונה.</Text>}
+                            </>
+                        }
+                        onConfirm={handlePasswordSubmit}
+                        onCancel={handlePopupCancel}
+                        okText="אישור"
+                        cancelText="בטל"
+                    >
+                        <Button loading={isLoading} htmlType="submit" type="primary">
+                            שמור
                         </Button>
-                        <Popconfirm
-                            open={open}
-                            title={
-                                <>
-                                    <Input.Password
-                                        placeholder="סיסמה"
-                                        status={validPassword == false && "error"}
-                                        value={password}
-                                        onChange={(e) => setPassword(e.target.value)}
-                                    />
-                                    {validPassword == false && <Text type="danger">סיסמת מנהל לא נכונה.</Text>}
-                                </>
-                            }
-                            onConfirm={handlePasswordSubmit}
-                            onCancel={handlePopupCancel}
-                            okText="אישור"
-                            cancelText="בטל"
-                        >
-                            <Button loading={isLoading} htmlType="submit" type="primary">
-                                שמור
-                            </Button>
-                        </Popconfirm>
-                    </>
-                )}
-                {hideActions == false && children && { children }}
+                    </Popconfirm>
+                </>
             </DialogActions>
         </form>
     );
 };
 CustomForm.propTypes = {
-    inputs: PropTypes.array.isRequired,
+    inputs: PropTypes.array,
     onSubmit: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired,
     values: PropTypes.object,
-    hideActions: PropTypes.bool,
-    children: PropTypes.node,
+    children: PropTypes.element,
     isLoading: PropTypes.bool,
     isPasswordRequired: PropTypes.bool,
 };
 CustomForm.defaultProps = {
-    hideActions: false,
     isPasswordRequired: false,
 };
 export default CustomForm;

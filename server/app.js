@@ -1,4 +1,4 @@
-require("dotenv").config();
+const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const express = require("express");
 const fs = require("fs");
@@ -17,15 +17,25 @@ const swaggerUi = require("swagger-ui-express");
 const customCss = fs.readFileSync(process.cwd() + "/documentation/swagger.css", "utf8");
 
 const swaggerDocument = require("./documentation/openapi.json");
+const { dataFix } = require("./loadScripts");
 
+console.log(`Comparison: ${process.env.NODE_ENV === "production"}`);
+
+if (process.env.NODE_ENV === "production") {
+    dotenv.config({ path: ".env.production" });
+} else {
+    dotenv.config();
+}
 // mongoose.set("strictQuery", true);
 const app = express();
-
+console.log(process.env.URI);
 mongoose
-    .connect("mongodb://mongo-db/BazapProduction")
-    .then(() => {
+    .connect(process.env.URI)
+    .then(async () => {
         console.log("Connected to DataBase");
         passwordController.checkPasswordsExistence();
+        // await load.run(); // Run the load scripts after successful database connection
+        await dataFix();
     })
     .catch((err) => console.log(err.message));
 

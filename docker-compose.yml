@@ -1,39 +1,51 @@
 version: "3"
 
 services:
-  frontend: 
-    build: ./bazap-ui
-    container_name: bazap-ui
-    ports: 
-      - "5173:5173"
-    stdin_open: true
-    tty: true
-    depends_on:
-      - backend
-    networks:
-      - mern-network
+    frontend:
+        build: ./bazap-ui
+        container_name: bazap-ui
+        image: frontend
+        ports:
+            - "5173:5173"
+        stdin_open: true
+        tty: true
+        depends_on:
+            - backend
+        networks:
+            - mern-network
 
-  backend:
-    build: ./server
-    container_name: bazap-api
-    restart: always
-    ports: 
-      - "5000:5000"
-    depends_on:
-      - database
-    networks:
-      - mern-network
+    backend:
+        build: ./server
+        container_name: backend
+        image: backend
+        restart: always
+        ports:
+            - "5000:5000"
+        depends_on:
+            - database
+        networks:
+            - mern-network
 
-  database:
-    image: mongo
-    container_name: mongo-db
-    ports: 
-      - "27017:27017"
-    volumes:
-      - C:\Users\AvielYakov\mongo-backup:\data\db
-    networks:
-      - mern-network
+    database:
+        container_name: mongo-db
+        image: mongo
+        ports:
+            - "27017:27017"
+        volumes:
+            - C:\mongo:\data\db
+        networks:
+            - mern-network
 
-networks: 
-  mern-network:
-    driver: bridge  
+    dotnet:
+        build: ./voucherExcel
+        container_name: voucherexcel
+        image: dotnet
+        ports:
+            - "5257:5257"
+        networks:
+            - mern-network
+
+networks:
+    mern-network:
+        name: mern-network
+        driver: bridge

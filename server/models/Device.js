@@ -3,19 +3,22 @@ const { DeviceStatus } = require("../constants/DeviceStatus");
 const Schema = mongoose.Schema;
 
 const deviceSchema = new Schema({
-    catalogNumber: {
-        type: String,
-        trim: true,
-    },
     serialNumber: {
         type: String,
         trim: true,
         required: true,
     },
+    deviceName: {
+        type: String,
+    },
+    deviceTypeId: {
+        type: Schema.Types.ObjectId,
+        ref: "DeviceType",
+        required: true,
+    },
     deviceType: {
         type: String,
         trim: true,
-        required: true,
     },
     unit: {
         type: Schema.Types.ObjectId,

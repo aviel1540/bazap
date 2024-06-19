@@ -1,35 +1,23 @@
 import axios from "axios";
-import { replaceApostropheInObject } from "./utils";
+import { errorHandle, responseHandle } from "./axiosUtils";
+const be_URL = import.meta.env.VITE_BE_API_URL;
 
-const unitAPI = axios.create({ baseURL: "http://localhost:5000/api/units" });
+const unitAPI = axios.create({ baseURL: `http://${be_URL}:5000/api/units` });
+unitAPI.interceptors.response.use(responseHandle, errorHandle);
 
 export const getAllUnits = async () => {
-    const response = await unitAPI.get("");
-    return response.data;
+    return await unitAPI.get("");
 };
 
 export const addUnit = async (unit) => {
-    try {
-        unit = replaceApostropheInObject(unit, "unitsName");
-        return await unitAPI.post("add-new-unit", unit);
-    } catch (error) {
-        throw new Error(error.response.data.message);
-    }
+    return await unitAPI.post("add-new-unit", unit);
 };
 
 export const deleteUnit = async (deleteUnit) => {
-    try {
-        return await unitAPI.delete(`delete/${deleteUnit}`);
-    } catch (error) {
-        throw new Error(error.response.data.message);
-    }
+    return await unitAPI.delete(`delete/${deleteUnit}`);
 };
 
 export const updateUnit = async (unit) => {
-    try {
-        const { id } = unit;
-        return await unitAPI.patch(`/update-unit/${id}`, unit);
-    } catch (error) {
-        throw new Error(error.response.data.message);
-    }
+    const { id } = unit;
+    return await unitAPI.patch(`/update-unit/${id}`, unit);
 };

@@ -1,32 +1,31 @@
-import AddIcon from "@mui/icons-material/Add";
 import CustomCard from "../../Components/UI/CustomCard";
-import LightButton from "../../Components/UI/LightButton";
 import { useCustomModal } from "../../Components/store/CustomModalContext";
 import TechnicianForm from "./TechnicianForm";
 import TechnicianTable from "./TechnicianTable";
+import { PlusOutlined } from "@ant-design/icons";
+import CustomButton from "../../Components/UI/CustomButton";
 
 const Technician = () => {
     const { onShow, onHide } = useCustomModal();
 
-    const showModal = (event, data) => {
-        const isEdit = data != undefined;
+    const showModal = () => {
         onShow({
             title: "טכנאי חדש",
             name: "technician",
-            body: <TechnicianForm onCancel={() => onHide("technician")} formValues={data} isEdit={isEdit} />,
+            body: <TechnicianForm onCancel={() => onHide("technician")} />,
         });
     };
 
     return (
         <CustomCard
             action={
-                <LightButton variant="contained" btncolor="primary" onClick={showModal} size="small" icon={<AddIcon />}>
+                <CustomButton type="light-primary" onClick={showModal} iconPosition="end" icon={<PlusOutlined />}>
                     הוסף טכנאי
-                </LightButton>
+                </CustomButton>
             }
             title="טכנאים"
         >
-            <TechnicianTable onEdit={showModal} />
+            <TechnicianTable />
         </CustomCard>
     );
 };

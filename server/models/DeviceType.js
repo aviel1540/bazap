@@ -7,6 +7,15 @@ const deviceTypeSchema = new Schema({
         trim: true,
         required: true,
     },
+    catalogNumber: {
+        type: String,
+        trim: true,
+        required: true,
+    },
+    isClassified: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const DeviceType = mongoose.model("DeviceType", deviceTypeSchema);

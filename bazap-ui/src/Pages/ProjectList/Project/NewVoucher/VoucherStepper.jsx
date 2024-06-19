@@ -67,6 +67,7 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
             const { devicesIds } = getValues();
             const deviesToExcel = fixedOrReturnedDevicesInProject.filter((dev) => devicesIds.includes(dev._id));
             createProjectReport(deviesToExcel, "שובר_ניפוק_" + dateTostring(Date.now()));
+            alert("לקרוא לפונקציה שמייצרת שובר");
             onCancel();
         },
     });
@@ -83,7 +84,7 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
     const handleBack = () => {
         setActiveStep((prevStep) => prevStep - 1);
     };
-    const isLoading = addVoucherOutMutation.isLoading || addVoucherMutation.isLoading;
+    const isLoading = addVoucherOutMutation.isLoading || addVoucherMutation.isLoading || isLaodingDevicesInProject;
     return (
         <FormProvider {...methods}>
             <form onSubmit={handleSubmit(handleNext)}>

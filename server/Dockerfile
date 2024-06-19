@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package.json .
 
 # Install Node.js dependencies
-RUN npm install
+RUN npm install -force
 
 # Bundle app source
 COPY . .
@@ -16,4 +16,4 @@ COPY . .
 EXPOSE 5000
 
 # Start MongoDB and Node.js
-CMD ["npm", "start"]
+CMD ["npm", "run", "start:prod"]

@@ -12,7 +12,7 @@ export const CustomModalProvider = ({ children }) => {
     const isSm = useMediaQuery((theme) => theme.breakpoints.down("md"));
     const isMd = useMediaQuery((theme) => theme.breakpoints.down("lg"));
     const isLg = useMediaQuery((theme) => theme.breakpoints.down("xl"));
-    
+
     const modalWidth = isXs ? "90%" : isSm ? "80%" : isMd ? "70%" : isLg ? "60%" : "50%";
 
     const onShow = (modalOptions) => {
@@ -69,10 +69,12 @@ export const CustomModalProvider = ({ children }) => {
                     key={mState.key}
                     open={mState.show}
                     title={mState.options.title}
-                    onCancel={() => onHide(mState.name)}
                     width={modalWidth}
                     centered
                     footer={null}
+                    onCancel={() => onHide(mState.name)}
+                    closable={true}
+                    maskClosable={false}
                 >
                     <div key={mState.key}>{mState.options.body}</div>
                 </Modal>

@@ -1,14 +1,14 @@
-import AddIcon from "@mui/icons-material/Add";
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
 import { useQuery } from "@tanstack/react-query";
 import Loader from "../../Components/Layout/Loader";
 import CustomCard from "../../Components/UI/CustomCard";
 import EmptyData from "../../Components/UI/EmptyData";
-import LightButton from "../../Components/UI/LightButton";
 import { useCustomModal } from "../../Components/store/CustomModalContext";
 import { getAllProjects } from "../../Utils/projectAPI";
 import ProjectForm from "./ProjectForm";
 import ProjectItem from "./ProjectItem";
+import CustomButton from "../../Components/UI/CustomButton";
+import { PlusOutlined } from "@ant-design/icons";
 
 const ProjectsList = () => {
     const { onShow, onHide } = useCustomModal();
@@ -30,15 +30,15 @@ const ProjectsList = () => {
         <CustomCard
             title="פרוייקטים"
             action={
-                <LightButton variant="contained" btncolor="primary" onClick={showModal} size="small" icon={<AddIcon />}>
+                <CustomButton type="light-primary" onClick={showModal} iconPosition="end" icon={<PlusOutlined />}>
                     הוסף פרוייקט
-                </LightButton>
+                </CustomButton>
             }
         >
             <Grid container spacing={2}>
                 {projects.length == 0 && <EmptyData label="אין פרוייקטים להצגה" />}
                 {projects.map((project) => (
-                    <ProjectItem key={project._id} projectData={project} />
+                    <ProjectItem key={project._id} project={project} />
                 ))}
             </Grid>
         </CustomCard>

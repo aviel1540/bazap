@@ -1,22 +1,32 @@
-import { Chip } from "@mui/material";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import propTypes from "prop-types";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Loader from "../../../Components/Layout/Loader";
 import CustomCard from "../../../Components/UI/CustomCard";
-import CustomTable from "../../../Components/UI/CustomTable/CustomTable";
-import TableActions from "../../../Components/UI/CustomTable/TableActions";
 import EmptyData from "../../../Components/UI/EmptyData";
 import { useProject } from "../../../Components/store/ProjectContext";
 import { useUserAlert } from "../../../Components/store/UserAlertContext";
-import { deleteVoucher } from "../../../Utils/voucherApi";
+import { deleteVoucher, exportVoucherToExcel, getAllVouchers } from "../../../Utils/voucherApi";
+import { Table, Tag, Typography } from "antd";
+import DeleteIcon from "@mui/icons-material/Delete";
+import CustomDropDown from "../../../Components/UI/CustomDropDown";
+const { Text } = Typography;
 
-const VoucherTable = ({ vouchers, isLoading }) => {
-    const { onConfirm } = useUserAlert();
-
+import IosShareIcon from "@mui/icons-material/IosShare";
+import { getAllUnits } from "../../../Utils/unitAPI";
+const VoucherTable = () => {
+    const { data: units, isLoading: isUnitsLoading } = useQuery({
+        queryKey: ["units"],
+        queryFn: getAllUnits,
+    });
     const { projectId } = useProject();
+    const { isLoading, data: vouchers } = useQuery({
+        queryKey: ["vouchers", projectId],
+        queryFn: getAllVouchers,
+        enabled: projectId !== null,
+    });
+    const { onConfirm } = useUserAlert();
     const queryClient = useQueryClient();
-    const onDeleteDeviceTypeHandler = (id, handleClose) => {
-        handleClose && handleClose(id);
+
+    const onDeleteDeviceTypeHandler = (id) => {
         const config = {
             title: "האם אתה בטוח מעוניין למחוק את השובר?",
             okHandler: () => {
@@ -25,51 +35,72 @@ const VoucherTable = ({ vouchers, isLoading }) => {
         };
         onConfirm(config);
     };
-    const actions = [
+    const menuActions = [
         {
-            title: "מחק",
-            handler: (rowId, handleClose) => {
-                onDeleteDeviceTypeHandler(rowId, handleClose);
+            key: "exportVoucher",
+            label: "יצא לשובר",
+            icon: <IosShareIcon />,
+            handler: (data) => {
+                exportVoucherMutation.mutate(data._id);
+            },
+        },
+        {
+            key: "deleteVoucher",
+            danger: true,
+            label: "מחק",
+            icon: <DeleteIcon />,
+            handler: (data) => {
+                onDeleteDeviceTypeHandler(data._id);
             },
         },
     ];
-    const columns = [
+    const columns = () => [
         {
-            name: "מספר שובר",
-            sortable: true,
-            selector: (row) => row.voucherNumber,
+            title: "מספר שובר",
+            dataIndex: "voucherNumber",
+            key: "voucherNumber",
+            render: (text) => <Text strong>{text}</Text>,
         },
         {
-            name: "יחידה",
-            sortable: true,
-            selector: (row) => row.unit?.unitsName,
+            title: "יחידה",
+            key: "voucherNumber",
+            filters: !isUnitsLoading
+                ? units.map((unit) => {
+                      return { text: unit.unitsName, value: unit._id };
+                  })
+                : [],
+            onFilter: (value, record) => record.unit._id == value,
+            render: ({ unit }) => unit.unitsName,
         },
         {
-            name: "סוג שובר",
-            sortable: true,
-            selector: (row) => row.type,
-            cell: (row) => {
-                const label = row.type ? "קבלה" : "ניפוק";
-                const color = row.type ? "warning" : "success";
-                return <Chip label={label} color={color} />;
+            title: "סוג שובר",
+            key: "type",
+            render: ({ type }) => {
+                const label = type ? "קבלה" : "ניפוק";
+                const color = type ? "#ffc700" : "#50cd89";
+                return <Tag color={color}>{label}</Tag>;
             },
         },
         {
-            name: 'נופק ע"י',
-            selector: (row) => row.arrivedBy,
+            title: 'נופק ע"י',
+            dataIndex: "arrivedBy",
+            key: "arrivedBy",
         },
         {
-            name: 'התקבל ע"י',
-            selector: (row) => row.receivedBy,
+            title: 'התקבל ע"י',
+            dataIndex: "receivedBy",
+            key: "receivedBy",
         },
         {
-            name: 'סה"כ מכשירים',
-            selector: (row) => row.deviceList.length,
+            title: 'סה"כ מכשירים',
+            render: ({ deviceList }) => deviceList.length,
+            key: "deviceList",
         },
         {
-            name: "פעולות",
-            center: true,
-            cell: (row) => <TableActions rowId={row._id} actions={actions} />,
+            title: "פעולות",
+            key: "menu",
+            align: "center",
+            render: (_, row) => <CustomDropDown key={row._id} actions={menuActions} data={row} />,
         },
     ];
     const deleteDeviceMutation = useMutation(deleteVoucher, {
@@ -78,21 +109,22 @@ const VoucherTable = ({ vouchers, isLoading }) => {
             queryClient.invalidateQueries({ queryKey: ["vouchers", projectId] });
         },
     });
+    const exportVoucherMutation = useMutation(exportVoucherToExcel, {});
 
-    if (isLoading) {
+    if (isLoading || isUnitsLoading) {
         return <Loader />;
     }
 
     return (
         <CustomCard title="שוברים">
-            {vouchers.length > 0 ? <CustomTable columns={columns} data={vouchers} /> : <EmptyData label="אין שוברים להצגה" />}
+            <Table
+                locale={{ emptyText: <EmptyData label="אין שוברים להצגה" /> }}
+                dataSource={vouchers}
+                columns={columns()}
+                rowKey={(record) => record._id}
+            />
         </CustomCard>
     );
-};
-
-VoucherTable.propTypes = {
-    vouchers: propTypes.array.isRequired,
-    isLoading: propTypes.bool.isRequired,
 };
 
 export default VoucherTable;

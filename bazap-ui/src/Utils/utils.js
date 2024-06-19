@@ -21,8 +21,34 @@ export const replaceApostropheInObject = (obj, keys) => {
 
     return obj;
 };
+// Helper function to recursively process an object or array
+export const processObjectOrArray = (obj) => {
+    if (typeof obj === "string") {
+        return replaceSpecialCharacters(obj);
+    } else if (Array.isArray(obj)) {
+        return obj.map((item) => processObjectOrArray(item));
+    } else if (typeof obj === "object" && obj !== null) {
+        const newObj = {};
+        for (const key in obj) {
+            if (Object.prototype.hasOwnProperty.call(obj, key)) {
+                newObj[key] = processObjectOrArray(obj[key]);
+            }
+        }
+        return newObj;
+    }
+    return obj;
+};
+
 export const replaceApostrophe = (value) => {
     if (value) return value.replace(/&#39;/g, "'");
+    return value;
+};
+
+export const replaceSpecialCharacters = (value) => {
+    if (value) {
+        value = value.replace(/&quot;/g, '"');
+        value = value.replace(/&#39;/g, "'");
+    }
     return value;
 };
 
@@ -61,3 +87,6 @@ export const addKeysToArray = (data, key, fromKey) => {
 
     return data;
 };
+
+
+export const ReturnedStatuses = [DeviceStatuses.DEFECTIVE_RETURN, DeviceStatuses.FIXED_RETURN];

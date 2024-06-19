@@ -1,34 +1,19 @@
-import DeleteIcon from "@mui/icons-material/Delete";
-import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import { Box } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { Space } from "antd";
 import { useEffect, useState } from "react";
 import { getAllDevicesInProject } from "../../../../Utils/deviceApi";
-import { ALL, DeviceStatuses, FIXED_OR_DEFFECTIVE, RETURNED, replaceApostrophe } from "../../../../Utils/utils";
+import { ALL, DeviceStatuses, FIXED_OR_DEFFECTIVE, RETURNED, ReturnedStatuses, replaceApostrophe } from "../../../../Utils/utils";
 import { useCustomModal } from "../../../../Components/store/CustomModalContext";
 import { useProject } from "../../../../Components/store/ProjectContext";
 import CustomCard from "../../../../Components/UI/CustomCard";
-import CustomDropDown from "../../../../Components/UI/CustomDropDown";
-import LightButton from "../../../../Components/UI/LightButton";
 import SearchInput from "../../../../Components/UI/SearchInput";
 import VoucherStepper from "../NewVoucher/VoucherStepper";
 import StatusForm from "../StatusForm";
 import DevicesInProjectTable from "./DevicesInProjectTable";
 import StatusFilter from "./StatusFilter";
-
-const menuActions = [
-    {
-        key: "1",
-        danger: true,
-        label: "מחק",
-        icon: <DeleteIcon />,
-        handler: (data) => {
-            alert(data);
-        },
-    },
-];
-const ReturnedStatuses = [DeviceStatuses.DEFECTIVE_RETURN, DeviceStatuses.FIXED_RETURN];
+import CustomButton from "../../../../Components/UI/CustomButton";
+import { SwapOutlined } from "@ant-design/icons";
 
 const ArrivedDevices = () => {
     const { projectId } = useProject();
@@ -150,13 +135,6 @@ const ArrivedDevices = () => {
             body: <VoucherStepper onCancel={() => onHide("voucherStepper")} projectId={projectId} formDefaultValues={formDefaultValues} />,
         });
     };
-
-    const columns = {
-        title: "פעולות",
-        key: "menu",
-        render: (_, row) => <CustomDropDown actions={menuActions} data={row} />,
-    };
-
     const onSelectChange = (newSelectedRowKeys) => {
         setSelectedRowKeys(newSelectedRowKeys);
     };
@@ -169,30 +147,18 @@ const ArrivedDevices = () => {
         <CustomCard
             title='מכשירים בבצ"פ'
             action={
-                <>
-                    {selectedStatus !== FIXED_OR_DEFFECTIVE && selectedRowKeys.length > 0 && (
-                        <LightButton
-                            variant="contained"
-                            btncolor="info"
-                            onClick={showModalChangeStatus}
-                            icon={<SwapHorizIcon />}
-                            size="small"
-                        >
+                <Space size="small">
+                    {selectedRowKeys.length > 0 && (
+                        <CustomButton type="light-info" onClick={showModalChangeStatus} iconPosition="end" icon={<SwapOutlined />}>
                             שנה סטטוס
-                        </LightButton>
+                        </CustomButton>
                     )}
                     {selectedStatus === FIXED_OR_DEFFECTIVE && selectedRowKeys.length > 0 && (
-                        <LightButton
-                            variant="contained"
-                            btncolor="info"
-                            onClick={showModalCreateVoucher}
-                            icon={<SwapHorizIcon />}
-                            size="small"
-                        >
+                        <CustomButton type="light-success" onClick={showModalCreateVoucher} iconPosition="end" icon={<SwapOutlined />}>
                             צור שובר ניפוק
-                        </LightButton>
+                        </CustomButton>
                     )}
-                </>
+                </Space>
             }
         >
             <Box marginBottom={2}>
@@ -213,7 +179,6 @@ const ArrivedDevices = () => {
                 defaultPageSize={25}
                 handleStatusChange={handleStatusChange}
                 isLoading={isLoading}
-                additionalColumns={columns}
             />
         </CustomCard>
     );

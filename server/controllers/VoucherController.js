@@ -45,17 +45,17 @@ exports.addNewVoucherIn = async (req, res) => {
 
         for (const deviceData of devicesData) {
             const serialNumber = escape(deviceData.serialNumber);
-            const type = escape(deviceData.deviceType);
+            const deviceTypeId = escape(deviceData.deviceTypeId);
 
-            if (!serialNumber || !type) {
+            if (!serialNumber || !deviceTypeId) {
                 return res.status(400).json({ message: "נא למלא את כל השדות" });
             }
             const checkSerialNumber = validation.addSlashes(serialNumber);
-            const checkType = validation.addSlashes(type);
+            const checkDeviceTypeId = validation.addSlashes(deviceTypeId);
             const checkUnit = validation.addSlashes(unit);
             const newDevice = await deviceService.addNewDevice({
                 checkSerialNumber,
-                checkType,
+                checkDeviceTypeId,
                 checkUnitId: checkUnit,
                 checkVoucherId: newVoucher._id,
                 projectId,

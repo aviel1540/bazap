@@ -11,6 +11,8 @@ router.post("/add-new-devices", deviceController.addNewDevices);
 
 router.patch("/update-status/:id", deviceController.changeStatus);
 
+router.patch("/update-note/:id", deviceController.updateNote);
+
 router.post("/return-device/:id", deviceController.returnDevice);
 
 router.get("/get-all-devices-in-lab/:id", deviceController.getAllDevicesInLab);

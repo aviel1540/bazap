@@ -1,47 +1,33 @@
 import axios from "axios";
+import { errorHandle, responseHandle } from "./axiosUtils";
+const be_URL = import.meta.env.VITE_BE_API_URL;
 
-const projectAPI = axios.create({ baseURL: "http://localhost:5000/api/project" });
+const projectAPI = axios.create({ baseURL: `http://${be_URL}:5000/api/project` });
+projectAPI.interceptors.response.use(responseHandle, errorHandle);
 
 export const getAllProjects = async () => {
-    const response = await projectAPI.get("");
-    return response.data;
+    return await projectAPI.get("");
 };
 
 export const getProjectData = async ({ queryKey }) => {
+    // eslint-disable-next-line no-unused-vars
     const [_, id] = queryKey;
-    const response = await projectAPI.get(`/${id}`);
-    return response.data;
+    return await projectAPI.get(`/${id}`);
 };
 
 export const addProject = async (project) => {
-    try {
-        return await projectAPI.post("add-new-project", project);
-    } catch (error) {
-        throw new Error(error.response.data.message);
-    }
+    return await projectAPI.post("add-new-project", project);
 };
 
 export const deleteProject = async (deleteProject) => {
-    try {
-        return await projectAPI.delete("delete-project", { data: { projectId: deleteProject } });
-    } catch (error) {
-        throw new Error(error.response.data.message);
-    }
+    return await projectAPI.delete(`delete-project/${deleteProject}`);
 };
 
 export const updateProject = async (project) => {
-    try {
-        const { id } = project;
-        return await projectAPI.patch(`/update-project/${id}`, project);
-    } catch (error) {
-        throw new Error(error.response.data.message);
-    }
+    const { id } = project;
+    return await projectAPI.patch(`/update-project/${id}`, project);
 };
 
 export const closeProject = async (id) => {
-    try {
-        return await projectAPI.patch(`/close-project/${id}`);
-    } catch (error) {
-        throw new Error(error.response.data.message);
-    }
+    return await projectAPI.patch(`/close-project/${id}`);
 };

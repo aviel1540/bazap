@@ -7,14 +7,7 @@ function RootLayout() {
     return (
         <>
             <PageLayout>
-                <Box
-                    component="main"
-                    sx={{
-                        flexGrow: 1,
-                        height: "100%",
-                        overflow: "auto",
-                    }}
-                >
+                <Box component="main">
                     <Suspense fallback={<Loader />}>
                         <main>
                             <Outlet />

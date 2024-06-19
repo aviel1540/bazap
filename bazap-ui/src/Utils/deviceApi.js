@@ -1,66 +1,43 @@
 import axios from "axios";
+import { errorHandle, responseHandle } from "./axiosUtils";
+const be_URL = import.meta.env.VITE_BE_API_URL;
 
-const deviceAPI = axios.create({ baseURL: "http://localhost:5000/api/device" });
+const deviceAPI = axios.create({ baseURL: `http://${be_URL}:5000/api/device` });
+deviceAPI.interceptors.response.use(responseHandle, errorHandle);
 
 export const addNewDevice = async (device) => {
-    try {
-        return await deviceAPI.post("add-new-device", device);
-    } catch (error) {
-        throw new Error(error.response.data.message);
-    }
+    return await deviceAPI.post("add-new-device", device);
 };
 
 export const getDeviceBySerialNumber = async (serialnumber) => {
-    try {
-        const response = await deviceAPI.get(`find-by-serialNumber/${serialnumber}`);
-        return response.data;
-    } catch (error) {
-        throw new Error(error.response.data.message);
-    }
+    return await deviceAPI.get(`find-by-serialNumber/${serialnumber}`);
 };
 
 export const addNewDevices = async (devices) => {
-    try {
-        return await deviceAPI.post("add-new-devices", devices);
-    } catch (error) {
-        throw new Error(error.response.data.message);
-    }
+    return await deviceAPI.post("add-new-devices", devices);
 };
-``;
 export const getAllDevicesInProject = async ({ queryKey }) => {
-    try {
-        const [_, id] = queryKey;
-        const response = await deviceAPI.get(`get-all-devices-in-project/${id}`);
-        return response.data;
-    } catch (error) {
-        throw new Error(error.response.data.message);
-    }
+    // eslint-disable-next-line no-unused-vars
+    const [_, id] = queryKey;
+    return await deviceAPI.get(`get-all-devices-in-project/${id}`);
 };
 
 export const getAllDevicesInLab = async ({ queryKey }) => {
-    try {
-        const [_, id] = queryKey;
-        const response = await deviceAPI.get(`get-all-devices-in-lab/${id}`);
-        return response.data;
-    } catch (error) {
-        throw new Error(error.response.data.message);
-    }
+    // eslint-disable-next-line no-unused-vars
+    const [_, id] = queryKey;
+    return await deviceAPI.get(`get-all-devices-in-lab/${id}`);
 };
 
 export const getDevices = async () => {
-    try {
-        const response = await deviceAPI.get();
-        return response.data;
-    } catch (error) {
-        throw new Error(error.response.data.message);
-    }
+    return await deviceAPI.get();
 };
 
 export const updateStatus = async (device) => {
-    try {
-        const { id } = device;
-        return await deviceAPI.patch(`/update-status/${id}`, device);
-    } catch (error) {
-        throw new Error(error.response.data.message);
-    }
+    const { id } = device;
+    return await deviceAPI.patch(`/update-status/${id}`, device);
+};
+
+export const updateNotes = async (device) => {
+    const { id } = device;
+    return await deviceAPI.patch(`/update-note/${id}`, device);
 };

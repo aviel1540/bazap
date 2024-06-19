@@ -68,9 +68,7 @@ exports.updateAdminPassword = async (req, res) => {
 };
 
 exports.validatePassword = async (req, res) => {
-    console.log(req.body);
     const adminPass = escape(req.body.password);
-    console.log(adminPass);
     let password;
     try {
         if (!adminPass) {
