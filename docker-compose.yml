@@ -17,6 +17,9 @@ services:
     backend:
         build: ./server
         container_name: backend
+        environment:
+            URI: mongodb://mongo-db:27017/bazap
+            PORT: 5000
         image: backend
         restart: always
         ports:

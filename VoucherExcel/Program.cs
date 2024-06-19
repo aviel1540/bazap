@@ -31,10 +31,10 @@ app.MapControllers();
 Console.WriteLine("********************************* API URL *********************************");
 Console.WriteLine("http://localhost:5257/swagger/index.html");
 Console.WriteLine("********************************* API URL *********************************");
-app.Run("http://0.0.0.0:5257"); // Ensure the application listens on 0.0.0.0
-
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
 	app.Run();
+} else {
+	app.Run("http://0.0.0.0:5257");
 }
