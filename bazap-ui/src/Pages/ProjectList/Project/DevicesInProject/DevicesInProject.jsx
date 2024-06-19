@@ -12,7 +12,7 @@ import VoucherStepper from "../NewVoucher/VoucherStepper";
 import StatusForm from "../StatusForm";
 import DevicesInProjectTable from "./DevicesInProjectTable";
 import StatusFilter from "./StatusFilter";
-import CustomButton from "../../../../Components/UI/CustomButton/CustomButton";
+import CustomButton from "../../../../Components/UI/CustomButton";
 import { SwapOutlined } from "@ant-design/icons";
 
 const ArrivedDevices = () => {

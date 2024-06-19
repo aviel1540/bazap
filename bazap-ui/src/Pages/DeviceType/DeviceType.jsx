@@ -2,7 +2,7 @@ import CustomCard from "../../Components/UI/CustomCard";
 import { useCustomModal } from "../../Components/store/CustomModalContext";
 import DeviceTypeForm from "./DeviceTypeForm";
 import DeviceTypeTable from "./DeviceTypeTable";
-import CustomButton from "../../Components/UI/CustomButton/CustomButton";
+import CustomButton from "../../Components/UI/CustomButton";
 import { PlusOutlined } from "@ant-design/icons";
 
 const DeviceType = () => {

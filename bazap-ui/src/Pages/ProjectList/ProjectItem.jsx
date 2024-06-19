@@ -3,9 +3,9 @@ import Grid from "@mui/material/Unstable_Grid2";
 import propTypes from "prop-types";
 import { Link } from "react-router-dom";
 import CustomCard from "../../Components/UI/CustomCard";
-import CustomInfoLabel from "../../Components/UI/CustomForm/CustomInfoLabel";
 import { DeviceStatuses, dateTostring } from "../../Utils/utils";
 import ProjectChart from "./ProjectChart";
+import CustomInfoLabel from "../../Components/UI/CustomInfoLabel";
 import { Badge } from "antd";
 const ProjectItem = ({ project }) => {
     const { projectName, startDate, _id: id } = project;

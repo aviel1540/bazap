@@ -18,13 +18,15 @@ exports.getAllDeviceTypes = async (req, res) => {
 exports.addNewDeviceType = async (req, res) => {
     let deviceName = escape(req.body.deviceName);
     let catalogNumber = escape(req.body.catalogNumber);
+    let isClassified = escape(req.body.isClassified);
 
     let newDeviceType;
     try {
         if (!deviceName || !catalogNumber) return res.status(400).json({ message: "יש למלא את כל השדות" });
         deviceName = validation.addSlashes(deviceName);
         catalogNumber = validation.addSlashes(catalogNumber);
-        newDeviceType = await deviceTypeServices.addDeviceType({ deviceName, catalogNumber });
+        isClassified = validation.addSlashes(isClassified);
+        newDeviceType = await deviceTypeServices.addDeviceType({ deviceName, catalogNumber, isClassified });
         await newDeviceType.save();
         return res.status(200).json(newDeviceType);
     } catch (err) {

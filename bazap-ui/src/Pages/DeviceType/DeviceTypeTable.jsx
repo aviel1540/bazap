@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Table, Typography } from "antd";
+import { Table, Tag, Typography } from "antd";
 import CustomDropDown from "../../Components/UI/CustomDropDown";
 const { Text } = Typography;
 import Loader from "../../Components/Layout/Loader";
@@ -57,6 +57,15 @@ const DeviceTypeTable = () => {
             dataIndex: "catalogNumber",
             key: "catalogNumber",
             render: (text) => <Text>{text}</Text>,
+        },
+        {
+            title: "סוג שובר",
+            key: "type",
+            render: ({ isClassified }) => {
+                const label = isClassified ? "מסווג" : 'צל"ם';
+                const color = isClassified ? "#50cd89" : "#ffc700";
+                return <Tag color={color}>{label}</Tag>;
+            },
         },
         {
             title: "פעולות",

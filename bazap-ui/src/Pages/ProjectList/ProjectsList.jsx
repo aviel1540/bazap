@@ -7,7 +7,7 @@ import { useCustomModal } from "../../Components/store/CustomModalContext";
 import { getAllProjects } from "../../Utils/projectAPI";
 import ProjectForm from "./ProjectForm";
 import ProjectItem from "./ProjectItem";
-import CustomButton from "../../Components/UI/CustomButton/CustomButton";
+import CustomButton from "../../Components/UI/CustomButton";
 import { PlusOutlined } from "@ant-design/icons";
 
 const ProjectsList = () => {

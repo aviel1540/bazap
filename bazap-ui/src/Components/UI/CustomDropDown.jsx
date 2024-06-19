@@ -25,7 +25,7 @@ const CustomDropDown = ({ actions, data }) => {
     );
 };
 import PropTypes from "prop-types";
-import CustomButton from "./CustomButton/CustomButton";
+import CustomButton from "./CustomButton";
 
 CustomDropDown.propTypes = {
     actions: PropTypes.array.isRequired,
