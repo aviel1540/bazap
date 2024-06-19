@@ -1,4 +1,4 @@
-import { Box, Stack } from "@mui/material";
+import { Stack } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { Badge, Card, Descriptions, Layout, Tag } from "antd";
 import { useEffect } from "react";
@@ -10,6 +10,7 @@ import { useProject } from "../../../Components/store/ProjectContext";
 import ArrivedDevices from "./DevicesInProject/DevicesInProject";
 import ProjectSideBar from "./ProjectSideBar";
 import VoucherTable from "./VoucherTable";
+import { Content } from "antd/es/layout/layout";
 
 const Project = () => {
     const { id } = useParams();
@@ -53,24 +54,33 @@ const Project = () => {
 
     return (
         <Layout>
-            <ProjectSideBar isProjectIsClosed={project.finished} />
-            <Box
+            <ProjectSideBar
+                isProjectIsClosed={project.finished}
                 style={{
-                    overflowY: "scroll",
-                    height: "85vh",
-                    padding: "0px 24px 24px",
+                    position: "fixed",
+                    height: "100vh",
+                    left: 0,
+                    top: 0,
+                    overflow: "auto",
                 }}
-            >
-                <Stack spacing={2}>
-                    <Badge.Ribbon color={project.finished ? "red" : "green"} text={project.finished ? "פרוייקט סגור" : "פרוייקט פתוח"}>
-                        <Card title={`פרוייקט: ${project.projectName}`} bordered={false}>
-                            <Descriptions items={items} />
-                        </Card>
-                    </Badge.Ribbon>
-                    <ArrivedDevices />
-                    <VoucherTable />
-                </Stack>
-            </Box>
+            />
+            <Layout>
+                <Content
+                    style={{
+                        padding: "0px 16px 0px",
+                    }}
+                >
+                    <Stack spacing={2}>
+                        <Badge.Ribbon color={project.finished ? "red" : "green"} text={project.finished ? "פרוייקט סגור" : "פרוייקט פתוח"}>
+                            <Card title={`פרוייקט: ${project.projectName}`} bordered={false}>
+                                <Descriptions items={items} />
+                            </Card>
+                        </Badge.Ribbon>
+                        <ArrivedDevices />
+                        <VoucherTable />
+                    </Stack>
+                </Content>
+            </Layout>
         </Layout>
     );
 };

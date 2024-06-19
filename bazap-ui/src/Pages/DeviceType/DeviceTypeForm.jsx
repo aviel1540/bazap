@@ -21,6 +21,7 @@ const DeviceTypeForm = ({ onCancel, formValues = null, isEdit }) => {
                 deviceName: data.deviceName,
                 isClassified: data.isClassified == "true",
             };
+            
             alert("edit: " + JSON.stringify(editDeviceType));
         }
     };

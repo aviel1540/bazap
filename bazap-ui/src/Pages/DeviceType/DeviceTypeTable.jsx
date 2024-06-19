@@ -6,9 +6,13 @@ import Loader from "../../Components/Layout/Loader";
 import EmptyData from "../../Components/UI/EmptyData";
 import { useUserAlert } from "../../Components/store/UserAlertContext";
 import { deleteDeviceType, getAllDeviceTypes } from "../../Utils/deviceTypeApi";
+import BorderColorIcon from "@mui/icons-material/BorderColor";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useCustomModal } from "../../Components/store/CustomModalContext";
+import DeviceTypeForm from "./DeviceTypeForm";
 
 const DeviceTypeTable = () => {
+    const { onShow, onHide } = useCustomModal();
     const { isLoading, data: deviceTypes } = useQuery({
         queryKey: ["deviceTypes"],
         queryFn: getAllDeviceTypes,
@@ -32,10 +36,36 @@ const DeviceTypeTable = () => {
         };
         onConfirm(config);
     };
+    const showModal = (data) => {
+        onShow({
+            title: "סוג מוצר",
+            name: "deviceType",
+            body: <DeviceTypeForm onCancel={() => onHide("deviceType")} formValues={data} isEdit={true} />,
+        });
+    };
+    const onEditUnitHandler = (id) => {
+        const deviceType = deviceTypes.find((item) => item._id == id);
+        if (deviceType) {
+            showModal({
+                deviceName: deviceType.deviceName,
+                catalogNumber: deviceType.catalogNumber,
+                id: deviceType._id,
+                isClassified: deviceType.isClassified.toString(),
+            });
+        }
+    };
 
     const menuActions = [
         {
             key: "1",
+            label: "ערוך",
+            icon: <BorderColorIcon />,
+            handler: (data) => {
+                onEditUnitHandler(data._id);
+            },
+        },
+        {
+            key: "2",
             label: "מחק",
             danger: true,
             icon: <DeleteIcon />,
@@ -56,7 +86,6 @@ const DeviceTypeTable = () => {
             title: 'מק"ט',
             dataIndex: "catalogNumber",
             key: "catalogNumber",
-            render: (text) => <Text>{text}</Text>,
         },
         {
             title: "סוג שובר",

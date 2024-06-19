@@ -6,21 +6,23 @@ import { Footer } from "antd/es/layout/layout";
 const { Content } = Layout;
 const PageLayout = ({ children }) => {
     return (
-        <Layout style={{minHeight:"100vh"}}>
-            <MainNavigation />
-            <Content
-                style={{
-                    padding: "0px 76px",
-                    margin: "15px 15px",
-                }}
-            >
-                <Breadcrumbs />
-                {children}
-            </Content>
+        <>
+            <Layout>
+                <MainNavigation />
+                <Content
+                    style={{
+                        padding: "0px 76px",
+                        margin: "15px 15px",
+                    }}
+                >
+                    <Breadcrumbs />
+                    {children}
+                </Content>
+            </Layout>
             <Footer style={{ textAlign: "center", position: "sticky", bottom: "0" }}>
-                Ant Design ©{new Date().getFullYear()} Created by Ant UED
+                מוצר זה פותח ע&quot;י ניר קוסן ואביאל יעקב ©{new Date().getFullYear()}
             </Footer>
-        </Layout>
+        </>
     );
 };
 

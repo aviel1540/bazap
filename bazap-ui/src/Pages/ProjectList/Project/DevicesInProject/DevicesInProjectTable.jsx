@@ -7,6 +7,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAllUnits } from "../../../../Utils/unitAPI";
 import { updateNotes } from "../../../../Utils/deviceApi";
 import { useProject } from "../../../../Components/store/ProjectContext";
+// import { SearchOutlined } from "@ant-design/icons";
+
 const { Text } = Typography;
 const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize, isLoading, handleStatusChange }) => {
     const queryClient = useQueryClient();
@@ -58,6 +60,12 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
             render: (text) => <Text strong>{text}</Text>,
         },
         {
+            title: 'מק"ט',
+            key: "deviceTypeId",
+            render: ({ deviceTypeId }) => deviceTypeId.catalogNumber,
+            sorter: (a, b) => a.deviceTypeId.catalogNumber?.length - b.deviceTypeId?.catalogNumber.length,
+        },
+        {
             title: "סטטוס",
             dataIndex: "status",
             key: "status",
@@ -93,16 +101,47 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
             sortDirections: ["descend"],
         },
         {
+            title: "כמות",
+            key: "quantity",
+            sorter: (a, b) => a.deviceTypeId.deviceName?.length - b.deviceTypeId?.deviceName.length,
+            sortDirections: ["descend"],
+            render: () => 1,
+        },
+        {
             title: "הערות",
             dataIndex: "notes",
             key: "notes",
+            width: "30%",
+            // width: "50%",
             render: (notes, record) => (
-                <Input
-                    defaultValue={notes}
-                    disabled={ReturnedStatuses.includes(record.status)}
-                    onChange={(event) => handleNotesChange(event, record._id)}
-                    placeholder="הערות"
-                />
+                <>
+                    <Input
+                        defaultValue={notes}
+                        disabled={ReturnedStatuses.includes(record.status)}
+                        onChange={(event) => handleNotesChange(event, record._id)}
+                        placeholder="הערות"
+                    />
+                    {/* {!record.deviceTypeId.isClassified && (
+                        <Space.Compact>
+                            <InputNumber addonBefore="תקין" min={1} max={10} defaultValue={3} />
+                            <InputNumber addonBefore="מושבת" min={1} max={10} defaultValue={3} />
+                            <Input
+                                defaultValue={notes}
+                                disabled={ReturnedStatuses.includes(record.status)}
+                                onChange={(event) => handleNotesChange(event, record._id)}
+                                placeholder="הערות"
+                            />
+                        </Space.Compact>
+                    )}
+                    {record.deviceTypeId.isClassified && (
+                        <Input
+                            defaultValue={notes}
+                            disabled={ReturnedStatuses.includes(record.status)}
+                            onChange={(event) => handleNotesChange(event, record._id)}
+                            placeholder="הערות"
+                        />
+                    )} */}
+                </>
             ),
         },
     ];

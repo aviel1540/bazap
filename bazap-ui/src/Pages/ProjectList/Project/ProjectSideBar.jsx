@@ -13,7 +13,6 @@ const ProjectSideBar = ({ isProjectIsClosed }) => {
     const {
         token: { colorBgContainer, borderRadius },
     } = theme.useToken();
-
     return (
         <Sider
             style={{
