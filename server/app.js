@@ -18,15 +18,7 @@ const customCss = fs.readFileSync(process.cwd() + "/documentation/swagger.css", 
 
 const swaggerDocument = require("./documentation/openapi.json");
 const { dataFix } = require("./loadScripts");
-
-console.log(`Comparison: ${process.env.NODE_ENV === "production"}`);
-
-if (process.env.NODE_ENV === "production") {
-    dotenv.config({ path: ".env.production" });
-} else {
-    dotenv.config();
-}
-// mongoose.set("strictQuery", true);
+dotenv.config();
 const app = express();
 console.log(process.env.URI);
 mongoose
