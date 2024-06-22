@@ -59,17 +59,23 @@ const VoucherStep2 = () => {
         queryKey: ["deviceTypes"],
         queryFn: getAllDeviceTypes,
     });
-    const deviceTypeOptions = deviceTypes?.map((dType) => {
-        return { text: dType.deviceName, value: dType._id, ...dType };
-    });
-
+    const deviceTypeOptions = deviceTypes
+        ?.filter((deviceType) => deviceType.isClassified)
+        .map((dType) => {
+            return { text: dType.deviceName, value: dType._id, ...dType };
+        });
+    const accessoriesTypes = deviceTypes
+        ?.filter((deviceType) => !deviceType.isClassified)
+        .map((dType) => {
+            return { text: dType.deviceName, value: dType._id, ...dType };
+        });
     useEffect(() => {
         if (isDeliveryVoucher) {
             refetch();
             const selectedIds = getValues().devicesIds;
             setSelectedRows(selectedIds);
         }
-    }, [isDeliveryVoucher]);
+    }, [isDeliveryVoucher, getValues, setSelectedRows, refetch]);
 
     const isLoading = isLoadingDevicesTypes || isLoadingArrivedDevices || (isDeliveryVoucher && isLaodingDevicesInProject);
 
@@ -80,7 +86,7 @@ const VoucherStep2 = () => {
     } = useFieldArray({
         rules: { minLength: 1 },
         control,
-        name: "devices",
+        name: "devicesData",
     });
 
     const {
@@ -98,7 +104,7 @@ const VoucherStep2 = () => {
     };
 
     const handleAddAccessory = () => {
-        addAccessory({ quantity: 1, deviceType: "" });
+        addAccessory({ quantity: 1, deviceType: null });
     };
 
     const getDeviceBySerialNumberMutation = useMutation(getDeviceBySerialNumber);
@@ -108,12 +114,12 @@ const VoucherStep2 = () => {
             delete updatedState[index];
             return updatedState;
         });
-        setValue(`devices[${index}].deviceType`, "");
+        setValue(`devicesData[${index}].deviceType`, "");
         if (serialNumber) {
             const data = await getDeviceBySerialNumberMutation.mutateAsync(serialNumber);
             if (!data.message) {
                 setDisabledFields((prev) => ({ ...prev, [index]: true }));
-                setValue(`devices[${index}].deviceType`, data.deviceType);
+                setValue(`devicesData[${index}].deviceType`, data.deviceType);
             }
         }
     };
@@ -149,133 +155,20 @@ const VoucherStep2 = () => {
         return result;
     };
     const validateDuplicateSerialNumbersInFields = (value, formValues) => {
-        const foundedDevices = formValues.devices.filter((device) => device.serialNumber === value);
+        const foundedDevices = formValues.devicesData.filter((device) => device.serialNumber === value);
         if (foundedDevices.length > 1) return "צ' מכשיר לא יכול להופיע פעמיים.";
         return true;
     };
     const validateDuplicateSerialNumbersInDB = (value) => {
         if (value) {
             const devices = allDevices.filter((device) => !device.voucherOut);
-            if (checkDuplicationInForm(devices, "serialNumber", value, false, undefined)) return "צ' כבר קיים באחד מהפרוייקטים.";
+            if (checkDuplicationInForm(devices, "serialNumber", value, false, undefined)) {
+                return "צ' כבר קיים באחד מהפרוייקטים.";
+            }
         }
         return true;
     };
 
-    // const combinedFields = () => {
-    //     const deviceInputs = [
-    //         {
-    //             label: "צ' מכשיר",
-    //             name: "serialNumber",
-    //             type: "AutoComplete",
-    //             isNumber: true,
-    //             validators: {
-    //                 required: "יש למלא שדה זה.",
-    //                 minLength: { value: 4, message: "צ' מכשיר צריך לפחות 4 תווים" },
-    //                 validate: validateSerialNumber,
-    //             },
-    //             options: isDeliveryVoucher ? [] : convertDeivcesToACOptions(allDevices),
-    //             getOptionLabel: onGetOptionLabel,
-    //             filterOptions: (options, params) => onFilterOptions(options, params, isDeliveryVoucher, filter),
-    //             onFieldChange: handleFieldChange,
-    //         },
-    //         {
-    //             label: "סוג מכשיר",
-    //             name: "deviceTypeId",
-    //             type: "select",
-    //             validators: {
-    //                 required: "יש למלא שדה זה.",
-    //             },
-    //             options: deviceTypeOptions,
-    //         },
-    //     ];
-    //     const accessoryInputs = [
-    //         {
-    //             label: "סוג מכשיר",
-    //             name: "deviceType",
-    //             type: "AutoComplete",
-    //             validators: {
-    //                 required: "יש למלא שדה זה.",
-    //             },
-    //             options: deviceTypes
-    //                 .filter((deviceType) => deviceType.isClassified)
-    //                 .map((dType) => {
-    //                     return { text: dType.deviceName, value: dType._id, ...dType };
-    //                 }),
-    //         },
-    //         {
-    //             label: "כמות",
-    //             name: "quantity",
-    //             type: "number",
-    //             isNumber: true,
-    //             validators: {
-    //                 required: "יש למלא שדה זה.",
-    //                 min: {
-    //                     value: 1,
-    //                     message: "כמות חייב להיות גדול או שווה ל1",
-    //                 },
-    //             },
-    //             options: deviceTypeOptions,
-    //         },
-    //     ];
-
-    //     const handleRemoveDeviceField = (index) => {
-    //         removeDevice(index);
-    //         setDisabledFields((prev) => {
-    //             const updatedState = { ...prev };
-    //             delete updatedState[index];
-    //             return updatedState;
-    //         });
-    //     };
-
-    //     const handleRemoveAccessoryField = (index) => {
-    //         removeAccessory(index);
-    //     };
-    //     return (
-    //         <>
-    //             {deviceFields.map((field, index) =>
-    //                 deviceInputs.map((input, deviceFieldIndex) => (
-    //                     <Fragment key={`${field.id}.${index}.${deviceFieldIndex}`}>
-    //                         <Col span={10}>
-    //                             <Controller
-    //                                 name={`devices[${index}].${input.name}`}
-    //                                 control={control}
-    //                                 defaultValue=""
-    //                                 render={({ field }) => (
-    //                                     <ControlledInput
-    //                                         {...field}
-    //                                         label={input.label}
-    //                                         onFieldChange={input.onFieldChange}
-    //                                         type={input.type}
-    //                                         isNumber={input.isNumber}
-    //                                         validators={input.validators}
-    //                                         options={input.options}
-    //                                         getOptionLabel={input.getOptionLabel}
-    //                                         filterOptions={input.filterOptions}
-    //                                         inputRef={field.ref}
-    //                                         index={index}
-    //                                         disabled={disabledFields && disabledFields[index]}
-    //                                     />
-    //                                 )}
-    //                             />
-    //                         </Col>
-    //                         <Col>
-    //                             {deviceFieldIndex % 2 === 1 && (
-    //                                 <IconButton
-    //                                     size="large"
-    //                                     color="error"
-    //                                     aria-label="deleteDevice"
-    //                                     onClick={() => handleRemoveDeviceField(index)}
-    //                                 >
-    //                                     <HighlightOff fontSize="inherit" />
-    //                                 </IconButton>
-    //                             )}
-    //                         </Col>
-    //                     </Fragment>
-    //                 )),
-    //             )}
-    //         </>
-    //     );
-    // };
     const combinedFields = () => {
         const deviceInputs = [
             {
@@ -297,6 +190,7 @@ const VoucherStep2 = () => {
                 label: "סוג מכשיר",
                 name: "deviceTypeId",
                 type: "select",
+
                 validators: {
                     required: "יש למלא שדה זה.",
                 },
@@ -312,11 +206,8 @@ const VoucherStep2 = () => {
                 validators: {
                     required: "יש למלא שדה זה.",
                 },
-                options: deviceTypes
-                    .filter((deviceType) => deviceType.isClassified)
-                    .map((dType) => {
-                        return { text: dType.deviceName, value: dType._id, ...dType };
-                    }),
+                getOptionLabel: onGetOptionLabel,
+                options: accessoriesTypes,
             },
             {
                 label: "כמות",
@@ -327,7 +218,7 @@ const VoucherStep2 = () => {
                     required: "יש למלא שדה זה.",
                     min: {
                         value: 1,
-                        message: "כמות חייב להיות גדול או שווה ל1",
+                        message: "כמות חייב להיות גדול או שווה ל-1",
                     },
                 },
             },
@@ -353,7 +244,7 @@ const VoucherStep2 = () => {
                         <Fragment key={`${field.id}.${index}.${deviceFieldIndex}`}>
                             <Col span={10}>
                                 <Controller
-                                    name={`devices[${index}].${input.name}`}
+                                    name={`devicesData[${index}].${input.name}`}
                                     control={control}
                                     defaultValue=""
                                     render={({ field }) => (
@@ -466,7 +357,6 @@ const VoucherStep2 = () => {
             />
             <Box padding={2}>
                 {isLoading && <Loader />}
-
                 {!isLoading && !isDeliveryVoucher && (
                     <>
                         <Row gutter={[10, 10]}>{combinedFields()}</Row>
@@ -497,3 +387,119 @@ const VoucherStep2 = () => {
 };
 
 export default VoucherStep2;
+
+// const combinedFields = () => {
+//     const deviceInputs = [
+//         {
+//             label: "צ' מכשיר",
+//             name: "serialNumber",
+//             type: "AutoComplete",
+//             isNumber: true,
+//             validators: {
+//                 required: "יש למלא שדה זה.",
+//                 minLength: { value: 4, message: "צ' מכשיר צריך לפחות 4 תווים" },
+//                 validate: validateSerialNumber,
+//             },
+//             options: isDeliveryVoucher ? [] : convertDeivcesToACOptions(allDevices),
+//             getOptionLabel: onGetOptionLabel,
+//             filterOptions: (options, params) => onFilterOptions(options, params, isDeliveryVoucher, filter),
+//             onFieldChange: handleFieldChange,
+//         },
+//         {
+//             label: "סוג מכשיר",
+//             name: "deviceTypeId",
+//             type: "select",
+//             validators: {
+//                 required: "יש למלא שדה זה.",
+//             },
+//             options: deviceTypeOptions,
+//         },
+//     ];
+//     const accessoryInputs = [
+//         {
+//             label: "סוג מכשיר",
+//             name: "deviceType",
+//             type: "AutoComplete",
+//             validators: {
+//                 required: "יש למלא שדה זה.",
+//             },
+//             options: deviceTypes
+//                 .filter((deviceType) => deviceType.isClassified)
+//                 .map((dType) => {
+//                     return { text: dType.deviceName, value: dType._id, ...dType };
+//                 }),
+//         },
+//         {
+//             label: "כמות",
+//             name: "quantity",
+//             type: "number",
+//             isNumber: true,
+//             validators: {
+//                 required: "יש למלא שדה זה.",
+//                 min: {
+//                     value: 1,
+//                     message: "כמות חייב להיות גדול או שווה ל1",
+//                 },
+//             },
+//             options: deviceTypeOptions,
+//         },
+//     ];
+
+//     const handleRemoveDeviceField = (index) => {
+//         removeDevice(index);
+//         setDisabledFields((prev) => {
+//             const updatedState = { ...prev };
+//             delete updatedState[index];
+//             return updatedState;
+//         });
+//     };
+
+//     const handleRemoveAccessoryField = (index) => {
+//         removeAccessory(index);
+//     };
+//     return (
+//         <>
+//             {deviceFields.map((field, index) =>
+//                 deviceInputs.map((input, deviceFieldIndex) => (
+//                     <Fragment key={`${field.id}.${index}.${deviceFieldIndex}`}>
+//                         <Col span={10}>
+//                             <Controller
+//                                 name={`devices[${index}].${input.name}`}
+//                                 control={control}
+//                                 defaultValue=""
+//                                 render={({ field }) => (
+//                                     <ControlledInput
+//                                         {...field}
+//                                         label={input.label}
+//                                         onFieldChange={input.onFieldChange}
+//                                         type={input.type}
+//                                         isNumber={input.isNumber}
+//                                         validators={input.validators}
+//                                         options={input.options}
+//                                         getOptionLabel={input.getOptionLabel}
+//                                         filterOptions={input.filterOptions}
+//                                         inputRef={field.ref}
+//                                         index={index}
+//                                         disabled={disabledFields && disabledFields[index]}
+//                                     />
+//                                 )}
+//                             />
+//                         </Col>
+//                         <Col>
+//                             {deviceFieldIndex % 2 === 1 && (
+//                                 <IconButton
+//                                     size="large"
+//                                     color="error"
+//                                     aria-label="deleteDevice"
+//                                     onClick={() => handleRemoveDeviceField(index)}
+//                                 >
+//                                     <HighlightOff fontSize="inherit" />
+//                                 </IconButton>
+//                             )}
+//                         </Col>
+//                     </Fragment>
+//                 )),
+//             )}
+//         </>
+//     );
+// };

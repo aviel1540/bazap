@@ -4,7 +4,7 @@ import { TextField } from "@mui/material";
 import { forwardRef } from "react";
 
 const ControlledTextField = forwardRef((props, ref) => {
-    const { name, label, control, validators, placeholder } = props;
+    const { name, label, control, validators, placeholder, type } = props;
     return (
         <Controller
             name={name}
@@ -13,6 +13,7 @@ const ControlledTextField = forwardRef((props, ref) => {
             render={({ field: { onChange, value, disabled }, fieldState: { error } }) => (
                 <TextField
                     inputRef={ref}
+                    type={type}
                     helperText={error ? error.message : null}
                     error={!!error}
                     disabled={disabled}

@@ -4,13 +4,10 @@ import PropTypes from "prop-types";
 import VoucherStep1 from "./VoucherStep1";
 import VoucherStep2 from "./VoucherStep2";
 import { useState } from "react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { addVoucherIn, addVoucherOut } from "../../../../Utils/voucherApi";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { addVoucherIn, addVoucherOut, exportVoucherToExcel } from "../../../../Utils/voucherApi";
 import { useProject } from "../../../../Components/store/ProjectContext";
 import { Button, Flex, Space } from "antd";
-import { createProjectReport } from "../../../../Utils/excelUtils";
-import { dateTostring } from "../../../../Utils/utils";
-import { getAllDevicesInProject } from "../../../../Utils/deviceApi";
 
 const stepsLength = 2;
 const VoucherStepper = ({ onCancel, formDefaultValues }) => {
@@ -20,15 +17,12 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
     const methods = useForm({
         defaultValues: {
             projectId,
-            devices: [],
+            devicesData: [],
             ...formDefaultValues,
         },
     });
     const { handleSubmit, setError, clearErrors, getValues } = methods;
-    const { isLoading: isLaodingDevicesInProject, data: fixedOrReturnedDevicesInProject } = useQuery({
-        queryKey: ["fixedOrReturnedDevicesInProject", projectId],
-        queryFn: getAllDevicesInProject,
-    });
+
     const steps = [
         { title: "יצירת שובר", content: <VoucherStep1 /> },
         { title: "הוספת מכשירים", content: <VoucherStep2 /> },
@@ -49,8 +43,6 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
                     addVoucherOutMutation.mutate(getValues());
                 } else {
                     let values = getValues();
-                    values = { ...values, devicesData: values.devices };
-                    delete values.devices;
                     addVoucherMutation.mutate(values);
                 }
             } else {
@@ -58,16 +50,14 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
             }
         }
     };
+    const exportVoucherMutation = useMutation(exportVoucherToExcel, {});
     const addVoucherOutMutation = useMutation(addVoucherOut, {
-        onSuccess: () => {
+        onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ["vouchers", projectId] });
             queryClient.invalidateQueries({ queryKey: ["devicesInProject", projectId] });
-            queryClient.invalidateQueries(["project", projectId]);
             queryClient.invalidateQueries(["projects"]);
-            const { devicesIds } = getValues();
-            const deviesToExcel = fixedOrReturnedDevicesInProject.filter((dev) => devicesIds.includes(dev._id));
-            createProjectReport(deviesToExcel, "שובר_ניפוק_" + dateTostring(Date.now()));
-            alert("לקרוא לפונקציה שמייצרת שובר");
+            queryClient.invalidateQueries(["project", projectId]);
+            exportVoucherMutation.mutate(data.newVoucher._id);
             onCancel();
         },
     });
@@ -84,7 +74,7 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
     const handleBack = () => {
         setActiveStep((prevStep) => prevStep - 1);
     };
-    const isLoading = addVoucherOutMutation.isLoading || addVoucherMutation.isLoading || isLaodingDevicesInProject;
+    const isLoading = addVoucherOutMutation.isLoading || addVoucherMutation.isLoading;
     return (
         <FormProvider {...methods}>
             <form onSubmit={handleSubmit(handleNext)}>
