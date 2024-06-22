@@ -10,19 +10,29 @@ import { updateStatus } from "../../../Utils/deviceApi";
 import CustomForm from "../../../Components/UI/CustomForm/CustomForm";
 
 const statuses = Object.values(DeviceStatuses);
-const filteredStatuses = statuses.filter((status) => ![DeviceStatuses.DEFECTIVE_RETURN, DeviceStatuses.FIXED_RETURN].includes(status));
-const deviceStatusOptions = filteredStatuses.map((value) => ({
-    value: value,
-    text: value,
-}));
+const devicesStatuses = statuses.filter(
+    (status) => ![DeviceStatuses.DEFECTIVE_RETURN, DeviceStatuses.FIXED_RETURN, DeviceStatuses.FINISHED].includes(status),
+);
+const accessoriesStatuses = [DeviceStatuses.WAIT_TO_WORK, DeviceStatuses.AT_WORK, DeviceStatuses.FINISHED];
+const convertStringToOptions = (options) =>
+    options.map((option) => {
+        return { value: option, text: option };
+    });
 
-const StatusForm = ({ status, onCancel, devices, clearSelectedRows }) => {
+const StatusForm = ({ status, onCancel, devices, clearSelectedRows, isClassified }) => {
     const { projectId } = useProject();
     const queryClient = useQueryClient();
     const methods = useForm();
     const { getValues, control, trigger } = methods;
 
-    const updateStatusMutation = useMutation(updateStatus, {
+    const updateDeviceStatusMutation = useMutation(updateStatus, {
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["devicesInProject", projectId] });
+            clearSelectedRows();
+        },
+    });
+
+    const updateAccesoryStatusMutation = useMutation(updateStatus, {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["devicesInProject", projectId] });
             clearSelectedRows();
@@ -34,7 +44,11 @@ const StatusForm = ({ status, onCancel, devices, clearSelectedRows }) => {
         if (result) {
             devices.map((selectedDevice) => {
                 const device = getValues();
-                updateStatusMutation.mutate({ id: selectedDevice._id, status: device.status });
+                if (isClassified) {
+                    updateDeviceStatusMutation.mutate({ id: selectedDevice._id, status: device.status });
+                } else {
+                    updateAccesoryStatusMutation.mutate({ id: selectedDevice._id, status: device.status });
+                }
             });
             onCancel();
         }
@@ -48,7 +62,7 @@ const StatusForm = ({ status, onCancel, devices, clearSelectedRows }) => {
             validators: {
                 required: "יש למלא שדה זה.",
             },
-            options: deviceStatusOptions,
+            options: convertStringToOptions(isClassified ? devicesStatuses : accessoriesStatuses),
         },
     ];
 
@@ -70,6 +84,7 @@ const StatusForm = ({ status, onCancel, devices, clearSelectedRows }) => {
 StatusForm.propTypes = {
     onCancel: PropTypes.func.isRequired,
     status: PropTypes.string,
+    isClassified: PropTypes.bool,
     devices: PropTypes.arrayOf(object).isRequired,
     clearSelectedRows: PropTypes.func.isRequired,
 };

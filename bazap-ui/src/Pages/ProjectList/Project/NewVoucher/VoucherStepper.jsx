@@ -20,7 +20,7 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
     const methods = useForm({
         defaultValues: {
             projectId,
-            devices: [{ serialNumber: "", deviceType: "" }],
+            devices: [],
             ...formDefaultValues,
         },
     });

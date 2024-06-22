@@ -59,6 +59,8 @@ export const DeviceStatuses = {
     DEFECTIVE_RETURN: "מושבת - הוחזר ליחידה",
     FIXED: "תקין",
     DEFECTIVE: "מושבת",
+    FINISHED: "הסתיים",
+    FINISHED_OUT: "הסתיים - הוחזר ליחידה",
 };
 
 export const ALL = "הכל";
@@ -73,20 +75,5 @@ export const tagColors = {
     "תקין - הוחזר ליחידה": "success",
     "מושבת - הוחזר ליחידה": "success",
 };
-
-export const addKeysToArray = (data, key, fromKey) => {
-    if (!Array.isArray(data)) {
-        throw new Error("First parameter must be an array");
-    }
-    if (!key) {
-        throw new Error("Key parameter is required");
-    }
-    data.forEach((obj) => {
-        obj[key] = obj[fromKey];
-    });
-
-    return data;
-};
-
 
 export const ReturnedStatuses = [DeviceStatuses.DEFECTIVE_RETURN, DeviceStatuses.FIXED_RETURN];

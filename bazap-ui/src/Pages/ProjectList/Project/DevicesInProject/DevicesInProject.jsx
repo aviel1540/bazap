@@ -14,14 +14,16 @@ import DevicesInProjectTable from "./DevicesInProjectTable";
 import StatusFilter from "./StatusFilter";
 import CustomButton from "../../../../Components/UI/CustomButton";
 import { SwapOutlined } from "@ant-design/icons";
+import { useUserAlert } from "../../../../Components/store/UserAlertContext";
 
 const ArrivedDevices = () => {
+    const { onAlert, error } = useUserAlert();
     const { projectId } = useProject();
     const { onShow, onHide } = useCustomModal();
     const [filteredDevices, setFilteredDevices] = useState([]);
     const [searchParam, setSearchParam] = useState("");
     const [selectedStatus, setSelectedStatus] = useState(ALL);
-    const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+    const [selectedRows, setSelectedRows] = useState([]);
 
     const { isLoading, data: devices } = useQuery({
         queryKey: ["devicesInProject", projectId],
@@ -41,7 +43,7 @@ const ArrivedDevices = () => {
     }, [devices]);
 
     const clearSelectedRows = () => {
-        setSelectedRowKeys([]);
+        setSelectedRows([]);
     };
 
     const handleSearchChange = (event) => {
@@ -94,7 +96,8 @@ const ArrivedDevices = () => {
         if (status == RETURNED) {
             return (
                 Object.keys(devicesStatusesGroup).includes(DeviceStatuses.DEFECTIVE_RETURN) ||
-                Object.keys(devicesStatusesGroup).includes(DeviceStatuses.FIXED_RETURN)
+                Object.keys(devicesStatusesGroup).includes(DeviceStatuses.FIXED_RETURN) ||
+                Object.keys(devicesStatusesGroup).includes(DeviceStatuses.FINISHED_OUT)
             );
         }
         if (status == FIXED_OR_DEFFECTIVE) {
@@ -107,14 +110,15 @@ const ArrivedDevices = () => {
     };
 
     const showModalChangeStatus = () => {
-        const device = filteredDevices.find((dev) => dev._id === selectedRowKeys[0]);
-        const devices = filteredDevices.filter((device) => selectedRowKeys.includes(device._id));
+        const device = filteredDevices.find((dev) => dev._id === selectedRows[0]);
+        const devices = filteredDevices.filter((device) => selectedRows.includes(device._id));
         onShow({
             title: "שינוי סטטוס",
             name: "status",
             body: (
                 <StatusForm
-                    status={selectedRowKeys.length == 0 ? null : device.status}
+                    status={selectedRows.length == 0 ? null : device.status}
+                    isClassified={device.isClassified}
                     devices={devices}
                     onCancel={() => onHide("status")}
                     clearSelectedRows={clearSelectedRows}
@@ -127,7 +131,7 @@ const ArrivedDevices = () => {
         const formDefaultValues = {
             type: "false",
             unit: filteredDevices[0].unit._id,
-            devicesIds: selectedRowKeys,
+            devicesIds: selectedRows,
         };
         onShow({
             title: "שובר חדש",
@@ -136,10 +140,21 @@ const ArrivedDevices = () => {
         });
     };
     const onSelectChange = (newSelectedRowKeys) => {
-        setSelectedRowKeys(newSelectedRowKeys);
+        const selectedDevices = devices.filter((device) => newSelectedRowKeys.includes(device._id));
+        const uniqueUnitIds = new Set(selectedDevices.map((device) => device.unit._id));
+        const uniqueIsClassified = new Set(selectedDevices.map((device) => device.deviceTypeId.isClassified));
+
+        const hasTwoDifferentUnits = uniqueUnitIds.size >= 2;
+        const hasDifferentClassification = uniqueIsClassified.size >= 2;
+
+        if (!hasTwoDifferentUnits && !hasDifferentClassification) {
+            setSelectedRows(newSelectedRowKeys);
+        } else {
+            onAlert("אין אפשרות לבחור מכשירים שלא מאותה יחידה או לבחור צל\"ם או צ' ביחד", error, true);
+        }
     };
     const rowSelection = {
-        selectedRowKeys,
+        selectedRowKeys: selectedRows,
         onChange: onSelectChange,
     };
 
@@ -148,12 +163,12 @@ const ArrivedDevices = () => {
             title='מכשירים בבצ"פ'
             action={
                 <Space size="small">
-                    {selectedRowKeys.length > 0 && (
+                    {selectedRows.length > 0 && (
                         <CustomButton type="light-info" onClick={showModalChangeStatus} iconPosition="end" icon={<SwapOutlined />}>
                             שנה סטטוס
                         </CustomButton>
                     )}
-                    {selectedStatus === FIXED_OR_DEFFECTIVE && selectedRowKeys.length > 0 && (
+                    {selectedStatus === FIXED_OR_DEFFECTIVE && selectedRows.length > 0 && (
                         <CustomButton type="light-success" onClick={showModalCreateVoucher} iconPosition="end" icon={<SwapOutlined />}>
                             צור שובר ניפוק
                         </CustomButton>

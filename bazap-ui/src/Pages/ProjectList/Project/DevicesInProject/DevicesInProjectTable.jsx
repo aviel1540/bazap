@@ -1,6 +1,6 @@
-import { Input, Table, Tag, Typography } from "antd";
+import { Input, InputNumber, Space, Table, Tag, Typography } from "antd";
 import PropTypes from "prop-types";
-import { DeviceStatuses, FIXED_OR_DEFFECTIVE, RETURNED, ReturnedStatuses, addKeysToArray, tagColors } from "../../../../Utils/utils";
+import { DeviceStatuses, FIXED_OR_DEFFECTIVE, RETURNED, ReturnedStatuses, tagColors } from "../../../../Utils/utils";
 import Loader from "../../../../Components/Layout/Loader";
 import EmptyData from "../../../../Components/UI/EmptyData";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -111,17 +111,11 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
             title: "הערות",
             dataIndex: "notes",
             key: "notes",
-            width: "30%",
-            // width: "50%",
+            // width: "30%",
+            width: "40%",
             render: (notes, record) => (
                 <>
-                    <Input
-                        defaultValue={notes}
-                        disabled={ReturnedStatuses.includes(record.status)}
-                        onChange={(event) => handleNotesChange(event, record._id)}
-                        placeholder="הערות"
-                    />
-                    {/* {!record.deviceTypeId.isClassified && (
+                    {!record.deviceTypeId.isClassified && (
                         <Space.Compact>
                             <InputNumber addonBefore="תקין" min={1} max={10} defaultValue={3} />
                             <InputNumber addonBefore="מושבת" min={1} max={10} defaultValue={3} />
@@ -140,7 +134,7 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
                             onChange={(event) => handleNotesChange(event, record._id)}
                             placeholder="הערות"
                         />
-                    )} */}
+                    )}
                 </>
             ),
         },
@@ -152,8 +146,9 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
         <Table
             locale={{ emptyText: <EmptyData label="אין מכשירים להצגה" /> }}
             rowSelection={rowSelection}
-            dataSource={addKeysToArray(filteredDevices, "key", "_id")}
+            dataSource={filteredDevices}
             pagination={paginationOptions}
+            rowKey={(record) => record._id}
             columns={columns()}
         />
     );
