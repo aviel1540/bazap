@@ -13,7 +13,7 @@ const ImportExcel = ({ remove, append, setDisabledFields, getValues, isDeliveryV
         queryKey: ["deviceTypes"],
         queryFn: getAllDeviceTypes,
     });
-    const [loading, setLoading] = useState(isLoading);
+    const [loading, setLoading] = useState(false);
     const getDeviceBySerialNumberMutation = useMutation(getDeviceBySerialNumber, {});
 
     const config = {
@@ -26,48 +26,50 @@ const ImportExcel = ({ remove, append, setDisabledFields, getValues, isDeliveryV
             if (!isExcelFile) {
                 message.error("Please upload an Excel file (.xlsx)");
                 setLoading(false);
-                return;
+                return false;
             }
-            setLoading(false);
             readXlsxFile(file)
                 .then(async (rows) => {
                     const excelDevices = readDevicesExcelFile(rows);
                     if (!isDeliveryVoucher) {
-                        const firstDevice = getValues().devices[0];
-                        if (firstDevice.serialNumber == "" && firstDevice.deviceType == "") {
+                        let allDevices = getValues().devicesData;
+                        const firstDevice = allDevices[0];
+                        if (firstDevice && (firstDevice.serialNumber === "" || firstDevice.deviceType === "")) {
                             remove(0);
                         }
-                        const allDevices = getValues().devices;
-                        let addedIndex = allDevices.length;
                         const indexes = [];
                         for (let i = 0; i < excelDevices.length; i++) {
+                            if (i != 0) {
+                                allDevices = getValues().devicesData;
+                            }
                             const device = excelDevices[i];
                             const deviceFromDb = await getDeviceBySerialNumberMutation.mutateAsync(device.serialNumber);
-                            let deviceType = device.deviceType; // device type from excel
-                            if (deviceFromDb.message != null) {
-                                if (!deviceFromDb.message) {
-                                    if (allDevices.findIndex((dev) => dev.serialNumber == device.serialNumber) == -1) {
-                                        append({
-                                            serialNumber: device.serialNumber,
-                                            deviceType: device.deviceTypeId._id,
-                                        });
-                                        if (deviceType) {
-                                            indexes.push(addedIndex);
-                                            addedIndex++;
-                                        }
+                            let deviceTypeId = null;
+                            if (!deviceFromDb.message) {
+                                if (allDevices.findIndex((dev) => dev.serialNumber === device.serialNumber) === -1) {
+                                    deviceTypeId = deviceFromDb.deviceTypeId;
+                                    append({
+                                        serialNumber: device.serialNumber,
+                                        deviceTypeId: deviceTypeId,
+                                    });
+                                    if (deviceTypeId) {
+                                        indexes.push(allDevices.length);
                                     }
                                 }
                             } else {
-                                let deviceTypeId = undefined;
-                                // check if device type exist
-                                if (deviceType) {
-                                    let deviceTypeObj = deviceTypes.find((deviceType) => deviceType._id === deviceType);
-                                    deviceTypeId = deviceTypeObj?._id;
+                                if (device.deviceType) {
+                                    const deviceTypeObj = deviceTypes.find((dt) => dt.deviceName === device.deviceType);
+                                    if (deviceTypeObj) {
+                                        deviceTypeId = deviceTypeObj._id;
+                                    }
                                 }
                                 append({
                                     serialNumber: device.serialNumber,
-                                    deviceType: deviceTypeId,
+                                    deviceTypeId: deviceTypeId,
                                 });
+                                if (deviceTypeId) {
+                                    indexes.push(allDevices.length);
+                                }
                             }
                         }
                         setDisabledFields((prev) => {
@@ -106,13 +108,12 @@ const ImportExcel = ({ remove, append, setDisabledFields, getValues, isDeliveryV
                 .catch((error) => {
                     console.error("Error reading file:", error);
                     message.error("Error reading file");
-                });
+                })
+                .finally(() => setLoading(false));
             return false;
         },
-        onChange(info) {
-            const { file } = info;
-
-            if (info.file.status === "uploading") {
+        onChange({ file }) {
+            if (file.status === "uploading") {
                 setLoading(true);
                 return;
             }
@@ -124,19 +125,18 @@ const ImportExcel = ({ remove, append, setDisabledFields, getValues, isDeliveryV
             }
         },
     };
+
     return (
-        <>
-            <Flex justify="flex-end" gap="middle" align="flex-start">
-                <Upload {...config}>
-                    <Tooltip placement="top" title="העלה קובץ אקסל" arrow={true}>
-                        <Button type="primary" loading={loading} icon={<ImportOutlined />}></Button>
-                    </Tooltip>
-                </Upload>
-                <Tooltip placement="top" title="הורד קובץ לדוגמא" arrow={true}>
-                    <Button icon={<FileExcelOutlined />} style={{ color: "green" }} onClick={downloadTemplateFile}></Button>
+        <Flex justify="flex-end" gap="middle" align="flex-start">
+            <Upload {...config}>
+                <Tooltip placement="top" title="העלה קובץ אקסל" arrow={true}>
+                    <Button type="primary" loading={loading || isLoading} icon={<ImportOutlined />}></Button>
                 </Tooltip>
-            </Flex>
-        </>
+            </Upload>
+            <Tooltip placement="top" title="הורד קובץ לדוגמא" arrow={true}>
+                <Button icon={<FileExcelOutlined />} style={{ color: "green" }} onClick={downloadTemplateFile}></Button>
+            </Tooltip>
+        </Flex>
     );
 };
 
@@ -148,4 +148,5 @@ ImportExcel.propTypes = {
     isDeliveryVoucher: PropTypes.bool,
     setSelectedRowKeys: PropTypes.func,
 };
+
 export default ImportExcel;

@@ -11,7 +11,14 @@ import CustomForm from "../../../Components/UI/CustomForm/CustomForm";
 
 const statuses = Object.values(DeviceStatuses);
 const devicesStatuses = statuses.filter(
-    (status) => ![DeviceStatuses.DEFECTIVE_RETURN, DeviceStatuses.FIXED_RETURN, DeviceStatuses.FINISHED].includes(status),
+    (status) =>
+        ![
+            DeviceStatuses.DEFECTIVE_RETURN,
+            DeviceStatuses.FIXED_RETURN,
+            DeviceStatuses.FINISHED,
+            DeviceStatuses.FINISHED_OUT,
+            DeviceStatuses.FINISHED,
+        ].includes(status),
 );
 const accessoriesStatuses = [DeviceStatuses.WAIT_TO_WORK, DeviceStatuses.AT_WORK, DeviceStatuses.FINISHED];
 const convertStringToOptions = (options) =>

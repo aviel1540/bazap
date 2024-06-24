@@ -90,6 +90,11 @@ const DeviceTypeTable = () => {
         {
             title: "סוג שובר",
             key: "type",
+            filters: [
+                { text: "מסווג", value: true },
+                { text: 'צל"ם', value: false },
+            ],
+            onFilter: (value, record) => record.isClassified == value,
             render: ({ isClassified }) => {
                 const label = isClassified ? "מסווג" : 'צל"ם';
                 const color = isClassified ? "#50cd89" : "#ffc700";

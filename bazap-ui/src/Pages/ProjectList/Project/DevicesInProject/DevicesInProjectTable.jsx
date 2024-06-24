@@ -7,9 +7,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAllUnits } from "../../../../Utils/unitAPI";
 import { updateNotes } from "../../../../Utils/deviceApi";
 import { useProject } from "../../../../Components/store/ProjectContext";
-// import { SearchOutlined } from "@ant-design/icons";
-
 const { Text } = Typography;
+
 const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize, isLoading, handleStatusChange }) => {
     const queryClient = useQueryClient();
     const { projectId } = useProject();
@@ -31,7 +30,7 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
             handleStatusChange(RETURNED);
             return;
         }
-        if ([DeviceStatuses.FIXED, DeviceStatuses.DEFECTIVE].includes(status)) {
+        if ([DeviceStatuses.FIXED, DeviceStatuses.DEFECTIVE, DeviceStatuses.FINISHED].includes(status)) {
             handleStatusChange(FIXED_OR_DEFFECTIVE);
             return;
         }
@@ -96,6 +95,11 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
         {
             title: "סוג מכשיר",
             key: "deviceType",
+            filters: [
+                { text: "מסווג", value: true },
+                { text: 'צל"ם', value: false },
+            ],
+            onFilter: (value, record) => record.deviceTypeId?.isClassified == value,
             render: ({ deviceTypeId }) => deviceTypeId?.deviceName,
             sorter: (a, b) => a.deviceTypeId.deviceName?.length - b.deviceTypeId?.deviceName.length,
             sortDirections: ["descend"],
@@ -139,6 +143,7 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
             ),
         },
     ];
+
     if (isLoading || isUnitsLoading) {
         return <Loader />;
     }

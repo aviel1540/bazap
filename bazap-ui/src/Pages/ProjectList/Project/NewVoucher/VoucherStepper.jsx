@@ -18,6 +18,7 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
         defaultValues: {
             projectId,
             devicesData: [],
+            accessories: [],
             ...formDefaultValues,
         },
     });

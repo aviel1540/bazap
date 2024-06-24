@@ -64,7 +64,11 @@ const ArrivedDevices = () => {
                 return ReturnedStatuses.includes(device.status);
             }
             if (status == FIXED_OR_DEFFECTIVE) {
-                return device.status == DeviceStatuses.FIXED || device.status == DeviceStatuses.DEFECTIVE;
+                return (
+                    device.status == DeviceStatuses.FIXED ||
+                    device.status == DeviceStatuses.DEFECTIVE ||
+                    device.status == DeviceStatuses.FINISHED
+                );
             }
             return device.status == status;
         });
@@ -93,20 +97,18 @@ const ArrivedDevices = () => {
 
     const checkIfStatusExists = (status) => {
         const devicesStatusesGroup = Object.groupBy(devices, ({ status }) => status);
+        const keys = Object.keys(devicesStatusesGroup);
         if (status == RETURNED) {
             return (
-                Object.keys(devicesStatusesGroup).includes(DeviceStatuses.DEFECTIVE_RETURN) ||
-                Object.keys(devicesStatusesGroup).includes(DeviceStatuses.FIXED_RETURN) ||
-                Object.keys(devicesStatusesGroup).includes(DeviceStatuses.FINISHED_OUT)
+                keys.includes(DeviceStatuses.DEFECTIVE_RETURN) ||
+                keys.includes(DeviceStatuses.FIXED_RETURN) ||
+                keys.includes(DeviceStatuses.FINISHED_OUT)
             );
         }
-        if (status == FIXED_OR_DEFFECTIVE) {
-            return (
-                Object.keys(devicesStatusesGroup).includes(DeviceStatuses.DEFECTIVE) ||
-                Object.keys(devicesStatusesGroup).includes(DeviceStatuses.FIXED)
-            );
+        if (status == FIXED_OR_DEFFECTIVE || status == DeviceStatuses.FINISHED) {
+            return keys.includes(DeviceStatuses.DEFECTIVE) || keys.includes(DeviceStatuses.FIXED) || keys.includes(DeviceStatuses.FINISHED);
         }
-        return Object.keys(devicesStatusesGroup).includes(status);
+        return keys.includes(status);
     };
 
     const showModalChangeStatus = () => {
@@ -118,7 +120,7 @@ const ArrivedDevices = () => {
             body: (
                 <StatusForm
                     status={selectedRows.length == 0 ? null : device.status}
-                    isClassified={device.isClassified}
+                    isClassified={device.deviceTypeId.isClassified}
                     devices={devices}
                     onCancel={() => onHide("status")}
                     clearSelectedRows={clearSelectedRows}
@@ -147,11 +149,24 @@ const ArrivedDevices = () => {
         const hasTwoDifferentUnits = uniqueUnitIds.size >= 2;
         const hasDifferentClassification = uniqueIsClassified.size >= 2;
 
-        if (!hasTwoDifferentUnits && !hasDifferentClassification) {
+        const classifiedDevices = selectedDevices.filter((device) => device.deviceTypeId.isClassified);
+        const nonClassifiedDevices = selectedDevices.filter((device) => !device.deviceTypeId.isClassified);
+
+        const classifiedDevicesValid = classifiedDevices.every((device) => device.status === "תקין" || device.status === "מושבת");
+        const nonClassifiedDevicesValid = nonClassifiedDevices.every((device) => device.status === "הסתיים");
+
+        if (!hasTwoDifferentUnits && (!hasDifferentClassification || (classifiedDevicesValid && nonClassifiedDevicesValid))) {
             setSelectedRows(newSelectedRowKeys);
         } else {
             onAlert("אין אפשרות לבחור מכשירים שלא מאותה יחידה או לבחור צל\"ם או צ' ביחד", error, true);
         }
+    };
+    const areClassifiedAndNonClassifiedSelected = () => {
+        const selectedDevices = devices.filter((device) => selectedRows.includes(device._id));
+        const classifiedDevices = selectedDevices.some((device) => device.deviceTypeId.isClassified);
+        const nonClassifiedDevices = selectedDevices.some((device) => !device.deviceTypeId.isClassified);
+
+        return classifiedDevices && nonClassifiedDevices;
     };
     const rowSelection = {
         selectedRowKeys: selectedRows,
@@ -163,7 +178,7 @@ const ArrivedDevices = () => {
             title='מכשירים בבצ"פ'
             action={
                 <Space size="small">
-                    {selectedRows.length > 0 && (
+                    {selectedRows.length > 0 && !areClassifiedAndNonClassifiedSelected() && (
                         <CustomButton type="light-info" onClick={showModalChangeStatus} iconPosition="end" icon={<SwapOutlined />}>
                             שנה סטטוס
                         </CustomButton>
