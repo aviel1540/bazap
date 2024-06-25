@@ -16,15 +16,25 @@ exports.addNewAccessories = async (request) => {
 exports.deleteAccessoriesById = async (checkAccessoriesId) => await Accessory.findByIdAndRemove(checkAccessoriesId);
 
 exports.updateStatus = async (request) => {
-    try {
-        console.log(request);
-        const data =  await Accessory.findByIdAndUpdate(request.checkAccessoryId, {
-            status: request.checkStatus,
-        });
-        console.log(data);
 
-        return data;
-    } catch (error) {
-        console.log(error);
-    }
+    const data = await Accessory.findByIdAndUpdate(request.checkAccessoryId, {
+        status: request.checkStatus,
+    });
+    return data;
+
 };
+
+exports.updateNotes = async(request) => {
+    const data = await Accessory.findByIdAndUpdate(request.checkAccessoryId, {
+        notes: request.checkNotes,
+    });
+    return data;
+}
+
+exports.updateFixDefective = async(request) => {
+    const data = await Accessory.findByIdAndUpdate(request.checkAccessoryId, {
+        fix: request.checkFix,
+        defective: request.checkDefective,
+    });
+    return data;
+}

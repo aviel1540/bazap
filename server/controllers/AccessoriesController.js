@@ -67,3 +67,41 @@ exports.updateStatus = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
+
+
+exports.updateNote = async (req, res) => {
+    const accessoryId = escape(req.params.id);
+    const notes = escape(req.body.notes);
+    let accessory;
+    try {
+        if (!notes) return res.status(404).json({ message: "יש למלא את ההערות" })
+        const checkAccessoryId = validation.addSlashes(accessoryId);
+        const checkNotes = validation.addSlashes(notes);
+
+        accessory = await accessoriesService.updateNotes({checkAccessoryId, checkNotes})
+        if(!accessory) return res.status(404).json({message: "לא נמצא צלמ לעידכון"})
+        
+        return res.status(201).json({message:"העידכון בוצע בהצלחה !"})
+    } catch (err) {
+
+    }
+}
+
+exports.updateFixDefective = async (req, res) => {
+    const accessoryId = escape(req.params.id);
+    const fix = escape(req.body.fix);
+    const defective = escape(req.body.defective);
+    let accessory;
+    try {
+        const checkAccessoryId = validation.addSlashes(accessoryId);
+        const checkFix = validation.addSlashes(fix);
+        const checkDefective = validation.addSlashes(defective);
+
+        accessory = await accessoriesService.updateNotes({checkAccessoryId, checkFix, checkDefective})
+        if(!accessory) return res.status(404).json({message: "לא נמצא צלמ לעידכון"})
+        
+        return res.status(201).json({message:"העידכון בוצע בהצלחה !"})
+    } catch (err) {
+
+    }
+}
