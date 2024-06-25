@@ -97,7 +97,7 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
             key: "deviceType",
             filters: [
                 { text: "מסווג", value: true },
-                { text: 'צל"ם', value: false },
+                { text: 'צל"מ', value: false },
             ],
             onFilter: (value, record) => record.deviceTypeId?.isClassified == value,
             render: ({ deviceTypeId }) => deviceTypeId?.deviceName,

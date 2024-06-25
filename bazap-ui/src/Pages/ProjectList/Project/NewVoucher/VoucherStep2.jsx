@@ -98,15 +98,13 @@ const VoucherStep2 = () => {
     } = useFieldArray({
         rules: { minLength: 1 },
         control,
-        name: "accessories",
+        name: "accessoriesData",
     });
 
     const handleAddDevice = () => {
-        setActiveTab("Devices");
         addDevice({ serialNumber: "", deviceType: "" });
     };
     const handleAddAccessory = () => {
-        setActiveTab("Accessories");
         addAccessory({ quantity: 1, deviceType: null });
     };
 
@@ -189,7 +187,7 @@ const VoucherStep2 = () => {
             setSelectedRows(newSelectedRowKeys);
             setValue("devicesIds", newSelectedRowKeys);
         } else {
-            onAlert("אין אפשרות לבחור מכשירים שלא מאותה יחידה או לבחור צל\"ם או צ' ביחד", error, true);
+            onAlert("אין אפשרות לבחור מכשירים שלא מאותה יחידה או לבחור צל\"מ או צ' ביחד", error, true);
         }
     };
 
@@ -268,35 +266,56 @@ const VoucherStep2 = () => {
             <Box padding={2}>
                 {isLoading && <Loader />}
                 {!isLoading && !isDeliveryVoucher && (
-                    <>
-                        <Tabs
-                            activeKey={activeTab}
-                            onChange={setActiveTab}
-                            type="card"
-                            items={[
-                                {
-                                    label: `מכשירים (${deviceFields.length})`,
-                                    children: <Row gutter={[10, 10]}>{combinedFields(deviceFields, deviceInputs, removeDevice)}</Row>,
-                                    key: "Devices",
-                                },
-                                {
-                                    label: `צל"ם`,
-                                    children: <Row gutter={[10, 10]}>{combinedFields(accessories, accessoryInputs, removeAccessory)}</Row>,
-                                    key: "Accessories",
-                                },
-                            ]}
-                        ></Tabs>
-                        <Box textAlign="center" marginTop={1}>
-                            <Space>
-                                <CustomButton type="light-success" iconPosition="end" onClick={handleAddDevice} icon={<PlusOutlined />}>
-                                    הוסף מכשיר
-                                </CustomButton>
-                                <CustomButton type="light-success" iconPosition="end" onClick={handleAddAccessory} icon={<PlusOutlined />}>
-                                    הוסף צל&quot;ם
-                                </CustomButton>
-                            </Space>
-                        </Box>
-                    </>
+                    <Tabs
+                        activeKey={activeTab}
+                        onChange={setActiveTab}
+                        type="card"
+                        items={[
+                            {
+                                label: `מכשירים (${deviceFields.length})`,
+
+                                children: (
+                                    <>
+                                        <Row gutter={[10, 10]}>{combinedFields(deviceFields, deviceInputs, removeDevice)}</Row>
+                                        <Box textAlign="center" marginTop={1}>
+                                            <Space>
+                                                <CustomButton
+                                                    type="light-success"
+                                                    iconPosition="end"
+                                                    onClick={handleAddDevice}
+                                                    icon={<PlusOutlined />}
+                                                >
+                                                    הוסף מכשיר
+                                                </CustomButton>
+                                            </Space>
+                                        </Box>
+                                    </>
+                                ),
+                                key: "Devices",
+                            },
+                            {
+                                label: `צל"מ`,
+                                children: (
+                                    <>
+                                        <Row gutter={[10, 10]}>{combinedFields(accessories, accessoryInputs, removeAccessory)}</Row>
+                                        <Box textAlign="center" marginTop={1}>
+                                            <Space>
+                                                <CustomButton
+                                                    type="light-success"
+                                                    iconPosition="end"
+                                                    onClick={handleAddAccessory}
+                                                    icon={<PlusOutlined />}
+                                                >
+                                                    הוסף צל&quot;מ
+                                                </CustomButton>
+                                            </Space>
+                                        </Box>
+                                    </>
+                                ),
+                                key: "Accessories",
+                            },
+                        ]}
+                    ></Tabs>
                 )}
                 {isDeliveryVoucher && (
                     <DevicesInProjectTable

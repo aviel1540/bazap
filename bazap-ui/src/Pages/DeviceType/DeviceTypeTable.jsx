@@ -92,11 +92,11 @@ const DeviceTypeTable = () => {
             key: "type",
             filters: [
                 { text: "מסווג", value: true },
-                { text: 'צל"ם', value: false },
+                { text: 'צל"מ', value: false },
             ],
             onFilter: (value, record) => record.isClassified == value,
             render: ({ isClassified }) => {
-                const label = isClassified ? "מסווג" : 'צל"ם';
+                const label = isClassified ? "מסווג" : 'צל"מ';
                 const color = isClassified ? "#50cd89" : "#ffc700";
                 return <Tag color={color}>{label}</Tag>;
             },

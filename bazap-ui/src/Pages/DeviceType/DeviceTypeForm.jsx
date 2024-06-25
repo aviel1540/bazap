@@ -21,7 +21,7 @@ const DeviceTypeForm = ({ onCancel, formValues = null, isEdit }) => {
                 deviceName: data.deviceName,
                 isClassified: data.isClassified == "true",
             };
-            
+
             alert("edit: " + JSON.stringify(editDeviceType));
         }
     };
@@ -91,7 +91,7 @@ const DeviceTypeForm = ({ onCancel, formValues = null, isEdit }) => {
             },
             options: [
                 { value: "true", text: "מסווג" },
-                { value: "false", text: 'צל"ם' },
+                { value: "false", text: 'צל"מ' },
             ],
         },
     ];
