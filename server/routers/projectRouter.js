@@ -5,7 +5,11 @@ router.get("/", projectController.getAllProjects);
 
 router.get("/:id", projectController.getProjectById);
 
+router.get("/get-all-products-in-project/:id", projectController.getAllProductsInProject);
+
 router.get("/find-by-name/:projectName", projectController.getProjectByName);
+
+router.get("/get-all-products-in-lab/:id", projectController.getAllProductsInLab);
 
 router.post("/add-new-project", projectController.addNewProject);
 

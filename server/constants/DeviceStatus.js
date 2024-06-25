@@ -5,4 +5,6 @@ exports.DeviceStatus = {
     DEFECTIVE_RETURN: "מושבת - הוחזר ליחידה",
     FIXED: "תקין",
     DEFECTIVE: "מושבת",
+    FINISHED: "הסתיים",
+    FINISHED_OUT: "הסתיים - הוחזר ליחידה" 
 };

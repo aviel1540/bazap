@@ -20,21 +20,11 @@ exports.addNewProject = async (req, res) => {
 
 exports.getAllProjects = async (req, res) => {
     let project;
-    let details;
-    let projects = [];
     try {
         project = await projectService.findAllProjects();
         if (!project) {
             return res.status(404).json({ message: "לא קיימים פרוייקטים" });
         }
-        // project.map(pr => {
-        //     details = {
-        //         id: pr._id,
-        //         name: pr.projectName,
-        //         startDate: pr.startDate
-        //     }
-        //     projects.push(details);
-        // })
         return res.status(200).json(project);
     } catch (err) {
         return res.status(500).json({ message: err.message });
@@ -147,3 +137,47 @@ exports.deleteProject = async(req,res) => {
         return res.status(500).json({ message: message.err })
     }
 }
+
+exports.getAllProductsInProject = async (req, res) => {
+    try {
+        const projectId = escape(req.params.id);
+        const devices = await projectService.findAllDevicesByProject(projectId);
+        const accessories = await projectService.findAllAccessoriesByProject(projectId);
+        let products = [];
+        if(devices.length > 0) {
+            devices.map((device) => {
+                products.push(device)
+            })
+        }
+        if(accessories.length > 0) {
+            accessories.map((acc) => {
+                products.push(acc)
+            })
+        }
+        return res.status(200).json(products);
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
+    }
+};
+
+exports.getAllProductsInLab = async (req, res) => {
+    try {
+        const projectId = escape(req.params.id);
+        const devices = await projectService.findAllDevicesInLab(projectId);
+        const accessories = await projectService.findAllAccessoriesInLab(projectId);
+        let products = [];
+        if(devices.length > 0) {
+            devices.map((device) => {
+                products.push(device)
+            })
+        }
+        if(accessories.length > 0) {
+            accessories.map((acc) => {
+                products.push(acc)
+            })
+        }
+        return res.status(200).json(products);
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
+    }
+};

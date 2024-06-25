@@ -4,6 +4,7 @@ const deviceService = require("../services/deviceServices");
 const voucherService = require("../services/voucherServices");
 const projectService = require("../services/projectServices");
 const autoNumberService = require("../services/autoNumberServices");
+const accessoryService = require("../services/accessoriesServices");
 const { DeviceStatus } = require("../constants/DeviceStatus");
 
 exports.getVoucherById = async (req, res) => {
@@ -28,6 +29,7 @@ exports.addNewVoucherIn = async (req, res) => {
         receivedBy: escape(req.body.receivedBy),
     };
     const devicesData = req.body.devicesData;
+    const accessoriesData = req.body.accessoriesData;
     let project;
     try {
         const checkProjectId = validation.addSlashes(projectId);
@@ -39,31 +41,57 @@ exports.addNewVoucherIn = async (req, res) => {
         const updatedAutoNumber = await autoNumberService.findAutoNumberAndUpdate(autoNumber._id, number);
         await updatedAutoNumber.save();
 
-        if (!devicesData || !Array.isArray(devicesData) || devicesData.length === 0) {
-            return res.status(400).json({ message: "לא נמצאו מכשירים" });
+        if ((!accessoriesData || !Array.isArray(accessoriesData) || accessoriesData.length === 0 || (!devicesData || !Array.isArray(devicesData) || devicesData.length === 0))) {
+            return res.status(400).json({ message: "יש להזין מכשירים/צלמ" });
         }
 
-        for (const deviceData of devicesData) {
-            const serialNumber = escape(deviceData.serialNumber);
-            const deviceTypeId = escape(deviceData.deviceTypeId);
+        if (devicesData) {
+            for (const deviceData of devicesData) {
+                const serialNumber = escape(deviceData.serialNumber);
+                const deviceTypeId = escape(deviceData.deviceTypeId);
 
-            if (!serialNumber || !deviceTypeId) {
-                return res.status(400).json({ message: "נא למלא את כל השדות" });
+                if (!serialNumber || !deviceTypeId) {
+                    return res.status(400).json({ message: "נא למלא את כל השדות" });
+                }
+                const checkSerialNumber = validation.addSlashes(serialNumber);
+                const checkDeviceTypeId = validation.addSlashes(deviceTypeId);
+                const checkUnit = validation.addSlashes(unit);
+                const newDevice = await deviceService.addNewDevice({
+                    checkSerialNumber,
+                    checkDeviceTypeId,
+                    checkUnitId: checkUnit,
+                    checkVoucherId: newVoucher._id,
+                    projectId,
+                });
+
+                await newDevice.save();
+                newVoucher.deviceList.push(newDevice);
             }
-            const checkSerialNumber = validation.addSlashes(serialNumber);
-            const checkDeviceTypeId = validation.addSlashes(deviceTypeId);
-            const checkUnit = validation.addSlashes(unit);
-            const newDevice = await deviceService.addNewDevice({
-                checkSerialNumber,
-                checkDeviceTypeId,
-                checkUnitId: checkUnit,
-                checkVoucherId: newVoucher._id,
-                projectId,
-            });
-
-            await newDevice.save();
-            newVoucher.deviceList.push(newDevice);
         }
+        if (accessoriesData) {
+            for (const accessoryData of accessoriesData) {
+                const deviceTypeId = escape(accessoryData.deviceTypeId);
+                const quantity = escape(accessoryData.quantity);
+    
+                if (!quantity || !deviceTypeId) {
+                    return res.status(400).json({ message: "נא למלא את כל השדות" });
+                }
+                const checkDeviceTypeId = validation.addSlashes(deviceTypeId);
+                const checkQuantity = validation.addSlashes(quantity);
+                const checkUnit = validation.addSlashes(unit);
+                const newAccessory = await accessoryService.addNewAccessories({
+                    checkDeviceTypeId,
+                    checkUnitId: checkUnit,
+                    checkQuantity,
+                    checkVoucherId: newVoucher._id,
+                    projectId,
+                });
+    
+                await newAccessory.save();
+                newVoucher.deviceList.push(newAccessory);
+            }
+        }
+
         await newVoucher.save();
         project.vouchersList.push(newVoucher);
         await project.save(newVoucher);

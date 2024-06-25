@@ -49,11 +49,11 @@ exports.addNewDevices = async (req, res) => {
     }
 };
 exports.getDeviceById = async (req, res) => {
-    const categoryId = escape(req.params.id);
+    const deviceId = escape(req.params.id);
     let deviceFound;
     try {
-        const checkcategoryId = validation.addSlashes(categoryId);
-        deviceFound = await deviceService.findDeviceById(checkcategoryId);
+        const checkDeviceId = validation.addSlashes(deviceId);
+        deviceFound = await deviceService.findDeviceById(checkDeviceId);
         if (!deviceFound) {
             return res.status(400).json({ message: "לא נמצא מכשיר" });
         }
@@ -64,10 +64,10 @@ exports.getDeviceById = async (req, res) => {
 };
 
 exports.getDeviceBySerialNumber = async (req, res) => {
-    const categorySerialNumber = escape(req.params.serialnumber);
+    const deviceSerialNumber = escape(req.params.serialnumber);
     let deviceFound;
     try {
-        const checkSerialNumber = validation.addSlashes(categorySerialNumber);
+        const checkSerialNumber = validation.addSlashes(deviceSerialNumber);
         deviceFound = await deviceService.findDeviceBySerialNumber(checkSerialNumber);
         if (!deviceFound) {
             return res.status(200).json({ message: "צ' לא קיים" });
@@ -126,12 +126,12 @@ exports.returnDevice = async (req, res) => {
 exports.changeStatus = async (req, res) => {
     const deviceId = escape(req.params.id);
     const status = escape(req.body.status);
-    const device = await deviceService.findDeviceById(deviceId);
-    if (!device) {
-        return res.status(404).json({ message: "לא נמצא מכשיר" });
-    }
     try {
         const checkDeviceId = validation.addSlashes(deviceId);
+        const device = await deviceService.findDeviceById(deviceId);
+        if (!device) {
+            return res.status(404).json({ message: "לא נמצא מכשיר" });
+        }
         const checkStatus = validation.addSlashes(status);
         switch (checkStatus) {
             case DeviceStatus.WAIT_TO_WORK:
@@ -159,7 +159,7 @@ exports.changeStatus = async (req, res) => {
         }
         return res.status(201).json({ message: "המכשיר עודכן בהצלחה." });
     } catch (err) {
-        res.status(401).json({ message: err.message });
+        res.status(500).json({ message: err.message });
     }
 };
 
@@ -186,27 +186,6 @@ exports.getAllDevices = async (req, res) => {
         if (!devices) {
             return res.status(404).json({ message: "לא קיימים מכשירים" });
         }
-        return res.status(200).json(devices);
-    } catch (err) {
-        return res.status(500).json({ message: err.message });
-    }
-};
-
-exports.getAllDevicesInProject = async (req, res) => {
-    try {
-        const projectId = escape(req.params.id);
-        const devices = await deviceService.findAllDevicesByProject(projectId);
-
-        return res.status(200).json(devices);
-    } catch (err) {
-        return res.status(500).json({ message: err.message });
-    }
-};
-
-exports.getAllDevicesInLab = async (req, res) => {
-    try {
-        const projectId = escape(req.params.id);
-        const devices = await deviceService.findAllDevicesInLab(projectId);
         return res.status(200).json(devices);
     } catch (err) {
         return res.status(500).json({ message: err.message });

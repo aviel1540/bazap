@@ -16,10 +16,6 @@ const deviceSchema = new Schema({
         ref: "DeviceType",
         required: true,
     },
-    deviceType: {
-        type: String,
-        trim: true,
-    },
     unit: {
         type: Schema.Types.ObjectId,
         ref: "Units",
@@ -35,10 +31,6 @@ const deviceSchema = new Schema({
             DeviceStatus.WAIT_TO_WORK,
         ],
         default: DeviceStatus.WAIT_TO_WORK,
-    },
-    technician: {
-        type: Schema.Types.ObjectId,
-        ref: "Technician",
     },
     notes: {
         type: String,
