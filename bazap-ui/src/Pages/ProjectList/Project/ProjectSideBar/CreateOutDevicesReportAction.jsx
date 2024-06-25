@@ -4,11 +4,11 @@ import { useMutation } from "@tanstack/react-query";
 import { useUserAlert } from "../../../../Components/store/UserAlertContext";
 import { createProjectReport } from "../../../../Utils/excelUtils";
 import { dateTostring } from "../../../../Utils/utils";
-import { getAllDevicesInProject } from "../../../../Utils/deviceApi";
 import { useProject } from "../../../../Components/store/ProjectContext";
+import { getAllProductsInProject } from "../../../../Utils/projectAPI";
 
 const getAllDevicesInProjectAction = async (projectId) => {
-    const devices = await getAllDevicesInProject({ queryKey: [null, projectId] });
+    const devices = await getAllProductsInProject({ queryKey: [null, projectId] });
     const filteredDevices = devices.filter((device) => device.voucherOut != null);
     return filteredDevices;
 };

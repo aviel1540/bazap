@@ -2,8 +2,7 @@ import { Box } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { Space } from "antd";
 import { useEffect, useState } from "react";
-import { getAllDevicesInProject } from "../../../../Utils/deviceApi";
-import { ALL, DeviceStatuses, FIXED_OR_DEFFECTIVE, RETURNED, ReturnedStatuses, replaceApostrophe } from "../../../../Utils/utils";
+import { ALL, DeviceStatuses, FIXED_OR_DEFECTIVE, RETURNED, ReturnedStatuses, replaceApostrophe } from "../../../../Utils/utils";
 import { useCustomModal } from "../../../../Components/store/CustomModalContext";
 import { useProject } from "../../../../Components/store/ProjectContext";
 import CustomCard from "../../../../Components/UI/CustomCard";
@@ -15,6 +14,7 @@ import StatusFilter from "./StatusFilter";
 import CustomButton from "../../../../Components/UI/CustomButton";
 import { SwapOutlined } from "@ant-design/icons";
 import { useUserAlert } from "../../../../Components/store/UserAlertContext";
+import { getAllProductsInProject } from "../../../../Utils/projectAPI";
 
 const ArrivedDevices = () => {
     const { onAlert, error } = useUserAlert();
@@ -27,7 +27,7 @@ const ArrivedDevices = () => {
 
     const { isLoading, data: devices } = useQuery({
         queryKey: ["devicesInProject", projectId],
-        queryFn: getAllDevicesInProject,
+        queryFn: getAllProductsInProject,
         onSuccess: (data) => {
             setFilteredDevices(data);
             if (devices) handleSearchAndFilter(searchParam, data, selectedStatus);
@@ -63,7 +63,7 @@ const ArrivedDevices = () => {
             if (status == RETURNED) {
                 return ReturnedStatuses.includes(device.status);
             }
-            if (status == FIXED_OR_DEFFECTIVE) {
+            if (status == FIXED_OR_DEFECTIVE) {
                 return (
                     device.status == DeviceStatuses.FIXED ||
                     device.status == DeviceStatuses.DEFECTIVE ||
@@ -105,7 +105,7 @@ const ArrivedDevices = () => {
                 keys.includes(DeviceStatuses.FINISHED_OUT)
             );
         }
-        if (status == FIXED_OR_DEFFECTIVE || status == DeviceStatuses.FINISHED) {
+        if (status == FIXED_OR_DEFECTIVE || status == DeviceStatuses.FINISHED) {
             return keys.includes(DeviceStatuses.DEFECTIVE) || keys.includes(DeviceStatuses.FIXED) || keys.includes(DeviceStatuses.FINISHED);
         }
         return keys.includes(status);
@@ -183,7 +183,7 @@ const ArrivedDevices = () => {
                             שנה סטטוס
                         </CustomButton>
                     )}
-                    {selectedStatus === FIXED_OR_DEFFECTIVE && selectedRows.length > 0 && (
+                    {selectedStatus === FIXED_OR_DEFECTIVE && selectedRows.length > 0 && (
                         <CustomButton type="light-success" onClick={showModalCreateVoucher} iconPosition="end" icon={<SwapOutlined />}>
                             צור שובר ניפוק
                         </CustomButton>

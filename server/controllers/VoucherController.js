@@ -3,8 +3,8 @@ const validation = require("../utils/validation");
 const deviceService = require("../services/deviceServices");
 const voucherService = require("../services/voucherServices");
 const projectService = require("../services/projectServices");
-const autoNumberService = require("../services/autoNumberServices");
 const accessoryService = require("../services/accessoriesServices");
+const autoNumberService = require("../services/autoNumberServices");
 const { DeviceStatus } = require("../constants/DeviceStatus");
 
 exports.getVoucherById = async (req, res) => {
@@ -30,6 +30,7 @@ exports.addNewVoucherIn = async (req, res) => {
     };
     const devicesData = req.body.devicesData;
     const accessoriesData = req.body.accessoriesData;
+    console.log(accessoriesData);
     let project;
     try {
         const checkProjectId = validation.addSlashes(projectId);
@@ -41,7 +42,10 @@ exports.addNewVoucherIn = async (req, res) => {
         const updatedAutoNumber = await autoNumberService.findAutoNumberAndUpdate(autoNumber._id, number);
         await updatedAutoNumber.save();
 
-        if ((!accessoriesData || !Array.isArray(accessoriesData) || accessoriesData.length === 0 || (!devicesData || !Array.isArray(devicesData) || devicesData.length === 0))) {
+        if (
+            (!accessoriesData || !Array.isArray(accessoriesData) || accessoriesData.length === 0) &&
+            (!devicesData || !Array.isArray(devicesData) || devicesData.length === 0)
+        ) {
             return res.status(400).json({ message: "יש להזין מכשירים/צלמ" });
         }
 
@@ -70,9 +74,10 @@ exports.addNewVoucherIn = async (req, res) => {
         }
         if (accessoriesData) {
             for (const accessoryData of accessoriesData) {
+                console.log(accessoryData);
                 const deviceTypeId = escape(accessoryData.deviceTypeId);
                 const quantity = escape(accessoryData.quantity);
-    
+
                 if (!quantity || !deviceTypeId) {
                     return res.status(400).json({ message: "נא למלא את כל השדות" });
                 }
@@ -86,7 +91,7 @@ exports.addNewVoucherIn = async (req, res) => {
                     checkVoucherId: newVoucher._id,
                     projectId,
                 });
-    
+
                 await newAccessory.save();
                 newVoucher.deviceList.push(newAccessory);
             }

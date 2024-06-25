@@ -1,7 +1,7 @@
 import { InfoCircleOutlined } from "@ant-design/icons";
 import { Avatar, Select, Space, Tooltip } from "antd";
 import PropTypes from "prop-types";
-import { ALL, DeviceStatuses, FIXED_OR_DEFFECTIVE, RETURNED } from "../../../../Utils/utils";
+import { ALL, DeviceStatuses, FIXED_OR_DEFECTIVE, RETURNED } from "../../../../Utils/utils";
 
 const StatusFilter = ({ checkIfStatusExists, handleStatusChange, selectedStatus }) => {
     const excludedStatuses = [
@@ -16,7 +16,7 @@ const StatusFilter = ({ checkIfStatusExists, handleStatusChange, selectedStatus 
         const statuses = [
             ALL,
             ...Object.values(DeviceStatuses).filter((status) => !excludedStatuses.includes(status) && checkIfStatusExists(status)),
-            FIXED_OR_DEFFECTIVE,
+            FIXED_OR_DEFECTIVE,
             RETURNED,
         ];
 

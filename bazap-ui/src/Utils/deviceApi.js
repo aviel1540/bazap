@@ -16,11 +16,6 @@ export const getDeviceBySerialNumber = async (serialnumber) => {
 export const addNewDevices = async (devices) => {
     return await deviceAPI.post("add-new-devices", devices);
 };
-export const getAllDevicesInProject = async ({ queryKey }) => {
-    // eslint-disable-next-line no-unused-vars
-    const [_, id] = queryKey;
-    return await deviceAPI.get(`get-all-devices-in-project/${id}`);
-};
 
 export const getAllDevicesInLab = async ({ queryKey }) => {
     // eslint-disable-next-line no-unused-vars

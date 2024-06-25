@@ -18,7 +18,7 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
         defaultValues: {
             projectId,
             devicesData: [],
-            accessories: [],
+            accessoriesData: [],
             ...formDefaultValues,
         },
     });
@@ -44,6 +44,15 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
                     addVoucherOutMutation.mutate(getValues());
                 } else {
                     let values = getValues();
+                    values.accessoriesData = values.accessoriesData.map((item) => {
+                        if (item.deviceTypeId && typeof item.deviceTypeId === "object" && item.deviceTypeId.value) {
+                            return {
+                                ...item,
+                                deviceTypeId: item.deviceTypeId.value,
+                            };
+                        }
+                        return item;
+                    });
                     addVoucherMutation.mutate(values);
                 }
             } else {

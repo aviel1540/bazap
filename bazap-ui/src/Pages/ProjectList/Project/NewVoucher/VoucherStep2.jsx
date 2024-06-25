@@ -7,9 +7,9 @@ import { Controller, useFieldArray, useFormContext } from "react-hook-form";
 import Loader from "../../../../Components/Layout/Loader";
 import ControlledInput from "../../../../Components/UI/CustomForm/ControlledInput";
 import { useProject } from "../../../../Components/store/ProjectContext";
-import { getAllDevicesInProject, getDeviceBySerialNumber, getDevices } from "../../../../Utils/deviceApi";
+import { getDeviceBySerialNumber, getDevices } from "../../../../Utils/deviceApi";
 import { getAllDeviceTypes } from "../../../../Utils/deviceTypeApi";
-import { DeviceStatuses, FIXED_OR_DEFFECTIVE } from "../../../../Utils/utils";
+import { DeviceStatuses, FIXED_OR_DEFECTIVE } from "../../../../Utils/utils";
 import DevicesInProjectTable from "../DevicesInProject/DevicesInProjectTable";
 import ImportExcel from "./ImportExcel";
 import CustomButton from "../../../../Components/UI/CustomButton";
@@ -23,6 +23,7 @@ import {
     validateDuplicateSerialNumbersInFields,
 } from "./utils";
 import EmptyData from "../../../../Components/UI/EmptyData";
+import { getAllProductsInProject } from "../../../../Utils/projectAPI";
 const filter = createFilterOptions();
 
 const VoucherStep2 = () => {
@@ -41,7 +42,7 @@ const VoucherStep2 = () => {
 
     const { isLoading: isLaodingDevicesInProject, refetch } = useQuery({
         queryKey: ["fixedOrReturnedDevicesInProject", projectId],
-        queryFn: getAllDevicesInProject,
+        queryFn: getAllProductsInProject,
         enabled: false,
         onSuccess: (data) => {
             let newFilteredDevices = data.filter((device) => {
@@ -60,7 +61,7 @@ const VoucherStep2 = () => {
         const accessoriesTypes = [];
 
         deviceTypes?.forEach((deviceType) => {
-            const option = { text: deviceType.deviceName, value: deviceType._id, ...deviceType };
+            const option = { text: deviceType.deviceName, value: deviceType._id };
             if (deviceType.isClassified) {
                 deviceTypeOptions.push(option);
             } else {
@@ -105,7 +106,7 @@ const VoucherStep2 = () => {
         addDevice({ serialNumber: "", deviceType: "" });
     };
     const handleAddAccessory = () => {
-        addAccessory({ quantity: 1, deviceType: null });
+        addAccessory({ quantity: 1, deviceTypeId: null });
     };
 
     const getDeviceBySerialNumberMutation = useMutation(getDeviceBySerialNumber);
@@ -158,6 +159,7 @@ const VoucherStep2 = () => {
                                         inputRef={field.ref}
                                         index={index}
                                         disabled={disabledFields && disabledFields[index]}
+                                        isStandardOption={input.isStandardOption}
                                     />
                                 )}
                             />
@@ -227,14 +229,15 @@ const VoucherStep2 = () => {
     const accessoryInputs = [
         {
             label: "סוג מכשיר",
-            name: "deviceType",
+            name: "deviceTypeId",
             type: "AutoComplete",
+            isStandardOption: true,
             validators: {
                 required: "יש למלא שדה זה.",
             },
             getOptionLabel: onGetOptionLabel,
             options: accessoriesTypes,
-            namePrefix: "accessories",
+            namePrefix: "accessoriesData",
         },
         {
             label: "כמות",
@@ -248,7 +251,7 @@ const VoucherStep2 = () => {
                     message: "כמות חייב להיות גדול או שווה ל-1",
                 },
             },
-            namePrefix: "accessories",
+            namePrefix: "accessoriesData",
         },
     ];
 
@@ -321,7 +324,7 @@ const VoucherStep2 = () => {
                     <DevicesInProjectTable
                         isLoading={isLoading}
                         filteredDevices={filteredDevices}
-                        selectedStatus={FIXED_OR_DEFFECTIVE}
+                        selectedStatus={FIXED_OR_DEFECTIVE}
                         rowSelection={rowSelection}
                         defaultPageSize={25}
                     />

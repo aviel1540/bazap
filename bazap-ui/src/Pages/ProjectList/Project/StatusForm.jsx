@@ -6,7 +6,8 @@ import { useForm } from "react-hook-form";
 import ControlledInput from "../../../Components/UI/CustomForm/ControlledInput";
 import { useProject } from "../../../Components/store/ProjectContext";
 import { DeviceStatuses } from "../../../Utils/utils";
-import { updateStatus } from "../../../Utils/deviceApi";
+import { updateStatus as deviceUpdateStatus } from "../../../Utils/deviceApi";
+import { updateStatus as accessoryUpdateStatus } from "../../../Utils/accessoryAPI";
 import CustomForm from "../../../Components/UI/CustomForm/CustomForm";
 
 const statuses = Object.values(DeviceStatuses);
@@ -32,14 +33,14 @@ const StatusForm = ({ status, onCancel, devices, clearSelectedRows, isClassified
     const methods = useForm();
     const { getValues, control, trigger } = methods;
 
-    const updateDeviceStatusMutation = useMutation(updateStatus, {
+    const updateDeviceStatusMutation = useMutation(deviceUpdateStatus, {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["devicesInProject", projectId] });
             clearSelectedRows();
         },
     });
 
-    const updateAccesoryStatusMutation = useMutation(updateStatus, {
+    const updateAccesoryStatusMutation = useMutation(accessoryUpdateStatus, {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["devicesInProject", projectId] });
             clearSelectedRows();

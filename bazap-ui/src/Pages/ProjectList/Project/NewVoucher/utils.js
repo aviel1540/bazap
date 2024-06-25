@@ -13,6 +13,7 @@ export const convertDeivcesToACOptions = (data) => {
 };
 
 export const onGetOptionLabel = (option) => {
+    if (option.value != null) return option.text;
     if (typeof option === "string") {
         return option;
     }

@@ -1,11 +1,12 @@
 import { Input, InputNumber, Space, Table, Tag, Typography } from "antd";
 import PropTypes from "prop-types";
-import { DeviceStatuses, FIXED_OR_DEFFECTIVE, RETURNED, ReturnedStatuses, tagColors } from "../../../../Utils/utils";
+import { DeviceStatuses, FIXED_OR_DEFECTIVE, RETURNED, ReturnedStatuses, tagColors } from "../../../../Utils/utils";
 import Loader from "../../../../Components/Layout/Loader";
 import EmptyData from "../../../../Components/UI/EmptyData";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAllUnits } from "../../../../Utils/unitAPI";
-import { updateNotes } from "../../../../Utils/deviceApi";
+import { updateNotes as deviceUpdateNotes } from "../../../../Utils/deviceApi";
+import { updateNotes as accessoryUpdateNotes } from "../../../../Utils/accessoryAPI";
 import { useProject } from "../../../../Components/store/ProjectContext";
 const { Text } = Typography;
 
@@ -31,24 +32,33 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
             return;
         }
         if ([DeviceStatuses.FIXED, DeviceStatuses.DEFECTIVE, DeviceStatuses.FINISHED].includes(status)) {
-            handleStatusChange(FIXED_OR_DEFFECTIVE);
+            handleStatusChange(FIXED_OR_DEFECTIVE);
             return;
         }
         handleStatusChange(status);
         return;
     };
     let timeoutId = null;
-    const updateDeviceNotesMutation = useMutation(updateNotes, {
+    const updateDeviceNotesMutation = useMutation(deviceUpdateNotes, {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["devicesInProject", projectId] });
         },
     });
-    const handleNotesChange = (event, id) => {
+    const updateAccessoryNotesMutation = useMutation(accessoryUpdateNotes, {
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["devicesInProject", projectId] });
+        },
+    });
+    const handleNotesChange = (event, id, isClassified) => {
         if (timeoutId) {
             clearTimeout(timeoutId);
         }
         timeoutId = setTimeout(() => {
-            updateDeviceNotesMutation.mutate({ id, notes: event.target.value });
+            if (isClassified) {
+                updateDeviceNotesMutation.mutate({ id, notes: event.target.value });
+            } else {
+                updateAccessoryNotesMutation.mutate({ id, notes: event.target.value });
+            }
         }, 300);
     };
     const columns = () => [
@@ -109,7 +119,7 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
             key: "quantity",
             sorter: (a, b) => a.deviceTypeId.deviceName?.length - b.deviceTypeId?.deviceName.length,
             sortDirections: ["descend"],
-            render: () => 1,
+            render: (record) => (record.deviceTypeId.isClassified ? 1 : record.quantity),
         },
         {
             title: "הערות",
@@ -117,30 +127,32 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
             key: "notes",
             // width: "30%",
             width: "40%",
-            render: (notes, record) => (
-                <>
-                    {!record.deviceTypeId.isClassified && (
-                        <Space.Compact>
-                            <InputNumber addonBefore="תקין" min={1} max={10} defaultValue={3} />
-                            <InputNumber addonBefore="מושבת" min={1} max={10} defaultValue={3} />
-                            <Input
-                                defaultValue={notes}
-                                disabled={ReturnedStatuses.includes(record.status)}
-                                onChange={(event) => handleNotesChange(event, record._id)}
-                                placeholder="הערות"
-                            />
-                        </Space.Compact>
-                    )}
-                    {record.deviceTypeId.isClassified && (
-                        <Input
-                            defaultValue={notes}
-                            disabled={ReturnedStatuses.includes(record.status)}
-                            onChange={(event) => handleNotesChange(event, record._id)}
-                            placeholder="הערות"
-                        />
-                    )}
-                </>
-            ),
+            render: (notes, record) => {
+                const notesInput = (
+                    <Input
+                        defaultValue={notes}
+                        disabled={ReturnedStatuses.includes(record.status)}
+                        onChange={(event) => handleNotesChange(event, record._id, record.isClassified)}
+                        placeholder="הערות"
+                    />
+                );
+                let status = "";
+                if (!record.deviceTypeId.isClassified) {
+                    status = "";
+                }
+                return (
+                    <>
+                        {!record.deviceTypeId.isClassified && (
+                            <Space.Compact>
+                                <InputNumber addonBefore="תקין" min={0} max={10} status="error" defaultValue={record.fix} />
+                                <InputNumber addonBefore="מושבת" min={0} max={10} status="error" defaultValue={record.defective} />
+                                {notesInput}
+                            </Space.Compact>
+                        )}
+                        {record.deviceTypeId.isClassified && notesInput}
+                    </>
+                );
+            },
         },
     ];
 

@@ -1,5 +1,5 @@
 import ReactApexChart from "react-apexcharts";
-import { DeviceStatuses, FIXED_OR_DEFFECTIVE, RETURNED } from "../../Utils/utils";
+import { DeviceStatuses, FIXED_OR_DEFECTIVE, RETURNED } from "../../Utils/utils";
 
 const ProjectChart = (props) => {
     const { data } = props;
@@ -10,7 +10,7 @@ const ProjectChart = (props) => {
             fontFamily: "Rubik, sans-serif",
         },
         colors: ["#F1BC00", "#5014D0", "#009EF7", "#47BE7D"],
-        labels: [DeviceStatuses.WAIT_TO_WORK, DeviceStatuses.AT_WORK, FIXED_OR_DEFFECTIVE, RETURNED],
+        labels: [DeviceStatuses.WAIT_TO_WORK, DeviceStatuses.AT_WORK, FIXED_OR_DEFECTIVE, RETURNED],
         legend: {
             show: true,
             position: "bottom",

@@ -65,7 +65,7 @@ export const DeviceStatuses = {
 
 export const ALL = "הכל";
 export const RETURNED = "הוחזר ליחידה";
-export const FIXED_OR_DEFFECTIVE = "תקין/מושבת";
+export const FIXED_OR_DEFECTIVE = "תקין/מושבת";
 
 export const tagColors = {
     "ממתין לעבודה": "default",

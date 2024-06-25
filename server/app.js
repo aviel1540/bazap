@@ -10,6 +10,7 @@ const technicianRouter = require("./routers/technicianRouter");
 const unitsRouter = require("./routers/unitsRouter");
 const voucherRouter = require("./routers/voucherRouter");
 const passwordRouter = require("./routers/passwordRouter");
+const accessoryRouter = require("./routers/accessoriesRouter")
 const passwordController = require("./controllers/PasswordController");
 
 // const cors = require("cors");
@@ -44,6 +45,7 @@ app.use(
 );
 app.use(cors());
 app.use("/api/device/", deviceRouter);
+app.use("/api/accessory/", accessoryRouter);
 app.use("/api/project/", projectRouter);
 app.use("/api/deviceType/", deviceTypeRouter);
 app.use("/api/technician/", technicianRouter);

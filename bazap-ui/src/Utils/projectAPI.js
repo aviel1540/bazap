@@ -31,3 +31,9 @@ export const updateProject = async (project) => {
 export const closeProject = async (id) => {
     return await projectAPI.patch(`/close-project/${id}`);
 };
+
+export const getAllProductsInProject = async ({ queryKey }) => {
+    // eslint-disable-next-line no-unused-vars
+    const [_, id] = queryKey;
+    return await projectAPI.get(`get-all-products-in-project/${id}`);
+};
