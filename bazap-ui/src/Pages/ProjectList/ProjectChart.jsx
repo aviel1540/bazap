@@ -3,11 +3,25 @@ import { DeviceStatuses, FIXED_OR_DEFECTIVE, RETURNED } from "../../Utils/utils"
 
 const ProjectChart = (props) => {
     const { data } = props;
-    const series = [data.totalWaiting, data.totalInWork, data.totalFinished, data.totalOut];
+    const series = [
+        {
+            name: "מסווגים",
+            data: [data.totalWaiting, data.totalInWork, data.totalFinished, data.totalOut],
+        },
+        {
+            name: 'צל"מ',
+            data: [data.accessoriesWaiting, data.accessoriesInWork, data.accessoriesFinished, data.accessoriesOut],
+        },
+    ];
+
     const options = {
         chart: {
-            type: "donut",
+            type: "bar",
+            stacked: true,
             fontFamily: "Rubik, sans-serif",
+            toolbar: {
+                show: false,
+            },
         },
         colors: ["#F1BC00", "#5014D0", "#009EF7", "#47BE7D"],
         labels: [DeviceStatuses.WAIT_TO_WORK, DeviceStatuses.AT_WORK, FIXED_OR_DEFECTIVE, RETURNED],
@@ -15,46 +29,18 @@ const ProjectChart = (props) => {
             show: true,
             position: "bottom",
         },
+        plotOptions: {
+            bar: {
+                horizontal: false,
+                columnWidth: "50%",
+            },
+        },
         dataLabels: {
             enabled: true,
-            formatter: function (val) {
-                return `${val.toFixed(0)}%`;
-            },
-            dropShadow: {
-                enabled: false,
-            },
         },
-        plotOptions: {
-            pie: {
-                donut: {
-                    size: "65%",
-                    labels: {
-                        show: true,
-                        total: {
-                            show: true,
-                            showAlways: true,
-                            label: 'סה"כ מכשירים',
-                            formatter: function () {
-                                return data.totalDevices;
-                            },
-                        },
-                    },
-                },
-            },
+        xaxis: {
+            categories: [DeviceStatuses.WAIT_TO_WORK, DeviceStatuses.AT_WORK, FIXED_OR_DEFECTIVE, RETURNED],
         },
-        responsive: [
-            {
-                breakpoint: 480,
-                options: {
-                    chart: {
-                        width: 200,
-                    },
-                    legend: {
-                        position: "bottom",
-                    },
-                },
-            },
-        ],
         tooltip: {
             y: {
                 formatter: function (val) {
@@ -64,7 +50,7 @@ const ProjectChart = (props) => {
         },
     };
 
-    return <ReactApexChart options={options} series={series} type="donut" />;
+    return <ReactApexChart options={options} series={series} type="bar" />;
 };
 
 export default ProjectChart;

@@ -36,3 +36,7 @@ export const updateNotes = async (device) => {
     const { id } = device;
     return await deviceAPI.patch(`/update-note/${id}`, device);
 };
+
+export const deleteDevice = async (deviceId) => {
+    return await deviceAPI.delete(`delete-device/${deviceId}`);
+};

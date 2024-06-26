@@ -34,37 +34,55 @@ export const addVoucherOut = async (voucher) => {
 
 export const exportVoucherToExcel = async (voucherId) => {
     const voucher = await getVoucherById(voucherId);
+    const devices = [];
+    voucher.deviceList.forEach((device) => {
+        devices.push({
+            serialNumber: device.serialNumber,
+            deviceType: device.deviceTypeId.deviceName,
+            catalogNumber: device.deviceTypeId.catalogNumber,
+            notes: device.notes,
+            quantity: "1",
+        });
+    });
+    voucher.accessoriesList.forEach((accessory) => {
+        devices.push({
+            serialNumber: "",
+            deviceType: accessory.deviceTypeId.deviceName,
+            catalogNumber: accessory.deviceTypeId.catalogNumber,
+            notes: `${accessory.notes ? accessory.notes + " |" : ""} תקין - ${accessory.fix} | מושבת - ${accessory.defective}`,
+            quantity: accessory.quantity.toString(),
+        });
+    });
+    // voucher.
     const formattedVoucher = {
         project: voucher.project.projectName,
         receivingUnit: voucher.type ? BAZAP : voucher.unit.unitsName,
         issuingUnit: voucher.type ? voucher.unit.unitsName : BAZAP,
         date: voucher.date,
         voucherNumber: voucher.voucherNumber,
-        devices: voucher.deviceList.map((device) => {
-            return {
-                serialNumber: device.serialNumber,
-                deviceType: device.deviceTypeId.deviceName,
-                catalogNumber: device.deviceTypeId.catalogNumber,
-                notes: device.notes,
-            };
-        }),
+        devices: devices,
         issuingTechnician: voucher.arrivedBy,
         receivingTechnician: voucher.receivedBy,
     };
-    const response = await ExportAPI.post("/ExcelExport", formattedVoucher, {
-        headers: {
-            accept: "*/*",
-            "Content-Type": "application/json",
-        },
-        responseType: "blob",
-    });
-    const blob = new Blob([response.data]);
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    let fileName = `שובר_${voucher.voucherNumber}_${voucher.project.projectName}_${voucher.type ? "קבלה" : "ניפוק"}.xlsx`;
-    link.download = fileName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(link.href);
+    try {
+        const response = await ExportAPI.post("/ExcelExport", formattedVoucher, {
+            headers: {
+                accept: "*/*",
+                "Content-Type": "application/json",
+            },
+            responseType: "blob",
+        });
+
+        const blob = new Blob([response.data]);
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        let fileName = `שובר_${voucher.voucherNumber}_${voucher.project.projectName}_${voucher.type ? "קבלה" : "ניפוק"}.xlsx`;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+    } catch (error) {
+        console.log(error);
+    }
 };

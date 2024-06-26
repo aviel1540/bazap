@@ -23,6 +23,13 @@ exports.findVoucherById = async (checkVoucherId) => {
                 path: "deviceTypeId",
                 model: "DeviceType",
             },
+        })
+        .populate({
+            path: "accessoriesList",
+            populate: {
+                path: "deviceTypeId",
+                model: "DeviceType",
+            },
         });
 };
 

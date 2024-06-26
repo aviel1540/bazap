@@ -14,3 +14,8 @@ export const updateNotes = async (accessory) => {
     const { id } = accessory;
     return await AccessoryAPI.patch(`/update-note/${id}`, accessory);
 };
+
+export const updateFixDefective = async (accessory) => {
+    const { id } = accessory;
+    return await AccessoryAPI.patch(`/update-fix-defective/${id}`, accessory);
+};

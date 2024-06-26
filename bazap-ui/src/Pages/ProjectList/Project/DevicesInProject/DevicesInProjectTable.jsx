@@ -6,7 +6,7 @@ import EmptyData from "../../../../Components/UI/EmptyData";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAllUnits } from "../../../../Utils/unitAPI";
 import { updateNotes as deviceUpdateNotes } from "../../../../Utils/deviceApi";
-import { updateNotes as accessoryUpdateNotes } from "../../../../Utils/accessoryAPI";
+import { updateNotes as accessoryUpdateNotes, updateFixDefective } from "../../../../Utils/accessoryAPI";
 import { useProject } from "../../../../Components/store/ProjectContext";
 const { Text } = Typography;
 
@@ -49,6 +49,12 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
             queryClient.invalidateQueries({ queryKey: ["devicesInProject", projectId] });
         },
     });
+    const updateAccessoryFixDefectiveMutation = useMutation(updateFixDefective, {
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["devicesInProject", projectId] });
+        },
+    });
+
     const handleNotesChange = (event, id, isClassified) => {
         if (timeoutId) {
             clearTimeout(timeoutId);
@@ -59,6 +65,18 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
             } else {
                 updateAccessoryNotesMutation.mutate({ id, notes: event.target.value });
             }
+        }, 300);
+    };
+
+    const handleFixOrDefectiveChange = (value, id, field, otherValue) => {
+        if (timeoutId) {
+            clearTimeout(timeoutId);
+        }
+
+        timeoutId = setTimeout(() => {
+            const otherField = field == "fix" ? "defective" : "fix";
+            const data = { id, [field]: value, [otherField]: otherValue };
+            updateAccessoryFixDefectiveMutation.mutate(data);
         }, 300);
     };
     const columns = () => [
@@ -132,20 +150,39 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
                     <Input
                         defaultValue={notes}
                         disabled={ReturnedStatuses.includes(record.status)}
-                        onChange={(event) => handleNotesChange(event, record._id, record.isClassified)}
+                        onChange={(event) => handleNotesChange(event, record._id, record.deviceTypeId.isClassified)}
                         placeholder="הערות"
                     />
                 );
                 let status = "";
                 if (!record.deviceTypeId.isClassified) {
                     status = "";
+                    if (record.fix != 0 || record.defective != 0) {
+                        status = record.fix + record.defective != record.quantity && "error";
+                    }
                 }
                 return (
                     <>
                         {!record.deviceTypeId.isClassified && (
                             <Space.Compact>
-                                <InputNumber addonBefore="תקין" min={0} max={10} status="error" defaultValue={record.fix} />
-                                <InputNumber addonBefore="מושבת" min={0} max={10} status="error" defaultValue={record.defective} />
+                                <InputNumber
+                                    addonBefore="תקין"
+                                    name="fix"
+                                    min={0}
+                                    max={record.quantity}
+                                    status={status}
+                                    onChange={(value) => handleFixOrDefectiveChange(value, record._id, "fix", record.defective)}
+                                    defaultValue={record.fix}
+                                />
+                                <InputNumber
+                                    addonBefore="מושבת"
+                                    name="defective"
+                                    min={0}
+                                    max={record.quantity}
+                                    status={status}
+                                    onChange={(value) => handleFixOrDefectiveChange(value, record._id, "defective", record.fix)}
+                                    defaultValue={record.defective}
+                                />
                                 {notesInput}
                             </Space.Compact>
                         )}

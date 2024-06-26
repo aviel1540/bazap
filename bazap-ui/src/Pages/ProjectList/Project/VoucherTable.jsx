@@ -75,6 +75,11 @@ const VoucherTable = () => {
         {
             title: "סוג שובר",
             key: "type",
+            filters: [
+                { text: "קבלה", value: true },
+                { text: "ניפוק", value: false },
+            ],
+            onFilter: (value, record) => record.type == value,
             render: ({ type }) => {
                 const label = type ? "קבלה" : "ניפוק";
                 const color = type ? "#ffc700" : "#50cd89";
@@ -92,8 +97,13 @@ const VoucherTable = () => {
             key: "receivedBy",
         },
         {
-            title: 'סה"כ מכשירים',
+            title: 'סה"כ מסווגים',
             render: ({ deviceList }) => deviceList.length,
+            key: "deviceList",
+        },
+        {
+            title: 'סה"כ צל"מ',
+            render: ({ accessoriesList }) => accessoriesList.length,
             key: "deviceList",
         },
         {

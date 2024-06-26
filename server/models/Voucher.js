@@ -6,7 +6,7 @@ const Schema = mongoose.Schema;
 const voucherSchema = new Schema({
     voucherNumber: {
         type: String,
-        trim: true
+        trim: true,
     },
     unit: {
         type: Schema.Types.ObjectId,
@@ -43,6 +43,12 @@ const voucherSchema = new Schema({
         {
             type: Schema.Types.ObjectId,
             ref: "Device",
+        },
+    ],
+    accessoriesList: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: "Accessories",
         },
     ],
 });

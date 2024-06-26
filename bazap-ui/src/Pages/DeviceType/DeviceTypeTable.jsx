@@ -56,14 +56,14 @@ const DeviceTypeTable = () => {
     };
 
     const menuActions = [
-        {
-            key: "1",
-            label: "ערוך",
-            icon: <BorderColorIcon />,
-            handler: (data) => {
-                onEditUnitHandler(data._id);
-            },
-        },
+        // {
+        //     key: "1",
+        //     label: "ערוך",
+        //     icon: <BorderColorIcon />,
+        //     handler: (data) => {
+        //         onEditUnitHandler(data._id);
+        //     },
+        // },
         {
             key: "2",
             label: "מחק",

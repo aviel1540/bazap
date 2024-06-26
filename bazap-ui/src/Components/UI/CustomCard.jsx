@@ -1,15 +1,14 @@
-import { Card, CardContent, CardHeader } from "@mui/material";
+// import { Card, CardContent, CardHeader } from "@mui/material";
+import { Card } from "antd";
+import PropTypes from "prop-types";
 
 const CustomCard = ({ title, action, children }) => {
     return (
-        <Card>
-            <CardHeader action={action} titleTypographyProps={{ variant: "h5" }} title={title} />
-            <CardContent>{children}</CardContent>
+        <Card title={title} extra={action} bordered={false}>
+            {children}
         </Card>
     );
 };
-
-import PropTypes from "prop-types";
 
 CustomCard.propTypes = {
     title: PropTypes.any,

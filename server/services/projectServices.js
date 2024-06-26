@@ -3,7 +3,6 @@ const Project = require("../models/Project");
 const Accessories = require("../models/Accessory");
 const { DeviceStatus } = require("../constants/DeviceStatus");
 
-
 exports.addNewProject = async (checkProjectName) => {
     return new Project({
         projectName: checkProjectName,
@@ -12,10 +11,10 @@ exports.addNewProject = async (checkProjectName) => {
 exports.findAllProjects = async () =>
     await Project.find().populate({
         path: "vouchersList",
-        populate: {
-            path: "deviceList",
-            model: "Device",
-        },
+        populate: [
+            { path: "deviceList", model: "Device" },
+            { path: "accessoriesList", model: "Accessories" },
+        ],
     });
 
 exports.findProjectById = async (checkProjectId) =>
@@ -36,28 +35,30 @@ exports.updateProjectDetails = async (request) => {
     });
 };
 
-exports.updateDateToClose = async(projectId) => {
+exports.updateDateToClose = async (projectId) => {
     return await Project.findByIdAndUpdate(projectId, {
         endDate: Date.now(),
-        finished: true
-    })
-}
+        finished: true,
+    });
+};
 
-exports.updateDateToRestart = async(projectId) => {
+exports.updateDateToRestart = async (projectId) => {
     return await Project.findByIdAndUpdate(projectId, {
         endDate: null,
-        finished: false
-    })
-}
+        finished: false,
+    });
+};
 
-exports.deleteProjectById = async(projectId) => await Project.findByIdAndRemove(projectId);
+exports.deleteProjectById = async (projectId) => await Project.findByIdAndRemove(projectId);
 
+exports.findAllAccessoriesByProject = async (projectId) =>
+    await Accessories.find({ project: projectId }).populate("unit").populate("deviceTypeId");
 
-exports.findAllAccessoriesByProject = async (projectId) => await Accessories.find({ project: projectId }).populate("unit").populate("deviceTypeId");
-
-exports.findAllAccessoriesInLab = async (projectId) => await Accessories.find({ project: projectId, status: DeviceStatus.AT_WORK || DeviceStatus.WAIT_TO_WORK }).populate("unit").populate("deviceTypeId");
+exports.findAllAccessoriesInLab = async (projectId) =>
+    await Accessories.find({ project: projectId, status: DeviceStatus.AT_WORK || DeviceStatus.WAIT_TO_WORK })
+        .populate("unit")
+        .populate("deviceTypeId");
 
 exports.findAllDevicesByProject = async (projectId) => await Device.find({ project: projectId }).populate("unit").populate("deviceTypeId");
 
 exports.findAllDevicesInLab = async (projectId) => await Device.find({ project: projectId, voucherOut: null }).populate("deviceTypeId");
-

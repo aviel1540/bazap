@@ -10,6 +10,7 @@ const StatusFilter = ({ checkIfStatusExists, handleStatusChange, selectedStatus 
         DeviceStatuses.FIXED,
         DeviceStatuses.DEFECTIVE,
         DeviceStatuses.FINISHED,
+        DeviceStatuses.FINISHED_OUT,
     ];
 
     const getStatusesOptions = () => {

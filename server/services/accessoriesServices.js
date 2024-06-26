@@ -16,25 +16,32 @@ exports.addNewAccessories = async (request) => {
 exports.deleteAccessoriesById = async (checkAccessoriesId) => await Accessory.findByIdAndRemove(checkAccessoriesId);
 
 exports.updateStatus = async (request) => {
-
     const data = await Accessory.findByIdAndUpdate(request.checkAccessoryId, {
         status: request.checkStatus,
     });
     return data;
-
 };
 
-exports.updateNotes = async(request) => {
+exports.updateReturnAccessory = async (request) => {
+    const { id, voucherId, status } = request;
+
+    return await Accessory.findByIdAndUpdate(id, {
+        voucherOut: voucherId,
+        status: status,
+    });
+};
+
+exports.updateNotes = async (request) => {
     const data = await Accessory.findByIdAndUpdate(request.checkAccessoryId, {
         notes: request.checkNotes,
     });
     return data;
-}
+};
 
-exports.updateFixDefective = async(request) => {
+exports.updateFixDefective = async (request) => {
     const data = await Accessory.findByIdAndUpdate(request.checkAccessoryId, {
         fix: request.checkFix,
         defective: request.checkDefective,
     });
     return data;
-}
+};

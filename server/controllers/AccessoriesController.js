@@ -47,7 +47,7 @@ exports.updateStatus = async (req, res) => {
                 break;
             case DeviceStatus.FINISHED:
                 if (accessory.quantity == accessory.fix + accessory.defective) {
-                    await accessoriesService.changeStatus({ checkAccessoryId, checkStatus });
+                    await accessoriesService.updateStatus({ checkAccessoryId, checkStatus });
                 } else {
                     return res.status(400).json({ message: "לא ניתן לשנות סטטוס אם כל המכשירים לא טופלו" });
                 }
@@ -97,7 +97,7 @@ exports.updateFixDefective = async (req, res) => {
         const checkFix = validation.addSlashes(fix);
         const checkDefective = validation.addSlashes(defective);
 
-        accessory = await accessoriesService.updateNotes({checkAccessoryId, checkFix, checkDefective})
+        accessory = await accessoriesService.updateFixDefective({checkAccessoryId, checkFix, checkDefective})
         if(!accessory) return res.status(404).json({message: "לא נמצא צלמ לעידכון"})
         
         return res.status(201).json({message:"העידכון בוצע בהצלחה !"})

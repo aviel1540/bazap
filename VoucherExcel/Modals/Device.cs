@@ -12,5 +12,7 @@ namespace VoucherExcel.Modals
 		public string? CatalogNumber { get; set; }
 		[Voucher(rowPosition: 0, columnPosition: "I")]
 		public string? Notes { get; set; }
+		[Voucher(rowPosition: 0, columnPosition: "C")]
+		public string? Quantity { get; set; }
 	}
 }

@@ -46,7 +46,11 @@ const VoucherStep2 = () => {
         enabled: false,
         onSuccess: (data) => {
             let newFilteredDevices = data.filter((device) => {
-                return device.status == DeviceStatuses.FIXED || device.status == DeviceStatuses.DEFECTIVE;
+                return (
+                    device.status == DeviceStatuses.FIXED ||
+                    device.status == DeviceStatuses.DEFECTIVE ||
+                    device.status == DeviceStatuses.FINISHED
+                );
             });
             setFilteredDevices(newFilteredDevices);
             return newFilteredDevices;
@@ -75,7 +79,8 @@ const VoucherStep2 = () => {
     useEffect(() => {
         if (isDeliveryVoucher) {
             refetch();
-            const selectedIds = getValues().devicesIds;
+            let values = getValues();
+            const selectedIds = [...values.devicesIds, ...values.accessoriesIds];
             setSelectedRows(selectedIds);
         }
     }, [isDeliveryVoucher, getValues, setSelectedRows, refetch]);
@@ -186,8 +191,15 @@ const VoucherStep2 = () => {
         const hasDifferentClassification = uniqueIsClassified.size >= 2;
 
         if (!hasTwoDifferentUnits && !hasDifferentClassification) {
+            const classifiedDevicesIds = selectedDevices.filter((device) => device.deviceTypeId.isClassified).map((device) => device._id);
+
+            const nonClassifiedAccessoriesIds = selectedDevices
+                .filter((device) => !device.deviceTypeId.isClassified)
+                .map((device) => device._id);
+
             setSelectedRows(newSelectedRowKeys);
-            setValue("devicesIds", newSelectedRowKeys);
+            setValue("devicesIds", classifiedDevicesIds);
+            setValue("accessoriesIds", nonClassifiedAccessoriesIds);
         } else {
             onAlert("אין אפשרות לבחור מכשירים שלא מאותה יחידה או לבחור צל\"מ או צ' ביחד", error, true);
         }
@@ -297,7 +309,7 @@ const VoucherStep2 = () => {
                                 key: "Devices",
                             },
                             {
-                                label: `צל"מ`,
+                                label: `צל"מ (${accessories.length})`,
                                 children: (
                                     <>
                                         <Row gutter={[10, 10]}>{combinedFields(accessories, accessoryInputs, removeAccessory)}</Row>

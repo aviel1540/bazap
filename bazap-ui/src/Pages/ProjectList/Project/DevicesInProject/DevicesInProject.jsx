@@ -24,7 +24,8 @@ const ArrivedDevices = () => {
     const [searchParam, setSearchParam] = useState("");
     const [selectedStatus, setSelectedStatus] = useState(ALL);
     const [selectedRows, setSelectedRows] = useState([]);
-
+    const [selectedDevicesIds, setSelectedDevicesIds] = useState([]);
+    const [selectedAccessoriesIds, setSelectedAccessoriesIds] = useState([]);
     const { isLoading, data: devices } = useQuery({
         queryKey: ["devicesInProject", projectId],
         queryFn: getAllProductsInProject,
@@ -133,11 +134,13 @@ const ArrivedDevices = () => {
         const formDefaultValues = {
             type: "false",
             unit: filteredDevices[0].unit._id,
-            devicesIds: selectedRows,
+            devicesIds: selectedDevicesIds,
+            accessoriesIds: selectedAccessoriesIds,
         };
         onShow({
             title: "שובר חדש",
             name: "voucherStepper",
+            width: "60%",
             body: <VoucherStepper onCancel={() => onHide("voucherStepper")} projectId={projectId} formDefaultValues={formDefaultValues} />,
         });
     };
@@ -154,9 +157,10 @@ const ArrivedDevices = () => {
 
         const classifiedDevicesValid = classifiedDevices.every((device) => device.status === "תקין" || device.status === "מושבת");
         const nonClassifiedDevicesValid = nonClassifiedDevices.every((device) => device.status === "הסתיים");
-
         if (!hasTwoDifferentUnits && (!hasDifferentClassification || (classifiedDevicesValid && nonClassifiedDevicesValid))) {
             setSelectedRows(newSelectedRowKeys);
+            setSelectedDevicesIds(classifiedDevices.map((device) => device._id));
+            setSelectedAccessoriesIds(nonClassifiedDevices.map((accessory) => accessory._id));
         } else {
             onAlert("אין אפשרות לבחור מכשירים שלא מאותה יחידה או לבחור צל\"ם או צ' ביחד", error, true);
         }
@@ -205,7 +209,7 @@ const ArrivedDevices = () => {
             </Box>
             <DevicesInProjectTable
                 filteredDevices={filteredDevices}
-                rowSelection={selectedStatus != ALL && selectedStatus != RETURNED ? rowSelection : undefined}
+                rowSelection={![ALL, RETURNED, DeviceStatuses.FINISHED_OUT].includes(selectedStatus) ? rowSelection : undefined}
                 defaultPageSize={25}
                 handleStatusChange={handleStatusChange}
                 isLoading={isLoading}

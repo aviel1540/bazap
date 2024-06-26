@@ -93,7 +93,7 @@ exports.addNewVoucherIn = async (req, res) => {
                 });
 
                 await newAccessory.save();
-                newVoucher.deviceList.push(newAccessory);
+                newVoucher.accessoriesList.push(newAccessory);
             }
         }
 
@@ -149,6 +149,7 @@ exports.addNewVoucherOut = async (req, res) => {
         receivedBy: escape(req.body.receivedBy),
     };
     const devicesIds = req.body.devicesIds;
+    const accessoriesIds = req.body.accessoriesIds;
     let project;
     try {
         const checkProjectId = validation.addSlashes(projectId);
@@ -157,9 +158,13 @@ exports.addNewVoucherOut = async (req, res) => {
         const { newVoucher, autoNumber } = await createVoucher(detailes, false, checkProjectId);
         const updatedAutoNumber = await autoNumberService.findAutoNumberAndUpdate(autoNumber._id, number);
         await updatedAutoNumber.save();
-        if (!devicesIds || !Array.isArray(devicesIds) || devicesIds.length === 0) {
-            return res.status(400).json({ message: "לא נמצאו מכשירים" });
+        if (
+            (!accessoriesIds || !Array.isArray(accessoriesIds) || accessoriesIds.length === 0) &&
+            (!devicesIds || !Array.isArray(devicesIds) || devicesIds.length === 0)
+        ) {
+            return res.status(400).json({ message: "יש לבחור מכשירים/צלמ" });
         }
+        const voucherId = newVoucher._id.toHexString();
         const devices = devicesIds.map(async (deviceId) => {
             const checkDeviceId = validation.addSlashes(escape(deviceId));
             const device = await deviceService.findDeviceById(checkDeviceId);
@@ -171,8 +176,6 @@ exports.addNewVoucherOut = async (req, res) => {
             if (!device.voucherIn) {
                 return res.status(401).json({ message: "אין למכשיר שובר כניסה  - לא ניתן לנפק" });
             }
-            const voucherId = newVoucher._id.toHexString();
-
             const deviceStatus = device.status;
             await deviceService.updateReturnDevice({
                 deviceId,
@@ -182,6 +185,22 @@ exports.addNewVoucherOut = async (req, res) => {
             newVoucher.deviceList.push(deviceId);
         });
         await Promise.all(devices);
+
+        const accessories = accessoriesIds.map(async (accessoryId) => {
+            const checkAccessoryId = validation.addSlashes(escape(accessoryId));
+            const accessory = await accessoryService.findAccessoriesById(checkAccessoryId);
+            if (!accessory) return res.status(400).json({ message: 'לא נמצא צל"מ' });
+            if (accessory.status != DeviceStatus.FINISHED) {
+                return res.status(401).json({ message: 'יש לדווח סטטוס הסתיים לצל"מ לפני ניפוק' });
+            }
+            if (!accessory.voucherIn) {
+                return res.status(401).json({ message: 'אין לצל"מ שובר קבלה  - לא ניתן לנפק' });
+            }
+            await accessoryService.updateReturnAccessory({ id: accessoryId, voucherId, status: DeviceStatus.FINISHED_OUT });
+            newVoucher.accessoriesList.push(accessoryId);
+        });
+        await Promise.all(accessories);
+
         await newVoucher.save();
         project.vouchersList.push(newVoucher);
         await project.save(newVoucher);
