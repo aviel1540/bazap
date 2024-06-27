@@ -7,3 +7,10 @@ exports.addDeviceType = async (deviceType) => {
 };
 
 exports.deleteDeviceType = async (deviceTypeId) => await DeviceType.findByIdAndDelete(deviceTypeId);
+
+exports.updateDetailes = async(request) => {
+    return DeviceType.findByIdAndUpdate(request.checkDeviceTypeId, {
+        deviceName: request.checkName, 
+        catalogNumber: request.checkCatalogNumber
+    })
+}

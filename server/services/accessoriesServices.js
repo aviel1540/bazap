@@ -45,3 +45,5 @@ exports.updateFixDefective = async (request) => {
     });
     return data;
 };
+
+exports.deleteAccessoryById = async (checkAccessoryId) => await Accessory.findByIdAndDelete(checkAccessoryId);

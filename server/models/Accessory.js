@@ -45,10 +45,10 @@ const accessoriesSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: "Voucher",
     },
-    voucherOut: [{ 
+    voucherOut: { 
         type: Schema.Types.ObjectId,
         ref: "Voucher",
-    }],
+    },
     project: {
         type: Schema.Types.ObjectId,
         ref: "Project",

@@ -78,10 +78,10 @@ exports.updateNote = async (req, res) => {
         const checkAccessoryId = validation.addSlashes(accessoryId);
         const checkNotes = validation.addSlashes(notes);
 
-        accessory = await accessoriesService.updateNotes({checkAccessoryId, checkNotes})
-        if(!accessory) return res.status(404).json({message: "לא נמצא צלמ לעידכון"})
-        
-        return res.status(201).json({message:"העידכון בוצע בהצלחה !"})
+        accessory = await accessoriesService.updateNotes({ checkAccessoryId, checkNotes })
+        if (!accessory) return res.status(404).json({ message: "לא נמצא צלמ לעידכון" })
+
+        return res.status(201).json({ message: "העידכון בוצע בהצלחה !" })
     } catch (err) {
 
     }
@@ -97,11 +97,47 @@ exports.updateFixDefective = async (req, res) => {
         const checkFix = validation.addSlashes(fix);
         const checkDefective = validation.addSlashes(defective);
 
-        accessory = await accessoriesService.updateFixDefective({checkAccessoryId, checkFix, checkDefective})
-        if(!accessory) return res.status(404).json({message: "לא נמצא צלמ לעידכון"})
-        
-        return res.status(201).json({message:"העידכון בוצע בהצלחה !"})
+        accessory = await accessoriesService.updateFixDefective({ checkAccessoryId, checkFix, checkDefective })
+        if (!accessory) return res.status(404).json({ message: "לא נמצא צלמ לעידכון" })
+
+        return res.status(201).json({ message: "העידכון בוצע בהצלחה !" })
     } catch (err) {
+        return res.status(500).json({ message: err.message });
+
+    }
+}
+
+exports.deleteAccessory = async (req, res) => {
+    const accessoryId = escape(req.params.id);
+    let accessory;
+    let voucherInFound;
+    let voucherOutFound;
+    try {
+        if (!accessoryId) return res.status(400).json({ message: "נא למלא את כל השדות." });
+        const checkAccessoryId = validation.addSlashes(accessoryId);
+        accessory = accessoriesService.findAccessoriesById(checkAccessoryId)
+        if (!accessory) return res.status(400).json({ message: "לא נמצא מכשיר למחיקה" });
+        
+        if(accessory.voucherIn > 0) {
+            voucherInFound = await voucherService.findVoucherById(accessory.voucherIn)
+        }
+        if (!voucherInFound) return res.status(401).json({ messgae: "לא נמצא שובר !" });
+        voucherInFound.accessoriesList = voucherInFound.accessoriesList.filter((accessory) => accessory.id != checkAccessoryId);
+        voucherInFound.save();
+
+        if(accessory.voucherOut > 0) {
+            voucherOutFound = await voucherService.findVoucherById(accessory.voucherOut)
+        }
+        if (!voucherOutFound) return res.status(401).json({ messgae: "לא נמצא שובר !" });
+        voucherOutFound.accessoriesList = voucherOutFound.accessoriesList.filter((accessory) => accessory.id != checkAccessoryId);
+        voucherOutFound.save();
+        
+        await accessoriesService.deleteAccessoryById(checkAccessoryId)
+
+        return res.status(201).json();
+
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
 
     }
 }

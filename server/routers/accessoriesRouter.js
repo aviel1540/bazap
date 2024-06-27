@@ -12,5 +12,7 @@ router.patch("/update-notes/:id", accessoryController.updateNote);
 
 router.patch("/update-fix-defective/:id", accessoryController.updateFixDefective);
 
+router.delete("/delete-accessory/:id", accessoryController.deleteAccessory);
+
 
 module.exports = router;
