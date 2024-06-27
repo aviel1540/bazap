@@ -126,12 +126,12 @@ exports.deleteVoucher = async (req, res) => {
         const voucherId = escape(req.params.id);
         const voucher = await voucherService.findVoucherById(voucherId);
         const project = voucher.project;
-        if (voucher.deviceList.length == 0) {
+        if (voucher.deviceList.length == 0 && voucher.accessoriesList.length == 0) {
             project.vouchersList = project.vouchersList.filter((item) => item._id != voucherId);
             project.save();
             await voucherService.deleteVoucher(voucherId);
         } else {
-            return res.status(401).json({ message: "אי אפשר למחוק שובר עם מכשירים" });
+            return res.status(401).json({ message: 'אי אפשר למחוק שובר עם מסווגים/צל"מ' });
         }
 
         return res.status(200).json();

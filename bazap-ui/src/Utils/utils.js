@@ -76,4 +76,4 @@ export const tagColors = {
     "מושבת - הוחזר ליחידה": "success",
 };
 
-export const ReturnedStatuses = [DeviceStatuses.DEFECTIVE_RETURN, DeviceStatuses.FIXED_RETURN];
+export const ReturnedStatuses = [DeviceStatuses.DEFECTIVE_RETURN, DeviceStatuses.FIXED_RETURN, DeviceStatuses.FINISHED_OUT];

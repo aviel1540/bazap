@@ -269,7 +269,7 @@ const VoucherStep2 = () => {
 
     return (
         <>
-            <ImportExcel
+            {/* <ImportExcel
                 fields={deviceFields}
                 getValues={getValues}
                 append={addDevice}
@@ -277,7 +277,7 @@ const VoucherStep2 = () => {
                 setDisabledFields={setDisabledFields}
                 isDeliveryVoucher={isDeliveryVoucher}
                 setSelectedRowKeys={setSelectedRows}
-            />
+            /> */}
             <Box padding={2}>
                 {isLoading && <Loader />}
                 {!isLoading && !isDeliveryVoucher && (
@@ -334,6 +334,7 @@ const VoucherStep2 = () => {
                 )}
                 {isDeliveryVoucher && (
                     <DevicesInProjectTable
+                        isActionsHidden={true}
                         isLoading={isLoading}
                         filteredDevices={filteredDevices}
                         selectedStatus={FIXED_OR_DEFECTIVE}

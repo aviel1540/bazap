@@ -8,11 +8,12 @@ import { PlusOutlined } from "@ant-design/icons";
 const DeviceType = () => {
     const { onShow, onHide } = useCustomModal();
 
-    const showModal = () => {
+    const showModal = (event, data) => {
+        const isEdit = data != undefined;
         onShow({
             title: "סוג מוצר חדש",
             name: "deviceType",
-            body: <DeviceTypeForm onCancel={() => onHide("deviceType")} />,
+            body: <DeviceTypeForm formValues={data} onCancel={() => onHide("deviceType")} isEdit={isEdit} />,
         });
     };
 
@@ -25,7 +26,7 @@ const DeviceType = () => {
             }
             title="סוגי מכשירים"
         >
-            <DeviceTypeTable />
+            <DeviceTypeTable onEdit={showModal} />
         </CustomCard>
     );
 };

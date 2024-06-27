@@ -16,3 +16,12 @@ export const addDeviceType = async (deviceType) => {
 export const deleteDeviceType = async (deviceTypeId) => {
     return await deviceTypeApi.delete("delete-deviceType", { data: { deviceTypeId: deviceTypeId } });
 };
+
+export const updateDeviceType = async (deviceType) => {
+    try {
+        const { id } = deviceType;
+        return await deviceTypeApi.patch(`/update-deviceType/${id}`, deviceType);
+    } catch (error) {
+        console.log(error);
+    }
+};

@@ -19,3 +19,7 @@ export const updateFixDefective = async (accessory) => {
     const { id } = accessory;
     return await AccessoryAPI.patch(`/update-fix-defective/${id}`, accessory);
 };
+
+export const deleteAccessory = async (accessoryId) => {
+    return await AccessoryAPI.delete(`delete-accessory/${accessoryId}`);
+};

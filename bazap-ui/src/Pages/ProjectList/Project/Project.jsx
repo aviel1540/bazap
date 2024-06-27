@@ -76,7 +76,7 @@ const Project = () => {
                                 <Descriptions items={items} />
                             </Card>
                         </Badge.Ribbon>
-                        <ArrivedDevices />
+                        <ArrivedDevices  />
                         <VoucherTable />
                     </Stack>
                 </Content>

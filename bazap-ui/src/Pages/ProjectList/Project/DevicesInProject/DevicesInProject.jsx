@@ -208,6 +208,7 @@ const ArrivedDevices = () => {
                 )}
             </Box>
             <DevicesInProjectTable
+                isActionsHidden={false}
                 filteredDevices={filteredDevices}
                 rowSelection={![ALL, RETURNED, DeviceStatuses.FINISHED_OUT].includes(selectedStatus) ? rowSelection : undefined}
                 defaultPageSize={25}

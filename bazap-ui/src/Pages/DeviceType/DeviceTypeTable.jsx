@@ -8,11 +8,9 @@ import { useUserAlert } from "../../Components/store/UserAlertContext";
 import { deleteDeviceType, getAllDeviceTypes } from "../../Utils/deviceTypeApi";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useCustomModal } from "../../Components/store/CustomModalContext";
-import DeviceTypeForm from "./DeviceTypeForm";
+import propTypes from "prop-types";
 
-const DeviceTypeTable = () => {
-    const { onShow, onHide } = useCustomModal();
+const DeviceTypeTable = ({ onEdit }) => {
     const { isLoading, data: deviceTypes } = useQuery({
         queryKey: ["deviceTypes"],
         queryFn: getAllDeviceTypes,
@@ -36,34 +34,28 @@ const DeviceTypeTable = () => {
         };
         onConfirm(config);
     };
-    const showModal = (data) => {
-        onShow({
-            title: "סוג מוצר",
-            name: "deviceType",
-            body: <DeviceTypeForm onCancel={() => onHide("deviceType")} formValues={data} isEdit={true} />,
-        });
-    };
+
     const onEditUnitHandler = (id) => {
         const deviceType = deviceTypes.find((item) => item._id == id);
         if (deviceType) {
-            showModal({
+            onEdit(null, {
                 deviceName: deviceType.deviceName,
                 catalogNumber: deviceType.catalogNumber,
+                isClassified: deviceType.isClassified ? "true" : "false",
                 id: deviceType._id,
-                isClassified: deviceType.isClassified.toString(),
             });
         }
     };
 
     const menuActions = [
-        // {
-        //     key: "1",
-        //     label: "ערוך",
-        //     icon: <BorderColorIcon />,
-        //     handler: (data) => {
-        //         onEditUnitHandler(data._id);
-        //     },
-        // },
+        {
+            key: "1",
+            label: "ערוך",
+            icon: <BorderColorIcon />,
+            handler: (data) => {
+                onEditUnitHandler(data._id);
+            },
+        },
         {
             key: "2",
             label: "מחק",
@@ -121,6 +113,10 @@ const DeviceTypeTable = () => {
             rowKey={(record) => record._id}
         />
     );
+};
+
+DeviceTypeTable.propTypes = {
+    onEdit: propTypes.func.isRequired,
 };
 
 export default DeviceTypeTable;

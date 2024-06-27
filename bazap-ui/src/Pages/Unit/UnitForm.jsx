@@ -63,6 +63,7 @@ const UnitForm = ({ onCancel, formValues = null, isEdit }) => {
         <CustomForm
             inputs={fields}
             onSubmit={handleSave}
+            isPasswordRequired
             onCancel={onCancel}
             values={formValues}
             isLoading={isLoading || addUnitMutation.isLoading || editUnitMutation.isLoading}

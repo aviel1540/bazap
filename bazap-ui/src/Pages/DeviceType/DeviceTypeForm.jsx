@@ -1,7 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import propTypes from "prop-types";
 import CustomForm from "../../Components/UI/CustomForm/CustomForm";
-import { addDeviceType, getAllDeviceTypes } from "../../Utils/deviceTypeApi";
+import { addDeviceType, getAllDeviceTypes, updateDeviceType } from "../../Utils/deviceTypeApi";
 import { checkDuplicationInForm } from "../../Utils/formUtils";
 
 const DeviceTypeForm = ({ onCancel, formValues = null, isEdit }) => {
@@ -19,10 +19,9 @@ const DeviceTypeForm = ({ onCancel, formValues = null, isEdit }) => {
             let editDeviceType = {
                 id: formValues.id,
                 deviceName: data.deviceName,
-                isClassified: data.isClassified == "true",
+                catalogNumber: data.catalogNumber,
             };
-
-            alert("edit: " + JSON.stringify(editDeviceType));
+            editDeviceTypeMutation.mutate(editDeviceType);
         }
     };
     const validateDeviceTypeNameDuplication = (value) => {
@@ -49,6 +48,12 @@ const DeviceTypeForm = ({ onCancel, formValues = null, isEdit }) => {
         },
     });
 
+    const editDeviceTypeMutation = useMutation(updateDeviceType, {
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["deviceTypes"] });
+            onCancel();
+        },
+    });
     const fields = [
         {
             label: "שם סוג מכשיר",
@@ -86,6 +91,7 @@ const DeviceTypeForm = ({ onCancel, formValues = null, isEdit }) => {
             label: "סוג מכשיר",
             name: "isClassified",
             type: "buttonRadio",
+            disabled: isEdit,
             validators: {
                 required: "יש למלא שדה זה.",
             },
@@ -100,6 +106,7 @@ const DeviceTypeForm = ({ onCancel, formValues = null, isEdit }) => {
             inputs={fields}
             onSubmit={handleSave}
             onCancel={onCancel}
+            isPasswordRequired
             values={formValues}
             isLoading={isLoading || addDeviceTypeMutation.isLoading}
         ></CustomForm>

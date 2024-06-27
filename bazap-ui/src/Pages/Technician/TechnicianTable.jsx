@@ -1,5 +1,4 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import propTypes from "prop-types";
 import { Table, Typography } from "antd";
 import Loader from "../../Components/Layout/Loader";
 import CustomDropDown from "../../Components/UI/CustomDropDown";
@@ -47,14 +46,14 @@ const TechnicianTable = () => {
     };
 
     const menuActions = [
-        {
-            key: "edit",
-            label: "ערוך",
-            icon: <BorderColorIcon />,
-            handler: (data) => {
-                onEditTechnicianHandler(data._id);
-            },
-        },
+        // {
+        //     key: "edit",
+        //     label: "ערוך",
+        //     in: <BorderColorIcon />,
+        //     handler: (data) => {
+        //         onEditTechnicianHandler(data._id);
+        //     },
+        // },
         {
             key: "delete",
             label: "מחק",
@@ -90,19 +89,16 @@ const TechnicianTable = () => {
     if (isLoading) {
         return <Loader />;
     }
-
     return (
-        <Table
-            locale={{ emptyText: <EmptyData label="אין טכנאים להצגה" /> }}
-            dataSource={technicians}
-            columns={columns}
-            rowKey={(record) => record._id}
-        />
+        <>
+            <Table
+                locale={{ emptyText: <EmptyData label="אין טכנאים להצגה" /> }}
+                dataSource={technicians}
+                columns={columns}
+                rowKey={(record) => record._id}
+            />
+        </>
     );
-};
-
-TechnicianTable.propTypes = {
-    onEdit: propTypes.func.isRequired,
 };
 
 export default TechnicianTable;

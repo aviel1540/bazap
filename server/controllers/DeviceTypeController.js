@@ -36,7 +36,7 @@ exports.addNewDeviceType = async (req, res) => {
 
 exports.deleteDeviceType = async (req, res) => {
     try {
-        const  deviceTypeId  = req.body.deviceTypeId;
+        const deviceTypeId = req.body.deviceTypeId;
         await deviceTypeServices.deleteDeviceType(deviceTypeId);
         return res.status(200).json();
     } catch (err) {
@@ -44,24 +44,22 @@ exports.deleteDeviceType = async (req, res) => {
     }
 };
 
-
-exports.updateDeviceType = async(req,res) => {
+exports.updateDeviceType = async (req, res) => {
+    console.log("udate");
     const deviceTypeId = escape(req.params.id);
-    const deviceTypeName = escape(req.body.name);
+    const deviceTypeName = escape(req.body.deviceName);
     const deviceTypeCatalogNumber = escape(req.body.catalogNumber);
 
     let deviceType;
     try {
-        if(![deviceTypeName, deviceTypeCatalogNumber].every(Boolean)) {
+        if (![deviceTypeName, deviceTypeCatalogNumber].every(Boolean)) {
             return res.status(400).json({ message: "נא למלא את כל השדות." });
         }
-        const checkDeviceTypeId = validation.addSlashes(deviceTypeId)
+        const checkDeviceTypeId = validation.addSlashes(deviceTypeId);
         const checkName = validation.addSlashes(deviceTypeName);
         const checkCatalogNumber = validation.addSlashes(deviceTypeCatalogNumber);
 
-        deviceType = await deviceTypeServices.updateDetailes({checkDeviceTypeId, checkName, checkCatalogNumber})
-
-    } catch(err) {
-
-    }
-}
+        deviceType = await deviceTypeServices.updateDetailes({ checkDeviceTypeId, checkName, checkCatalogNumber });
+        return res.status(200).json({ message: "הסוג מכשיר עודכן בהצלחה" });
+    } catch (err) {}
+};

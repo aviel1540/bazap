@@ -5,12 +5,17 @@ import Loader from "../../../../Components/Layout/Loader";
 import EmptyData from "../../../../Components/UI/EmptyData";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getAllUnits } from "../../../../Utils/unitAPI";
-import { updateNotes as deviceUpdateNotes } from "../../../../Utils/deviceApi";
-import { updateNotes as accessoryUpdateNotes, updateFixDefective } from "../../../../Utils/accessoryAPI";
+import { deleteDevice, updateNotes as deviceUpdateNotes } from "../../../../Utils/deviceApi";
+import { updateNotes as accessoryUpdateNotes, deleteAccessory, updateFixDefective } from "../../../../Utils/accessoryAPI";
 import { useProject } from "../../../../Components/store/ProjectContext";
+import DeleteIcon from "@mui/icons-material/Delete";
+import CustomDropDown from "../../../../Components/UI/CustomDropDown";
+import { useUserAlert } from "../../../../Components/store/UserAlertContext";
+
 const { Text } = Typography;
 
-const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize, isLoading, handleStatusChange }) => {
+const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize, isLoading, handleStatusChange, isActionsHidden }) => {
+    const { onConfirm } = useUserAlert();
     const queryClient = useQueryClient();
     const { projectId } = useProject();
     const { data: units, isLoading: isUnitsLoading } = useQuery({
@@ -79,6 +84,43 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
             updateAccessoryFixDefectiveMutation.mutate(data);
         }, 300);
     };
+    const deleteDeviceMutation = useMutation(deleteDevice, {
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["devicesInProject", projectId] });
+            queryClient.invalidateQueries({ queryKey: ["vouchers", projectId] });
+        },
+    });
+    const deleteAccessoryMutation = useMutation(deleteAccessory, {
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["devicesInProject", projectId] });
+            queryClient.invalidateQueries({ queryKey: ["vouchers", projectId] });
+        },
+    });
+    const onDeleteDeviceOrAccessoryHandler = (id, isClassified) => {
+        const title = `האם אתה בטוח מעוניין למחוק את ${isClassified ? "המכשיר" : 'צל"מ'}`;
+        const config = {
+            title: title,
+            okHandler: () => {
+                if (isClassified) {
+                    deleteDeviceMutation.mutate(id);
+                } else {
+                    deleteAccessoryMutation.mutate(id);
+                }
+            },
+        };
+        onConfirm(config);
+    };
+    const menuActions = [
+        {
+            key: "1",
+            label: "מחק",
+            danger: true,
+            icon: <DeleteIcon />,
+            handler: (data) => {
+                onDeleteDeviceOrAccessoryHandler(data._id, data.deviceTypeId.isClassified);
+            },
+        },
+    ];
     const columns = () => [
         {
             title: "צ' מכשיר",
@@ -169,6 +211,7 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
                                     addonBefore="תקין"
                                     name="fix"
                                     min={0}
+                                    disabled={ReturnedStatuses.includes(record.status)}
                                     max={record.quantity}
                                     status={status}
                                     onChange={(value) => handleFixOrDefectiveChange(value, record._id, "fix", record.defective)}
@@ -178,6 +221,7 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
                                     addonBefore="מושבת"
                                     name="defective"
                                     min={0}
+                                    disabled={ReturnedStatuses.includes(record.status)}
                                     max={record.quantity}
                                     status={status}
                                     onChange={(value) => handleFixOrDefectiveChange(value, record._id, "defective", record.fix)}
@@ -190,6 +234,13 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
                     </>
                 );
             },
+        },
+        {
+            title: "פעולות",
+            key: "menu",
+            hidden: isActionsHidden,
+            align: "center",
+            render: (_, row) => <CustomDropDown key={row._id} actions={menuActions} data={row} />,
         },
     ];
 
@@ -213,6 +264,7 @@ DevicesInProjectTable.propTypes = {
     filteredDevices: PropTypes.array,
     defaultPageSize: PropTypes.number,
     isLoading: PropTypes.bool,
+    isActionsHidden: PropTypes.bool,
     handleStatusChange: PropTypes.func,
 };
 export default DevicesInProjectTable;
