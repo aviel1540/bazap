@@ -1,4 +1,4 @@
-const Password = require("../models/Password");
+const Password = require("../models/password");
 
 exports.showAdminPass = async () => {
     return await Password.findOne({ type: false });

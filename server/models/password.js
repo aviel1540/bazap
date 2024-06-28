@@ -7,8 +7,8 @@ const passwordSchema = new Schema({
     },
     pass_value: {
         type: String,
-        trim: true
-    }
+        trim: true,
+    },
 });
 
 const Password = mongoose.model("Password", passwordSchema);
