@@ -11,28 +11,38 @@ import { validatePassword } from "../../../Utils/passwordAPI";
 import Loader from "../../../Components/Layout/Loader";
 const { Text } = Typography;
 
-const CustomForm = ({ inputs, onSubmit, onCancel, values, children, isLoading, isPasswordRequired }) => {
+const CustomForm = ({
+    inputs,
+    onSubmit,
+    onCancel,
+    values,
+    children,
+    isLoading,
+    isPasswordRequired = false, // Use default parameter here
+}) => {
     const { handleSubmit, reset, control, getValues } = useForm({
-        values,
+        defaultValues: values, // Adjusted to use defaultValues instead of values
         mode: "onChange",
     });
     const [password, setPassword] = useState("");
     const [open, setOpen] = useState(false);
-    const [validPassword, setValidPassowrd] = useState();
+    const [validPassword, setValidPassword] = useState();
+
     const validatePasswordMutation = useMutation(validatePassword, {
         onSuccess: (isValid) => {
-            if (isValid == true) {
+            if (isValid) {
                 onSubmit(getValues());
                 setPassword("");
                 setOpen(false);
             } else {
-                setValidPassowrd(false);
+                setValidPassword(false);
             }
         },
         onError: () => {
-            setValidPassowrd(false);
+            setValidPassword(false);
         },
     });
+
     const handlePasswordSubmit = () => {
         validatePasswordMutation.mutate(password);
     };
@@ -40,29 +50,27 @@ const CustomForm = ({ inputs, onSubmit, onCancel, values, children, isLoading, i
     const handlePopupCancel = () => {
         setPassword("");
         setOpen(false);
-        setValidPassowrd(undefined);
+        setValidPassword(undefined);
     };
 
     const onSubmitPageWithAdminPassword = (data) => {
         if (!isPasswordRequired) {
             onSubmit(data);
         } else {
-            if (open == false) {
-                setOpen(true);
-            } else {
-                if (validPassword) {
-                    onSubmit(data);
-                }
+            if (!open || validPassword) {
+                onSubmit(data);
             }
         }
     };
+
     const handleCancel = () => {
         onCancel();
         reset();
         setOpen(false);
         setPassword("");
-        setValidPassowrd(undefined);
+        setValidPassword(undefined);
     };
+
     return (
         <form onSubmit={handleSubmit(onSubmitPageWithAdminPassword)}>
             {isLoading && <Loader />}
@@ -93,11 +101,11 @@ const CustomForm = ({ inputs, onSubmit, onCancel, values, children, isLoading, i
                             <>
                                 <Input.Password
                                     placeholder="סיסמה"
-                                    status={validPassword == false && "error"}
+                                    status={validPassword === false ? "error" : ""}
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                 />
-                                {validPassword == false && <Text type="danger">סיסמת מנהל לא נכונה.</Text>}
+                                {validPassword === false && <Text type="danger">סיסמת מנהל לא נכונה.</Text>}
                             </>
                         }
                         onConfirm={handlePasswordSubmit}
@@ -114,6 +122,7 @@ const CustomForm = ({ inputs, onSubmit, onCancel, values, children, isLoading, i
         </form>
     );
 };
+
 CustomForm.propTypes = {
     inputs: PropTypes.array,
     onSubmit: PropTypes.func.isRequired,
@@ -123,7 +132,5 @@ CustomForm.propTypes = {
     isLoading: PropTypes.bool,
     isPasswordRequired: PropTypes.bool,
 };
-CustomForm.defaultProps = {
-    isPasswordRequired: false,
-};
+
 export default CustomForm;

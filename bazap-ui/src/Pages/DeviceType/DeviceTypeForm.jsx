@@ -4,7 +4,7 @@ import CustomForm from "../../Components/UI/CustomForm/CustomForm";
 import { addDeviceType, getAllDeviceTypes, updateDeviceType } from "../../Utils/deviceTypeApi";
 import { checkDuplicationInForm } from "../../Utils/formUtils";
 
-const DeviceTypeForm = ({ onCancel, formValues = null, isEdit }) => {
+const DeviceTypeForm = ({ onCancel, formValues = null, isEdit = false }) => {
     const { isLoading, data: deviceTypes } = useQuery({
         queryKey: ["deviceTypes"],
         queryFn: getAllDeviceTypes,
@@ -59,6 +59,7 @@ const DeviceTypeForm = ({ onCancel, formValues = null, isEdit }) => {
             label: "שם סוג מכשיר",
             name: "deviceName",
             type: "text",
+            colSpan: 12,
             placeholder: "לדוגמא RPT",
             validators: {
                 required: "יש למלא שדה זה.",
@@ -73,6 +74,7 @@ const DeviceTypeForm = ({ onCancel, formValues = null, isEdit }) => {
             label: 'מק"ט',
             name: "catalogNumber",
             type: "text",
+            colSpan: 12,
             placeholder: "לדוגמא 12344-555",
             validators: {
                 required: "יש למלא שדה זה.",
@@ -118,10 +120,6 @@ DeviceTypeForm.propTypes = {
     onCancel: propTypes.func,
     isEdit: propTypes.bool,
     editId: propTypes.string,
-};
-
-DeviceTypeForm.defaultProps = {
-    isEdit: false,
 };
 
 export default DeviceTypeForm;

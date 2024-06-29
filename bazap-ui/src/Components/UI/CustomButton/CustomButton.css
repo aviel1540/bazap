@@ -1,0 +1,186 @@
+/* CustomButton.css */
+.button {
+    font-weight: 500 !important;
+}
+
+.custom-button-primary {
+    background-color: #007bff !important;
+    border-color: #007bff !important;
+    color: white !important;
+}
+
+.custom-button-primary:hover,
+.custom-button-primary:focus {
+    background-color: #4096ff !important;
+    border-color: #4096ff !important;
+    color: white !important;
+}
+
+.custom-button-light-primary {
+    background-color: #f1faff !important;
+    border-color: #f1faff !important;
+    color: #007bff !important;
+}
+
+.custom-button-light-primary:hover,
+.custom-button-light-primary:focus {
+    background-color: #007bff !important;
+    border-color: #007bff !important;
+    color: white !important;
+}
+
+.custom-button-secondary {
+    background-color: #6c757d !important;
+    border-color: #6c757d !important;
+    color: white !important;
+}
+
+.custom-button-secondary:hover,
+.custom-button-secondary:focus {
+    background-color: #a6acb4 !important;
+    border-color: #a6acb4 !important;
+    color: white !important;
+}
+
+.custom-button-light-secondary {
+    background-color: #f9f9f9 !important;
+    border-color: #f9f9f9 !important;
+    color: #6c757d !important;
+}
+
+.custom-button-light-secondary:hover,
+.custom-button-light-secondary:focus {
+    background-color: #6c757d !important;
+    border-color: #6c757d !important;
+    color: white !important;
+}
+
+.custom-button-success {
+    background-color: #28a745 !important;
+    border-color: #28a745 !important;
+    color: white !important;
+}
+
+.custom-button-success:hover,
+.custom-button-success:focus {
+    background-color: #62d77a !important;
+    border-color: #62d77a !important;
+    color: white !important;
+}
+
+.custom-button-light-success {
+    background-color: #e8fff3 !important;
+    border-color: #e8fff3 !important;
+    color: #28a745 !important;
+}
+
+.custom-button-light-success:hover,
+.custom-button-light-success:focus {
+    background-color: #28a745 !important;
+    border-color: #28a745 !important;
+    color: white !important;
+}
+
+.custom-button-info {
+    background-color: #17a2b8 !important;
+    border-color: #17a2b8 !important;
+    color: white !important;
+}
+
+.custom-button-info:hover,
+.custom-button-info:focus {
+    background-color: #68c3d1 !important;
+    border-color: #68c3d1 !important;
+    color: white !important;
+}
+
+.custom-button-light-info {
+    background-color: #f8f5ff !important;
+    border-color: #f8f5ff !important;
+    color: #17a2b8 !important;
+}
+
+.custom-button-light-info:hover,
+.custom-button-light-info:focus {
+    background-color: #17a2b8 !important;
+    border-color: #17a2b8 !important;
+    color: white !important;
+}
+
+.custom-button-warning {
+    background-color: #ffc107 !important;
+    border-color: #ffc107 !important;
+    color: white !important;
+}
+
+.custom-button-warning:hover,
+.custom-button-warning:focus {
+    background-color: #ffcd39 !important;
+    border-color: #ffcd39 !important;
+    color: white !important;
+}
+
+.custom-button-light-warning {
+    background-color: #fff8dd !important;
+    border-color: #fff8dd !important;
+    color: #ffc107 !important;
+}
+
+.custom-button-light-warning:hover,
+.custom-button-light-warning:focus {
+    background-color: #ffc107 !important;
+    border-color: #ffc107 !important;
+    color: white !important;
+}
+
+.custom-button-danger {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: white !important;
+}
+
+.custom-button-danger:hover,
+.custom-button-danger:focus {
+    background-color: #f27981 !important;
+    border-color: #f27981 !important;
+    color: white !important;
+}
+
+.custom-button-light-danger {
+    background-color: #fff5f8 !important;
+    border-color: #fff5f8 !important;
+    color: #dc3545 !important;
+}
+
+.custom-button-light-danger:hover,
+.custom-button-light-danger:focus {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: white !important;
+}
+
+.custom-button-dark {
+    background-color: #343a40 !important;
+    border-color: #343a40 !important;
+    color: white !important;
+}
+
+.custom-button-dark:hover,
+.custom-button-dark:focus {
+    background-color: #4c515a !important;
+    border-color: #4c515a !important;
+    color: white !important;
+}
+
+.custom-button-light-dark {
+    background-color: #f9f9f9 !important;
+    border-color: #f9f9f9 !important;
+    color: #343a40 !important;
+}
+
+.custom-button-light-dark:hover,
+.custom-button-light-dark:focus {
+    background-color: #343a40 !important;
+    border-color: #343a40 !important;
+    color: white !important;
+}

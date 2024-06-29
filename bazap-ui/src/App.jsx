@@ -17,7 +17,7 @@ import "@sweetalert2/theme-material-ui/material-ui.scss";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useUserAlert } from "./Components/store/UserAlertContext";
-
+import "./utilities.css";
 const DeviceType = lazy(() => import("./Pages/DeviceType/DeviceType"));
 const Unit = lazy(() => import("./Pages/Unit/Unit"));
 const Home = lazy(() => import("./Pages/Home/Home"));

@@ -1,14 +1,26 @@
 import PropTypes from "prop-types";
-import { Stack } from "@mui/material";
 import ControlledInput from "./ControlledInput";
+import { Col, Row } from "antd";
+import React from "react";
 
 const RenderFields = ({ fields, control }) => {
     return (
-        <Stack spacing={1} sx={{ paddingTop: 2 }}>
-            {fields.map((input) => {
-                return <ControlledInput key={input.name} {...input} control={control} />;
+        <Row gutter={[16, 12]} justify="space-around" align="middle">
+            {fields.map((field) => {
+                return (
+                    <React.Fragment key={field.name}>
+                        <Col key={field.name} span={field.colSpan || 24}>
+                            <ControlledInput key={field.name} {...field} control={control} />
+                        </Col>
+                        {field.extra && (
+                            <Col key={field.name} span={field.colSpan ? 24 - field.colSpan : 24}>
+                                {field.extra}
+                            </Col>
+                        )}
+                    </React.Fragment>
+                );
             })}
-        </Stack>
+        </Row>
     );
 };
 

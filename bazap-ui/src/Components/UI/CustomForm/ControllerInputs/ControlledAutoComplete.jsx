@@ -9,11 +9,11 @@ const ControlledAutocomplete = forwardRef((props, ref) => {
         label,
         control,
         validators,
-        onFieldChange,
+        onFieldChange = () => {},
         options,
         placeholder,
         filterOptions,
-        getOptionLabel,
+        getOptionLabel = (option) => option.text,
         isNumber,
         index,
         isStandardOption,
@@ -84,10 +84,6 @@ ControlledAutocomplete.propTypes = {
     isStandardOption: PropTypes.bool,
 };
 
-ControlledAutocomplete.defaultProps = {
-    onFieldChange: () => {},
-    getOptionLabel: (option) => option.text,
-};
 ControlledAutocomplete.displayName = "ControlledAutocomplete";
 
 export default ControlledAutocomplete;

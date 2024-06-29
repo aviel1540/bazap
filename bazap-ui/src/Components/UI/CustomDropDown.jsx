@@ -1,5 +1,7 @@
 import { Dropdown, Space } from "antd";
 import { DownOutlined } from "@ant-design/icons";
+import PropTypes from "prop-types";
+import CustomButton from "./CustomButton/CustomButton";
 
 const CustomDropDown = ({ actions, data }) => {
     const onClick = (key, data) => {
@@ -24,9 +26,6 @@ const CustomDropDown = ({ actions, data }) => {
         </Dropdown>
     );
 };
-import PropTypes from "prop-types";
-import CustomButton from "./CustomButton";
-
 CustomDropDown.propTypes = {
     actions: PropTypes.array.isRequired,
     data: PropTypes.object.isRequired,

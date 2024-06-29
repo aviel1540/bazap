@@ -1,7 +1,7 @@
 import HighlightOff from "@mui/icons-material/HighlightOff";
 import { Box, IconButton, createFilterOptions } from "@mui/material";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Col, Row, Space, Tabs } from "antd";
+import { Col, Row, Space, Tabs, Tooltip } from "antd";
 import { Fragment, useEffect, useMemo, useState } from "react";
 import { Controller, useFieldArray, useFormContext } from "react-hook-form";
 import Loader from "../../../../Components/Layout/Loader";
@@ -12,7 +12,7 @@ import { getAllDeviceTypes } from "../../../../Utils/deviceTypeApi";
 import { DeviceStatuses, FIXED_OR_DEFECTIVE } from "../../../../Utils/utils";
 import DevicesInProjectTable from "../DevicesInProject/DevicesInProjectTable";
 import ImportExcel from "./ImportExcel";
-import CustomButton from "../../../../Components/UI/CustomButton";
+import CustomButton from "../../../../Components/UI/CustomButton/CustomButton";
 import { PlusOutlined } from "@ant-design/icons";
 import { useUserAlert } from "../../../../Components/store/UserAlertContext";
 import {
@@ -24,9 +24,12 @@ import {
 } from "./utils";
 import EmptyData from "../../../../Components/UI/EmptyData";
 import { getAllProductsInProject } from "../../../../Utils/projectAPI";
+import { useCustomModal } from "../../../../Components/store/CustomModalContext";
+import DeviceTypeForm from "../../../DeviceType/DeviceTypeForm";
 const filter = createFilterOptions();
 
 const VoucherStep2 = () => {
+    const { onShow, onHide } = useCustomModal();
     const { onAlert, error } = useUserAlert();
     const [disabledFields, setDisabledFields] = useState({});
     const [activeTab, setActiveTab] = useState("Devices"); // State to manage active tab
@@ -210,6 +213,14 @@ const VoucherStep2 = () => {
         onChange: onSelectChange,
     };
 
+    const showDeviceTypeModal = () => {
+        onShow({
+            title: "סוג מוצר חדש",
+            name: "deviceType",
+            body: <DeviceTypeForm onCancel={() => onHide("deviceType")} />,
+        });
+    };
+
     const deviceInputs = [
         {
             label: "צ' מכשיר",
@@ -282,6 +293,11 @@ const VoucherStep2 = () => {
                 {isLoading && <Loader />}
                 {!isLoading && !isDeliveryVoucher && (
                     <Tabs
+                        tabBarExtraContent={
+                            <Tooltip title="הוסף סוג מכשיר חדשה">
+                                <CustomButton type="light-primary" onClick={showDeviceTypeModal} icon={<PlusOutlined />} />
+                            </Tooltip>
+                        }
                         activeKey={activeTab}
                         onChange={setActiveTab}
                         type="card"

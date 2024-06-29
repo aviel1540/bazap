@@ -215,7 +215,7 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
                                     max={record.quantity}
                                     status={status}
                                     onChange={(value) => handleFixOrDefectiveChange(value, record._id, "fix", record.defective)}
-                                    defaultValue={record.fix}
+                                    defaultValue={record.fix ?? 0}
                                 />
                                 <InputNumber
                                     addonBefore="מושבת"
@@ -225,7 +225,7 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
                                     max={record.quantity}
                                     status={status}
                                     onChange={(value) => handleFixOrDefectiveChange(value, record._id, "defective", record.fix)}
-                                    defaultValue={record.defective}
+                                    defaultValue={record.defective ?? 0}
                                 />
                                 {notesInput}
                             </Space.Compact>

@@ -7,7 +7,7 @@ import { useCustomModal } from "../../Components/store/CustomModalContext";
 import { getAllProjects } from "../../Utils/projectAPI";
 import ProjectForm from "./ProjectForm";
 import ProjectItem from "./ProjectItem";
-import CustomButton from "../../Components/UI/CustomButton";
+import CustomButton from "../../Components/UI/CustomButton/CustomButton";
 import { PlusOutlined } from "@ant-design/icons";
 
 const ProjectsList = () => {
@@ -29,6 +29,7 @@ const ProjectsList = () => {
     return (
         <CustomCard
             title="פרוייקטים"
+            className="bg-transparent shadow-none border-bottom-0"
             action={
                 <CustomButton type="light-primary" onClick={showModal} iconPosition="end" icon={<PlusOutlined />}>
                     הוסף פרוייקט
