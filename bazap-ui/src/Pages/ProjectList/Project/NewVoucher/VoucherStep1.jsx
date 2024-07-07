@@ -14,12 +14,15 @@ import { Tooltip } from "antd";
 
 const VoucherStep1 = () => {
     const { onShow, onHide } = useCustomModal();
-    const { control, getValues, getFieldState } = useFormContext();
-    const isTypeSelected = !!getValues("type") && getFieldState("type").isDirty == false;
+    const { methods } = useFormContext();
+    const { formMethods } = methods;
+    const { getValues, getFieldState } = formMethods;
+
+    const isTypeSelected = !!getValues("type") && !getFieldState("type").isDirty;
 
     const [technicianType, setTechnicianType] = useState({
-        arrivedBy: getValues("type") == "true" ? "text" : "select",
-        receivedBy: getValues("type") == "true" ? "select" : "text",
+        arrivedBy: getValues("type") === "true" ? "text" : "select",
+        receivedBy: getValues("type") === "true" ? "select" : "text",
     });
 
     const showUnitModal = () => {
@@ -41,17 +44,23 @@ const VoucherStep1 = () => {
         queryKey: ["units"],
         queryFn: getAllUnits,
     });
-    const { isLoading: isLoadingTechnician, data: technicians } = useQuery({
+    const { isLoading: isLoadingTechnicians, data: technicians } = useQuery({
         queryKey: ["technicians"],
         queryFn: getAllTechnicians,
     });
-    const unitOptions = units?.map((unit) => {
-        return { text: unit.unitsName, value: unit._id, ...unit };
-    });
-    const technicianOptions = technicians?.map((technician) => {
-        return { text: technician.techName, value: technician.techName };
-    });
-    const isLoading = isLoadingUnits || isLoadingTechnician;
+
+    const unitOptions = units?.map((unit) => ({
+        text: unit.unitsName,
+        value: unit._id,
+        ...unit,
+    }));
+
+    const technicianOptions = technicians?.map((technician) => ({
+        text: technician.techName,
+        value: technician.techName,
+    }));
+
+    const isLoading = isLoadingUnits || isLoadingTechnicians;
 
     const voucherInputs = [
         {
@@ -67,12 +76,11 @@ const VoucherStep1 = () => {
                 { value: "false", text: "ניפוק" },
             ],
             onFieldChange: (newValue) => {
-                const boolValue = newValue == "true";
-                const newTechnicianType = {
+                const boolValue = newValue === "true";
+                setTechnicianType({
                     arrivedBy: boolValue ? "text" : "select",
                     receivedBy: boolValue ? "select" : "text",
-                };
-                setTechnicianType(newTechnicianType);
+                });
             },
         },
         {
@@ -96,7 +104,7 @@ const VoucherStep1 = () => {
             type: technicianType.arrivedBy,
             colSpan: 22,
             extra: (
-                <Tooltip title="הוסף יחידה חדשה">
+                <Tooltip title="הוסף טכנאי חדש">
                     <CustomButton type="light-primary" onClick={showTechnicianModal} icon={<PlusOutlined />} />
                 </Tooltip>
             ),
@@ -126,9 +134,12 @@ const VoucherStep1 = () => {
             options: technicianOptions,
         },
     ];
+
     if (isLoading) {
         return <Loader />;
     }
-    return <RenderFields fields={voucherInputs} control={control} />;
+
+    return <RenderFields stepFields={voucherInputs} />;
 };
+
 export default VoucherStep1;

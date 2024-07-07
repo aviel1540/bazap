@@ -61,7 +61,7 @@ const UnitForm = ({ onCancel, formValues = null, isEdit = false }) => {
     ];
     return (
         <CustomForm
-            inputs={fields}
+            fields={fields}
             onSubmit={handleSave}
             isPasswordRequired
             onCancel={onCancel}

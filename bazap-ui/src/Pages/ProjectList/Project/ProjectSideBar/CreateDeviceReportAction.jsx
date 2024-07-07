@@ -5,13 +5,13 @@ import { useMutation } from "@tanstack/react-query";
 import { useProject } from "../../../../Components/store/ProjectContext";
 import { useUserAlert } from "../../../../Components/store/UserAlertContext";
 import { createProjectReport } from "../../../../Utils/excelUtils";
-import { getAllDevicesInLab } from "../../../../Utils/deviceApi";
 import { dateTostring } from "../../../../Utils/utils";
+import { getAllProjectsInLab } from "../../../../Utils/projectAPI";
 
 const CreateDeviceReportAction = () => {
     const { projectId } = useProject();
     const { onAlert } = useUserAlert();
-    const getAllDevicesInProjectMutation = useMutation(getAllDevicesInLab, {
+    const getAllDevicesInProjectMutation = useMutation(getAllProjectsInLab, {
         onSuccess: (devices) => {
             if (devices.length === 0) {
                 onAlert('אין מכשירים בבצ"פ בפרוייקט.');

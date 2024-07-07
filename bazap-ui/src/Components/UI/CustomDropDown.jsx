@@ -5,7 +5,7 @@ import CustomButton from "./CustomButton/CustomButton";
 
 const CustomDropDown = ({ actions, data }) => {
     const onClick = (key, data) => {
-        const action = actions.find((action) => action.key == key);
+        const action = actions.find((action) => action.key === key);
         if (action) action.handler(data);
     };
     // eslint-disable-next-line no-unused-vars
@@ -17,7 +17,7 @@ const CustomDropDown = ({ actions, data }) => {
                 onClick: (key) => onClick(key.key, data),
             }}
         >
-            <CustomButton onClick={(e) => e.preventDefault()} size="small" type="light-primary">
+            <CustomButton size="small" type="light-primary">
                 <Space>
                     פעולות
                     <DownOutlined />
@@ -26,8 +26,10 @@ const CustomDropDown = ({ actions, data }) => {
         </Dropdown>
     );
 };
+
 CustomDropDown.propTypes = {
     actions: PropTypes.array.isRequired,
     data: PropTypes.object.isRequired,
 };
+
 export default CustomDropDown;
