@@ -1401,6 +1401,9 @@
     font-weight: 400 !important;
 }
 
+.fw-500 {
+    font-weight: 500 !important;
+}
 .fw-bold {
     font-weight: 700 !important;
 }
