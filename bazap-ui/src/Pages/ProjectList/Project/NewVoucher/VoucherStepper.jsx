@@ -73,11 +73,12 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
     });
 
     const addVoucherMutation = useMutation(addVoucherIn, {
-        onSuccess: () => {
+        onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ["vouchers", projectId] });
             queryClient.invalidateQueries({ queryKey: ["devicesInProject", projectId] });
             queryClient.invalidateQueries(["project", projectId]);
             queryClient.invalidateQueries(["projects"]);
+            exportVoucherMutation.mutate(data.newVoucher._id);
             onCancel();
         },
     });

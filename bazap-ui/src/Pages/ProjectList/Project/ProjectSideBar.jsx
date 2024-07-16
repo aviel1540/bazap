@@ -25,7 +25,7 @@ const ProjectSideBar = ({ isProjectIsClosed }) => {
                 {!isProjectIsClosed && <AddVoucherAction />}
                 {!isProjectIsClosed && <CreateDeviceReportAction />}
                 {<CreateOutDevicesReportAction />}
-                {<CloseProjectAction />}
+                {!isProjectIsClosed && <CloseProjectAction />}
                 <DeleteProjectAction />
             </List>
         </Sider>

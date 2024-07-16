@@ -5,8 +5,8 @@ import { useMutation } from "@tanstack/react-query";
 import { useProject } from "../../../../Components/store/ProjectContext";
 import { useUserAlert } from "../../../../Components/store/UserAlertContext";
 import { createProjectReport } from "../../../../Utils/excelUtils";
-import { getAllDevicesInLab } from "../../../../Utils/deviceApi";
 import { dateTostring } from "../../../../Utils/utils";
+import { getAllDevicesInLab } from "../../../../Utils/projectAPI";
 
 const CreateDeviceReportAction = () => {
     const { projectId } = useProject();
