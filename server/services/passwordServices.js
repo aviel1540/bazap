@@ -15,6 +15,34 @@ exports.findPasswordByValue = async (pass) => {
     return await Password.findOne({ pass_value: pass });
 };
 
+exports.login = async (id) => {
+    return await Password.findOneAndUpdate(id, {
+        lastAuthTime: new Date(),
+    });
+};
+
+exports.logout = async (id) => {
+    const date = new Date();
+    const days = 5;
+    var result = new Date(date);
+    result.setDate(result.getDate() - days);
+
+    return await Password.findOneAndUpdate(
+        { type: false },
+        {
+            lastAuthTime: result,
+        },
+    );
+};
+
+exports.isAdminAuthenticated = async () => {
+    const passwsord = await Password.findOne({ type: false });
+    const currentTime = Date.now();
+    const authTime = new Date(passwsord.lastAuthTime).getTime();
+    const diffMinutes = (currentTime - authTime) / (1000 * 60);
+    return diffMinutes <= 20;
+};
+
 exports.findMasterPassword = async (masterPass) => {
     return await Password.findOne({ pass_value: masterPass });
 };

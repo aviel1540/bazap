@@ -3,11 +3,14 @@ const Schema = mongoose.Schema;
 
 const passwordSchema = new Schema({
     type: {
-        type: Boolean, //true - super , false - admin
+        type: Boolean, // true - super, false - admin
     },
     pass_value: {
         type: String,
         trim: true,
+    },
+    lastAuthTime: {
+        type: Date,
     },
 });
 

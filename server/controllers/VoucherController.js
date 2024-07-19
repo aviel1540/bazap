@@ -100,7 +100,7 @@ exports.addNewVoucherIn = async (req, res) => {
         await newVoucher.save();
         project.vouchersList.push(newVoucher);
         await project.save(newVoucher);
-        return res.status(201).json({ message: "שובר נוצר ושויך בהצלחה !", id: newVoucher.id });
+        return res.status(201).json({ message: "שובר נוצר ושויך בהצלחה !", newVoucher });
     } catch (err) {
         return res.status(500).json({ message: err.message });
     }

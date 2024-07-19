@@ -18,6 +18,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useUserAlert } from "./Components/store/UserAlertContext";
 import "./utilities.css";
+import { AdminAuthProvider } from "./Components/store/AdminAuthContext";
 const DeviceType = lazy(() => import("./Pages/DeviceType/DeviceType"));
 const Unit = lazy(() => import("./Pages/Unit/Unit"));
 const Home = lazy(() => import("./Pages/Home/Home"));
@@ -62,9 +63,11 @@ function App() {
         <QueryClientProvider client={queryClient}>
             <Theme>
                 <ProjectProvider>
-                    <CustomModalProvider>
-                        <RouterProvider router={router} />
-                    </CustomModalProvider>
+                    <AdminAuthProvider>
+                        <CustomModalProvider>
+                            <RouterProvider router={router} />
+                        </CustomModalProvider>
+                    </AdminAuthProvider>
                 </ProjectProvider>
                 <ReactQueryDevtools initialIsOpen={false} />
             </Theme>

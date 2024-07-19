@@ -6,12 +6,12 @@ import { useProject } from "../../../../Components/store/ProjectContext";
 import { useUserAlert } from "../../../../Components/store/UserAlertContext";
 import { createProjectReport } from "../../../../Utils/excelUtils";
 import { dateTostring } from "../../../../Utils/utils";
-import { getAllProjectsInLab } from "../../../../Utils/projectAPI";
+import { getAllDevicesInLab } from "../../../../Utils/projectAPI";
 
 const CreateDeviceReportAction = () => {
     const { projectId } = useProject();
     const { onAlert } = useUserAlert();
-    const getAllDevicesInProjectMutation = useMutation(getAllProjectsInLab, {
+    const getAllDevicesInProjectMutation = useMutation(getAllDevicesInLab, {
         onSuccess: (devices) => {
             if (devices.length === 0) {
                 onAlert('אין מכשירים בבצ"פ בפרוייקט.');

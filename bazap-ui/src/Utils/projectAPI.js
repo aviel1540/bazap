@@ -38,7 +38,7 @@ export const getAllProductsInProject = async ({ queryKey }) => {
     return await projectAPI.get(`get-all-products-in-project/${id}`);
 };
 
-export const getAllProjectsInLab = async ({ queryKey }) => {
+export const getAllDevicesInLab = async ({ queryKey }) => {
     // eslint-disable-next-line no-unused-vars
     const [_, id] = queryKey;
     return await projectAPI.get(`get-all-products-in-lab/${id}`);

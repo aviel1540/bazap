@@ -185,8 +185,8 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
             title: "הערות",
             dataIndex: "notes",
             key: "notes",
-            // width: "30%",
-            width: "40%",
+            width: "25%",
+            // width: "40%",
             render: (notes, record) => {
                 const notesInput = (
                     <Input

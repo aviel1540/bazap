@@ -13,6 +13,7 @@ const CustomButton = forwardRef(({ type, children, ...restProps }, ref) => {
 });
 
 CustomButton.displayName = "CustomButton";
+
 CustomButton.propTypes = {
     type: PropTypes.oneOf([
         "primary",

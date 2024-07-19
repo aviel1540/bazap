@@ -6,6 +6,7 @@ import RenderFields from "./RenderFields";
 import Loader from "../../../Components/Layout/Loader";
 import RenderSteps from "./RenderSteps";
 import FormButtons from "./FormButtons";
+import { useAdminAuth } from "../../store/AdminAuthContext";
 
 const CustomForm = ({ steps, onSubmit, onCancel, values, children, isLoading, isPasswordRequired, fields }) => {
     const methods = useForm({
@@ -17,20 +18,22 @@ const CustomForm = ({ steps, onSubmit, onCancel, values, children, isLoading, is
     const [open, setOpen] = useState(false);
     const [validPassword, setValidPassowrd] = useState();
     const [currentStep, setCurrentStep] = useState(0);
+    const { isAuth } = useAdminAuth();
 
     const onSubmitPageWithAdminPassword = (data) => {
         if (!isPasswordRequired) {
             onSubmit(data);
-        } else {
-            if (!open) {
-                setOpen(true);
-            } else {
-                if (validPassword) {
-                    onSubmit(data);
-                }
-            }
+            return;
+        }
+        if (!open && !isAuth) {
+            setOpen(true);
+            return;
+        }
+        if (validPassword || isAuth) {
+            onSubmit(data);
         }
     };
+
     const handlePopupCancel = () => {
         setPassword("");
         setOpen(false);
