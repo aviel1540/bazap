@@ -16,9 +16,18 @@ const ProjectsList = () => {
         queryKey: ["projects"],
         queryFn: getAllProjects,
     });
+
     if (isLoading) {
         return <Loader />;
     }
+
+    const sortedProjects = projects.sort((a, b) => {
+        if (a.finished === b.finished) {
+            return new Date(a.startDate) - new Date(b.startDate);
+        }
+        return a.finished ? 1 : -1;
+    });
+
     const showModal = () => {
         onShow({
             title: "פרוייקט חדש",
@@ -26,6 +35,7 @@ const ProjectsList = () => {
             body: <ProjectForm onCancel={() => onHide("project")} />,
         });
     };
+
     return (
         <CustomCard
             title="פרוייקטים"
@@ -36,8 +46,8 @@ const ProjectsList = () => {
             }
         >
             <Grid container spacing={2}>
-                {projects.length == 0 && <EmptyData label="אין פרוייקטים להצגה" />}
-                {projects.map((project) => (
+                {sortedProjects.length === 0 && <EmptyData label="אין פרוייקטים להצגה" />}
+                {sortedProjects.map((project) => (
                     <ProjectItem key={project._id} project={project} />
                 ))}
             </Grid>
