@@ -1,31 +1,22 @@
 import { lazy } from "react";
 import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from "react-router-dom";
-import RootLayout from "./Components/Layout/RootLayout";
-import "@fontsource/rubik/300.css";
-import "@fontsource/rubik/400.css";
-import "@fontsource/rubik/500.css";
-import "@fontsource/rubik/600.css";
-import "@fontsource/rubik/700.css";
-import "@fontsource/rubik/800.css";
-import "@fontsource/rubik/900.css";
-import Technician from "./Pages/Technician/Technician";
 import ErrorPage from "./Components/Layout/ErrorPage/ErrorPage";
 import Theme from "./Components/Layout/Theme";
 import { CustomModalProvider } from "./Components/store/CustomModalContext";
 import { ProjectProvider } from "./Components/store/ProjectContext";
-import "@sweetalert2/theme-material-ui/material-ui.scss";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useUserAlert } from "./Components/store/UserAlertContext";
-import "./assets/css/utilities.css";
-import "./assets/css/text.css";
 import { AdminAuthProvider } from "./Components/store/AdminAuthContext";
+import RootLayout from "./Components/Layout/RootLayout";
+import CssImporter from "./Components/UI/CssImporter";
+
 const DeviceType = lazy(() => import("./Pages/DeviceType/DeviceType"));
 const Unit = lazy(() => import("./Pages/Unit/Unit"));
 const Home = lazy(() => import("./Pages/Home/Home"));
 const ProjectsList = lazy(() => import("./Pages/ProjectList/ProjectsList"));
 const Project = lazy(() => import("./Pages/ProjectList/Project/Project"));
-
+const Technician = lazy(() => import("./Pages/Technician/Technician"));
 const router = createBrowserRouter(
     createRoutesFromElements(
         <Route path="/" element={<RootLayout />} errorElement={<ErrorPage />}>
@@ -63,6 +54,7 @@ function App() {
     return (
         <QueryClientProvider client={queryClient}>
             <Theme>
+                <CssImporter />
                 <ProjectProvider>
                     <AdminAuthProvider>
                         <CustomModalProvider>

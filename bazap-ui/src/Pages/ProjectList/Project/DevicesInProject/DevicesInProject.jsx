@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { Space } from "antd";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ALL, DeviceStatuses, FIXED_OR_DEFECTIVE, RETURNED, ReturnedStatuses, replaceApostrophe } from "../../../../Utils/utils";
 import { useCustomModal } from "../../../../Components/store/CustomModalContext";
 import { useProject } from "../../../../Components/store/ProjectContext";
@@ -35,17 +35,15 @@ const ArrivedDevices = () => {
         },
     });
 
-    useEffect(() => {
-        if (devices) {
-            clearSelectedRows();
-            setSelectedStatus(ALL);
-            handleSearchAndFilter(searchParam, null, ALL);
-        }
-    }, [devices]);
-
     const clearSelectedRows = () => {
         setSelectedRows([]);
     };
+
+    // const reset = () => {
+    //     clearSelectedRows();
+    //     setSelectedStatus(ALL);
+    //     handleSearchAndFilter(searchParam, null, ALL);
+    // };
 
     const handleSearchChange = (event) => {
         const search = event.target.value;
@@ -136,6 +134,7 @@ const ArrivedDevices = () => {
             unit: filteredDevices[0].unit._id,
             devicesIds: selectedDevicesIds,
             accessoriesIds: selectedAccessoriesIds,
+            projectId,
         };
         onShow({
             title: "שובר חדש",

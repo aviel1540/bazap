@@ -185,7 +185,7 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
             title: "הערות",
             dataIndex: "notes",
             key: "notes",
-            width: "25%",
+            width: "30%",
             // width: "40%",
             render: (notes, record) => {
                 const notesInput = (
@@ -211,6 +211,9 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
                                     addonBefore="תקין"
                                     name="fix"
                                     min={0}
+                                    style={{
+                                        width: "calc(100% - 200px)",
+                                    }}
                                     disabled={ReturnedStatuses.includes(record.status)}
                                     max={record.quantity}
                                     status={status}
@@ -221,6 +224,9 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
                                     addonBefore="מושבת"
                                     name="defective"
                                     min={0}
+                                    style={{
+                                        width: "calc(100% - 200px)",
+                                    }}
                                     disabled={ReturnedStatuses.includes(record.status)}
                                     max={record.quantity}
                                     status={status}

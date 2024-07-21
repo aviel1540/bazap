@@ -3,10 +3,12 @@ import { Popconfirm, Input, Typography } from "antd";
 import PropTypes from "prop-types";
 import { useMutation } from "@tanstack/react-query";
 import { validatePassword } from "../../Utils/passwordAPI";
+import { useAdminAuth } from "../store/AdminAuthContext";
 
 const { Text } = Typography;
 
 const ConfirmWithPasswordPopconfirm = ({ children, onConfirm }) => {
+    const { isAuth } = useAdminAuth();
     const [open, setOpen] = useState(false);
     const [password, setPassword] = useState("");
     const [validPassword, setValidPassword] = useState(true);
@@ -35,8 +37,14 @@ const ConfirmWithPasswordPopconfirm = ({ children, onConfirm }) => {
         setPassword("");
         setValidPassword(true);
     };
-
-    const trigger = React.Children.map(children, (child) => React.cloneElement(child, { onClick: () => setOpen(true) }));
+    const handleClickAndSkipIfAuth = () => {
+        if (isAuth) {
+            onConfirm();
+        } else {
+            setOpen(true);
+        }
+    };
+    const trigger = React.Children.map(children, (child) => React.cloneElement(child, { onClick: handleClickAndSkipIfAuth }));
     return (
         <div style={{ width: "100%" }}>
             <Popconfirm

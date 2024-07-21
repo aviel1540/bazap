@@ -112,7 +112,7 @@ const VoucherStep2 = () => {
     });
 
     const handleAddDevice = () => {
-        addDevice({ serialNumber: "", deviceType: "" });
+        addDevice({ serialNumber: "", deviceTypeId: "" });
     };
     const handleAddAccessory = () => {
         addAccessory({ quantity: 1, deviceTypeId: null });

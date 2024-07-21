@@ -11,6 +11,7 @@ const pages = [
     { label: "יחידות", path: "/Unit" },
     { label: "טכנאים", path: "/Technician" },
 ];
+
 const MainNavigation = () => {
     return (
         <>
@@ -18,26 +19,14 @@ const MainNavigation = () => {
                 <NavLink to="/">
                     <Avatar size={50} src={<img src={"/bazap-logo.png"} alt="logo" />} />
                 </NavLink>
-                <Flex gap="middle" justify="center" align="center" className="mx-3">
-                    {pages.map((page) => {
-                        return <NavItem key={page.path} page={page} />;
-                    })}
-                </Flex>
-                {/* <Menu
-                className="bg-transparent"
-                mode="horizontal"
-                selectedKeys={[currentPath]}
-                items={pages.map((item) => ({
-                    key: item.path,
-                    label: <NavLink to={item.path}>{item.label}</NavLink>,
-                    }))}
-                    style={{
-                        flex: 1,
-                        }}
-                        /> */}
-                <div className="me-auto">
+                <Flex justify="space-between" align="center" className="flex-grow-1 mx-3">
+                    <Flex>
+                        {pages.map((page) => {
+                            return <NavItem key={page.path} page={page} />;
+                        })}
+                    </Flex>
                     <AdminAuth />
-                </div>
+                </Flex>
             </Header>
         </>
     );

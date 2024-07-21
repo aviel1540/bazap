@@ -18,8 +18,7 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
     const handleSave = (data) => {
         const isDeliveryVoucher = data.type == "false";
         if (isDeliveryVoucher) {
-            // addVoucherOutMutation.mutate(data);
-            alert(JSON.stringify(data));
+            addVoucherOutMutation.mutate(data);
         } else {
             let values = data;
             values.accessoriesData = values.accessoriesData.map((item) => {
@@ -31,8 +30,8 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
                 }
                 return item;
             });
-            alert(JSON.stringify(data));
-            // addVoucherMutation.mutate(values);
+            // alert(JSON.stringify(data));
+            addVoucherMutation.mutate(values);
         }
     };
 

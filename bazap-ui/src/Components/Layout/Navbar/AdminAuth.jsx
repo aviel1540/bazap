@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Tooltip, Modal, Form, Input } from "antd";
 import { useAdminAuth } from "../../store/AdminAuthContext";
 import CustomButton from "../../UI/CustomButton/CustomButton";
-import { CheckOutlined, LoginOutlined } from "@ant-design/icons";
+import { CheckOutlined, LoginOutlined, InfoCircleOutlined } from "@ant-design/icons";
 
 const AdminAuth = () => {
     const { isAuth, onLogin, onLogout } = useAdminAuth();
@@ -40,7 +40,7 @@ const AdminAuth = () => {
     };
 
     return (
-        <div className="fw-500">
+        <div style={{ display: "flex", alignItems: "center" }}>
             {isAuth && (
                 <Tooltip title="לחץ להתנתק" color="blue">
                     <CustomButton type="success" onClick={logoutHandler} iconPosition="end" icon={<CheckOutlined />} size="small">
@@ -71,6 +71,9 @@ const AdminAuth = () => {
                     </Modal>
                 </>
             )}
+            <Tooltip title="התחברות ל-20 דקות כמנהל תחסוך הכנסת סיסמא כל פעם" color="blue">
+                <InfoCircleOutlined className="ms-5 text-white fs-4" />
+            </Tooltip>
         </div>
     );
 };

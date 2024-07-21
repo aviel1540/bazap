@@ -18,7 +18,7 @@ const RenderFields = ({ stepFields, fieldArray = false, fieldKey }) => {
                     {fieldArray
                         ? fieldArray.map((_, index) =>
                               renderFields.map((field) => {
-                                  let newField = field;
+                                  let newField = { ...field };
                                   newField.name = `${fieldKey}[${index}].${field.name}`;
                                   return (
                                       <React.Fragment key={`${field.name}-${index}`}>
