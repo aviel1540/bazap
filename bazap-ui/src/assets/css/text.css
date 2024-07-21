@@ -1,0 +1,1819 @@
+.text-white {
+    color: #ffffff !important;
+}
+
+.text-inverse-white {
+    color: #7e8299 !important;
+}
+
+.text-hover-white {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-white i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-white:hover {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #ffffff !important;
+}
+.text-hover-white:hover i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #ffffff !important;
+}
+.text-hover-white:hover .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #ffffff;
+}
+.text-hover-white:hover .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-hover-inverse-white {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-inverse-white i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-inverse-white:hover {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #7e8299 !important;
+}
+.text-hover-inverse-white:hover i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #7e8299 !important;
+}
+.text-hover-inverse-white:hover .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #7e8299;
+}
+.text-hover-inverse-white:hover .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-active-white {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-white i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-white.active {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #ffffff !important;
+}
+.text-active-white.active i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #ffffff !important;
+}
+.text-active-white.active .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #ffffff;
+}
+.text-active-white.active .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-active-inverse-white {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-inverse-white i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-inverse-white.active {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #7e8299 !important;
+}
+.text-active-inverse-white.active i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #7e8299 !important;
+}
+.text-active-inverse-white.active .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #7e8299;
+}
+.text-active-inverse-white.active .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-primary {
+    color: #009ef7 !important;
+}
+
+.text-inverse-primary {
+    color: #ffffff !important;
+}
+
+.text-light-primary {
+    color: #f1faff !important;
+}
+
+.text-hover-primary {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-primary i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-primary:hover {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #009ef7 !important;
+}
+.text-hover-primary:hover i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #009ef7 !important;
+}
+.text-hover-primary:hover .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #009ef7;
+}
+.text-hover-primary:hover .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-hover-inverse-primary {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-inverse-primary i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-inverse-primary:hover {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #ffffff !important;
+}
+.text-hover-inverse-primary:hover i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #ffffff !important;
+}
+.text-hover-inverse-primary:hover .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #ffffff;
+}
+.text-hover-inverse-primary:hover .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-active-primary {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-primary i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-primary.active {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #009ef7 !important;
+}
+.text-active-primary.active i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #009ef7 !important;
+}
+.text-active-primary.active .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #009ef7;
+}
+.text-active-primary.active .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-active-inverse-primary {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-inverse-primary i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-inverse-primary.active {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #ffffff !important;
+}
+.text-active-inverse-primary.active i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #ffffff !important;
+}
+.text-active-inverse-primary.active .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #ffffff;
+}
+.text-active-inverse-primary.active .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-secondary {
+    color: #e4e6ef !important;
+}
+
+.text-inverse-secondary {
+    color: #3f4254 !important;
+}
+
+.text-hover-secondary {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-secondary i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-secondary:hover {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #e4e6ef !important;
+}
+.text-hover-secondary:hover i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #e4e6ef !important;
+}
+.text-hover-secondary:hover .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #e4e6ef;
+}
+.text-hover-secondary:hover .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-hover-inverse-secondary {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-inverse-secondary i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-inverse-secondary:hover {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #3f4254 !important;
+}
+.text-hover-inverse-secondary:hover i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #3f4254 !important;
+}
+.text-hover-inverse-secondary:hover .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #3f4254;
+}
+.text-hover-inverse-secondary:hover .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-active-secondary {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-secondary i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-secondary.active {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #e4e6ef !important;
+}
+.text-active-secondary.active i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #e4e6ef !important;
+}
+.text-active-secondary.active .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #e4e6ef;
+}
+.text-active-secondary.active .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-active-inverse-secondary {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-inverse-secondary i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-inverse-secondary.active {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #3f4254 !important;
+}
+.text-active-inverse-secondary.active i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #3f4254 !important;
+}
+.text-active-inverse-secondary.active .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #3f4254;
+}
+.text-active-inverse-secondary.active .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-light {
+    color: #f5f8fa !important;
+}
+
+.text-inverse-light {
+    color: #7e8299 !important;
+}
+
+.text-hover-light {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-light i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-light:hover {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #f5f8fa !important;
+}
+.text-hover-light:hover i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #f5f8fa !important;
+}
+.text-hover-light:hover .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #f5f8fa;
+}
+.text-hover-light:hover .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-hover-inverse-light {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-inverse-light i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-inverse-light:hover {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #7e8299 !important;
+}
+.text-hover-inverse-light:hover i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #7e8299 !important;
+}
+.text-hover-inverse-light:hover .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #7e8299;
+}
+.text-hover-inverse-light:hover .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-active-light {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-light i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-light.active {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #f5f8fa !important;
+}
+.text-active-light.active i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #f5f8fa !important;
+}
+.text-active-light.active .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #f5f8fa;
+}
+.text-active-light.active .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-active-inverse-light {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-inverse-light i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-inverse-light.active {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #7e8299 !important;
+}
+.text-active-inverse-light.active i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #7e8299 !important;
+}
+.text-active-inverse-light.active .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #7e8299;
+}
+.text-active-inverse-light.active .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-success {
+    color: #50cd89 !important;
+}
+
+.text-inverse-success {
+    color: #ffffff !important;
+}
+
+.text-light-success {
+    color: #e8fff3 !important;
+}
+
+.text-hover-success {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-success i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-success:hover {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #50cd89 !important;
+}
+.text-hover-success:hover i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #50cd89 !important;
+}
+.text-hover-success:hover .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #50cd89;
+}
+.text-hover-success:hover .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-hover-inverse-success {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-inverse-success i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-inverse-success:hover {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #ffffff !important;
+}
+.text-hover-inverse-success:hover i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #ffffff !important;
+}
+.text-hover-inverse-success:hover .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #ffffff;
+}
+.text-hover-inverse-success:hover .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-active-success {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-success i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-success.active {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #50cd89 !important;
+}
+.text-active-success.active i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #50cd89 !important;
+}
+.text-active-success.active .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #50cd89;
+}
+.text-active-success.active .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-active-inverse-success {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-inverse-success i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-inverse-success.active {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #ffffff !important;
+}
+.text-active-inverse-success.active i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #ffffff !important;
+}
+.text-active-inverse-success.active .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #ffffff;
+}
+.text-active-inverse-success.active .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-info {
+    color: #7239ea !important;
+}
+
+.text-inverse-info {
+    color: #ffffff !important;
+}
+
+.text-light-info {
+    color: #f8f5ff !important;
+}
+
+.text-hover-info {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-info i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-info:hover {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #7239ea !important;
+}
+.text-hover-info:hover i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #7239ea !important;
+}
+.text-hover-info:hover .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #7239ea;
+}
+.text-hover-info:hover .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-hover-inverse-info {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-inverse-info i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-inverse-info:hover {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #ffffff !important;
+}
+.text-hover-inverse-info:hover i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #ffffff !important;
+}
+.text-hover-inverse-info:hover .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #ffffff;
+}
+.text-hover-inverse-info:hover .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-active-info {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-info i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-info.active {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #7239ea !important;
+}
+.text-active-info.active i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #7239ea !important;
+}
+.text-active-info.active .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #7239ea;
+}
+.text-active-info.active .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-active-inverse-info {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-inverse-info i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-inverse-info.active {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #ffffff !important;
+}
+.text-active-inverse-info.active i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #ffffff !important;
+}
+.text-active-inverse-info.active .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #ffffff;
+}
+.text-active-inverse-info.active .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-warning {
+    color: #ffc700 !important;
+}
+
+.text-inverse-warning {
+    color: #ffffff !important;
+}
+
+.text-light-warning {
+    color: #fff8dd !important;
+}
+
+.text-hover-warning {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-warning i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-warning:hover {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #ffc700 !important;
+}
+.text-hover-warning:hover i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #ffc700 !important;
+}
+.text-hover-warning:hover .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #ffc700;
+}
+.text-hover-warning:hover .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-hover-inverse-warning {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-inverse-warning i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-inverse-warning:hover {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #ffffff !important;
+}
+.text-hover-inverse-warning:hover i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #ffffff !important;
+}
+.text-hover-inverse-warning:hover .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #ffffff;
+}
+.text-hover-inverse-warning:hover .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-active-warning {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-warning i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-warning.active {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #ffc700 !important;
+}
+.text-active-warning.active i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #ffc700 !important;
+}
+.text-active-warning.active .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #ffc700;
+}
+.text-active-warning.active .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-active-inverse-warning {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-inverse-warning i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-inverse-warning.active {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #ffffff !important;
+}
+.text-active-inverse-warning.active i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #ffffff !important;
+}
+.text-active-inverse-warning.active .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #ffffff;
+}
+.text-active-inverse-warning.active .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-danger {
+    color: #f1416c !important;
+}
+
+.text-inverse-danger {
+    color: #ffffff !important;
+}
+
+.text-light-danger {
+    color: #fff5f8 !important;
+}
+
+.text-hover-danger {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-danger i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-danger:hover {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #f1416c !important;
+}
+.text-hover-danger:hover i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #f1416c !important;
+}
+.text-hover-danger:hover .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #f1416c;
+}
+.text-hover-danger:hover .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-hover-inverse-danger {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-inverse-danger i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-inverse-danger:hover {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #ffffff !important;
+}
+.text-hover-inverse-danger:hover i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #ffffff !important;
+}
+.text-hover-inverse-danger:hover .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #ffffff;
+}
+.text-hover-inverse-danger:hover .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-active-danger {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-danger i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-danger.active {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #f1416c !important;
+}
+.text-active-danger.active i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #f1416c !important;
+}
+.text-active-danger.active .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #f1416c;
+}
+.text-active-danger.active .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-active-inverse-danger {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-inverse-danger i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-inverse-danger.active {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #ffffff !important;
+}
+.text-active-inverse-danger.active i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #ffffff !important;
+}
+.text-active-inverse-danger.active .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #ffffff;
+}
+.text-active-inverse-danger.active .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-dark {
+    color: #181c32 !important;
+}
+
+.text-inverse-dark {
+    color: #ffffff !important;
+}
+
+.text-light-dark {
+    color: #eff2f5 !important;
+}
+
+.text-hover-dark {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-dark i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-dark:hover {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #181c32 !important;
+}
+.text-hover-dark:hover i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #181c32 !important;
+}
+.text-hover-dark:hover .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #181c32;
+}
+.text-hover-dark:hover .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-hover-inverse-dark {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-inverse-dark i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-inverse-dark:hover {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #ffffff !important;
+}
+.text-hover-inverse-dark:hover i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #ffffff !important;
+}
+.text-hover-inverse-dark:hover .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #ffffff;
+}
+.text-hover-inverse-dark:hover .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-active-dark {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-dark i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-dark.active {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #181c32 !important;
+}
+.text-active-dark.active i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #181c32 !important;
+}
+.text-active-dark.active .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #181c32;
+}
+.text-active-dark.active .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-active-inverse-dark {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-inverse-dark i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-inverse-dark.active {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #ffffff !important;
+}
+.text-active-inverse-dark.active i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #ffffff !important;
+}
+.text-active-inverse-dark.active .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #ffffff;
+}
+.text-active-inverse-dark.active .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-muted {
+    color: #a1a5b7 !important;
+}
+
+.text-hover-muted {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-muted i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-muted:hover {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #a1a5b7 !important;
+}
+.text-hover-muted:hover i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #a1a5b7 !important;
+}
+.text-hover-muted:hover .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #a1a5b7;
+}
+.text-hover-muted:hover .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-active-muted {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-muted i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-muted.active {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #a1a5b7 !important;
+}
+.text-active-muted.active i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #a1a5b7 !important;
+}
+.text-active-muted.active .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #a1a5b7;
+}
+.text-active-muted.active .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-gray-100 {
+    color: #f5f8fa !important;
+}
+
+.text-hover-gray-100 {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-gray-100 i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-gray-100:hover {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #f5f8fa !important;
+}
+.text-hover-gray-100:hover i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #f5f8fa !important;
+}
+.text-hover-gray-100:hover .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #f5f8fa;
+}
+.text-hover-gray-100:hover .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-active-gray-100 {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-gray-100 i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-gray-100.active {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #f5f8fa !important;
+}
+.text-active-gray-100.active i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #f5f8fa !important;
+}
+.text-active-gray-100.active .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #f5f8fa;
+}
+.text-active-gray-100.active .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-gray-200 {
+    color: #eff2f5 !important;
+}
+
+.text-hover-gray-200 {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-gray-200 i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-gray-200:hover {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #eff2f5 !important;
+}
+.text-hover-gray-200:hover i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #eff2f5 !important;
+}
+.text-hover-gray-200:hover .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #eff2f5;
+}
+.text-hover-gray-200:hover .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-active-gray-200 {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-gray-200 i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-gray-200.active {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #eff2f5 !important;
+}
+.text-active-gray-200.active i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #eff2f5 !important;
+}
+.text-active-gray-200.active .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #eff2f5;
+}
+.text-active-gray-200.active .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-gray-300 {
+    color: #e4e6ef !important;
+}
+
+.text-hover-gray-300 {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-gray-300 i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-gray-300:hover {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #e4e6ef !important;
+}
+.text-hover-gray-300:hover i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #e4e6ef !important;
+}
+.text-hover-gray-300:hover .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #e4e6ef;
+}
+.text-hover-gray-300:hover .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-active-gray-300 {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-gray-300 i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-gray-300.active {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #e4e6ef !important;
+}
+.text-active-gray-300.active i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #e4e6ef !important;
+}
+.text-active-gray-300.active .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #e4e6ef;
+}
+.text-active-gray-300.active .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-gray-400 {
+    color: #b5b5c3 !important;
+}
+
+.text-hover-gray-400 {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-gray-400 i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-gray-400:hover {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #b5b5c3 !important;
+}
+.text-hover-gray-400:hover i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #b5b5c3 !important;
+}
+.text-hover-gray-400:hover .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #b5b5c3;
+}
+.text-hover-gray-400:hover .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-active-gray-400 {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-gray-400 i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-gray-400.active {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #b5b5c3 !important;
+}
+.text-active-gray-400.active i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #b5b5c3 !important;
+}
+.text-active-gray-400.active .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #b5b5c3;
+}
+.text-active-gray-400.active .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-gray-500 {
+    color: #a1a5b7 !important;
+}
+
+.text-hover-gray-500 {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-gray-500 i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-gray-500:hover {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #a1a5b7 !important;
+}
+.text-hover-gray-500:hover i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #a1a5b7 !important;
+}
+.text-hover-gray-500:hover .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #a1a5b7;
+}
+.text-hover-gray-500:hover .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-active-gray-500 {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-gray-500 i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-gray-500.active {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #a1a5b7 !important;
+}
+.text-active-gray-500.active i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #a1a5b7 !important;
+}
+.text-active-gray-500.active .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #a1a5b7;
+}
+.text-active-gray-500.active .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-gray-600 {
+    color: #7e8299 !important;
+}
+
+.text-hover-gray-600 {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-gray-600 i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-gray-600:hover {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #7e8299 !important;
+}
+.text-hover-gray-600:hover i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #7e8299 !important;
+}
+.text-hover-gray-600:hover .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #7e8299;
+}
+.text-hover-gray-600:hover .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-active-gray-600 {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-gray-600 i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-gray-600.active {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #7e8299 !important;
+}
+.text-active-gray-600.active i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #7e8299 !important;
+}
+.text-active-gray-600.active .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #7e8299;
+}
+.text-active-gray-600.active .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-gray-700 {
+    color: #5e6278 !important;
+}
+
+.text-hover-gray-700 {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-gray-700 i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-gray-700:hover {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #5e6278 !important;
+}
+.text-hover-gray-700:hover i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #5e6278 !important;
+}
+.text-hover-gray-700:hover .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #5e6278;
+}
+.text-hover-gray-700:hover .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-active-gray-700 {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-gray-700 i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-gray-700.active {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #5e6278 !important;
+}
+.text-active-gray-700.active i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #5e6278 !important;
+}
+.text-active-gray-700.active .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #5e6278;
+}
+.text-active-gray-700.active .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-gray-800 {
+    color: #3f4254 !important;
+}
+
+.text-hover-gray-800 {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-gray-800 i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-gray-800:hover {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #3f4254 !important;
+}
+.text-hover-gray-800:hover i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #3f4254 !important;
+}
+.text-hover-gray-800:hover .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #3f4254;
+}
+.text-hover-gray-800:hover .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-active-gray-800 {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-gray-800 i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-gray-800.active {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #3f4254 !important;
+}
+.text-active-gray-800.active i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #3f4254 !important;
+}
+.text-active-gray-800.active .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #3f4254;
+}
+.text-active-gray-800.active .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-gray-900 {
+    color: #181c32 !important;
+}
+
+.text-hover-gray-900 {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-gray-900 i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-hover-gray-900:hover {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #181c32 !important;
+}
+.text-hover-gray-900:hover i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #181c32 !important;
+}
+.text-hover-gray-900:hover .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #181c32;
+}
+.text-hover-gray-900:hover .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-active-gray-900 {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-gray-900 i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.text-active-gray-900.active {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #181c32 !important;
+}
+.text-active-gray-900.active i {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    color: #181c32 !important;
+}
+.text-active-gray-900.active .svg-icon svg [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+    fill: #181c32;
+}
+.text-active-gray-900.active .svg-icon svg:hover [fill]:not(.permanent):not(g) {
+    transition: fill 0.3s ease;
+}
+
+.text-transparent {
+    color: transparent;
+}

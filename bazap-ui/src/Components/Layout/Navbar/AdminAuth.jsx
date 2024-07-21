@@ -28,6 +28,13 @@ const AdminAuth = () => {
             if (result) {
                 setIsModalVisible(false);
                 form.resetFields();
+            } else {
+                form.setFields([
+                    {
+                        name: "password",
+                        errors: ["סיסמאת מנהל שגויה!"],
+                    },
+                ]);
             }
         });
     };
