@@ -4,7 +4,7 @@ import CustomForm from "../../Components/UI/CustomForm/CustomForm";
 import { checkDuplicationInForm } from "../../Utils/formUtils";
 
 import { addTechnician, getAllTechnicians, updateTechnician } from "../../Utils/technicianAPI";
-const TechnicianForm = ({ onCancel, formValues = null, isEdit }) => {
+const TechnicianForm = ({ onCancel, formValues = null, isEdit = false }) => {
     const queryClient = useQueryClient();
     const { isLoading, data: technicians } = useQuery({
         queryKey: ["technicians"],
@@ -64,7 +64,7 @@ const TechnicianForm = ({ onCancel, formValues = null, isEdit }) => {
     ];
     return (
         <CustomForm
-            inputs={fields}
+            fields={fields}
             onSubmit={handleSave}
             onCancel={onCancel}
             isPasswordRequired
@@ -79,10 +79,6 @@ TechnicianForm.propTypes = {
     onCancel: propTypes.func,
     isEdit: propTypes.bool,
     editId: propTypes.string,
-};
-
-TechnicianForm.defaultProps = {
-    isEdit: false,
 };
 
 export default TechnicianForm;

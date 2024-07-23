@@ -3,7 +3,7 @@ import { Controller } from "react-hook-form";
 import PropTypes, { object } from "prop-types";
 import { forwardRef } from "react";
 const ControlledSelect = forwardRef((props, ref) => {
-    const { name, label, control, validators, onFieldChange, options, placeholder, disabled } = props;
+    const { name, label, control, validators, onFieldChange = () => {}, options, placeholder, disabled } = props;
 
     return (
         <Controller
@@ -48,9 +48,7 @@ ControlledSelect.propTypes = {
     onFieldChange: PropTypes.func,
     disabled: PropTypes.bool,
 };
-ControlledSelect.defaultProps = {
-    onFieldChange: () => {},
-};
+
 ControlledSelect.displayName = "ControlledSelect";
 
 export default ControlledSelect;

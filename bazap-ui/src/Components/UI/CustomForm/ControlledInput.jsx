@@ -8,7 +8,7 @@ import { forwardRef } from "react";
 const textInputTypes = ["text", "number", "email"];
 
 const ControlledInput = forwardRef((props, ref) => {
-    const { type } = props;
+    const { type, name } = props;
     const lowerType = type.toLowerCase();
     const isTextInput = textInputTypes.includes(type);
     const isSelect = lowerType === "select";
@@ -16,16 +16,16 @@ const ControlledInput = forwardRef((props, ref) => {
     const isAutoComplete = lowerType === "autocomplete";
 
     if (isButtonRadio) {
-        return <ControlledButtonRadio {...props} key={props.name} />;
+        return <ControlledButtonRadio {...props} name={name} key={name} />;
     }
     if (isAutoComplete) {
-        return <ControlledAutocomplete {...props} key={props.name} />;
+        return <ControlledAutocomplete {...props} name={name} key={name} />;
     }
     if (isSelect) {
-        return <ControlledSelect {...props} key={props.name} />;
+        return <ControlledSelect {...props} name={name} key={name} />;
     }
     if (isTextInput) {
-        return <ControlledTextField inputRef={ref} {...props} key={props.name} />;
+        return <ControlledTextField inputRef={ref} {...props} name={name} key={name} />;
     }
     return <div>need to do this {type} type of input </div>;
 });

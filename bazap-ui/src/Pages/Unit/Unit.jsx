@@ -3,7 +3,7 @@ import CustomCard from "../../Components/UI/CustomCard";
 import UnitForm from "./UnitForm";
 import UnitTable from "./UnitTable";
 import { PlusOutlined } from "@ant-design/icons";
-import CustomButton from "../../Components/UI/CustomButton";
+import CustomButton from "../../Components/UI/CustomButton/CustomButton";
 
 const Unit = () => {
     const { onShow, onHide } = useCustomModal();

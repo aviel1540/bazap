@@ -84,3 +84,38 @@ exports.validatePassword = async (req, res) => {
         return res.status(500).json(err.message);
     }
 };
+
+exports.login = async (req, res) => {
+    const adminPass = escape(req.body.password);
+    let password;
+    try {
+        if (!adminPass) {
+            return res.status(401).json({ message: "יש להזין סיסמת מנהל" });
+        }
+        const checkAdminPassword = validation.addSlashes(adminPass);
+        password = await passwordService.findPasswordByValue(checkAdminPassword);
+        if (!password || password.type) {
+            // update the current date
+            return res.status(401).json({ message: "סיסמא שגויה !" });
+        } else {
+            passwordService.login(password._id);
+        }
+        return res.status(200).json(true);
+    } catch (err) {
+        return res.status(500).json(err.message);
+    }
+};
+
+exports.logout = async (req, res) => {
+    try {
+        await passwordService.logout();
+        return res.status(200).json(true);
+    } catch (err) {
+        return res.status(500).json(err.message);
+    }
+};
+
+exports.isAdminAuthenticated = async (req, res) => {
+    const result = await passwordService.isAdminAuthenticated();
+    return res.status(200).json(result);
+};

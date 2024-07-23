@@ -1,12 +1,12 @@
-import CssBaseline from "@mui/material/CssBaseline";
 import { CacheProvider } from "@emotion/react";
-import { ThemeProvider } from "@mui/material";
-import createTheme from "@mui/material/styles/createTheme";
 import { heIL } from "@mui/material/locale";
 import createCache from "@emotion/cache";
 import rtlPlugin from "stylis-plugin-rtl";
 import { prefixer } from "stylis";
 import propTypes from "prop-types";
+
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { CssBaseline } from "@mui/material";
 
 const cacheRtl = createCache({
     key: "muirtl",

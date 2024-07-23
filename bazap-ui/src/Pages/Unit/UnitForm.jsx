@@ -4,7 +4,7 @@ import CustomForm from "../../Components/UI/CustomForm/CustomForm";
 import { checkDuplicationInForm } from "../../Utils/formUtils";
 import { addUnit, getAllUnits, updateUnit } from "../../Utils/unitAPI";
 
-const UnitForm = ({ onCancel, formValues = null, isEdit }) => {
+const UnitForm = ({ onCancel, formValues = null, isEdit = false }) => {
     const queryClient = useQueryClient();
 
     const { isLoading, data: units } = useQuery({
@@ -61,7 +61,7 @@ const UnitForm = ({ onCancel, formValues = null, isEdit }) => {
     ];
     return (
         <CustomForm
-            inputs={fields}
+            fields={fields}
             onSubmit={handleSave}
             isPasswordRequired
             onCancel={onCancel}
@@ -76,10 +76,6 @@ UnitForm.propTypes = {
     onCancel: propTypes.func,
     isEdit: propTypes.bool,
     editId: propTypes.string,
-};
-
-UnitForm.defaultProps = {
-    isEdit: false,
 };
 
 export default UnitForm;

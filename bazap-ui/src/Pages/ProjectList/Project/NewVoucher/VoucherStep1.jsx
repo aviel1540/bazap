@@ -1,37 +1,66 @@
-import { Box } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
-import { Col, Row } from "antd";
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import Loader from "../../../../Components/Layout/Loader";
-import ControllerInput from "../../../../Components/UI/CustomForm/ControlledInput";
 import { getAllTechnicians } from "../../../../Utils/technicianAPI";
 import { getAllUnits } from "../../../../Utils/unitAPI";
+import RenderFields from "../../../../Components/UI/CustomForm/RenderFields";
+import { PlusOutlined } from "@ant-design/icons";
+import CustomButton from "../../../../Components/UI/CustomButton/CustomButton";
+import { useCustomModal } from "../../../../Components/store/CustomModalContext";
+import UnitForm from "../../../Unit/UnitForm";
+import TechnicianForm from "../../../Technician/TechnicianForm";
+import { Tooltip } from "antd";
 
 const VoucherStep1 = () => {
-    const { control, getValues, getFieldState } = useFormContext();
-    const isTypeSelected = !!getValues("type") && getFieldState("type").isDirty == false;
+    const { onShow, onHide } = useCustomModal();
+    const { methods } = useFormContext();
+    const { formMethods } = methods;
+    const { getValues, getFieldState } = formMethods;
+
+    const isTypeSelected = !!getValues("type") && !getFieldState("type").isDirty;
 
     const [technicianType, setTechnicianType] = useState({
-        arrivedBy: getValues("type") == "true" ? "text" : "select",
-        receivedBy: getValues("type") == "true" ? "select" : "text",
+        arrivedBy: getValues("type") === "true" ? "text" : "select",
+        receivedBy: getValues("type") === "true" ? "select" : "text",
     });
+
+    const showUnitModal = () => {
+        onShow({
+            title: "יחידה חדשה",
+            name: "unit",
+            body: <UnitForm onCancel={() => onHide("unit")} />,
+        });
+    };
+    const showTechnicianModal = () => {
+        onShow({
+            title: "טכנאי חדש",
+            name: "technician",
+            body: <TechnicianForm onCancel={() => onHide("technician")} />,
+        });
+    };
 
     const { isLoading: isLoadingUnits, data: units } = useQuery({
         queryKey: ["units"],
         queryFn: getAllUnits,
     });
-    const { isLoading: isLoadingTechnician, data: technicians } = useQuery({
+    const { isLoading: isLoadingTechnicians, data: technicians } = useQuery({
         queryKey: ["technicians"],
         queryFn: getAllTechnicians,
     });
-    const unitOptions = units?.map((unit) => {
-        return { text: unit.unitsName, value: unit._id, ...unit };
-    });
-    const technicianOptions = technicians?.map((technician) => {
-        return { text: technician.techName, value: technician.techName };
-    });
-    const isLoading = isLoadingUnits || isLoadingTechnician;
+
+    const unitOptions = units?.map((unit) => ({
+        text: unit.unitsName,
+        value: unit._id,
+        ...unit,
+    }));
+
+    const technicianOptions = technicians?.map((technician) => ({
+        text: technician.techName,
+        value: technician.techName,
+    }));
+
+    const isLoading = isLoadingUnits || isLoadingTechnicians;
 
     const voucherInputs = [
         {
@@ -47,17 +76,22 @@ const VoucherStep1 = () => {
                 { value: "false", text: "ניפוק" },
             ],
             onFieldChange: (newValue) => {
-                const boolValue = newValue == "true";
-                const newTechnicianType = {
+                const boolValue = newValue === "true";
+                setTechnicianType({
                     arrivedBy: boolValue ? "text" : "select",
                     receivedBy: boolValue ? "select" : "text",
-                };
-                setTechnicianType(newTechnicianType);
+                });
             },
         },
         {
             label: "יחידה",
             name: "unit",
+            colSpan: 22,
+            extra: (
+                <Tooltip title="הוסף יחידה חדשה">
+                    <CustomButton type="light-primary" onClick={showUnitModal} icon={<PlusOutlined />} />
+                </Tooltip>
+            ),
             type: "select",
             validators: {
                 required: "יש למלא שדה זה.",
@@ -68,6 +102,12 @@ const VoucherStep1 = () => {
             label: "חייל מנפק",
             name: "arrivedBy",
             type: technicianType.arrivedBy,
+            colSpan: 22,
+            extra: (
+                <Tooltip title="הוסף טכנאי חדש">
+                    <CustomButton type="light-primary" onClick={showTechnicianModal} icon={<PlusOutlined />} />
+                </Tooltip>
+            ),
             placeholder: "לדוגמא מור",
             validators: {
                 required: "יש למלא שדה זה.",
@@ -94,21 +134,12 @@ const VoucherStep1 = () => {
             options: technicianOptions,
         },
     ];
+
     if (isLoading) {
         return <Loader />;
     }
-    return (
-        <Box padding={2}>
-            <Row gutter={[10, 10]}>
-                {voucherInputs.map((input) => {
-                    return (
-                        <Col span={24} key={input.name}>
-                            <ControllerInput {...input} control={control} />
-                        </Col>
-                    );
-                })}
-            </Row>
-        </Box>
-    );
+
+    return <RenderFields stepFields={voucherInputs} />;
 };
+
 export default VoucherStep1;

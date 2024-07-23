@@ -4,7 +4,7 @@ import propTypes from "prop-types";
 import { addProject, getAllProjects, updateProject } from "../../Utils/projectAPI";
 import { checkDuplicationInForm } from "../../Utils/formUtils";
 
-const ProjectForm = ({ onCancel, formValues = null, isEdit }) => {
+const ProjectForm = ({ onCancel, formValues = null, isEdit = false }) => {
     const queryClient = useQueryClient();
     const { isLoading, data: projects } = useQuery({
         queryKey: ["projects"],
@@ -59,7 +59,7 @@ const ProjectForm = ({ onCancel, formValues = null, isEdit }) => {
     ];
     return (
         <CustomForm
-            inputs={fields}
+            fields={fields}
             onSubmit={handleSave}
             onCancel={onCancel}
             values={formValues}
@@ -73,10 +73,6 @@ ProjectForm.propTypes = {
     onCancel: propTypes.func,
     isEdit: propTypes.bool,
     editId: propTypes.string,
-};
-
-ProjectForm.defaultProps = {
-    isEdit: false,
 };
 
 export default ProjectForm;

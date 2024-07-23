@@ -3,7 +3,7 @@ import { useCustomModal } from "../../Components/store/CustomModalContext";
 import TechnicianForm from "./TechnicianForm";
 import TechnicianTable from "./TechnicianTable";
 import { PlusOutlined } from "@ant-design/icons";
-import CustomButton from "../../Components/UI/CustomButton";
+import CustomButton from "../../Components/UI/CustomButton/CustomButton";
 
 const Technician = () => {
     const { onShow, onHide } = useCustomModal();
