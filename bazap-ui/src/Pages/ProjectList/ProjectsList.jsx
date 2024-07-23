@@ -51,7 +51,7 @@ const ProjectsList = () => {
     const filteredProjects = projects.filter((project) => {
         if (filter === "finished") return project.finished;
         if (filter === "notFinished") return !project.finished;
-        return true; // "all"
+        return true;
     });
 
     const sortedProjects = filteredProjects.sort((a, b) => {
