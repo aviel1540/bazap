@@ -72,12 +72,14 @@ const DeviceTypeTable = ({ onEdit }) => {
             title: "שם מכשיר",
             dataIndex: "deviceName",
             key: "deviceName",
+            sorter: (a, b) => a.deviceName.localeCompare(b.deviceName),
             render: (text) => <Text strong>{text}</Text>,
         },
         {
             title: 'מק"ט',
             dataIndex: "catalogNumber",
             key: "catalogNumber",
+            sorter: (a, b) => a.catalogNumber.localeCompare(b.catalogNumber),
         },
         {
             title: "סוג שובר",

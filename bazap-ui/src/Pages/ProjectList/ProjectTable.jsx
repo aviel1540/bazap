@@ -10,6 +10,7 @@ const ProjectTable = ({ projects }) => {
             title: "שם פרוייקט",
             dataIndex: "projectName",
             key: "projectName",
+            sorter: (a, b) => a.projectName.localeCompare(b.projectName),
             render: (text, record) => (
                 <Link to={`/Project/${record._id}`}>
                     <Text strong className="text-hover-primary">
@@ -22,18 +23,21 @@ const ProjectTable = ({ projects }) => {
             title: "תאריך התחלה",
             dataIndex: "startDate",
             key: "startDate",
+            sorter: (a, b) => new Date(a.startDate) - new Date(b.startDate),
             render: (date) => <Text>{new Date(date).toLocaleDateString()}</Text>,
         },
         {
             title: "תאריך סיום",
             dataIndex: "endDate",
             key: "endDate",
+            sorter: (a, b) => new Date(a.endDate) - new Date(b.endDate),
             render: (date) => (date ? <Text>{new Date(date).toLocaleDateString()}</Text> : <Text>טרם הסתיים</Text>),
         },
         {
             title: "סטטוס",
             dataIndex: "finished",
             key: "finished",
+            sorter: (a, b) => a.finished - b.finished,
             render: (finished) => (
                 <Tag className="fw-500" color={finished ? "red" : "green"}>
                     {finished ? "פרוייקט סגור" : "פרוייקט פתוח"}

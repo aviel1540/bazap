@@ -57,6 +57,7 @@ const UnitTable = ({ onEdit }) => {
             title: "שם יחידה",
             dataIndex: "unitsName",
             key: "unitsName",
+            sorter: (a, b) => a.unitsName.localeCompare(b.unitsName),
             render: (text) => <Text strong>{text}</Text>,
         },
         {
