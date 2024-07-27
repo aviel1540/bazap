@@ -1,6 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import propTypes from "prop-types";
-import Loader from "../../Components/Layout/Loader";
 import { Table, Typography } from "antd";
 import CustomDropDown from "../../Components/UI/CustomDropDown";
 const { Text } = Typography;
@@ -9,6 +8,7 @@ import { deleteUnit, getAllUnits } from "../../Utils/unitAPI";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EmptyData from "../../Components/UI/EmptyData";
+import TableLoader from "../../Components/Loaders/TableLoader";
 
 const UnitTable = ({ onEdit }) => {
     const queryClient = useQueryClient();
@@ -62,6 +62,7 @@ const UnitTable = ({ onEdit }) => {
         {
             title: "פעולות",
             key: "menu",
+            dataIndex: "actions",
             align: "center",
             render: (_, row) => <CustomDropDown key={row._id} actions={menuActions} data={row} />,
         },
@@ -71,8 +72,9 @@ const UnitTable = ({ onEdit }) => {
             queryClient.invalidateQueries({ queryKey: ["units"] });
         },
     });
+
     if (isLoading) {
-        return <Loader />;
+        return <TableLoader columns={columns} />;
     }
 
     return (

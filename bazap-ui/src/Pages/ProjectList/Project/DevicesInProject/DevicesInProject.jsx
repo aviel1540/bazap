@@ -1,4 +1,3 @@
-import { Box } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { Space } from "antd";
 import { useState } from "react";
@@ -20,7 +19,7 @@ const ArrivedDevices = () => {
     const { onAlert, error } = useUserAlert();
     const { projectId } = useProject();
     const { onShow, onHide } = useCustomModal();
-    const [filteredDevices, setFilteredDevices] = useState([]);
+
     const [searchParam, setSearchParam] = useState("");
     const [selectedStatus, setSelectedStatus] = useState(ALL);
     const [selectedRows, setSelectedRows] = useState([]);
@@ -34,16 +33,10 @@ const ArrivedDevices = () => {
             if (devices) handleSearchAndFilter(searchParam, data, selectedStatus);
         },
     });
-
+    const [filteredDevices, setFilteredDevices] = useState(devices);
     const clearSelectedRows = () => {
         setSelectedRows([]);
     };
-
-    // const reset = () => {
-    //     clearSelectedRows();
-    //     setSelectedStatus(ALL);
-    //     handleSearchAndFilter(searchParam, null, ALL);
-    // };
 
     const handleSearchChange = (event) => {
         const search = event.target.value;
@@ -194,7 +187,7 @@ const ArrivedDevices = () => {
                 </Space>
             }
         >
-            <Box marginBottom={2}>
+            <div className="mb-3">
                 {!isLoading && (
                     <Space size="small">
                         <SearchInput onSearch={handleSearchChange} />
@@ -205,7 +198,7 @@ const ArrivedDevices = () => {
                         />
                     </Space>
                 )}
-            </Box>
+            </div>
             <DevicesInProjectTable
                 isActionsHidden={false}
                 filteredDevices={filteredDevices}

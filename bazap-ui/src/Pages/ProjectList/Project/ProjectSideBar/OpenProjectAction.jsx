@@ -1,31 +1,29 @@
-import DeleteIcon from "@mui/icons-material/Delete";
+import LockOpenRoundedIcon from "@mui/icons-material/LockOpenRounded";
 import { ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
 import { useProject } from "../../../../Components/store/ProjectContext";
 import { useUserAlert } from "../../../../Components/store/UserAlertContext";
-
-import { deleteProject } from "../../../../Utils/projectAPI";
+import { openProject } from "../../../../Utils/projectAPI";
 import ConfirmWithPasswordPopconfirm from "../../../../Components/UI/ConfirmWithPasswordPopconfirm";
 
-const DeleteProjectAction = () => {
+const OpenProjectAction = () => {
     const { projectId } = useProject();
-    const { onConfirm } = useUserAlert();
+    const { onConfirm, onAlert, success } = useUserAlert();
     const queryClient = useQueryClient();
-    const navigate = useNavigate();
 
-    const deleteProjectMutation = useMutation(deleteProject, {
+    const closeProjectMutation = useMutation(openProject, {
         onSuccess: () => {
+            queryClient.invalidateQueries(["project", projectId]);
             queryClient.invalidateQueries(["projects"]);
-            navigate("/project");
+            onAlert("הפרוייקט נפתח בהצלחה!", success, true);
         },
     });
 
-    const deleteProjectHandler = () => {
+    const closeProjectHandler = () => {
         const config = {
-            title: "האם אתה בטוח רוצה למחוק את הפרוייקט?",
+            title: "האם אתה בטוח רוצה לפתוח את הפרוייקט?",
             okHandler: () => {
-                deleteProjectMutation.mutate(projectId);
+                closeProjectMutation.mutate(projectId);
             },
         };
         onConfirm(config);
@@ -33,16 +31,16 @@ const DeleteProjectAction = () => {
 
     return (
         <ListItem disablePadding>
-            <ConfirmWithPasswordPopconfirm onConfirm={deleteProjectHandler}>
+            <ConfirmWithPasswordPopconfirm onConfirm={closeProjectHandler}>
                 <ListItemButton>
                     <ListItemIcon>
-                        <DeleteIcon />
+                        <LockOpenRoundedIcon />
                     </ListItemIcon>
-                    <ListItemText primary="מחק פרוייקט" />
+                    <ListItemText primary="פתח פרוייקט" />
                 </ListItemButton>
             </ConfirmWithPasswordPopconfirm>
         </ListItem>
     );
 };
 
-export default DeleteProjectAction;
+export default OpenProjectAction;

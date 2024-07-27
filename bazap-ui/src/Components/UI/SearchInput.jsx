@@ -2,13 +2,13 @@ import Search from "antd/es/input/Search";
 import PropTypes from "prop-types";
 let timeoutId = null;
 
-const SearchInput = (props) => {
+const SearchInput = ({ onSearch }) => {
     const handleSearch = (event) => {
         if (timeoutId) {
             clearTimeout(timeoutId);
         }
         timeoutId = setTimeout(() => {
-            props.onSearch(event);
+            onSearch(event);
         }, 300);
     };
     return (
@@ -16,7 +16,6 @@ const SearchInput = (props) => {
             placeholder="חפש..."
             allowClear
             onChange={handleSearch}
-            {...props}
             style={{
                 width: 200,
             }}

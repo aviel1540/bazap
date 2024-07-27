@@ -1,26 +1,19 @@
-import { Typography, useTheme } from "@mui/material";
-import Grid from "@mui/material/Unstable_Grid2/Grid2";
+import { Typography, Row, Col } from "antd";
 import propTypes from "prop-types";
 
 const CustomInfoLabel = ({ label, value }) => {
-    const theme = useTheme();
     return (
-        <>
-            <Grid container rowSpacing={1}>
-                <Grid xs={6}>
-                    <Typography variant="body1" color={theme.palette.infoText} fontSize={14} fontWeight={500}>
-                        {label}
-                    </Typography>
-                </Grid>
-                <Grid xs={6}>
-                    <Typography variant="body1" fontSize={14} fontWeight={500}>
-                        {value}
-                    </Typography>
-                </Grid>
-            </Grid>
-        </>
+        <Row gutter={[0, 8]} className="fw-500">
+            <Col span={12}>
+                <Typography.Text className="text-muted fs-8">{label}</Typography.Text>
+            </Col>
+            <Col span={12}>
+                <Typography.Text className="fs-8">{value}</Typography.Text>
+            </Col>
+        </Row>
     );
 };
+
 CustomInfoLabel.propTypes = {
     label: propTypes.string.isRequired,
     value: propTypes.any.isRequired,

@@ -43,3 +43,7 @@ export const getAllDevicesInLab = async ({ queryKey }) => {
     const [_, id] = queryKey;
     return await projectAPI.get(`get-all-products-in-lab/${id}`);
 };
+
+export const openProject = async (id) => {
+    return await projectAPI.patch(`/open-old-project/${id}`);
+};

@@ -1,14 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Table, Typography } from "antd";
-import Loader from "../../Components/Layout/Loader";
 import CustomDropDown from "../../Components/UI/CustomDropDown";
 import { useUserAlert } from "../../Components/store/UserAlertContext";
 import { deleteTechnician, getAllTechnicians } from "../../Utils/technicianAPI";
 import { useCustomModal } from "../../Components/store/CustomModalContext";
 import TechnicianForm from "./TechnicianForm";
-import BorderColorIcon from "@mui/icons-material/BorderColor";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EmptyData from "../../Components/UI/EmptyData";
+import TableLoader from "../../Components/Loaders/TableLoader";
+
 const { Text } = Typography;
 
 const TechnicianTable = () => {
@@ -75,6 +75,7 @@ const TechnicianTable = () => {
         {
             title: "פעולות",
             key: "menu",
+            dataIndex: "actions",
             align: "center",
             render: (_, row) => <CustomDropDown key={row._id} actions={menuActions} data={row} />,
         },
@@ -87,7 +88,7 @@ const TechnicianTable = () => {
     });
 
     if (isLoading) {
-        return <Loader />;
+        return <TableLoader columns={columns} />;
     }
     return (
         <>

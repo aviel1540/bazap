@@ -2,13 +2,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Table, Tag, Typography } from "antd";
 import CustomDropDown from "../../Components/UI/CustomDropDown";
 const { Text } = Typography;
-import Loader from "../../Components/Layout/Loader";
 import EmptyData from "../../Components/UI/EmptyData";
 import { useUserAlert } from "../../Components/store/UserAlertContext";
 import { deleteDeviceType, getAllDeviceTypes } from "../../Utils/deviceTypeApi";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import DeleteIcon from "@mui/icons-material/Delete";
 import propTypes from "prop-types";
+import TableLoader from "../../Components/Loaders/TableLoader";
 
 const DeviceTypeTable = ({ onEdit }) => {
     const { isLoading, data: deviceTypes } = useQuery({
@@ -81,15 +81,16 @@ const DeviceTypeTable = ({ onEdit }) => {
         },
         {
             title: "סוג שובר",
+            dataIndex: "type",
             key: "type",
             filters: [
                 { text: "מסווג", value: true },
                 { text: 'צל"מ', value: false },
             ],
             onFilter: (value, record) => record.isClassified == value,
-            render: ({ isClassified }) => {
-                const label = isClassified ? "מסווג" : 'צל"מ';
-                const color = isClassified ? "#50cd89" : "#ffc700";
+            render: (data) => {
+                const label = data?.isClassified ? "מסווג" : 'צל"מ';
+                const color = data?.isClassified ? "#50cd89" : "#ffc700";
                 return <Tag color={color}>{label}</Tag>;
             },
         },
@@ -97,12 +98,13 @@ const DeviceTypeTable = ({ onEdit }) => {
             title: "פעולות",
             align: "center",
             key: "menu",
+            dataIndex: "actions",
             render: (_, row) => <CustomDropDown key={row._id} actions={menuActions} data={row} />,
         },
     ];
 
     if (isLoading) {
-        return <Loader />;
+        return <TableLoader columns={columns} />;
     }
 
     return (
