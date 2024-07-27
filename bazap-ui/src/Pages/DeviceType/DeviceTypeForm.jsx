@@ -103,66 +103,58 @@ const DeviceTypeForm = ({ onCancel, formValues = null, isEdit = false }) => {
     //         ],
     //     },
     // ];
-    const steps = [
+    const fields = [
         {
-            fields: [
-                {
-                    label: "שם סוג מכשיר",
-                    name: "deviceName",
-                    type: "text",
-                    colSpan: 12,
-                    placeholder: "לדוגמא RPT",
-                    validators: {
-                        required: "יש למלא שדה זה.",
-                        minLength: {
-                            value: 2,
-                            message: "שדה זה חייב לפחות 2 תווים",
-                        },
-                        validate: validateDeviceTypeNameDuplication,
-                    },
+            label: "שם סוג מכשיר",
+            name: "deviceName",
+            type: "text",
+            colSpan: 12,
+            placeholder: "לדוגמא RPT",
+            validators: {
+                required: "יש למלא שדה זה.",
+                minLength: {
+                    value: 2,
+                    message: "שדה זה חייב לפחות 2 תווים",
                 },
-                {
-                    label: 'מק"ט',
-                    name: "catalogNumber",
-                    type: "text",
-                    colSpan: 12,
-                    placeholder: "לדוגמא 12344-555",
-                    validators: {
-                        required: "יש למלא שדה זה.",
-                        minLength: {
-                            value: 2,
-                            message: "שדה זה חייב לפחות 2 תווים",
-                        },
-                        pattern: {
-                            value: /^[0-9-]*$/,
-                            message: 'מק"ט יכול להכיל רק מספרים ומקפים',
-                        },
-                        validate: validateDeviceTypeCatalogNumberDuplication,
-                    },
-                },
-            ],
+                validate: validateDeviceTypeNameDuplication,
+            },
         },
         {
-            fields: [
-                {
-                    label: "סוג מכשיר",
-                    name: "isClassified",
-                    type: "buttonRadio",
-                    disabled: isEdit,
-                    validators: {
-                        required: "יש למלא שדה זה.",
-                    },
-                    options: [
-                        { value: "true", text: "מסווג" },
-                        { value: "false", text: 'צל"מ' },
-                    ],
+            label: 'מק"ט',
+            name: "catalogNumber",
+            type: "text",
+            colSpan: 12,
+            placeholder: "לדוגמא 12344-555",
+            validators: {
+                required: "יש למלא שדה זה.",
+                minLength: {
+                    value: 2,
+                    message: "שדה זה חייב לפחות 2 תווים",
                 },
+                pattern: {
+                    value: /^[0-9-]*$/,
+                    message: 'מק"ט יכול להכיל רק מספרים ומקפים',
+                },
+                validate: validateDeviceTypeCatalogNumberDuplication,
+            },
+        },
+        {
+            label: "סוג מכשיר",
+            name: "isClassified",
+            type: "buttonRadio",
+            disabled: isEdit,
+            validators: {
+                required: "יש למלא שדה זה.",
+            },
+            options: [
+                { value: "true", text: "מסווג" },
+                { value: "false", text: 'צל"מ' },
             ],
         },
     ];
     return (
         <CustomForm
-            steps={steps}
+            fields={fields}
             onSubmit={handleSave}
             onCancel={onCancel}
             isPasswordRequired
