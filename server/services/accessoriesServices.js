@@ -13,7 +13,6 @@ exports.addNewAccessories = async (request) => {
     });
 };
 
-exports.deleteAccessoriesById = async (checkAccessoriesId) => await Accessory.findByIdAndRemove(checkAccessoriesId);
 
 exports.updateStatus = async (request) => {
     const data = await Accessory.findByIdAndUpdate(request.checkAccessoryId, {
@@ -47,3 +46,10 @@ exports.updateFixDefective = async (request) => {
 };
 
 exports.deleteAccessoryById = async (checkAccessoryId) => await Accessory.findByIdAndDelete(checkAccessoryId);
+
+
+exports.checkVoucherOutInAccessory = async(AccessoryId) => {
+    const accessory = Accessory.findById(AccessoryId)
+    if(accessory.voucherOut) return true;
+    return false;
+} 

@@ -29,7 +29,7 @@ exports.updateReturnDevice = async (request) => {
     });
 };
 
-exports.deleteDeviceById = async (checkDeviceId) => await Device.findByIdAndRemove(checkDeviceId);
+exports.deleteDeviceById = async (checkDeviceId) => await Device.findByIdAndDelete(checkDeviceId);
 
 exports.updateDeviceNote = async (request) => {
     const { checkDeviceId, checkNote } = request;
@@ -38,3 +38,10 @@ exports.updateDeviceNote = async (request) => {
         notes: checkNote,
     });
 };
+
+
+exports.checkVoucherOutInDevice = async(deviceId) => {
+    const device = Device.findById(deviceId)
+    if(device.voucherOut) return true;
+    return false;
+} 

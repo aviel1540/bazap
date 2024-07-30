@@ -121,19 +121,45 @@ exports.getAllVouchersInProject = async (req, res) => {
     }
 };
 
+
 exports.deleteVoucher = async (req, res) => {
+    const voucherId = escape(req.params.id);
+    const devices = [];
+    const accessories = [];
     try {
-        const voucherId = escape(req.params.id);
         const voucher = await voucherService.findVoucherById(voucherId);
         const project = voucher.project;
-        if (voucher.deviceList.length == 0 && voucher.accessoriesList.length == 0) {
-            project.vouchersList = project.vouchersList.filter((item) => item._id != voucherId);
-            project.save();
-            await voucherService.deleteVoucher(voucherId);
-        } else {
-            return res.status(401).json({ message: 'אי אפשר למחוק שובר עם מסווגים/צל"מ' });
+        if (voucher.deviceList.length > 0) {
+            for (const device of voucher.deviceList) {
+                if (device.voucherOut) {
+                    return res.status(400).json({ message: "לא ניתן למחוק שובר - קיימים מכשירים שיצאו" });                    
+                } else {
+                    devices.push(device._id);
+                }
+            }
         }
-
+        if (voucher.accessoriesList.length > 0) {
+            for (const accessory of voucher.accessoriesList) {                
+                if (accessory.voucherOut) {
+                    return res.status(400).json({ message: "לא ניתן למחוק שובר - קיימים אביזרים שיצאו" });
+                } else {
+                    accessories.push(accessory._id);
+                }
+            }
+        }
+        if (devices.length > 0) {
+            devices.map(async (device) => {
+                await deviceService.deleteDeviceById(device)
+            })
+        }
+        if (accessories.length > 0) {
+            accessories.map(async (accessory) => {
+                await accessoryService.deleteAccessoryById(accessory)
+            })
+        }
+        project.vouchersList = project.vouchersList.filter((item) => item._id != voucherId);
+        project.save();
+        await voucherService.deleteVoucher(voucherId);
         return res.status(200).json();
     } catch (err) {
         return res.status(500).json({ message: err.message });
