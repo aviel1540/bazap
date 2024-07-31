@@ -191,7 +191,6 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
                 const notesInput = (
                     <Input
                         defaultValue={notes}
-                        disabled={ReturnedStatuses.includes(record.status)}
                         onChange={(event) => handleNotesChange(event, record._id, record.deviceTypeId.isClassified)}
                         placeholder="הערות"
                     />
@@ -206,14 +205,12 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
                 return (
                     <>
                         {!record.deviceTypeId.isClassified && (
-                            <Space.Compact>
+                            <Space.Compact size="middle" block>
                                 <InputNumber
                                     addonBefore="תקין"
                                     name="fix"
                                     min={0}
-                                    style={{
-                                        width: "calc(100% - 200px)",
-                                    }}
+                                    className="min-w-100px"
                                     disabled={ReturnedStatuses.includes(record.status)}
                                     max={record.quantity}
                                     status={status}
@@ -224,9 +221,7 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
                                     addonBefore="מושבת"
                                     name="defective"
                                     min={0}
-                                    style={{
-                                        width: "calc(100% - 200px)",
-                                    }}
+                                    className="min-w-100px"
                                     disabled={ReturnedStatuses.includes(record.status)}
                                     max={record.quantity}
                                     status={status}

@@ -53,18 +53,21 @@ exports.addNewVoucherIn = async (req, res) => {
             for (const deviceData of devicesData) {
                 const serialNumber = escape(deviceData.serialNumber);
                 const deviceTypeId = escape(deviceData.deviceTypeId);
+                const notes = escape(deviceData.notes ?? "");
 
                 if (!serialNumber || !deviceTypeId) {
                     return res.status(400).json({ message: "נא למלא את כל השדות" });
                 }
                 const checkSerialNumber = validation.addSlashes(serialNumber);
                 const checkDeviceTypeId = validation.addSlashes(deviceTypeId);
+                const checkNotes = validation.addSlashes(notes);
                 const checkUnit = validation.addSlashes(unit);
                 const newDevice = await deviceService.addNewDevice({
                     checkSerialNumber,
                     checkDeviceTypeId,
                     checkUnitId: checkUnit,
                     checkVoucherId: newVoucher._id,
+                    checkNotes,
                     projectId,
                 });
 
@@ -121,7 +124,6 @@ exports.getAllVouchersInProject = async (req, res) => {
     }
 };
 
-
 exports.deleteVoucher = async (req, res) => {
     const voucherId = escape(req.params.id);
     const devices = [];
@@ -132,14 +134,14 @@ exports.deleteVoucher = async (req, res) => {
         if (voucher.deviceList.length > 0) {
             for (const device of voucher.deviceList) {
                 if (device.voucherOut) {
-                    return res.status(400).json({ message: "לא ניתן למחוק שובר - קיימים מכשירים שיצאו" });                    
+                    return res.status(400).json({ message: "לא ניתן למחוק שובר - קיימים מכשירים שיצאו" });
                 } else {
                     devices.push(device._id);
                 }
             }
         }
         if (voucher.accessoriesList.length > 0) {
-            for (const accessory of voucher.accessoriesList) {                
+            for (const accessory of voucher.accessoriesList) {
                 if (accessory.voucherOut) {
                     return res.status(400).json({ message: "לא ניתן למחוק שובר - קיימים אביזרים שיצאו" });
                 } else {
@@ -149,13 +151,13 @@ exports.deleteVoucher = async (req, res) => {
         }
         if (devices.length > 0) {
             devices.map(async (device) => {
-                await deviceService.deleteDeviceById(device)
-            })
+                await deviceService.deleteDeviceById(device);
+            });
         }
         if (accessories.length > 0) {
             accessories.map(async (accessory) => {
-                await accessoryService.deleteAccessoryById(accessory)
-            })
+                await accessoryService.deleteAccessoryById(accessory);
+            });
         }
         project.vouchersList = project.vouchersList.filter((item) => item._id != voucherId);
         project.save();

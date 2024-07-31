@@ -77,3 +77,14 @@ export const tagColors = {
 };
 
 export const ReturnedStatuses = [DeviceStatuses.DEFECTIVE_RETURN, DeviceStatuses.FIXED_RETURN, DeviceStatuses.FINISHED_OUT];
+
+export const sortOptions = (list, key) => {
+    if (!list || !key) return [];
+
+    const sortedList = [...list].sort((a, b) => {
+        if (a[key] < b[key]) return -1;
+        if (a[key] > b[key]) return 1;
+        return 0;
+    });
+    return sortedList;
+};

@@ -1,5 +1,4 @@
 import ClosedProjects from "./Projects/ClosedProjects";
-
 function Home() {
     return (
         <>

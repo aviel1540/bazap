@@ -9,6 +9,7 @@ import CreateOutDevicesReportAction from "./ProjectSideBar/CreateOutDevicesRepor
 import CloseProjectAction from "./ProjectSideBar/CloseProjectAction";
 import DeleteProjectAction from "./ProjectSideBar/DeleteProjectAction";
 import OpenProjectAction from "./ProjectSideBar/OpenProjectAction";
+import EditProjectAction from "./ProjectSideBar/EditProjectAction";
 
 const ProjectSideBar = ({ isProjectIsClosed }) => {
     const {
@@ -24,6 +25,7 @@ const ProjectSideBar = ({ isProjectIsClosed }) => {
         >
             <List>
                 {!isProjectIsClosed && <AddVoucherAction />}
+                {!isProjectIsClosed && <EditProjectAction />}
                 {!isProjectIsClosed && <CreateDeviceReportAction />}
                 {<CreateOutDevicesReportAction />}
                 {!isProjectIsClosed && <CloseProjectAction />}

@@ -78,6 +78,21 @@ exports.getDeviceBySerialNumber = async (req, res) => {
     }
 };
 
+exports.searchDeviceBySerialNumber = async (req, res) => {
+    const deviceSerialNumber = escape(req.params.serialnumber);
+    let deviceFound;
+    try {
+        const checkSerialNumber = validation.addSlashes(deviceSerialNumber);
+        deviceFound = await deviceService.searchDeviceBySerialNumber(checkSerialNumber);
+        if (!deviceFound) {
+            return res.status(200).json({ message: "צ' לא קיים" });
+        }
+        return res.status(200).json(deviceFound);
+    } catch (err) {
+        return res.status(404).json({ message: err.message });
+    }
+};
+
 exports.returnDevice = async (req, res) => {
     const voucherId = escape(req.params.id);
     const devicesData = req.body;

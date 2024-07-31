@@ -16,6 +16,12 @@ const Project = () => {
     const { id } = useParams();
     const { projectId, setProjectId } = useProject();
 
+    const { isLoading: isProjectLoading, data: project } = useQuery({
+        queryKey: ["project", projectId],
+        queryFn: getProjectData,
+        enabled: projectId !== null,
+    });
+    const isLoading = isProjectLoading;
     useEffect(() => {
         setProjectId(id);
         return () => {
@@ -23,34 +29,9 @@ const Project = () => {
         };
     }, [id, setProjectId]);
 
-    const { isLoading: isProjectLoading, data: project } = useQuery({
-        queryKey: ["project", projectId],
-        queryFn: getProjectData,
-        enabled: projectId !== null,
-    });
-    const isLoading = isProjectLoading;
-
     if (isLoading) {
         return <Loader />;
     }
-
-    const items = [
-        {
-            key: "1",
-            label: "תאריך התחלה",
-            children: dateTostring(project.startDate),
-        },
-        {
-            key: "2",
-            label: "תאריך סיום",
-            children: project.endDate ? dateTostring(project.endDate) : "אין",
-        },
-        {
-            key: "3",
-            label: 'סה"כ שוברים',
-            children: <Tag>{project.vouchersList.length}</Tag>,
-        },
-    ];
 
     return (
         <Layout>
@@ -73,10 +54,28 @@ const Project = () => {
                     <Stack spacing={2}>
                         <Badge.Ribbon color={project.finished ? "red" : "green"} text={project.finished ? "פרוייקט סגור" : "פרוייקט פתוח"}>
                             <Card title={`פרוייקט: ${project.projectName}`} bordered={false}>
-                                <Descriptions items={items} />
+                                <Descriptions
+                                    items={[
+                                        {
+                                            key: "1",
+                                            label: "תאריך התחלה",
+                                            children: dateTostring(project.startDate),
+                                        },
+                                        {
+                                            key: "2",
+                                            label: "תאריך סיום",
+                                            children: project.endDate ? dateTostring(project.endDate) : "אין",
+                                        },
+                                        {
+                                            key: "3",
+                                            label: 'סה"כ שוברים',
+                                            children: <Tag>{project.vouchersList.length}</Tag>,
+                                        },
+                                    ]}
+                                />
                             </Card>
                         </Badge.Ribbon>
-                        <ArrivedDevices  />
+                        <ArrivedDevices />
                         <VoucherTable />
                     </Stack>
                 </Content>

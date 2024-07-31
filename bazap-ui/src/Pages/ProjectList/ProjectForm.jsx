@@ -32,6 +32,8 @@ const ProjectForm = ({ onCancel, formValues = null, isEdit = false }) => {
     const editProjectMutation = useMutation(updateProject, {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["projects"] });
+            queryClient.invalidateQueries({ queryKey: ["project", formValues.id] });
+
             onCancel();
         },
     });

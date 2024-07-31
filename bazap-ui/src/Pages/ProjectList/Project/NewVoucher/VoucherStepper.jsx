@@ -16,11 +16,20 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
     ];
 
     const handleSave = (data) => {
-        const isDeliveryVoucher = data.type == "false";
+        let values = { ...data };
+        if (values.unit && typeof values.unit === "object" && values.unit.value) {
+            values.unit = values.unit.value;
+        }
+        if (values.receivedBy && typeof values.receivedBy === "object" && values.receivedBy.value) {
+            values.receivedBy = values.receivedBy.value;
+        }
+        if (values.arrivedBy && typeof values.arrivedBy === "object" && values.arrivedBy.value) {
+            values.arrivedBy = values.arrivedBy.value;
+        }
+        const isDeliveryVoucher = values.type === "false";
         if (isDeliveryVoucher) {
-            addVoucherOutMutation.mutate(data);
+            addVoucherOutMutation.mutate(values);
         } else {
-            let values = data;
             values.accessoriesData = values.accessoriesData.map((item) => {
                 if (item.deviceTypeId && typeof item.deviceTypeId === "object" && item.deviceTypeId.value) {
                     return {
@@ -30,7 +39,7 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
                 }
                 return item;
             });
-            // alert(JSON.stringify(data));
+
             addVoucherMutation.mutate(values);
         }
     };

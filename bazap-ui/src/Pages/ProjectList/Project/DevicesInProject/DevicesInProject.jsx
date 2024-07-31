@@ -1,6 +1,6 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Space } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ALL, DeviceStatuses, FIXED_OR_DEFECTIVE, RETURNED, ReturnedStatuses, replaceApostrophe } from "../../../../Utils/utils";
 import { useCustomModal } from "../../../../Components/store/CustomModalContext";
 import { useProject } from "../../../../Components/store/ProjectContext";
@@ -25,6 +25,7 @@ const ArrivedDevices = () => {
     const [selectedRows, setSelectedRows] = useState([]);
     const [selectedDevicesIds, setSelectedDevicesIds] = useState([]);
     const [selectedAccessoriesIds, setSelectedAccessoriesIds] = useState([]);
+    const queryClient = useQueryClient();
     const { isLoading, data: devices } = useQuery({
         queryKey: ["devicesInProject", projectId],
         queryFn: getAllProductsInProject,
@@ -34,6 +35,11 @@ const ArrivedDevices = () => {
         },
     });
     const [filteredDevices, setFilteredDevices] = useState(devices);
+
+    useEffect(() => {
+        queryClient.invalidateQueries({ queryKey: ["devicesInProject", projectId] });
+    }, [projectId, queryClient]);
+
     const clearSelectedRows = () => {
         setSelectedRows([]);
     };
@@ -43,6 +49,7 @@ const ArrivedDevices = () => {
         setSearchParam(search);
         handleSearchAndFilter(search, null, selectedStatus);
     };
+
     const handleStatusChange = (status) => {
         setSelectedStatus(status);
         handleSearchAndFilter(searchParam, null, status);

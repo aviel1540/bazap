@@ -10,10 +10,19 @@ exports.addNewDevice = async (request) => {
         deviceTypeId: request.checkDeviceTypeId,
         unit: request.checkUnitId,
         voucherIn: request.checkVoucherId,
+        notes: request.checkNotes,
         project: request.projectId,
     });
 };
 
+exports.searchDeviceBySerialNumber = async (serialNumber) => {
+    return await Device.find({ serialNumber: { $regex: serialNumber, $options: "i" } })
+        .populate("deviceTypeId")
+        .populate("unit")
+        .populate("voucherIn")
+        .populate("voucherOut")
+        .populate("project");
+};
 exports.updateStatus = async (request) => {
     return await Device.findByIdAndUpdate(request.checkDeviceId, {
         status: request.checkStatus,
@@ -39,9 +48,8 @@ exports.updateDeviceNote = async (request) => {
     });
 };
 
-
-exports.checkVoucherOutInDevice = async(deviceId) => {
-    const device = Device.findById(deviceId)
-    if(device.voucherOut) return true;
+exports.checkVoucherOutInDevice = async (deviceId) => {
+    const device = Device.findById(deviceId);
+    if (device.voucherOut) return true;
     return false;
-} 
+};

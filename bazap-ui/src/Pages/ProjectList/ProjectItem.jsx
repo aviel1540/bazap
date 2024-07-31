@@ -10,7 +10,7 @@ const ProjectItem = ({ project }) => {
     const { projectName, startDate, endDate, _id: id, finished, vouchersList } = project;
 
     return (
-        <Col xs={24} sm={12} md={8} lg={8}>
+        <Col xs={24} sm={12} md={12} lg={12} xl={12} xxl={8}>
             <Badge.Ribbon color={finished ? "red" : "green"} text={finished ? "פרוייקט סגור" : "פרוייקט פתוח"}>
                 <CustomCard className="shadow-md" title={<Link to={`/Project/${id}`}>{projectName}</Link>}>
                     <CustomInfoLabel label="תאריך התחלה" value={dateTostring(startDate)} />

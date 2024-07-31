@@ -19,7 +19,7 @@ const PageLayout = ({ children }) => {
                     {children}
                 </Content>
             </Layout>
-            <Footer style={{ textAlign: "center", position: "sticky", bottom: "0" }}>
+            <Footer className="position-sticky py-2 text-center">
                 מוצר זה פותח ע&quot;י ניר קוסן ואביאל יעקב ©{new Date().getFullYear()}
             </Footer>
         </>

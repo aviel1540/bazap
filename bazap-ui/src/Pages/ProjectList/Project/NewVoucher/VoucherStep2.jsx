@@ -30,6 +30,7 @@ const filter = createFilterOptions();
 
 const VoucherStep2 = () => {
     const { onShow, onHide } = useCustomModal();
+    const [disabledFields, setDisabledFields] = useState({});
     const { onAlert, error } = useUserAlert();
     const [activeTab, setActiveTab] = useState("Devices"); // State to manage active tab
     const { projectId } = useProject();
@@ -124,8 +125,21 @@ const VoucherStep2 = () => {
         if (serialNumber) {
             const data = await getDeviceBySerialNumberMutation.mutateAsync(serialNumber);
             if (!data.message) {
+                setDisabledFields((prev) => ({ ...prev, [`devicesData[${index}].deviceTypeId`]: true }));
                 setValue(`devicesData[${index}].deviceTypeId`, data.deviceTypeId);
+            } else {
+                setDisabledFields((prev) => {
+                    const newState = { ...prev };
+                    delete newState[`devicesData[${index}].deviceTypeId`];
+                    return newState;
+                });
             }
+        } else {
+            setDisabledFields((prev) => {
+                const newState = { ...prev };
+                delete newState[`devicesData[${index}].deviceTypeId`];
+                return newState;
+            });
         }
     };
 
@@ -179,7 +193,7 @@ const VoucherStep2 = () => {
             name: "serialNumber",
             type: "AutoComplete",
             isNumber: true,
-            colSpan: 12,
+            colSpan: 8,
             validators: {
                 required: "יש למלא שדה זה.",
                 minLength: { value: 4, message: "צ' מכשיר צריך לפחות 4 תווים" },
@@ -195,17 +209,25 @@ const VoucherStep2 = () => {
             label: "סוג מכשיר",
             name: "deviceTypeId",
             type: "select",
-            colSpan: 10,
+            colSpan: 8,
+
+            validators: {
+                required: "יש למלא שדה זה.",
+            },
+            options: deviceTypeOptions,
+            namePrefix: "devicesData",
+        },
+        {
+            label: "הערות",
+            name: "notes",
+            type: "text",
+            colSpan: 6,
             extraSpan: 2,
             extra: (
                 <IconButton size="large" color="error" aria-label="deleteField" onClick={(index) => removeDevice(index)}>
                     <HighlightOff fontSize="inherit" />
                 </IconButton>
             ),
-            validators: {
-                required: "יש למלא שדה זה.",
-            },
-            options: deviceTypeOptions,
             namePrefix: "devicesData",
         },
     ];
@@ -274,7 +296,12 @@ const VoucherStep2 = () => {
 
                             children: (
                                 <>
-                                    <RenderFields stepFields={deviceInputs} fieldArray={deviceFields} fieldKey="devicesData" />
+                                    <RenderFields
+                                        disabledFields={disabledFields}
+                                        stepFields={deviceInputs}
+                                        fieldArray={deviceFields}
+                                        fieldKey="devicesData"
+                                    />
                                     {deviceFields.length == 0 && <EmptyData label="אין מידע להציג" />}
                                     <Flex justify="center" align="center" className="mt-4">
                                         <CustomButton

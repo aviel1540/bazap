@@ -9,6 +9,7 @@ const AddVoucherAction = () => {
     const addVoucher = () => {
         const formDefaultValues = {
             projectId,
+            type: "true",
         };
         onShow({
             title: "שובר חדש",

@@ -3,6 +3,7 @@ import { Header } from "antd/es/layout/layout";
 import { Avatar, Flex } from "antd";
 import AdminAuth from "./AdminAuth";
 import NavItem from "./NavItem";
+import SearchArea from "./SearchArea";
 
 const pages = [
     { label: "דף הבית", path: "/" },
@@ -25,6 +26,7 @@ const MainNavigation = () => {
                             return <NavItem key={page.path} page={page} />;
                         })}
                     </Flex>
+                    <SearchArea />
                     <AdminAuth />
                 </Flex>
             </Header>

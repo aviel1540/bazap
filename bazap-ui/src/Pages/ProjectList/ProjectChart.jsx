@@ -48,7 +48,7 @@ const ProjectChart = ({ vouchersList }) => {
                 show: false,
             },
         },
-        colors: ["#F1BC00", "#5014D0", "#009EF7", "#47BE7D"],
+
         labels: [DeviceStatuses.WAIT_TO_WORK, DeviceStatuses.AT_WORK, FIXED_OR_DEFECTIVE, RETURNED],
         legend: {
             show: true,

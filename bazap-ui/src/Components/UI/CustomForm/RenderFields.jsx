@@ -4,7 +4,7 @@ import React from "react";
 import { useFormContext } from "react-hook-form";
 import PropTypes from "prop-types";
 
-const RenderFields = ({ stepFields, fieldArray = false, fieldKey }) => {
+const RenderFields = ({ stepFields, fieldArray = false, fieldKey, disabledFields }) => {
     const { methods } = useFormContext();
     const { formMethods, localProps } = methods;
     const { fields } = localProps;
@@ -20,6 +20,8 @@ const RenderFields = ({ stepFields, fieldArray = false, fieldKey }) => {
                               renderFields.map((field) => {
                                   let newField = { ...field };
                                   newField.name = `${fieldKey}[${index}].${field.name}`;
+                                  newField.index = index;
+                                  newField.disabled = disabledFields && disabledFields[newField.name];
                                   return (
                                       <React.Fragment key={`${field.name}-${index}`}>
                                           <Col span={field.colSpan || 24}>
@@ -62,6 +64,7 @@ RenderFields.propTypes = {
     stepFields: PropTypes.array,
     fieldArray: PropTypes.oneOfType([PropTypes.bool, PropTypes.array]),
     fieldKey: PropTypes.string,
+    disabledFields: PropTypes.array,
 };
 
 export default RenderFields;

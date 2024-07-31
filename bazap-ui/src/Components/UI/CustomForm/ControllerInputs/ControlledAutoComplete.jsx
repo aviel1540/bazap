@@ -44,9 +44,11 @@ const ControlledAutocomplete = forwardRef((props, ref) => {
                     }}
                     filterOptions={filterOptions}
                     value={value ?? null}
-                    freeSolo
+                    freeSolo={!isStandardOption}
                     selectOnFocus
+                    autoHighlight
                     clearOnBlur
+                    noOptionsText={"לא נמצאו אפשרוית"}
                     renderInput={(params) => (
                         <TextField
                             inputRef={ref}

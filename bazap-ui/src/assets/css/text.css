@@ -1849,3 +1849,82 @@
 .fs-8 {
     font-size: 0.85rem !important;
 }
+.fs-9 {
+    font-size: 0.75rem !important;
+}
+
+.fs-10 {
+    font-size: 0.5rem !important;
+}
+
+.fs-base {
+    font-size: 1rem !important;
+}
+
+.fs-fluid {
+    font-size: 100% !important;
+}
+
+.fs-2x {
+    font-size: calc(1.325rem + 0.9vw) !important;
+}
+
+.fs-2qx {
+    font-size: calc(1.35rem + 1.2vw) !important;
+}
+
+.fs-2hx {
+    font-size: calc(1.375rem + 1.5vw) !important;
+}
+
+.fs-2tx {
+    font-size: calc(1.4rem + 1.8vw) !important;
+}
+
+.fs-3x {
+    font-size: calc(1.425rem + 2.1vw) !important;
+}
+
+.fs-3qx {
+    font-size: calc(1.45rem + 2.4vw) !important;
+}
+
+.fs-3hx {
+    font-size: calc(1.475rem + 2.7vw) !important;
+}
+
+.fs-3tx {
+    font-size: calc(1.5rem + 3vw) !important;
+}
+
+.fs-4x {
+    font-size: calc(1.525rem + 3.3vw) !important;
+}
+
+.fs-4qx {
+    font-size: calc(1.55rem + 3.6vw) !important;
+}
+
+.fs-4hx {
+    font-size: calc(1.575rem + 3.9vw) !important;
+}
+
+.fs-4tx {
+    font-size: calc(1.6rem + 4.2vw) !important;
+}
+
+.fs-5x {
+    font-size: calc(1.625rem + 4.5vw) !important;
+}
+
+.fs-5qx {
+    font-size: calc(1.65rem + 4.8vw) !important;
+}
+
+.fs-5hx {
+    font-size: calc(1.675rem + 5.1vw) !important;
+}
+
+.fs-5tx {
+    font-size: calc(1.7rem + 5.4vw) !important;
+}

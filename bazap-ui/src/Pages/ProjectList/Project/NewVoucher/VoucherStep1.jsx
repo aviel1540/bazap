@@ -11,18 +11,18 @@ import { useCustomModal } from "../../../../Components/store/CustomModalContext"
 import UnitForm from "../../../Unit/UnitForm";
 import TechnicianForm from "../../../Technician/TechnicianForm";
 import { Tooltip } from "antd";
+import { sortOptions } from "../../../../Utils/utils";
 
 const VoucherStep1 = () => {
     const { onShow, onHide } = useCustomModal();
     const { methods } = useFormContext();
     const { formMethods } = methods;
-    const { getValues, getFieldState } = formMethods;
+    const { getValues, getFieldState, resetField } = formMethods;
 
-    const isTypeSelected = !!getValues("type") && !getFieldState("type").isDirty;
-
+    const isTypeSelected = getValues("type") === "false" && !getFieldState("type").isDirty;
     const [technicianType, setTechnicianType] = useState({
-        arrivedBy: getValues("type") === "true" ? "text" : "select",
-        receivedBy: getValues("type") === "true" ? "select" : "text",
+        arrivedBy: getValues("type") === "true" ? "text" : "autocomplete",
+        receivedBy: getValues("type") === "true" ? "autocomplete" : "text",
     });
 
     const showUnitModal = () => {
@@ -49,13 +49,12 @@ const VoucherStep1 = () => {
         queryFn: getAllTechnicians,
     });
 
-    const unitOptions = units?.map((unit) => ({
+    const unitOptions = sortOptions(units, "unitsName")?.map((unit) => ({
         text: unit.unitsName,
         value: unit._id,
-        ...unit,
     }));
 
-    const technicianOptions = technicians?.map((technician) => ({
+    const technicianOptions = sortOptions(technicians, "techName")?.map((technician) => ({
         text: technician.techName,
         value: technician.techName,
     }));
@@ -78,9 +77,11 @@ const VoucherStep1 = () => {
             onFieldChange: (newValue) => {
                 const boolValue = newValue === "true";
                 setTechnicianType({
-                    arrivedBy: boolValue ? "text" : "select",
-                    receivedBy: boolValue ? "select" : "text",
+                    arrivedBy: boolValue ? "text" : "autocomplete",
+                    receivedBy: boolValue ? "autocomplete" : "text",
                 });
+                resetField("arrivedBy");
+                resetField("receivedBy");
             },
         },
         {
@@ -92,18 +93,21 @@ const VoucherStep1 = () => {
                     <CustomButton type="light-primary" onClick={showUnitModal} icon={<PlusOutlined />} />
                 </Tooltip>
             ),
-            type: "select",
+            type: "autocomplete",
             validators: {
                 required: "יש למלא שדה זה.",
             },
+            getOptionLabel: (option) => option.text,
+            getOptionKey: (option) => option.text,
+            isStandardOption: true,
             options: unitOptions,
         },
         {
             label: "חייל מנפק",
             name: "arrivedBy",
             type: technicianType.arrivedBy,
-            colSpan: 22,
-            extra: (
+            colSpan: getValues("type") === "false" ? 22 : 24,
+            extra: getValues("type") === "false" && (
                 <Tooltip title="הוסף טכנאי חדש">
                     <CustomButton type="light-primary" onClick={showTechnicianModal} icon={<PlusOutlined />} />
                 </Tooltip>
@@ -116,6 +120,8 @@ const VoucherStep1 = () => {
                     message: "שדה זה חייב לפחות 2 תווים",
                 },
             },
+            getOptionLabel: (option) => option.text,
+            isStandardOption: true,
             options: technicianOptions,
         },
         {
@@ -123,7 +129,13 @@ const VoucherStep1 = () => {
             name: "receivedBy",
             disabled: isTypeSelected,
             type: technicianType.receivedBy,
+            colSpan: getValues("type") === "true" ? 22 : 24,
             placeholder: "לדוגמא משה",
+            extra: getValues("type") === "true" && (
+                <Tooltip title="הוסף טכנאי חדש">
+                    <CustomButton type="light-primary" onClick={showTechnicianModal} icon={<PlusOutlined />} />
+                </Tooltip>
+            ),
             validators: {
                 required: "יש למלא שדה זה.",
                 minLength: {
@@ -131,6 +143,8 @@ const VoucherStep1 = () => {
                     message: "שדה זה חייב לפחות 2 תווים",
                 },
             },
+            getOptionLabel: (option) => option.text,
+            isStandardOption: true,
             options: technicianOptions,
         },
     ];

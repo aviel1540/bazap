@@ -9,6 +9,9 @@ export const addNewDevice = async (device) => {
     return await deviceAPI.post("add-new-device", device);
 };
 
+export const searchDeviceBySerialNumber = async (serialnumber) => {
+    return await deviceAPI.get(`search-by-serialNumber/${serialnumber}`);
+};
 export const getDeviceBySerialNumber = async (serialnumber) => {
     return await deviceAPI.get(`find-by-serialNumber/${serialnumber}`);
 };
