@@ -1,0 +1,15 @@
+.bg-nav-dark {
+    background-color: #0b0c10 !important;
+}
+.bg-nav-item {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+}
+.bg-nav-item.active {
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease;
+    background-color: #242424;
+    --bs-bg-opacity: 1;
+}
