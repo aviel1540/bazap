@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import Breadcrumbs from "./Breadcrumbs";
 import MainNavigation from "./Navbar/MainNavigation";
 import { Footer } from "antd/es/layout/layout";
+const version = import.meta.env.VITE_VERSION;
 const { Content } = Layout;
 const PageLayout = ({ children }) => {
     return (
@@ -23,7 +24,7 @@ const PageLayout = ({ children }) => {
                 <Flex justify="center" align="end" gap={5}>
                     <div>מוצר זה פותח ע&quot;י ניר קוסן ואביאל יעקב ©{new Date().getFullYear()}</div>
                     <Tag className="fs-8" color="processing">
-                        v1.51
+                        {version}
                     </Tag>
                 </Flex>
             </Footer>
