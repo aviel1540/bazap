@@ -4,19 +4,19 @@ import React from "react";
 import { useFormContext } from "react-hook-form";
 import PropTypes from "prop-types";
 
-const RenderFields = ({ stepFields, fieldArray = false, fieldKey, disabledFields }) => {
+const RenderFields = ({ stepFields, fieldArray = false, fieldKey, disabledFields, reverse }) => {
     const { methods } = useFormContext();
     const { formMethods, localProps } = methods;
     const { fields } = localProps;
     const { control } = formMethods;
     const renderFields = fields ? fields : stepFields;
-
+    const fieldArrayToRender = reverse ? fieldArray.reverse() : fieldArray;
     return (
         <>
             {renderFields && (
                 <Row gutter={[16, 12]} justify="space-around" align="middle">
-                    {fieldArray
-                        ? fieldArray.map((_, index) =>
+                    {fieldArrayToRender
+                        ? fieldArrayToRender.map((_, index) =>
                               renderFields.map((field) => {
                                   let newField = { ...field };
                                   newField.name = `${fieldKey}[${index}].${field.name}`;
@@ -65,6 +65,7 @@ RenderFields.propTypes = {
     fieldArray: PropTypes.oneOfType([PropTypes.bool, PropTypes.array]),
     fieldKey: PropTypes.string,
     disabledFields: PropTypes.array,
+    reverse: PropTypes.bool,
 };
 
 export default RenderFields;

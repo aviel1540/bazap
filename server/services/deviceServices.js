@@ -2,7 +2,7 @@ const Device = require("../models/Device");
 const { DeviceStatus } = require("../constants/DeviceStatus");
 
 exports.findDeviceById = async (DeviceId) => await Device.findById(DeviceId);
-exports.findDeviceBySerialNumber = async (serialNumber) => await Device.findOne({ serialNumber });
+exports.findDeviceBySerialNumber = async (serialNumber) => await Device.findOne({ serialNumber }).populate("deviceTypeId");
 exports.findAllDevices = async () => await Device.find();
 exports.addNewDevice = async (request) => {
     return new Device({
@@ -14,7 +14,6 @@ exports.addNewDevice = async (request) => {
         project: request.projectId,
     });
 };
-
 exports.searchDeviceBySerialNumber = async (serialNumber) => {
     return await Device.find({ serialNumber: { $regex: serialNumber, $options: "i" } })
         .populate("deviceTypeId")

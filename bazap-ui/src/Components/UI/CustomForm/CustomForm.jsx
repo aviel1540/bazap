@@ -17,7 +17,7 @@ const CustomForm = ({ steps, onSubmit, onCancel, values, children, isLoading, is
     const [password, setPassword] = useState("");
     const [open, setOpen] = useState(false);
     const [validPassword, setValidPassowrd] = useState();
-    const [currentStep, setCurrentStep] = useState(0);
+    const [currentStep, setCurrentStep] = useState(1);
     const { isAuth } = useAdminAuth();
 
     const onSubmitPageWithAdminPassword = (data) => {

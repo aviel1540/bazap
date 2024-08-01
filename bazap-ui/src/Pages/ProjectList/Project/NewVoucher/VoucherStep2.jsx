@@ -8,7 +8,7 @@ import Loader from "../../../../Components/Layout/Loader";
 import { useProject } from "../../../../Components/store/ProjectContext";
 import { getDeviceBySerialNumber, getDevices } from "../../../../Utils/deviceApi";
 import { getAllDeviceTypes } from "../../../../Utils/deviceTypeApi";
-import { DeviceStatuses, FIXED_OR_DEFECTIVE } from "../../../../Utils/utils";
+import { DeviceStatuses, FIXED_OR_DEFECTIVE, sortOptions } from "../../../../Utils/utils";
 import DevicesInProjectTable from "../DevicesInProject/DevicesInProjectTable";
 // import ImportExcel from "./ImportExcel";
 import CustomButton from "../../../../Components/UI/CustomButton/CustomButton";
@@ -68,8 +68,7 @@ const VoucherStep2 = () => {
     const { deviceTypeOptions, accessoriesTypes } = useMemo(() => {
         const deviceTypeOptions = [];
         const accessoriesTypes = [];
-
-        deviceTypes?.forEach((deviceType) => {
+        sortOptions(deviceTypes, "deviceName")?.forEach((deviceType) => {
             const option = { text: deviceType.deviceName, value: deviceType._id };
             if (deviceType.isClassified) {
                 deviceTypeOptions.push(option);
@@ -113,7 +112,7 @@ const VoucherStep2 = () => {
     });
 
     const handleAddDevice = () => {
-        addDevice({ serialNumber: "", deviceTypeId: "" });
+        addDevice({ serialNumber: "", deviceTypeId: undefined });
     };
     const handleAddAccessory = () => {
         addAccessory({ quantity: 1, deviceTypeId: null });
@@ -208,7 +207,9 @@ const VoucherStep2 = () => {
         {
             label: "סוג מכשיר",
             name: "deviceTypeId",
-            type: "select",
+            type: "autocomplete",
+            getOptionLabel: (option) => option.text,
+            isStandardOption: true,
             colSpan: 8,
 
             validators: {

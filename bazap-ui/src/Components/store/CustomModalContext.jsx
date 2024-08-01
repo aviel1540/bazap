@@ -76,7 +76,9 @@ export const CustomModalProvider = ({ children }) => {
                     closable={true}
                     maskClosable={false}
                 >
-                    <div key={mState.key}>{mState.options.body}</div>
+                    <div key={mState.key}>
+                        <div className="scroll-y px-2 mh-85">{mState.options.body}</div>
+                    </div>
                 </Modal>
             ))}
         </CustomModalContext.Provider>

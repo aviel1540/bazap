@@ -98,7 +98,6 @@ const VoucherStep1 = () => {
                 required: "יש למלא שדה זה.",
             },
             getOptionLabel: (option) => option.text,
-            getOptionKey: (option) => option.text,
             isStandardOption: true,
             options: unitOptions,
         },

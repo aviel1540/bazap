@@ -16,7 +16,7 @@ const pages = [
 const MainNavigation = () => {
     return (
         <>
-            <Header className="fw-500 bg-nav-dark sticky-top d-flex align-items-center">
+            <Header className="fw-500 bg-nav-dark d-flex align-items-center">
                 <NavLink to="/">
                     <Avatar size={50} src={<img src={"/bazap-logo.png"} alt="logo" />} />
                 </NavLink>
