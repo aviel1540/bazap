@@ -3,16 +3,14 @@ import { Table, Typography } from "antd";
 import CustomDropDown from "../../Components/UI/CustomDropDown";
 import { useUserAlert } from "../../Components/store/UserAlertContext";
 import { deleteTechnician, getAllTechnicians } from "../../Utils/technicianAPI";
-import { useCustomModal } from "../../Components/store/CustomModalContext";
-import TechnicianForm from "./TechnicianForm";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EmptyData from "../../Components/UI/EmptyData";
 import TableLoader from "../../Components/Loaders/TableLoader";
+import propTypes from "prop-types";
 
 const { Text } = Typography;
 
-const TechnicianTable = () => {
-    const { onShow, onHide } = useCustomModal();
+const TechnicianTable = ({ onEdit, searchQuery }) => {
     const queryClient = useQueryClient();
     const { onConfirm } = useUserAlert();
     const { isLoading, data: technicians } = useQuery({
@@ -20,20 +18,14 @@ const TechnicianTable = () => {
         queryFn: getAllTechnicians,
     });
 
-    const showModal = (data) => {
-        onShow({
-            title: "עריכת טכנאי",
-            name: "technician",
-            body: <TechnicianForm onCancel={() => onHide("technician")} formValues={data} isEdit={true} />,
-        });
-    };
+    const filteredUnits = technicians?.filter((technician) => technician.techName.toLowerCase().includes(searchQuery.toLowerCase()));
 
-    const onEditTechnicianHandler = (id) => {
-        const technician = technicians.find((item) => item._id == id);
-        if (technician) {
-            showModal({ techName: technician.techName, id: technician._id });
-        }
-    };
+    // const onEditTechnicianHandler = (id) => {
+    //     const technician = technicians.find((item) => item._id == id);
+    //     if (technician) {
+    //         onEdit({ techName: technician.techName, id: technician._id });
+    //     }
+    // };
 
     const onDeleteTechnicianHandler = (id) => {
         const config = {
@@ -94,12 +86,16 @@ const TechnicianTable = () => {
         <>
             <Table
                 locale={{ emptyText: <EmptyData label="אין טכנאים להצגה" /> }}
-                dataSource={technicians}
+                dataSource={filteredUnits}
                 columns={columns}
                 rowKey={(record) => record._id}
             />
         </>
     );
+};
+TechnicianTable.propTypes = {
+    onEdit: propTypes.func.isRequired,
+    searchQuery: propTypes.string,
 };
 
 export default TechnicianTable;

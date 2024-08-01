@@ -1849,6 +1849,7 @@
 .fs-8 {
     font-size: 0.85rem !important;
 }
+
 .fs-9 {
     font-size: 0.75rem !important;
 }
@@ -1927,4 +1928,32 @@
 
 .fs-5tx {
     font-size: calc(1.7rem + 5.4vw) !important;
+}
+
+.fw-300 {
+    font-weight: 300 !important;
+}
+
+.fw-lighter {
+    font-weight: lighter !important;
+}
+
+.fw-400 {
+    font-weight: 400 !important;
+}
+
+.fw-500 {
+    font-weight: 500 !important;
+}
+
+.fw-600 {
+    font-weight: 600 !important;
+}
+
+.fw-700 {
+    font-weight: 700 !important;
+}
+
+.fw-bolder {
+    font-weight: bolder !important;
 }

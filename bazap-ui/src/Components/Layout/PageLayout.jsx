@@ -1,4 +1,4 @@
-import { Layout } from "antd";
+import { Flex, Layout, Tag } from "antd";
 import PropTypes from "prop-types";
 import Breadcrumbs from "./Breadcrumbs";
 import MainNavigation from "./Navbar/MainNavigation";
@@ -19,8 +19,13 @@ const PageLayout = ({ children }) => {
                     {children}
                 </Content>
             </Layout>
-            <Footer className="position-sticky py-2 text-center">
-                מוצר זה פותח ע&quot;י ניר קוסן ואביאל יעקב ©{new Date().getFullYear()}
+            <Footer className="position-sticky py-2">
+                <Flex justify="center" align="end" gap={5}>
+                    <div>מוצר זה פותח ע&quot;י ניר קוסן ואביאל יעקב ©{new Date().getFullYear()}</div>
+                    <Tag className="fs-8" color="processing">
+                        v1.51
+                    </Tag>
+                </Flex>
             </Footer>
         </>
     );

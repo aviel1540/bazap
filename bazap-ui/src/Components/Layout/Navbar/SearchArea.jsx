@@ -81,7 +81,7 @@ const SearchArea = () => {
                     ) : (
                         <List
                             ref={listRef}
-                            className={"mh-500px px-2 mx-2"} // Conditionally apply scroll-y class
+                            className={"mh-500px px-2 mx-2 hover-scroll-y"}
                             itemLayout="vertical"
                             dataSource={searchResults}
                             renderItem={(item) => (
