@@ -44,8 +44,7 @@ const ArrivedDevices = () => {
         setSelectedRows([]);
     };
 
-    const handleSearchChange = (event) => {
-        const search = event.target.value;
+    const handleSearchChange = (search) => {
         setSearchParam(search);
         handleSearchAndFilter(search, null, selectedStatus);
     };

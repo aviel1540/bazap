@@ -8,7 +8,7 @@ const SearchInput = ({ onSearch }) => {
             clearTimeout(timeoutId);
         }
         timeoutId = setTimeout(() => {
-            onSearch(event);
+            onSearch(event.target.value);
         }, 300);
     };
     return (

@@ -4,10 +4,13 @@ import UnitForm from "./UnitForm";
 import UnitTable from "./UnitTable";
 import { PlusOutlined } from "@ant-design/icons";
 import CustomButton from "../../Components/UI/CustomButton/CustomButton";
+import SearchInput from "../../Components/UI/SearchInput";
+import { Space } from "antd";
+import { useState } from "react";
 
 const Unit = () => {
     const { onShow, onHide } = useCustomModal();
-
+    const [searchQuery, setSearchQuery] = useState("");
     const showModal = (event, data) => {
         const isEdit = data != undefined;
         onShow({
@@ -20,13 +23,16 @@ const Unit = () => {
     return (
         <CustomCard
             action={
-                <CustomButton type="light-primary" onClick={showModal} iconPosition="end" icon={<PlusOutlined />}>
-                    הוסף יחידה
-                </CustomButton>
+                <Space>
+                    <SearchInput onSearch={setSearchQuery} />
+                    <CustomButton type="light-primary" onClick={showModal} iconPosition="end" icon={<PlusOutlined />}>
+                        הוסף יחידה
+                    </CustomButton>
+                </Space>
             }
             title="יחידות"
         >
-            <UnitTable onEdit={showModal} />
+            <UnitTable onEdit={showModal} searchQuery={searchQuery} />
         </CustomCard>
     );
 };

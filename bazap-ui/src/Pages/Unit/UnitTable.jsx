@@ -10,13 +10,15 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EmptyData from "../../Components/UI/EmptyData";
 import TableLoader from "../../Components/Loaders/TableLoader";
 
-const UnitTable = ({ onEdit }) => {
+const UnitTable = ({ onEdit, searchQuery }) => {
     const queryClient = useQueryClient();
     const { onConfirm } = useUserAlert();
     const { isLoading, data: units } = useQuery({
         queryKey: ["units"],
         queryFn: getAllUnits,
     });
+
+    const filteredUnits =  units?.filter((unit) => unit.unitsName.toLowerCase().includes(searchQuery.toLowerCase()));
 
     const onEditUnitHandler = (id) => {
         const unit = units.find((item) => item._id == id);
@@ -81,7 +83,7 @@ const UnitTable = ({ onEdit }) => {
     return (
         <Table
             locale={{ emptyText: <EmptyData label="אין יחידות להצגה" /> }}
-            dataSource={units}
+            dataSource={filteredUnits}
             columns={columns}
             rowKey={(record) => record._id}
         />
@@ -90,6 +92,7 @@ const UnitTable = ({ onEdit }) => {
 
 UnitTable.propTypes = {
     onEdit: propTypes.func.isRequired,
+    searchQuery: propTypes.string,
 };
 
 export default UnitTable;
