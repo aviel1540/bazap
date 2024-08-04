@@ -75,7 +75,7 @@ const SearchArea = () => {
                 loading={mutation.isLoading}
             />
             {showResults && (
-                <Card title="תוצאות חיפוש" className="position-absolute start-0 top-100 w-500px mt-2 shadow-lg px-0">
+                <Card title="תוצאות חיפוש" className="position-absolute start-0 top-100 w-500px mt-2 shadow-lg px-0 z-index-3">
                     {searchResults.length === 0 ? (
                         <EmptyData label="לא נמצאו מכשירים שתואמים לצ' שהוקלד." />
                     ) : (
