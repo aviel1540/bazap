@@ -10,6 +10,7 @@ import CloseProjectAction from "./ProjectSideBar/CloseProjectAction";
 import DeleteProjectAction from "./ProjectSideBar/DeleteProjectAction";
 import OpenProjectAction from "./ProjectSideBar/OpenProjectAction";
 import EditProjectAction from "./ProjectSideBar/EditProjectAction";
+import ProjectDashBoard from "./ProjectSideBar/ProjectDashBoard";
 
 const ProjectSideBar = ({ isProjectIsClosed }) => {
     const {
@@ -25,6 +26,7 @@ const ProjectSideBar = ({ isProjectIsClosed }) => {
         >
             <List>
                 {!isProjectIsClosed && <AddVoucherAction />}
+                {!isProjectIsClosed && <ProjectDashBoard />}
                 {!isProjectIsClosed && <EditProjectAction />}
                 {!isProjectIsClosed && <CreateDeviceReportAction />}
                 {<CreateOutDevicesReportAction />}

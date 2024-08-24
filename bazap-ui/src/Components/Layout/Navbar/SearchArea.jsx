@@ -81,7 +81,7 @@ const SearchArea = () => {
                     ) : (
                         <List
                             ref={listRef}
-                            className={"mh-500px px-2 mx-2 hover-scroll-y"}
+                            className={"mh-500px px-2 mx-2 scroll-y"}
                             itemLayout="vertical"
                             dataSource={searchResults}
                             renderItem={(item) => (
