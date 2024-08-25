@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { Tooltip, Modal, Form, Input } from "antd";
 import { useAdminAuth } from "../../store/AdminAuthContext";
 import CustomButton from "../../UI/CustomButton/CustomButton";
@@ -42,14 +42,16 @@ const AdminAuth = () => {
     return (
         <div style={{ display: "flex", alignItems: "center" }}>
             {isAuth && (
-                <Tooltip title="לחץ להתנתק" color="blue">
-                    <CustomButton type="success" onClick={logoutHandler} iconPosition="end" icon={<CheckOutlined />} size="small">
-                        מחובר כמנהל
-                    </CustomButton>
-                </Tooltip>
+                <Fragment key="Auth">
+                    <Tooltip title="לחץ להתנתק" color="blue">
+                        <CustomButton type="success" onClick={logoutHandler} iconPosition="end" icon={<CheckOutlined />} size="small">
+                            מחובר כמנהל
+                        </CustomButton>
+                    </Tooltip>
+                </Fragment>
             )}
             {!isAuth && (
-                <>
+                <Fragment key="NotAuth">
                     <Tooltip title="לחץ להתחבר" color="blue">
                         <CustomButton type="dark" onClick={loginHandler} iconPosition="end" icon={<LoginOutlined />} size="small">
                             לא מחובר כמנהל
@@ -69,7 +71,7 @@ const AdminAuth = () => {
                             </Form.Item>
                         </Form>
                     </Modal>
-                </>
+                </Fragment>
             )}
             <Tooltip title="התחברות ל-20 דקות כמנהל תחסוך הכנסת סיסמא כל פעם" color="blue">
                 <InfoCircleOutlined className="ms-5 text-white fs-4" />

@@ -90,7 +90,7 @@ const DeviceTypeTable = ({ onEdit }) => {
                 { text: 'צל"מ', value: false },
             ],
             onFilter: (value, record) => record.isClassified == value,
-            render: (data) => {
+            render: (_, data) => {
                 const label = data?.isClassified ? "מסווג" : 'צל"מ';
                 const color = data?.isClassified ? "#50cd89" : "#ffc700";
                 return <Tag color={color}>{label}</Tag>;
