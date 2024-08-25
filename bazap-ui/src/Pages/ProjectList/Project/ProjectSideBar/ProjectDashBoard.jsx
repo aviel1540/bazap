@@ -6,6 +6,7 @@ import { getAllProductsInProject } from "../../../../Utils/projectAPI";
 import { Row, Col, Card, Statistic, Progress } from "antd";
 import Chart from "react-apexcharts";
 import { useCustomModal } from "../../../../Components/store/CustomModalContext";
+import { getAllVouchers } from "../../../../Utils/voucherApi";
 
 // Define tag colors for status pie chart
 export const tagColors = {
@@ -15,15 +16,22 @@ export const tagColors = {
     מושבת: "#faad14", // warning
     "תקין - הוחזר ליחידה": "#52c41a", // success
     "מושבת - הוחזר ליחידה": "#52c41a", // success
+    "הסתיים - הוחזר ליחידה": "#52c41a", // success
 };
 
 const ProjectDashBoard = () => {
     const { projectId } = useProject();
-    const { isLoading, data: devices } = useQuery({
+    const { isLoading: isLoadingDevices, data: devices } = useQuery({
         queryKey: ["devicesInProject", projectId],
         queryFn: getAllProductsInProject,
     });
+    const { isLoading: isLoadingVoucher, data: vouchers } = useQuery({
+        queryKey: ["vouchers", projectId],
+        queryFn: getAllVouchers,
+        enabled: projectId !== null,
+    });
     const { onShow } = useCustomModal();
+    const isLoading = isLoadingDevices || isLoadingVoucher;
 
     // Prepare data for the charts
     const getTotalsByDeviceType = () => {
@@ -75,10 +83,42 @@ const ProjectDashBoard = () => {
         return { classifiedCount, nonClassifiedCount };
     };
 
+    const getPercentageOfSpecificStatuses = () => {
+        const relevantStatuses = ["הסתיים - הוחזר ליחידה", "תקין - הוחזר ליחידה", "מושבת - הוחזר ליחידה"];
+        let matchingCount = 0;
+        let totalCount = 0;
+
+        devices?.forEach((item) => {
+            totalCount += 1;
+            if (relevantStatuses.includes(item.status)) {
+                matchingCount += 1;
+            }
+        });
+
+        return totalCount > 0 ? ((matchingCount / totalCount) * 100).toFixed(2) : 0;
+    };
+
+    const getVoucherTypeCounts = () => {
+        let trueCount = 0;
+        let falseCount = 0;
+
+        vouchers?.forEach((voucher) => {
+            if (voucher.type) {
+                trueCount += 1; // Count for קבלה
+            } else {
+                falseCount += 1; // Count for ניפוק
+            }
+        });
+
+        return { trueCount, falseCount };
+    };
+
     const { classifiedTotals, nonClassifiedTotals } = getTotalsByDeviceType();
     const totalsByStatus = getTotalsByStatus();
     const totalsByUnit = getTotalsByUnit();
     const { classifiedCount, nonClassifiedCount } = getClassifiedAndNonClassifiedCount();
+    const specificStatusesPercentage = getPercentageOfSpecificStatuses();
+    const { trueCount, falseCount } = getVoucherTypeCounts();
 
     // Chart options and data for classified devices
     const classifiedDeviceTypeChartOptions = {
@@ -150,6 +190,17 @@ const ProjectDashBoard = () => {
         },
     };
 
+    const voucherTypeChartOptions = {
+        chart: {
+            type: "pie",
+            toolbar: {
+                show: false,
+            },
+        },
+        labels: ["קבלה", "ניפוק"],
+        colors: ["#52c41a", "#faad14"], // Colors for קבלה and ניפוק
+    };
+
     const classifiedDeviceTypeChartData = {
         series: [
             {
@@ -181,12 +232,16 @@ const ProjectDashBoard = () => {
         ],
     };
 
+    const voucherTypeChartData = {
+        series: [trueCount, falseCount],
+    };
+
     const showModal = () => {
         if (!isLoading) {
             onShow({
                 name: "projectDashboard",
-                title: "לוח מחוונים של הפרוייקט",
-                width: "90%",
+                title: "נתוני פרוייקט",
+                width: "80%",
                 body: (
                     <div className="p-5 bg-light">
                         <Row gutter={[16, 16]}>
@@ -238,11 +293,16 @@ const ProjectDashBoard = () => {
                                     <Statistic title="מכשירים לא מסווגים" value={nonClassifiedCount} />
                                 </Card>
                                 <Card>
-                                    <Statistic
-                                        title="התקדמות סך הכל"
-                                        value={`${((classifiedCount / (classifiedCount + nonClassifiedCount)) * 100).toFixed(2)}%`}
-                                    />
-                                    <Progress percent={((classifiedCount / (classifiedCount + nonClassifiedCount)) * 100).toFixed(2)} />
+                                    <Statistic title="התקדמות סך הכל" value={`${specificStatusesPercentage}%`} />
+                                    <Progress percent={specificStatusesPercentage} />
+                                </Card>
+                            </Col>
+                            <Col xs={24} sm={12} lg={8}>
+                                <Card>
+                                    <Typography variant="h6" component="h3">
+                                        סך הכל לפי סוג שובר (קבלה או ניפוק)
+                                    </Typography>
+                                    <Chart options={voucherTypeChartOptions} series={voucherTypeChartData.series} type="pie" />
                                 </Card>
                             </Col>
                         </Row>

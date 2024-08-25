@@ -128,7 +128,6 @@ const ProjectsList = () => {
         });
     };
     return (
-        // <ConfigProvider locale={locale}>
         <CustomCard
             title="פרוייקטים"
             action={
@@ -169,7 +168,6 @@ const ProjectsList = () => {
                 </Row>
             )}
         </CustomCard>
-        // </ConfigProvider>
     );
 };
 
