@@ -10,7 +10,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import propTypes from "prop-types";
 import TableLoader from "../../Components/Loaders/TableLoader";
 
-const DeviceTypeTable = ({ onEdit }) => {
+const DeviceTypeTable = ({ onEdit, searchQuery, filterValue }) => {
     const { isLoading, data: deviceTypes } = useQuery({
         queryKey: ["deviceTypes"],
         queryFn: getAllDeviceTypes,
@@ -82,14 +82,9 @@ const DeviceTypeTable = ({ onEdit }) => {
             sorter: (a, b) => a.catalogNumber.localeCompare(b.catalogNumber),
         },
         {
-            title: "סוג שובר",
+            title: "סוג מכשיר",
             dataIndex: "type",
             key: "type",
-            filters: [
-                { text: "מסווג", value: true },
-                { text: 'צל"מ', value: false },
-            ],
-            onFilter: (value, record) => record.isClassified == value,
             render: (_, data) => {
                 const label = data?.isClassified ? "מסווג" : 'צל"מ';
                 const color = data?.isClassified ? "#50cd89" : "#ffc700";
@@ -108,11 +103,15 @@ const DeviceTypeTable = ({ onEdit }) => {
     if (isLoading) {
         return <TableLoader columns={columns} />;
     }
-
+    const filteredData = deviceTypes?.filter((deviceType) => {
+        const matchesSearchQuery = deviceType.deviceName.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesFilterValue = filterValue === null || deviceType.isClassified === filterValue;
+        return matchesSearchQuery && matchesFilterValue;
+    });
     return (
         <Table
             locale={{ emptyText: <EmptyData label="אין סוגי מכשירים להצגה" /> }}
-            dataSource={deviceTypes}
+            dataSource={filteredData}
             columns={columns}
             rowKey={(record) => record._id}
         />
@@ -121,6 +120,8 @@ const DeviceTypeTable = ({ onEdit }) => {
 
 DeviceTypeTable.propTypes = {
     onEdit: propTypes.func.isRequired,
+    searchQuery: propTypes.string,
+    filterValue: propTypes.bool,
 };
 
 export default DeviceTypeTable;

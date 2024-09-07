@@ -3,7 +3,6 @@ import { Breadcrumb } from "antd";
 import { Link, useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getAllProjects } from "../../Utils/projectAPI";
-import Box from "@mui/material/Box";
 
 const breadcrumbNameMap = {
     "/": "דף הבית",
@@ -58,7 +57,7 @@ const Breadcrumbs = () => {
     return (
         <>
             {!isLoading && (
-                <Box sx={{ marginBottom: "1rem" }}>
+                <div className="fw-500 mb-4">
                     <Breadcrumb
                         separator="/"
                         itemRender={(route, params, routes, paths) => {
@@ -71,7 +70,7 @@ const Breadcrumbs = () => {
                         }}
                         items={[{ path: "/", title: "דף הבית" }, ...breadcrumbItems]}
                     />
-                </Box>
+                </div>
             )}
         </>
     );

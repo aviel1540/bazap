@@ -9,7 +9,7 @@ const { Content } = Layout;
 const PageLayout = ({ children }) => {
     return (
         <>
-            <Layout className="d-flex flex-column vh-100">
+            <Layout>
                 <MainNavigation />
                 <Content className="flex-grow-1 px-20 px-lg-10 px-md-5 my-3">
                     <Breadcrumbs />

@@ -131,40 +131,51 @@ const ProjectsList = () => {
 
     const menuItems = [
         {
-            label: <Switch checkedChildren="טבלה" unCheckedChildren="כרטיסים" checked={isTableView} onChange={handleToggleView} />,
+            label: (
+                <Space direction="vertical">
+                    <div className="fw-500">מצב תצוגה:</div>
+                    <Switch checkedChildren="טבלה" unCheckedChildren="כרטיסים" checked={isTableView} onChange={handleToggleView} />
+                </Space>
+            ),
             key: "view",
         },
         {
             label: (
-                <Select
-                    defaultValue="all"
-                    value={filter}
-                    onChange={handleFilterChange}
-                    style={{ width: 120 }}
-                    onClick={(e) => e.stopPropagation()} // Prevent closing dropdown
-                >
-                    <Option value="all">הכל</Option>
-                    <Option value="notFinished">פתוחים</Option>
-                    <Option value="finished">סגורים</Option>
-                </Select>
+                <Space direction="vertical">
+                    <div className="fw-500">מצב פרוייקט:</div>
+                    <Select
+                        defaultValue="all"
+                        value={filter}
+                        onChange={handleFilterChange}
+                        style={{ width: 120 }}
+                        onClick={(e) => e.stopPropagation()} // Prevent closing dropdown
+                    >
+                        <Option value="all">הכל</Option>
+                        <Option value="notFinished">פתוחים</Option>
+                        <Option value="finished">סגורים</Option>
+                    </Select>
+                </Space>
             ),
             key: "filter",
         },
         {
             label: (
-                <RangePicker
-                    value={dateRange}
-                    presets={rangePresets}
-                    format={"MM/YYYY"}
-                    cellRender={(date) => {
-                        return <div className="ant-picker-cell-inner">{formatDateToHebrew(date)}</div>;
-                    }}
-                    locale={heIL}
-                    picker="month"
-                    placeholder={["תאריך התחלה", "תאריך סיום"]}
-                    onChange={handleDateChange}
-                    onClick={(e) => e.stopPropagation()} // Prevent closing dropdown
-                />
+                <Space direction="vertical">
+                    <div className="fw-500">תאריכים:</div>
+                    <RangePicker
+                        value={dateRange}
+                        presets={rangePresets}
+                        format={"MM/YYYY"}
+                        cellRender={(date) => {
+                            return <div className="ant-picker-cell-inner">{formatDateToHebrew(date)}</div>;
+                        }}
+                        locale={heIL}
+                        picker="month"
+                        placeholder={["תאריך התחלה", "תאריך סיום"]}
+                        onChange={handleDateChange}
+                        onClick={(e) => e.stopPropagation()} // Prevent closing dropdown
+                    />
+                </Space>
             ),
             key: "date",
         },

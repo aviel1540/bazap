@@ -26,17 +26,17 @@ const FilterMenu = ({ menuItems, clearAllFilters }) => {
                 trigger={["click"]}
                 onOpenChange={handleDropdownVisibleChange}
                 open={isDropdownOpen}
+                rootClassName="w-350px"
                 dropdownRender={() => (
                     <div className="bg-white rounded shadow-sm p-3">
-                        {/* First menu item with close button */}
                         <div className="d-flex justify-content-between align-items-center py-2 px-3">
-                            <div>{menuItems[0].label}</div>
+                            <span className="fw-600">אפשרויות סינון</span>
                             <Button type="text" icon={<CloseOutlined />} onClick={handleCloseDropdown} size="small" />
                         </div>
                         <Divider className="my-0" />
 
-                        {/* Other menu items */}
-                        {menuItems.slice(1).map((item) => (
+                        <Divider className="my-0" />
+                        {menuItems.map((item) => (
                             <div key={item.key}>
                                 <div className="py-2 px-3" style={{ cursor: "pointer" }}>
                                     {item.label}
