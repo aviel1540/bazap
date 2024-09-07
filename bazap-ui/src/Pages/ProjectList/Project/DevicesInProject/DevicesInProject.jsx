@@ -48,7 +48,15 @@ const ArrivedDevices = () => {
         setSearchParam(search);
         handleSearchAndFilter(search, null, selectedStatus);
     };
-
+    const onTabHandle = () => {
+        if (filteredDevices.length === 1) {
+            const device = filteredDevices[0];
+            const newSelectedRowKeys = [device._id];
+            onSelectChange(newSelectedRowKeys);
+            return true;
+        }
+        return false;
+    };
     const handleStatusChange = (status) => {
         setSelectedStatus(status);
         handleSearchAndFilter(searchParam, null, status);
@@ -130,7 +138,7 @@ const ArrivedDevices = () => {
     const showModalCreateVoucher = () => {
         const formDefaultValues = {
             type: "false",
-            unit: filteredDevices[0].unit._id,
+            unit: { text: filteredDevices[0].unit.unitsName, value: filteredDevices[0].unit._id },
             devicesIds: selectedDevicesIds,
             accessoriesIds: selectedAccessoriesIds,
             projectId,
@@ -173,6 +181,37 @@ const ArrivedDevices = () => {
     const rowSelection = {
         selectedRowKeys: selectedRows,
         onChange: onSelectChange,
+        selections: [
+            {
+                key: "clear",
+                text: "נקה בחירה",
+                onSelect: () => {
+                    onSelectChange([]);
+                },
+            },
+            {
+                key: "devices",
+                text: "בחר רק מסווגים",
+                onSelect: (changeableRowKeys) => {
+                    const classifiedRowKeys = changeableRowKeys.filter((key) => {
+                        const device = devices.find((dev) => dev._id === key);
+                        return device?.deviceTypeId?.isClassified;
+                    });
+                    onSelectChange(classifiedRowKeys);
+                },
+            },
+            {
+                key: "accessories",
+                text: 'בחר רק צ"לם',
+                onSelect: (changeableRowKeys) => {
+                    const accessoryRowKeys = changeableRowKeys.filter((key) => {
+                        const device = devices.find((dev) => dev._id === key);
+                        return !device?.deviceTypeId?.isClassified;
+                    });
+                    onSelectChange(accessoryRowKeys);
+                },
+            },
+        ],
     };
 
     return (
@@ -196,7 +235,7 @@ const ArrivedDevices = () => {
             <div className="mb-3">
                 {!isLoading && (
                     <Space size="small">
-                        <SearchInput onSearch={handleSearchChange} />
+                        <SearchInput onSearch={handleSearchChange} onTabHandle={onTabHandle} />
                         <StatusFilter
                             checkIfStatusExists={checkIfStatusExists}
                             selectedStatus={selectedStatus}

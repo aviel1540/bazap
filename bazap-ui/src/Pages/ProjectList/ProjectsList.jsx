@@ -17,6 +17,7 @@ import heIL from "antd/es/locale/he_IL"; // Importing Hebrew locale
 import dayjs from "dayjs";
 
 import "./projectList.css";
+import FilterMenu from "../../Components/UI/FilterMenu";
 const { Option } = Select;
 const { RangePicker } = DatePicker;
 
@@ -54,6 +55,16 @@ const ProjectsList = () => {
         } else {
             setDateRange([null, null]);
         }
+    };
+
+    const handleSearchChange = (value) => {
+        setSearchQuery(value);
+    };
+
+    const clearAllFilters = () => {
+        setFilter("all");
+        setDateRange([null, null]);
+        setSearchQuery("");
     };
 
     const showModal = () => {
@@ -98,6 +109,7 @@ const ProjectsList = () => {
         }
         return a.finished ? 1 : -1;
     });
+
     const rangePresets = [
         {
             label: "3 חודשים אחרונים",
@@ -117,39 +129,64 @@ const ProjectsList = () => {
         },
     ];
 
+    const menuItems = [
+        {
+            label: <Switch checkedChildren="טבלה" unCheckedChildren="כרטיסים" checked={isTableView} onChange={handleToggleView} />,
+            key: "view",
+        },
+        {
+            label: (
+                <Select
+                    defaultValue="all"
+                    value={filter}
+                    onChange={handleFilterChange}
+                    style={{ width: 120 }}
+                    onClick={(e) => e.stopPropagation()} // Prevent closing dropdown
+                >
+                    <Option value="all">הכל</Option>
+                    <Option value="notFinished">פתוחים</Option>
+                    <Option value="finished">סגורים</Option>
+                </Select>
+            ),
+            key: "filter",
+        },
+        {
+            label: (
+                <RangePicker
+                    value={dateRange}
+                    presets={rangePresets}
+                    format={"MM/YYYY"}
+                    cellRender={(date) => {
+                        return <div className="ant-picker-cell-inner">{formatDateToHebrew(date)}</div>;
+                    }}
+                    locale={heIL}
+                    picker="month"
+                    placeholder={["תאריך התחלה", "תאריך סיום"]}
+                    onChange={handleDateChange}
+                    onClick={(e) => e.stopPropagation()} // Prevent closing dropdown
+                />
+            ),
+            key: "date",
+        },
+    ];
+
     if (isLoading) {
         return <Loader />;
     }
-    const customLocal = heIL;
+
     const formatDateToHebrew = (date) => {
-        // Format the date using options for Hebrew locale
         return new Date(date).toLocaleDateString("he-IL", {
             month: "short",
         });
     };
+
     return (
         <CustomCard
             title="פרוייקטים"
             action={
                 <Space>
-                    <Switch checkedChildren="טבלה" unCheckedChildren="כרטיסים" checked={isTableView} onChange={handleToggleView} />
-                    <Select defaultValue="all" onChange={handleFilterChange} style={{ width: 120 }}>
-                        <Option value="all">הכל</Option>
-                        <Option value="notFinished">פתוחים</Option>
-                        <Option value="finished">סגורים</Option>
-                    </Select>
-                    <RangePicker
-                        presets={rangePresets}
-                        format={"MM/YYYY"}
-                        cellRender={(date) => {
-                            return <div className="ant-picker-cell-inner">{formatDateToHebrew(date)}</div>;
-                        }}
-                        locale={customLocal}
-                        picker="month"
-                        placeholder={["תאריך התחלה", "תאריך סיום"]}
-                        onChange={handleDateChange}
-                    />
-                    <SearchInput onSearch={setSearchQuery} />
+                    <SearchInput onSearch={handleSearchChange} value={searchQuery} />
+                    <FilterMenu clearAllFilters={clearAllFilters} menuItems={menuItems} />
                     <CustomButton type="light-primary" onClick={showModal} iconPosition="end" icon={<PlusOutlined />}>
                         הוסף פרוייקט
                     </CustomButton>

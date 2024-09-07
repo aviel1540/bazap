@@ -3,6 +3,7 @@ import { Col, Row } from "antd";
 import React from "react";
 import { useFormContext } from "react-hook-form";
 import PropTypes from "prop-types";
+import { v4 as uuidv4 } from "uuid";
 
 const RenderFields = ({ stepFields, fieldArray = false, fieldKey, disabledFields }) => {
     const { methods } = useFormContext();
@@ -22,17 +23,26 @@ const RenderFields = ({ stepFields, fieldArray = false, fieldKey, disabledFields
                                   newField.name = `${fieldKey}[${index}].${field.name}`;
                                   newField.index = index;
                                   newField.disabled = disabledFields && disabledFields[newField.name];
+                                  let uniqueKey = uuidv4();
                                   return (
-                                      <React.Fragment key={`${field.name}-${index}`}>
+                                      <React.Fragment key={`${field.name}-${uniqueKey}`}>
                                           <Col span={field.colSpan || 24}>
                                               <ControlledInput {...newField} control={control} />
                                           </Col>
                                           {field.extra && (
                                               <Col
-                                                  key={`${field.name}_extra_${index}`}
+                                                  key={`${field.name}_extra_${uniqueKey}`}
                                                   span={field.extraSpan ? field.extraSpan : field.colSpan ? 24 - field.colSpan : 24}
                                               >
                                                   {field.extra}
+                                              </Col>
+                                          )}
+                                          {field.extraRender && (
+                                              <Col
+                                                  key={`${field.name}_extraRender_${uniqueKey}`}
+                                                  span={field.extraSpan ? field.extraSpan : field.colSpan ? 24 - field.colSpan : 24}
+                                              >
+                                                  {field.extraRender(index)}
                                               </Col>
                                           )}
                                       </React.Fragment>

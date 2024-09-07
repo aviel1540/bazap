@@ -70,7 +70,7 @@ const VoucherStep2 = () => {
         const accessoriesTypes = [];
 
         deviceTypes?.forEach((deviceType) => {
-            const option = { text: deviceType.deviceName, value: deviceType._id };
+            const option = { text: `${deviceType.deviceName} - ${deviceType.catalogNumber}`, value: deviceType._id };
             if (deviceType.isClassified) {
                 deviceTypeOptions.push(option);
             } else {
@@ -223,11 +223,13 @@ const VoucherStep2 = () => {
             type: "text",
             colSpan: 6,
             extraSpan: 2,
-            extra: (
-                <IconButton size="large" color="error" aria-label="deleteField" onClick={(index) => removeDevice(index)}>
-                    <HighlightOff fontSize="inherit" />
-                </IconButton>
-            ),
+            extraRender: (index) => {
+                return (
+                    <IconButton size="large" color="error" aria-label="deleteField" onClick={() => removeDevice(index)}>
+                        <HighlightOff fontSize="inherit" />
+                    </IconButton>
+                );
+            },
             namePrefix: "devicesData",
         },
     ];
@@ -252,11 +254,13 @@ const VoucherStep2 = () => {
             isNumber: true,
             colSpan: 10,
             extraSpan: 2,
-            extra: (
-                <IconButton size="large" color="error" aria-label="deleteField" onClick={(index) => removeAccessory(index)}>
-                    <HighlightOff fontSize="inherit" />
-                </IconButton>
-            ),
+            extraRender: (index) => {
+                return (
+                    <IconButton size="large" color="error" aria-label="deleteField" onClick={() => removeAccessory(index)}>
+                        <HighlightOff fontSize="inherit" />
+                    </IconButton>
+                );
+            },
             validators: {
                 required: "יש למלא שדה זה.",
                 min: {
