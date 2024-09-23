@@ -112,6 +112,7 @@ const DeviceTypeTable = ({ onEdit, searchQuery, filterValue }) => {
         <Table
             locale={{ emptyText: <EmptyData label="אין סוגי מכשירים להצגה" /> }}
             dataSource={filteredData}
+            size="small"
             columns={columns}
             rowKey={(record) => record._id}
         />

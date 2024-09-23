@@ -254,6 +254,7 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
             rowSelection={rowSelection}
             dataSource={filteredDevices}
             pagination={paginationOptions}
+            size="small"
             rowKey={(record) => record._id}
             columns={columns()}
         />

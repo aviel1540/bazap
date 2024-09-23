@@ -241,7 +241,7 @@ const ProjectDashBoard = () => {
             onShow({
                 name: "projectDashboard",
                 title: "נתוני פרוייקט",
-                width: "80%",
+                width: "100%",
                 body: (
                     <div className="p-5 bg-light">
                         <Row gutter={[16, 16]}>

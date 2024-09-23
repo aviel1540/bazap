@@ -51,6 +51,7 @@ const ProjectTable = ({ projects }) => {
             <Table
                 locale={{ emptyText: <EmptyData label="אין פרוייקטים להצגה" /> }}
                 dataSource={projects}
+                size="small"
                 columns={columns}
                 rowKey={(record) => record._id}
             />
