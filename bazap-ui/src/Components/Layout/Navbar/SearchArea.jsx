@@ -11,6 +11,7 @@ import EmptyData from "../../UI/EmptyData";
 const { Search } = Input;
 const { Text } = Typography;
 
+let timeoutId = null;
 const SearchArea = () => {
     const navigate = useNavigate();
     const [searchResults, setSearchResults] = useState([]);
@@ -18,7 +19,6 @@ const SearchArea = () => {
     const [searchParam, setSearchParam] = useState("");
     const searchAreaRef = useRef(null);
     const listRef = useRef(null); // Ref for the list
-    let timeoutId = null;
 
     const handleClickOutside = (event) => {
         if (searchAreaRef.current && !searchAreaRef.current.contains(event?.target)) {
