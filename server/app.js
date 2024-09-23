@@ -11,7 +11,7 @@ const unitsRouter = require("./routers/unitsRouter");
 const voucherRouter = require("./routers/voucherRouter");
 const passwordRouter = require("./routers/passwordRouter");
 const accessoryRouter = require("./routers/accessoriesRouter")
-const divisionRouter = require("./routers/divisionRouter")
+//const divisionRouter = require("./routers/divisionRouter")
 
 // const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
@@ -26,7 +26,7 @@ mongoose
     .connect(process.env.URI)
     .then(async () => {
         console.log("Connected to DataBase");
-        passwordController.checkPasswordsExistence();
+        // passwordController.checkPasswordsExistence();
         // await load.run(); // Run the load scripts after successful database connection
         await dataFix();
     })
@@ -52,7 +52,7 @@ app.use("/api/technician/", technicianRouter);
 app.use("/api/units/", unitsRouter);
 app.use("/api/voucher/", voucherRouter);
 app.use("/api/password/", passwordRouter);
-app.use("/api/division/", divisionRouter);
+//app.use("/api/division/", divisionRouter);
 
 
 const PORT = process.env.PORT;
