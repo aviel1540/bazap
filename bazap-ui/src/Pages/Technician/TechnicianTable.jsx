@@ -88,6 +88,7 @@ const TechnicianTable = ({ onEdit, searchQuery }) => {
                 locale={{ emptyText: <EmptyData label="אין טכנאים להצגה" /> }}
                 dataSource={filteredUnits}
                 columns={columns}
+                size="small"
                 rowKey={(record) => record._id}
             />
         </>

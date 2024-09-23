@@ -118,6 +118,9 @@ exports.getAllVouchersInProject = async (req, res) => {
             return res.status(404).json({ message: "לא נמצא פרויקט" });
         }
         const vouchersList = project.vouchersList;
+        vouchersList.sort((a, b) => {
+            return parseInt(b.voucherNumber) - parseInt(a.voucherNumber);
+        });
         return res.status(200).json(vouchersList);
     } catch (err) {
         return res.status(500).json({ message: err.message });

@@ -1,22 +1,130 @@
-import { Dropdown, Button, Space, Divider } from "antd";
+import { Dropdown, Button, Space, Divider, Select, DatePicker, Switch } from "antd";
 import { FilterOutlined, CloseOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import PropTypes from "prop-types";
+import dayjs from "dayjs";
+import heIL from "antd/es/locale/he_IL";
 
-const FilterMenu = ({ menuItems, clearAllFilters }) => {
+const { RangePicker } = DatePicker;
+
+const formatDateToHebrew = (date) => {
+    return new Date(date).toLocaleDateString("he-IL", {
+        month: "short",
+    });
+};
+
+const rangePresets = [
+    {
+        label: "3 חודשים אחרונים",
+        value: [dayjs().subtract(3, "month"), dayjs()],
+    },
+    {
+        label: "חצי שנה אחרונה",
+        value: [dayjs().subtract(6, "month"), dayjs()],
+    },
+    {
+        label: "שנה אחרונה",
+        value: [dayjs().subtract(1, "year"), dayjs()],
+    },
+    {
+        label: "שנתיים אחרונות",
+        value: [dayjs().subtract(2, "year"), dayjs()],
+    },
+];
+
+const FilterMenu = ({ filtersConfig, onFilterChange, clearAllFilters }) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [filters, setFilters] = useState(
+        filtersConfig.reduce((acc, filter) => {
+            acc[filter.name] = filter.value || null; 
+            return acc;
+        }, {}),
+    );
 
     const handleDropdownVisibleChange = (visible) => {
         setIsDropdownOpen(visible);
     };
 
+    const handleFilterChange = (value, filterName) => {
+        setFilters((prevFilters) => {
+            const newState = { ...prevFilters, [filterName]: value };
+            onFilterChange(newState);
+            return newState;
+        });
+    };
+
     const handleClearAll = () => {
-        clearAllFilters(); // Call the clearAllFilters function passed via props
-        setIsDropdownOpen(false); // Close the dropdown after clearing the filters
+        const resetFilters = filtersConfig.reduce((acc, filter) => {
+            acc[filter.name] = filter.value || null; 
+            return acc;
+        }, {});
+
+        setFilters(resetFilters);
+        onFilterChange(resetFilters); 
+        clearAllFilters();
+        setIsDropdownOpen(false);
     };
 
     const handleCloseDropdown = () => {
-        setIsDropdownOpen(false); // Close the dropdown when the close button is clicked
+        setIsDropdownOpen(false);
+    };
+
+    const renderFilterItem = (filter) => {
+        const { name, label, type, options, placeholder, checkedChildren, unCheckedChildren } = filter;
+
+        switch (type) {
+            case "select":
+                return (
+                    <Space direction="vertical">
+                        <div>{label}</div>
+                        <Select
+                            value={filters[name]}
+                            onChange={(value) => handleFilterChange(value, name)}
+                            style={{ width: "100%" }}
+                            onClick={(e) => e.stopPropagation()} 
+                        >
+                            {options.map((option) => (
+                                <Select.Option key={option.value} value={option.value}>
+                                    {option.label}
+                                </Select.Option>
+                            ))}
+                        </Select>
+                    </Space>
+                );
+            case "monthRange":
+                return (
+                    <Space direction="vertical">
+                        <div>{label}</div>
+                        <RangePicker
+                            value={filters[name]}
+                            onChange={(dates) => handleFilterChange(dates, name)}
+                            onClick={(e) => e.stopPropagation()}
+                            format={"MM/YYYY"}
+                            presets={rangePresets}
+                            picker="month"
+                            locale={heIL}
+                            placeholder={placeholder}
+                            cellRender={(date) => {
+                                return <div className="ant-picker-cell-inner">{formatDateToHebrew(date)}</div>;
+                            }}
+                        />
+                    </Space>
+                );
+            case "switch":
+                return (
+                    <Space direction="vertical">
+                        <div>{label}</div>
+                        <Switch
+                            checked={filters[name]}
+                            checkedChildren={checkedChildren}
+                            unCheckedChildren={unCheckedChildren}
+                            onChange={(checked) => handleFilterChange(checked, name)}
+                        />
+                    </Space>
+                );
+            default:
+                return null;
+        }
     };
 
     return (
@@ -35,11 +143,10 @@ const FilterMenu = ({ menuItems, clearAllFilters }) => {
                         </div>
                         <Divider className="my-0" />
 
-                        <Divider className="my-0" />
-                        {menuItems.map((item) => (
-                            <div key={item.key}>
+                        {filtersConfig.map((filter) => (
+                            <div key={filter.name}>
                                 <div className="py-2 px-3" style={{ cursor: "pointer" }}>
-                                    {item.label}
+                                    {renderFilterItem(filter)}
                                 </div>
                                 <Divider className="my-0" />
                             </div>
@@ -60,12 +167,16 @@ const FilterMenu = ({ menuItems, clearAllFilters }) => {
 };
 
 FilterMenu.propTypes = {
-    menuItems: PropTypes.arrayOf(
+    filtersConfig: PropTypes.arrayOf(
         PropTypes.shape({
-            label: PropTypes.node.isRequired,
-            key: PropTypes.string.isRequired,
+            name: PropTypes.string.isRequired,
+            label: PropTypes.string.isRequired,
+            type: PropTypes.string.isRequired,
+            options: PropTypes.array,
+            value: PropTypes.any,
         }),
     ).isRequired,
+    onFilterChange: PropTypes.func.isRequired,
     clearAllFilters: PropTypes.func.isRequired,
 };
 

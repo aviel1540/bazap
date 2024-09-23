@@ -29,10 +29,15 @@ namespace VoucherExcel.Helpers
                 int devicesCount = voucher.Devices.Count;
                 int pages = (int)Math.Ceiling((double)devicesCount / devicesPerPage);
                 voucher.Devices.OrderBy(device => device.DeviceType).ThenBy(device => device.SerialNumber);
+                var templateRange = worksheet.Cells["1:33"];
                 for (int page = 0; page < pages; page++)
                 {
                     int startRow = (page * 33) + 1;
-                    worksheet.Cells["1:33"].Copy(worksheet.Cells[$"{startRow}:{startRow + 32}"]);
+                    templateRange.Copy(worksheet.Cells[$"{startRow}:{startRow + 32}"]);
+                }
+                for (int page = 0; page < pages; page++)
+                {
+                    int startRow = (page * 33) + 1;
                     FillVoucherInWorksheet(worksheet, voucher, startRow - 1, page + 1, pages);
                 }
 

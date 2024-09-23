@@ -170,6 +170,7 @@ exports.getAllProductsInLab = async (req, res) => {
         const projectId = escape(req.params.id);
         const devices = await projectService.findAllDevicesInLab(projectId);
         const accessories = await projectService.findAllAccessoriesInLab(projectId);
+        console.log(accessories);
         let products = [];
         if (devices.length > 0) {
             devices.map((device) => {

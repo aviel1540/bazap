@@ -1,7 +1,7 @@
 import HighlightOff from "@mui/icons-material/HighlightOff";
 import { IconButton, createFilterOptions } from "@mui/material";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Flex, Tabs, Tooltip } from "antd";
+import { Flex, InputNumber, Select, Tabs, Tooltip } from "antd";
 import { useEffect, useMemo, useState } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import Loader from "../../../../Components/Layout/Loader";
@@ -40,6 +40,8 @@ const VoucherStep2 = () => {
     const [filteredDevices, setFilteredDevices] = useState([]);
     const [selectedRows, setSelectedRows] = useState([]);
     const isDeliveryVoucher = getValues("type") == "false";
+    const [totalDevices, setTotalDevices] = useState(1);
+    const [predefinedDeviceType, setPredefinedDeviceType] = useState(null);
     const { isLoading: isLoadingArrivedDevices, data: allDevices } = useQuery({
         queryKey: ["allDevices"],
         queryFn: getDevices,
@@ -65,20 +67,25 @@ const VoucherStep2 = () => {
         queryKey: ["deviceTypes"],
         queryFn: getAllDeviceTypes,
     });
-    const { deviceTypeOptions, accessoriesTypes } = useMemo(() => {
+    const { deviceTypeOptions, accessoriesTypes, predefinedDeviceTypeOptions } = useMemo(() => {
         const deviceTypeOptions = [];
+        const predefinedDeviceTypeOptions = [];
         const accessoriesTypes = [];
 
         deviceTypes?.forEach((deviceType) => {
             const option = { text: `${deviceType.deviceName} - ${deviceType.catalogNumber}`, value: deviceType._id };
             if (deviceType.isClassified) {
+                predefinedDeviceTypeOptions.push({
+                    value: deviceType._id,
+                    label: deviceType.deviceName,
+                });
                 deviceTypeOptions.push(option);
             } else {
                 accessoriesTypes.push(option);
             }
         });
 
-        return { deviceTypeOptions, accessoriesTypes };
+        return { deviceTypeOptions, accessoriesTypes, predefinedDeviceTypeOptions };
     }, [deviceTypes]);
 
     useEffect(() => {
@@ -113,7 +120,17 @@ const VoucherStep2 = () => {
     });
 
     const handleAddDevice = () => {
-        addDevice({ serialNumber: "", deviceTypeId: "" });
+        const newDevices = [];
+        for (let index = 0; index < totalDevices; index++) {
+            if (predefinedDeviceType != null) {
+                newDevices.push({ serialNumber: "", deviceTypeId: predefinedDeviceType });
+            } else {
+                newDevices.push({ serialNumber: "", deviceTypeId: "" });
+            }
+        }
+        addDevice(newDevices);
+        setPredefinedDeviceType(null);
+        setTotalDevices(1);
     };
     const handleAddAccessory = () => {
         addAccessory({ quantity: 1, deviceTypeId: null });
@@ -121,7 +138,9 @@ const VoucherStep2 = () => {
 
     const getDeviceBySerialNumberMutation = useMutation(getDeviceBySerialNumber);
     const handleFieldChange = async (serialNumber, index) => {
-        setValue(`devicesData[${index}].deviceTypeId`, "");
+        // const currentValue = getValues("devicesData[${index}].deviceTypeId");
+        // if (currentValue != null)
+        // setValue(`devicesData[${index}].deviceTypeId`, "");
         if (serialNumber) {
             const data = await getDeviceBySerialNumberMutation.mutateAsync(serialNumber);
             if (!data.message) {
@@ -307,7 +326,25 @@ const VoucherStep2 = () => {
                                         fieldKey="devicesData"
                                     />
                                     {deviceFields.length == 0 && <EmptyData label="אין מידע להציג" />}
-                                    <Flex justify="center" align="center" className="mt-4">
+                                    <Flex justify="center" align="center" gap={4} className="mt-4">
+                                        <InputNumber
+                                            min={1}
+                                            max={100}
+                                            addonBefore="כמות"
+                                            onChange={(val) => setTotalDevices(val)}
+                                            className="w-125px"
+                                            value={totalDevices}
+                                        />
+                                        <Select
+                                            showSearch
+                                            placeholder="בחר סוג מכשיר להוספה חכמה"
+                                            optionFilterProp="label"
+                                            value={predefinedDeviceType}
+                                            onChange={(e) => setPredefinedDeviceType(e)}
+                                            options={predefinedDeviceTypeOptions}
+                                            className="w-250px"
+                                            allowClear={true}
+                                        />
                                         <CustomButton
                                             type="light-success"
                                             iconPosition="end"

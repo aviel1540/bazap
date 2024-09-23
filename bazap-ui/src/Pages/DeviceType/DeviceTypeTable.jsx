@@ -105,13 +105,15 @@ const DeviceTypeTable = ({ onEdit, searchQuery, filterValue }) => {
     }
     const filteredData = deviceTypes?.filter((deviceType) => {
         const matchesSearchQuery = deviceType.deviceName.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesFilterValue = filterValue === null || deviceType.isClassified === filterValue;
+        const matchesFilterValue =
+            filterValue === null || filterValue.isClassified == "all" || deviceType.isClassified === filterValue.isClassified;
         return matchesSearchQuery && matchesFilterValue;
     });
     return (
         <Table
             locale={{ emptyText: <EmptyData label="אין סוגי מכשירים להצגה" /> }}
             dataSource={filteredData}
+            size="small"
             columns={columns}
             rowKey={(record) => record._id}
         />
@@ -121,7 +123,7 @@ const DeviceTypeTable = ({ onEdit, searchQuery, filterValue }) => {
 DeviceTypeTable.propTypes = {
     onEdit: propTypes.func.isRequired,
     searchQuery: propTypes.string,
-    filterValue: propTypes.bool,
+    filterValue: propTypes.object,
 };
 
 export default DeviceTypeTable;

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Row, Space, Switch, Select, DatePicker } from "antd";
+import { Row, Space } from "antd";
 import Loader from "../../Components/Layout/Loader";
 import CustomCard from "../../Components/UI/CustomCard";
 import EmptyData from "../../Components/UI/EmptyData";
@@ -13,48 +13,35 @@ import { PlusOutlined } from "@ant-design/icons";
 import ProjectTable from "./ProjectTable";
 import SearchInput from "../../Components/UI/SearchInput";
 import { dateTostring } from "../../Utils/utils";
-import heIL from "antd/es/locale/he_IL"; // Importing Hebrew locale
-import dayjs from "dayjs";
+import FilterMenu from "../../Components/UI/FilterMenu";
 
 import "./projectList.css";
-import FilterMenu from "../../Components/UI/FilterMenu";
-const { Option } = Select;
-const { RangePicker } = DatePicker;
 
 const ProjectsList = () => {
     const { onShow, onHide } = useCustomModal();
     const [searchQuery, setSearchQuery] = useState("");
+    const [filters, setFilters] = useState({
+        isTableView: true,
+        projectType: "all",
+        monthRange: [null, null],
+    });
+
     const { isLoading, data: projects } = useQuery({
         queryKey: ["projects"],
         queryFn: getAllProjects,
     });
 
-    const [isTableView, setIsTableView] = useState(() => {
-        const savedView = localStorage.getItem("projectsView");
-        return savedView ? JSON.parse(savedView) : true; // Default to table view
-    });
-
-    const [filter, setFilter] = useState("all");
-    const [dateRange, setDateRange] = useState([null, null]);
-
+    // Save the table view state in localStorage
     useEffect(() => {
-        localStorage.setItem("projectsView", JSON.stringify(isTableView));
-    }, [isTableView]);
+        localStorage.setItem("projectsView", JSON.stringify(filters.isTableView));
+    }, [filters.isTableView]);
 
-    const handleToggleView = () => {
-        setIsTableView((prevView) => !prevView);
-    };
-
-    const handleFilterChange = (value) => {
-        setFilter(value);
-    };
-
-    const handleDateChange = (dates) => {
-        if (dates) {
-            setDateRange(dates);
-        } else {
-            setDateRange([null, null]);
-        }
+    // Update filters when any field in the FilterMenu changes
+    const handleFilterChange = (updatedFilters) => {
+        setFilters((prevFilters) => ({
+            ...prevFilters,
+            ...updatedFilters, // Merge the updated filters into the state
+        }));
     };
 
     const handleSearchChange = (value) => {
@@ -62,8 +49,11 @@ const ProjectsList = () => {
     };
 
     const clearAllFilters = () => {
-        setFilter("all");
-        setDateRange([null, null]);
+        setFilters({
+            isTableView: true,
+            projectType: "all",
+            monthRange: [null, null],
+        });
         setSearchQuery("");
     };
 
@@ -75,121 +65,81 @@ const ProjectsList = () => {
         });
     };
 
-    const filteredProjects =
-        projects?.filter((project) => {
-            if (filter === "finished") return project.finished;
-            if (filter === "notFinished") return !project.finished;
-            return true;
-        }) || [];
+    // Apply filters to projects
+    const filteredProjects = projects?.filter((project) => {
+        // Filter by project type
+        if (filters.projectType === "finished" && !project.finished) return false;
+        if (filters.projectType === "notFinished" && project.finished) return false;
 
-    const dateFilteredProjects = filteredProjects.filter((project) => {
+        // Filter by date range
         const { startDate, endDate, finished } = project;
-        if (!dateRange[0] || !dateRange[1]) {
-            return true;
-        }
         const projectStart = new Date(startDate);
         const projectEnd = finished ? new Date(endDate) : null;
+        const [startFilterDate, endFilterDate] = filters.monthRange;
 
-        if (finished) {
-            return projectStart >= dateRange[0] && projectEnd <= dateRange[1];
-        } else {
-            return projectStart >= dateRange[0] && projectStart <= dateRange[1];
+        if (startFilterDate && endFilterDate) {
+            const filterStart = new Date(startFilterDate);
+            const filterEnd = new Date(endFilterDate);
+
+            if (finished) {
+                if (projectStart < filterStart || projectEnd > filterEnd) return false;
+            } else if (projectStart < filterStart || projectStart > filterEnd) return false;
         }
+
+        return true;
     });
 
-    const searchedProjects = dateFilteredProjects.filter((project) => {
+    const searchedProjects = filteredProjects?.filter((project) => {
         const { projectName, startDate, endDate } = project;
-        const searchedProject = { projectName, startDate: dateTostring(startDate), endDate: dateTostring(endDate) };
+        const searchedProject = {
+            projectName,
+            startDate: dateTostring(startDate),
+            endDate: dateTostring(endDate),
+        };
         return JSON.stringify(searchedProject).toLowerCase().includes(searchQuery.toLowerCase());
     });
 
-    const sortedProjects = searchedProjects.sort((a, b) => {
+    const sortedProjects = searchedProjects?.sort((a, b) => {
         if (a.finished === b.finished) {
             return new Date(a.startDate) - new Date(b.startDate);
         }
         return a.finished ? 1 : -1;
     });
 
-    const rangePresets = [
-        {
-            label: "3 חודשים אחרונים",
-            value: [dayjs().subtract(3, "month"), dayjs()],
-        },
-        {
-            label: "חצי שנה אחרונה",
-            value: [dayjs().subtract(6, "month"), dayjs()],
-        },
-        {
-            label: "שנה אחרונה",
-            value: [dayjs().subtract(1, "year"), dayjs()],
-        },
-        {
-            label: "שנתיים אחרונות",
-            value: [dayjs().subtract(2, "year"), dayjs()],
-        },
-    ];
-
-    const menuItems = [
-        {
-            label: (
-                <Space direction="vertical">
-                    <div className="fw-500">מצב תצוגה:</div>
-                    <Switch checkedChildren="טבלה" unCheckedChildren="כרטיסים" checked={isTableView} onChange={handleToggleView} />
-                </Space>
-            ),
-            key: "view",
-        },
-        {
-            label: (
-                <Space direction="vertical">
-                    <div className="fw-500">מצב פרוייקט:</div>
-                    <Select
-                        defaultValue="all"
-                        value={filter}
-                        onChange={handleFilterChange}
-                        style={{ width: 120 }}
-                        onClick={(e) => e.stopPropagation()} // Prevent closing dropdown
-                    >
-                        <Option value="all">הכל</Option>
-                        <Option value="notFinished">פתוחים</Option>
-                        <Option value="finished">סגורים</Option>
-                    </Select>
-                </Space>
-            ),
-            key: "filter",
-        },
-        {
-            label: (
-                <Space direction="vertical">
-                    <div className="fw-500">תאריכים:</div>
-                    <RangePicker
-                        value={dateRange}
-                        presets={rangePresets}
-                        format={"MM/YYYY"}
-                        cellRender={(date) => {
-                            return <div className="ant-picker-cell-inner">{formatDateToHebrew(date)}</div>;
-                        }}
-                        locale={heIL}
-                        picker="month"
-                        placeholder={["תאריך התחלה", "תאריך סיום"]}
-                        onChange={handleDateChange}
-                        onClick={(e) => e.stopPropagation()} // Prevent closing dropdown
-                    />
-                </Space>
-            ),
-            key: "date",
-        },
-    ];
-
     if (isLoading) {
         return <Loader />;
     }
 
-    const formatDateToHebrew = (date) => {
-        return new Date(date).toLocaleDateString("he-IL", {
-            month: "short",
-        });
-    };
+    // Configuration for the FilterMenu
+    const filtersConfig = [
+        {
+            name: "isTableView",
+            label: "מצב תצוגה",
+            checkedChildren: "טבלה",
+            unCheckedChildren: "כרטיסים",
+            type: "switch",
+            value: filters.isTableView,
+            isView: true,
+        },
+        {
+            name: "projectType",
+            label: "מצב פרוייקט",
+            type: "select",
+            value: filters.projectType,
+            options: [
+                { value: "all", label: "הכל" },
+                { value: "finished", label: "סגורים" },
+                { value: "notFinished", label: "פתוחים" },
+            ],
+        },
+        {
+            name: "monthRange",
+            label: "תאריכים",
+            placeholder: ["תאריך התחלה", "תאריך סיום"],
+            type: "monthRange",
+            value: filters.monthRange,
+        },
+    ];
 
     return (
         <CustomCard
@@ -197,14 +147,14 @@ const ProjectsList = () => {
             action={
                 <Space>
                     <SearchInput onSearch={handleSearchChange} value={searchQuery} />
-                    <FilterMenu clearAllFilters={clearAllFilters} menuItems={menuItems} />
+                    <FilterMenu filtersConfig={filtersConfig} onFilterChange={handleFilterChange} clearAllFilters={clearAllFilters} />
                     <CustomButton type="light-primary" onClick={showModal} iconPosition="end" icon={<PlusOutlined />}>
                         הוסף פרוייקט
                     </CustomButton>
                 </Space>
             }
         >
-            {isTableView ? (
+            {filters.isTableView ? (
                 <ProjectTable projects={sortedProjects} />
             ) : sortedProjects.length === 0 ? (
                 <EmptyData label="אין פרוייקטים להצגה" />

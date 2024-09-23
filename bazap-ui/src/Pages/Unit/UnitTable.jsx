@@ -18,7 +18,7 @@ const UnitTable = ({ onEdit, searchQuery }) => {
         queryFn: getAllUnits,
     });
 
-    const filteredUnits =  units?.filter((unit) => unit.unitsName.toLowerCase().includes(searchQuery.toLowerCase()));
+    const filteredUnits = units?.filter((unit) => unit.unitsName.toLowerCase().includes(searchQuery.toLowerCase()));
 
     const onEditUnitHandler = (id) => {
         const unit = units.find((item) => item._id == id);
@@ -84,6 +84,7 @@ const UnitTable = ({ onEdit, searchQuery }) => {
         <Table
             locale={{ emptyText: <EmptyData label="אין יחידות להצגה" /> }}
             dataSource={filteredUnits}
+            size="small"
             columns={columns}
             rowKey={(record) => record._id}
         />

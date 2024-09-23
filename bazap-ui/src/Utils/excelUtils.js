@@ -23,15 +23,8 @@ export const readDevicesExcelFile = (rows) => {
     return devices;
 };
 
-export const createProjectReport = (devices, fileName = "דוח_צ") => {
-    const data = [["צ' מכשיר", "סוג מכשיר", "סטטוס "]];
-    devices.forEach((device) => {
-        data.push([device.serialNumber, device.deviceTypeId?.deviceName, device.status]);
-    });
-    createExcel(data, fileName);
-};
 
-const createExcel = (data, name) => {
+export const createExcel = (data, name) => {
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.aoa_to_sheet(data);
     XLSX.utils.book_append_sheet(wb, ws, "Sheet1");

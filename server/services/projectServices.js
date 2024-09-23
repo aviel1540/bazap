@@ -55,10 +55,14 @@ exports.findAllAccessoriesByProject = async (projectId) =>
     await Accessories.find({ project: projectId }).populate("unit").populate("deviceTypeId");
 
 exports.findAllAccessoriesInLab = async (projectId) =>
-    await Accessories.find({ project: projectId, status: DeviceStatus.AT_WORK || DeviceStatus.WAIT_TO_WORK })
+    await Accessories.find({
+        project: projectId,
+        status: { $in: [DeviceStatus.AT_WORK, DeviceStatus.WAIT_TO_WORK] },
+    })
         .populate("unit")
         .populate("deviceTypeId");
 
 exports.findAllDevicesByProject = async (projectId) => await Device.find({ project: projectId }).populate("unit").populate("deviceTypeId");
 
-exports.findAllDevicesInLab = async (projectId) => await Device.find({ project: projectId, voucherOut: null }).populate("deviceTypeId");
+exports.findAllDevicesInLab = async (projectId) =>
+    await Device.find({ project: projectId, voucherOut: null }).populate("deviceTypeId").populate("unit");

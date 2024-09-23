@@ -131,6 +131,7 @@ const VoucherTable = () => {
                 locale={{ emptyText: <EmptyData label="אין שוברים להצגה" /> }}
                 dataSource={vouchers}
                 columns={columns()}
+                size="small"
                 rowKey={(record) => record._id}
             />
         </CustomCard>
