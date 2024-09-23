@@ -1,18 +1,18 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const divisionSchema = new Schema({
-  division_name: {
+const brigadeSchema = new Schema({
+  unit_name: {
     type: String,
     required: true
   },
-  brigade: {
+  unit: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Brigade',
+    ref: 'Unit',
     required: true
   }
 });
 
-const Division = mongoose.model('Division', divisionSchema);
+const Brigade = mongoose.model('Brigade', brigadeSchema);
 
-module.exports = Division;
+module.exports = Brigade;
