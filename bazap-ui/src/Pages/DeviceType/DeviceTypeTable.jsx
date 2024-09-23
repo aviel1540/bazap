@@ -105,7 +105,8 @@ const DeviceTypeTable = ({ onEdit, searchQuery, filterValue }) => {
     }
     const filteredData = deviceTypes?.filter((deviceType) => {
         const matchesSearchQuery = deviceType.deviceName.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesFilterValue = filterValue === null || deviceType.isClassified === filterValue;
+        const matchesFilterValue =
+            filterValue === null || filterValue.isClassified == "all" || deviceType.isClassified === filterValue.isClassified;
         return matchesSearchQuery && matchesFilterValue;
     });
     return (
@@ -122,7 +123,7 @@ const DeviceTypeTable = ({ onEdit, searchQuery, filterValue }) => {
 DeviceTypeTable.propTypes = {
     onEdit: propTypes.func.isRequired,
     searchQuery: propTypes.string,
-    filterValue: propTypes.bool,
+    filterValue: propTypes.object,
 };
 
 export default DeviceTypeTable;

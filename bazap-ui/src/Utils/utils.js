@@ -10,6 +10,23 @@ export const dateTostring = (inputString) => {
 
     return `${formattedDay}/${formattedMonth}/${year}`;
 };
+export const sortDevices = (deviceList) => {
+    return deviceList.sort((a, b) => {
+        if (a.unit.unitsName < b.unit.unitsName) return -1;
+        if (a.unit.unitsName > b.unit.unitsName) return 1;
+        if (a.status < b.status) return -1;
+        if (a.status > b.status) return 1;
+        // Sorting by serialNumber for classified devices or quantity if non-classified
+        if (a.deviceTypeId.isClassified && b.deviceTypeId.isClassified) {
+            return a.serialNumber.localeCompare(b.serialNumber);
+        }
+        // Assuming non-classified devices would have a 'quantity' field
+        if (!a.deviceTypeId.isClassified && !b.deviceTypeId.isClassified) {
+            return a.quantity - b.quantity;
+        }
+        return 0;
+    });
+};
 
 export const replaceApostropheInObject = (obj, keys) => {
     const targetKeys = Array.isArray(keys) ? keys : [keys];

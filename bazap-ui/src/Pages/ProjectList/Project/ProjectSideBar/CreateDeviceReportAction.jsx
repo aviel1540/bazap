@@ -1,22 +1,43 @@
 // CreateDeviceReportAction.js
 import IosShareIcon from "@mui/icons-material/IosShare";
 import { ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useProject } from "../../../../Components/store/ProjectContext";
 import { useUserAlert } from "../../../../Components/store/UserAlertContext";
-import { createProjectReport } from "../../../../Utils/excelUtils";
-import { dateTostring } from "../../../../Utils/utils";
-import { getAllDevicesInLab } from "../../../../Utils/projectAPI";
+import { createExcel } from "../../../../Utils/excelUtils";
+import { dateTostring, sortDevices } from "../../../../Utils/utils";
+import { getAllDevicesInLab, getProjectData } from "../../../../Utils/projectAPI";
 
 const CreateDeviceReportAction = () => {
     const { projectId } = useProject();
+    const { data: project } = useQuery({
+        queryKey: ["project", projectId],
+        queryFn: getProjectData,
+        enabled: projectId !== null,
+    });
     const { onAlert } = useUserAlert();
     const getAllDevicesInProjectMutation = useMutation(getAllDevicesInLab, {
         onSuccess: (devices) => {
             if (devices.length === 0) {
                 onAlert('אין מכשירים בבצ"פ בפרוייקט.');
             } else {
-                createProjectReport(devices, "דוח_צ'_לתאריך_" + dateTostring(Date.now()));
+                const classifiedDevices = devices.filter((device) => device.deviceTypeId.isClassified);
+                const nonClassifiedDevices = devices.filter((device) => !device.deviceTypeId.isClassified);
+
+                const sortedClassifiedDevices = sortDevices(classifiedDevices);
+                const sortedNonClassifiedDevices = sortDevices(nonClassifiedDevices);
+                const deviceTitles = [["יחידה", "צ' מכשיר", "סוג מכשיר", "סטטוס "]];
+                const excelData = [...deviceTitles];
+                sortedClassifiedDevices.forEach((device) => {
+                    excelData.push([device.unit.unitsName, device.serialNumber, device.deviceTypeId?.deviceName, device.status]);
+                });
+                excelData.push([]);
+                const accessoriesTitle = [["יחידה", "יחידות", "סוג מכשיר", "סטטוס "]];
+                excelData.push(...accessoriesTitle);
+                sortedNonClassifiedDevices.forEach((device) => {
+                    excelData.push([device.unit.unitsName, device.quantity, device.deviceTypeId?.deviceName, device.status]);
+                });
+                createExcel(excelData, `${project.projectName}_דוח_צ'_לתאריך_` + dateTostring(Date.now()));
             }
         },
     });
