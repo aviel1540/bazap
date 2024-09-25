@@ -30,7 +30,6 @@ exports.addNewVoucherIn = async (req, res) => {
     };
     const devicesData = req.body.devicesData;
     const accessoriesData = req.body.accessoriesData;
-    console.log(accessoriesData);
     let project;
     try {
         const checkProjectId = validation.addSlashes(projectId);
@@ -274,3 +273,77 @@ const createVoucher = async (detailes, type, checkProjectId) => {
     await newVoucher.save();
     return { newVoucher, autoNumber };
 };
+
+
+exports.updateVoucherDevices = async (req, res) => {
+    const voucherId = escape(req.params.voucherId)
+    const devicesData = req.body.devicesData;
+    const accessoriesData = req.body.accessoriesData;
+    let voucher;
+    try {
+        const checkVoucherId = validation.addSlashes(voucherId);
+
+        voucher = await voucherService.findVoucherById(checkVoucherId)
+        if (!voucher) return res.status(404).json({ message: "לא נמצא שובר" });
+
+        if (
+            (!devicesData || !Array.isArray(devicesData) || devicesData.length === 0) &&
+            (!accessoriesData || !Array.isArray(accessoriesData) || accessoriesData.length === 0)
+        ) {
+            return res.status(400).json({ message: "יש להזין מכשירים/צלמ" });
+        }
+        if (devicesData) {
+            for (const deviceData of devicesData) {
+                const serialNumber = escape(deviceData.serialNumber);
+                const deviceTypeId = escape(deviceData.deviceTypeId);
+                const notes = escape(deviceData.notes ?? "");
+
+                if (!serialNumber || !deviceTypeId) {
+                    return res.status(400).json({ message: "נא למלא את כל השדות" });
+                }
+                const checkSerialNumber = validation.addSlashes(serialNumber);
+                const checkDeviceTypeId = validation.addSlashes(deviceTypeId);
+                const checkNotes = validation.addSlashes(notes);
+                const checkUnit = validation.addSlashes(unit);
+                const newDevice = await deviceService.addNewDevice({
+                    checkSerialNumber,
+                    checkDeviceTypeId,
+                    checkUnitId: checkUnit,
+                    checkVoucherId: newVoucher._id,
+                    checkNotes,
+                    projectId,
+                });
+
+                await newDevice.save();
+                voucher.deviceList.push(newDevice);
+            }
+        }
+        if (accessoriesData) {
+            for (const accessoryData of accessoriesData) {
+                const deviceTypeId = escape(accessoryData.deviceTypeId);
+                const quantity = escape(accessoryData.quantity);
+
+                if (!quantity || !deviceTypeId) {
+                    return res.status(400).json({ message: "נא למלא את כל השדות" });
+                }
+                const checkDeviceTypeId = validation.addSlashes(deviceTypeId);
+                const checkQuantity = validation.addSlashes(quantity);
+                const checkUnit = validation.addSlashes(unit);
+                const newAccessory = await accessoryService.addNewAccessories({
+                    checkDeviceTypeId,
+                    checkUnitId: checkUnit,
+                    checkQuantity,
+                    checkVoucherId: newVoucher._id,
+                    projectId,
+                });
+
+                await newAccessory.save();
+                voucher.accessoriesList.push(newAccessory);
+            }
+        }
+        await voucher.save();
+        return res.status(201).json({ message: "שובר נוצר ושויך בהצלחה !", voucher });
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
+    }
+}

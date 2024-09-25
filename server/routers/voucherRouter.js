@@ -10,4 +10,6 @@ router.post("/add-new-voucher-in/:projectId", voucherController.addNewVoucherIn)
 
 router.post("/add-new-voucher-out/:projectId" , voucherController.addNewVoucherOut);
 
+router.patch("/update-voucher-devices/:voucherId", voucherController.updateVoucherDevices);
+
 router.delete("/delete/:id", voucherController.deleteVoucher);
