@@ -79,8 +79,9 @@ const FilterMenu = ({ filtersConfig, onFilterChange, clearAllFilters }) => {
                         <div>{label}</div>
                         <Select
                             value={filters[name]}
+                            showSearch
                             onChange={(value) => handleFilterChange(value, name)}
-                            style={{ width: "100%" }}
+                            className="w-200px"
                             onClick={(e) => e.stopPropagation()} 
                         >
                             {options.map((option) => (

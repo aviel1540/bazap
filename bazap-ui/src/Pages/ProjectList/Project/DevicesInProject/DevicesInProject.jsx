@@ -14,12 +14,17 @@ import CustomButton from "../../../../Components/UI/CustomButton/CustomButton";
 import { SwapOutlined } from "@ant-design/icons";
 import { useUserAlert } from "../../../../Components/store/UserAlertContext";
 import { getAllProductsInProject } from "../../../../Utils/projectAPI";
+import FilterMenu from "../../../../Components/UI/FilterMenu";
+import { getAllUnits } from "../../../../Utils/unitAPI";
 
 const ArrivedDevices = () => {
     const { onAlert, error } = useUserAlert();
     const { projectId } = useProject();
     const { onShow, onHide } = useCustomModal();
-
+    const { data: units } = useQuery({
+        queryKey: ["units"],
+        queryFn: getAllUnits,
+    });
     const [searchParam, setSearchParam] = useState("");
     const [selectedStatus, setSelectedStatus] = useState(ALL);
     const [selectedRows, setSelectedRows] = useState([]);
@@ -213,12 +218,32 @@ const ArrivedDevices = () => {
             },
         ],
     };
-
+    const uniqueUnits = [...new Set(devices?.map((device) => device.unit._id))];
+    const unitOptions = uniqueUnits.map((unitId) => {
+        const unit = units.find((unit) => unit._id === unitId);
+        return { label: unit.unitsName, value: unit._id };
+    });
+    unitOptions.unshift({ value: "all", label: "הכל" });
     return (
         <CustomCard
             title='מכשירים בבצ"פ'
             action={
                 <Space size="small">
+                    <FilterMenu
+                        filtersConfig={[
+                            {
+                                name: "unit",
+                                label: "יחידות",
+                                type: "select",
+                                value: "all",
+                                options: unitOptions,
+                            },
+                        ]}
+                        clearAllFilters={(data) => {
+                            alert(JSON.stringify(data));
+                        }}
+                        onFilterChange={() => {}}
+                    />
                     {selectedRows.length > 0 && !areClassifiedAndNonClassifiedSelected() && (
                         <CustomButton type="light-info" onClick={showModalChangeStatus} iconPosition="end" icon={<SwapOutlined />}>
                             שנה סטטוס

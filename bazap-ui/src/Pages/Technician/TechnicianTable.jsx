@@ -49,6 +49,7 @@ const TechnicianTable = ({ onEdit, searchQuery }) => {
         {
             key: "delete",
             label: "מחק",
+            isPasswordRequired: true,
             danger: true,
             icon: <DeleteIcon />,
             handler: (data) => {

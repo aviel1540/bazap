@@ -1,72 +1,92 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import CustomForm from "../../Components/UI/CustomForm/CustomForm";
 import propTypes from "prop-types";
-import { addProject, getAllProjects, updateProject } from "../../Utils/projectAPI";
+import GenericForm from "../../Components/UI/GenericForm";
 import { checkDuplicationInForm } from "../../Utils/formUtils";
+import { addProject, getAllProjects, updateProject } from "../../Utils/projectAPI";
 
-const ProjectForm = ({ onCancel, formValues = null, isEdit = false }) => {
+const ProjectForm = ({ onCancel, formValues = null, isEdit = false, open }) => {
     const queryClient = useQueryClient();
+
+    // Fetch all projects
     const { isLoading, data: projects } = useQuery({
         queryKey: ["projects"],
         queryFn: getAllProjects,
     });
 
+    // Duplication validation for project names
+    const validateProjectDuplication = (value) => {
+        if (value) {
+            if (checkDuplicationInForm(projects, "projectName", value, isEdit, formValues?.id)) {
+                return "שם פרוייקט כבר קיים במערכת.";
+            }
+        }
+        return true;
+    };
+
+    // Handle save operation for both new and edit modes
     const handleSave = (data) => {
         if (!isEdit) {
-            let newProject = { projectName: data.projectName };
+            const newProject = { projectName: data.projectName };
             addProjectMutation.mutate(newProject);
         } else {
-            let editProject = {
+            const editProject = {
                 id: formValues.id,
                 projectName: data.projectName,
             };
             editProjectMutation.mutate(editProject);
         }
     };
+
+    // Mutation for adding a new project
     const addProjectMutation = useMutation(addProject, {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["projects"] });
             onCancel();
         },
     });
+
+    // Mutation for editing an existing project
     const editProjectMutation = useMutation(updateProject, {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["projects"] });
-            queryClient.invalidateQueries({ queryKey: ["project", formValues.id] });
-
             onCancel();
         },
     });
-    const validateProjectDuplication = (value) => {
-        if (value) {
-            if (checkDuplicationInForm(projects, "projectName", value, isEdit, formValues?.id)) return "שם פרוייקט כבר קיים במערכת.";
-        }
-        return true;
-    };
+
+    // Define form fields for GenericForm
     const fields = [
         {
             label: "שם פרוייקט",
             name: "projectName",
             type: "text",
             placeholder: "לדוגמא מיפוי 319",
-            validators: {
-                required: "יש למלא שדה זה.",
-                minLength: {
-                    value: 2,
-                    message: "שדה זה חייב לפחות 2 תווים",
+            rules: [
+                { required: true, message: "יש למלא שדה זה." },
+                { min: 2, message: "שדה זה חייב לפחות 2 תווים" },
+                {
+                    validator: (_, value) => {
+                        const validationResult = validateProjectDuplication(value);
+                        if (validationResult === true) {
+                            return Promise.resolve();
+                        }
+                        return Promise.reject(new Error(validationResult));
+                    },
                 },
-                validate: validateProjectDuplication,
-            },
+            ],
         },
     ];
+
     return (
-        <CustomForm
+        <GenericForm
             fields={fields}
             onSubmit={handleSave}
             onCancel={onCancel}
-            values={formValues}
+            isPasswordRequired
+            initialValues={formValues}
+            title={isEdit ? "עריכת פרוייקט" : "פרוייקט חדש"}
+            visible={open}
             isLoading={isLoading || addProjectMutation.isLoading}
-        ></CustomForm>
+        />
     );
 };
 
@@ -74,7 +94,7 @@ ProjectForm.propTypes = {
     formValues: propTypes.object,
     onCancel: propTypes.func,
     isEdit: propTypes.bool,
-    editId: propTypes.string,
+    open: propTypes.bool,
 };
 
 export default ProjectForm;

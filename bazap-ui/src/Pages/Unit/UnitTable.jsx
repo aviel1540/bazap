@@ -47,6 +47,7 @@ const UnitTable = ({ onEdit, searchQuery }) => {
         {
             key: "2",
             label: "מחק",
+            isPasswordRequired: true,
             danger: true,
             icon: <DeleteIcon />,
             handler: (data) => {

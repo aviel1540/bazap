@@ -4,7 +4,6 @@ import { Row, Space } from "antd";
 import Loader from "../../Components/Layout/Loader";
 import CustomCard from "../../Components/UI/CustomCard";
 import EmptyData from "../../Components/UI/EmptyData";
-import { useCustomModal } from "../../Components/store/CustomModalContext";
 import { getAllProjects } from "../../Utils/projectAPI";
 import ProjectForm from "./ProjectForm";
 import ProjectItem from "./ProjectItem";
@@ -15,10 +14,10 @@ import SearchInput from "../../Components/UI/SearchInput";
 import { dateTostring } from "../../Utils/utils";
 import FilterMenu from "../../Components/UI/FilterMenu";
 
-import "./projectList.css";
-
 const ProjectsList = () => {
-    const { onShow, onHide } = useCustomModal();
+    const [open, setOpen] = useState(false);
+    const [editData, setEditData] = useState(null);
+
     const [searchQuery, setSearchQuery] = useState("");
     const [filters, setFilters] = useState({
         isTableView: true,
@@ -57,14 +56,16 @@ const ProjectsList = () => {
         setSearchQuery("");
     };
 
-    const showModal = () => {
-        onShow({
-            title: "פרוייקט חדש",
-            name: "project",
-            body: <ProjectForm onCancel={() => onHide("project")} />,
-        });
+    const showModal = (event, data) => {
+        setEditData(data);
+        setOpen(true);
     };
 
+    const handleCancel = () => {
+        setOpen(false);
+        setEditData(null);
+    };
+    
     // Apply filters to projects
     const filteredProjects = projects?.filter((project) => {
         // Filter by project type
@@ -155,7 +156,7 @@ const ProjectsList = () => {
             }
         >
             {filters.isTableView ? (
-                <ProjectTable projects={sortedProjects} />
+                <ProjectTable projects={sortedProjects} onEdit={showModal} />
             ) : sortedProjects.length === 0 ? (
                 <EmptyData label="אין פרוייקטים להצגה" />
             ) : (
@@ -165,6 +166,7 @@ const ProjectsList = () => {
                     ))}
                 </Row>
             )}
+            <ProjectForm formValues={editData} open={open} onCancel={handleCancel} isEdit={!!editData} />
         </CustomCard>
     );
 };

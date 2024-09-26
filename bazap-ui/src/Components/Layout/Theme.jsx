@@ -20,9 +20,16 @@ const theme = createTheme({
     direction: "rtl",
     heIL,
 });
+const antdTheme = {
+    components: {
+        Button: {
+            fontWeight: 500,
+        },
+    },
+};
 const Theme = ({ children }) => {
     return (
-        <ConfigProvider>
+        <ConfigProvider theme={antdTheme}>
             <CacheProvider value={cacheRtl}>
                 <ThemeProvider theme={theme}>
                     <CssBaseline />

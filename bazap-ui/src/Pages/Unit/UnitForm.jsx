@@ -1,19 +1,20 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import propTypes from "prop-types";
-import CustomForm from "../../Components/UI/CustomForm/CustomForm";
+import GenericForm from "../../Components/UI/GenericForm";
 import { checkDuplicationInForm } from "../../Utils/formUtils";
 import { addUnit, getAllUnits, updateUnit } from "../../Utils/unitAPI";
 
-const UnitForm = ({ onCancel, formValues = null, isEdit = false }) => {
+const UnitForm = ({ onCancel, formValues = null, isEdit = false, open }) => {
     const queryClient = useQueryClient();
 
     const { isLoading, data: units } = useQuery({
         queryKey: ["units"],
         queryFn: getAllUnits,
     });
+
     const validateUnitDuplication = (value) => {
         if (value) {
-            if (checkDuplicationInForm(units, "unitsName", value, isEdit, formValues?.id)) return "שם טכנאי כבר קיים במערכת.";
+            if (checkDuplicationInForm(units, "unitsName", value, isEdit, formValues?.id)) return "שם יחידה כבר קיים במערכת.";
         }
         return true;
     };
@@ -30,12 +31,14 @@ const UnitForm = ({ onCancel, formValues = null, isEdit = false }) => {
             editUnitMutation.mutate(editUnit);
         }
     };
+
     const addUnitMutation = useMutation(addUnit, {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["units"] });
             onCancel();
         },
     });
+
     const editUnitMutation = useMutation(updateUnit, {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["units"] });
@@ -49,25 +52,34 @@ const UnitForm = ({ onCancel, formValues = null, isEdit = false }) => {
             name: "unitName",
             type: "text",
             placeholder: "לדוגמא 319",
-            validators: {
-                required: "יש למלא שדה זה.",
-                minLength: {
-                    value: 2,
-                    message: "שדה זה חייב לפחות 2 תווים",
+            rules: [
+                { required: true, message: "יש למלא שדה זה." },
+                { min: 2, message: "שדה זה חייב לפחות 2 תווים" },
+                {
+                    validator: (_, value) => {
+                        const validationResult = validateUnitDuplication(value);
+                        if (validationResult === true) {
+                            return Promise.resolve();
+                        }
+                        return Promise.reject(new Error(validationResult));
+                    },
                 },
-                validate: validateUnitDuplication,
-            },
+            ],
+            span: 24,
         },
     ];
+
     return (
-        <CustomForm
+        <GenericForm
             fields={fields}
             onSubmit={handleSave}
-            isPasswordRequired
             onCancel={onCancel}
-            values={formValues}
-            isLoading={isLoading || addUnitMutation.isLoading || editUnitMutation.isLoading}
-        ></CustomForm>
+            isPasswordRequired
+            initialValues={formValues}
+            title={isEdit ? "עריכת יחידה" : "יחידה חדשה"}
+            visible={open}
+            isLoading={isLoading}
+        />
     );
 };
 
@@ -75,7 +87,7 @@ UnitForm.propTypes = {
     formValues: propTypes.object,
     onCancel: propTypes.func,
     isEdit: propTypes.bool,
-    editId: propTypes.string,
+    open: propTypes.bool,
 };
 
 export default UnitForm;

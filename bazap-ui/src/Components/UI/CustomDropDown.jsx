@@ -2,19 +2,48 @@ import { Dropdown, Space } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import PropTypes from "prop-types";
 import CustomButton from "./CustomButton/CustomButton";
+import { useAdminAuth } from "../store/AdminAuthContext";
 
 const CustomDropDown = ({ actions, data }) => {
+    const { onLogin, isAuth } = useAdminAuth();
+
     const onClick = (key, data) => {
-        const action = actions.find((action) => action.key === key);
-        if (action) action.handler(data);
+        const action = actions.find(function (action) {
+            return action.key === key;
+        });
+
+        if (isAuth == false && action && action.isPasswordRequired) {
+            onLogin("validate")
+                .then((isValid) => {
+                    if (isValid) {
+                        action.handler(data);
+                    }
+                })
+                .catch((error) => {
+                    console.error("Password validation failed:", error);
+                });
+        } else if (action) {
+            action.handler(data);
+        }
     };
-    // eslint-disable-next-line no-unused-vars
-    const items = actions.map(({ handler, ...rest }) => rest);
+
+    const items = actions.map(function (action) {
+        const rest = {};
+        for (let key in action) {
+            if (key !== "handler" && key !== "isPasswordRequired") {
+                rest[key] = action[key];
+            }
+        }
+        return rest;
+    });
+
     return (
         <Dropdown
             menu={{
-                items,
-                onClick: (key) => onClick(key.key, data),
+                items: items,
+                onClick: function (key) {
+                    onClick(key.key, data);
+                },
             }}
         >
             <CustomButton size="small" type="light-primary">
@@ -28,7 +57,14 @@ const CustomDropDown = ({ actions, data }) => {
 };
 
 CustomDropDown.propTypes = {
-    actions: PropTypes.array.isRequired,
+    actions: PropTypes.arrayOf(
+        PropTypes.shape({
+            key: PropTypes.string.isRequired,
+            label: PropTypes.string.isRequired,
+            isPasswordRequired: PropTypes.bool,
+            handler: PropTypes.func.isRequired,
+        }),
+    ).isRequired,
     data: PropTypes.object.isRequired,
 };
 

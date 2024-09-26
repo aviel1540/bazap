@@ -3,8 +3,7 @@ import PropTypes from "prop-types";
 import { DeviceStatuses, FIXED_OR_DEFECTIVE, RETURNED, ReturnedStatuses, tagColors } from "../../../../Utils/utils";
 import Loader from "../../../../Components/Layout/Loader";
 import EmptyData from "../../../../Components/UI/EmptyData";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { getAllUnits } from "../../../../Utils/unitAPI";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { deleteDevice, updateNotes as deviceUpdateNotes } from "../../../../Utils/deviceApi";
 import { updateNotes as accessoryUpdateNotes, deleteAccessory, updateFixDefective } from "../../../../Utils/accessoryAPI";
 import { useProject } from "../../../../Components/store/ProjectContext";
@@ -18,10 +17,7 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
     const { onConfirm } = useUserAlert();
     const queryClient = useQueryClient();
     const { projectId } = useProject();
-    const { data: units, isLoading: isUnitsLoading } = useQuery({
-        queryKey: ["units"],
-        queryFn: getAllUnits,
-    });
+
     const paginationOptions = {
         showSizeChanger: true,
         pageSizeOptions: ["5", "10", "25", "50"],
@@ -155,9 +151,6 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
             title: "יחידה",
             dataIndex: "unit",
             key: "unit",
-            filters: units.map((unit) => {
-                return { text: unit.unitsName, value: unit._id };
-            }),
             onFilter: (value, record) => record.unit._id == value,
             sorter: (a, b) => a?.unit?.unitsName.length - b?.unit?.unitsName.length,
             render: (unit) => unit?.unitsName,
@@ -245,7 +238,7 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
         },
     ];
 
-    if (isLoading || isUnitsLoading) {
+    if (isLoading) {
         return <Loader />;
     }
     return (

@@ -3,8 +3,27 @@ import EmptyData from "../../Components/UI/EmptyData";
 import { Link } from "react-router-dom";
 const { Text } = Typography;
 import PropTypes from "prop-types";
+import BorderColorIcon from "@mui/icons-material/BorderColor";
+import CustomDropDown from "../../Components/UI/CustomDropDown";
 
-const ProjectTable = ({ projects }) => {
+const ProjectTable = ({ projects, onEdit }) => {
+    const onEditUnitHandler = (id) => {
+        const project = projects.find((item) => item._id == id);
+        if (project) {
+            onEdit(null, { projectName: project.projectName, id: project._id });
+        }
+    };
+    const menuActions = [
+        {
+            key: "1",
+            label: "ערוך",
+            icon: <BorderColorIcon />,
+            handler: (data) => {
+                onEditUnitHandler(data._id);
+            },
+        },
+    ];
+
     const columns = [
         {
             title: "שם פרוייקט",
@@ -44,6 +63,13 @@ const ProjectTable = ({ projects }) => {
                 </Tag>
             ),
         },
+        {
+            title: "פעולות",
+            key: "menu",
+            dataIndex: "actions",
+            align: "center",
+            render: (_, row) => <CustomDropDown key={row._id} actions={menuActions} data={row} />,
+        },
     ];
 
     return (
@@ -61,6 +87,7 @@ const ProjectTable = ({ projects }) => {
 
 ProjectTable.propTypes = {
     projects: PropTypes.array,
+    onEdit: PropTypes.func,
 };
 
 export default ProjectTable;
