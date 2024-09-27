@@ -66,6 +66,9 @@ export const CustomModalProvider = ({ children }) => {
             {children}
             {modalState.map((mState) => (
                 <Modal
+                    style={{
+                        top: 20,
+                    }}
                     key={mState.key}
                     open={mState.show}
                     title={mState.options.title}
