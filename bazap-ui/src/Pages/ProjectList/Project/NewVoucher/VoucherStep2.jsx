@@ -23,13 +23,12 @@ import {
 } from "./utils";
 import EmptyData from "../../../../Components/UI/EmptyData";
 import { getAllProductsInProject } from "../../../../Utils/projectAPI";
-import { useCustomModal } from "../../../../Components/store/CustomModalContext";
 import DeviceTypeForm from "../../../DeviceType/DeviceTypeForm";
 import RenderFields from "../../../../Components/UI/CustomForm/RenderFields";
 const filter = createFilterOptions();
 
 const VoucherStep2 = () => {
-    const { onShow, onHide } = useCustomModal();
+    const [isDeviceTypeModalOpen, setIsDeviceTypeModalOpen] = useState(false);
     const [disabledFields, setDisabledFields] = useState({});
     const { onAlert, error } = useUserAlert();
     const [activeTab, setActiveTab] = useState("Devices"); // State to manage active tab
@@ -199,13 +198,11 @@ const VoucherStep2 = () => {
     };
 
     const showDeviceTypeModal = () => {
-        onShow({
-            title: "סוג מוצר חדש",
-            name: "deviceType",
-            body: <DeviceTypeForm onCancel={() => onHide("deviceType")} />,
-        });
+        setIsDeviceTypeModalOpen(true);
     };
-
+    const handleCancel = () => {
+        setIsDeviceTypeModalOpen(false);
+    };
     const deviceInputs = [
         {
             label: "צ' מכשיר",
@@ -395,6 +392,12 @@ const VoucherStep2 = () => {
                     )}
                 </div>
             }
+            <DeviceTypeForm
+                formValues={null} // Pass data for editing
+                open={isDeviceTypeModalOpen} // Control modal visibility
+                onCancel={handleCancel} // Handle cancel/close modal
+                isEdit={false} // Pass isEdit flag
+            />
         </>
     );
 };

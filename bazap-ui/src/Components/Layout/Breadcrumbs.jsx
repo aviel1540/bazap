@@ -8,7 +8,6 @@ const breadcrumbNameMap = {
     "/": "דף הבית",
     "/DeviceType": "סוגי מכשירים",
     "/Project": "רשימת פרוייקטים",
-    "/Project/:id": "פרוייקט:",
     "/Unit": "יחידות",
     "/Technician": "טכנאים",
 };
@@ -23,22 +22,28 @@ const Breadcrumbs = () => {
 
     const fetchProjectNameById = async (id) => {
         const project = projects.find((project) => project._id === id);
-        return project.projectName;
+        return project ? project.projectName : "Unknown Project";
     };
 
     useEffect(() => {
-        if (!isLoading) {
+        if (!isLoading && projects) {
             const generateBreadcrumbItems = async () => {
                 const pathSnippets = location.pathname.split("/").filter((i) => i);
                 const extraBreadcrumbItems = [];
 
                 for (let i = 0; i < pathSnippets.length; i++) {
-                    const url = `/${pathSnippets.slice(0, i + 1).join("/")}`;
+                    let url = `/${pathSnippets.slice(0, i + 1).join("/")}`;
                     let breadcrumbName = breadcrumbNameMap[url] || pathSnippets[i];
 
                     // Special handling for dynamic paths like 'Project/:id'
-                    if (url.startsWith("/Project/") && pathSnippets[i] !== "Project") {
-                        breadcrumbName = await fetchProjectNameById(pathSnippets[i]);
+                    if (url.startsWith("/Project/") && i === 1) {
+                        const projectId = pathSnippets[1]; // Get the actual project ID from the path
+                        breadcrumbName = await fetchProjectNameById(projectId);
+                        url = `/Project/${projectId}`; // Correct URL without duplication
+                    }
+
+                    if (url.includes("/Voucher")) {
+                        breadcrumbName = "שובר חדש"; // Display "שובר חדש" for voucher page
                     }
 
                     extraBreadcrumbItems.push({
@@ -52,7 +57,7 @@ const Breadcrumbs = () => {
 
             generateBreadcrumbItems();
         }
-    }, [location, isLoading]);
+    }, [location, isLoading, projects]);
 
     return (
         <>
@@ -60,12 +65,12 @@ const Breadcrumbs = () => {
                 <div className="fw-500 mb-4">
                     <Breadcrumb
                         separator="/"
-                        itemRender={(route, params, routes, paths) => {
-                            const isLast = routes[routes.length - 1].path == route.path;
+                        itemRender={(route, params, routes) => {
+                            const isLast = routes[routes.length - 1].path === route.path;
                             if (isLast) {
                                 return <span>{route.title}</span>;
                             } else {
-                                return <Link to={paths.join("/")}>{route.title}</Link>;
+                                return <Link to={route.path}>{route.title}</Link>;
                             }
                         }}
                         items={[{ path: "/", title: "דף הבית" }, ...breadcrumbItems]}

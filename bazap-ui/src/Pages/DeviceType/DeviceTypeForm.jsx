@@ -23,7 +23,7 @@ const DeviceTypeForm = ({ onCancel, formValues = null, isEdit = false, open }) =
                 label: "שם סוג מכשיר",
                 name: "deviceName",
                 type: "text",
-                span: 12,
+                span: 24,
                 placeholder: "לדוגמא RPT",
                 rules: [
                     { required: true, message: "יש למלא שדה זה." },
@@ -35,7 +35,7 @@ const DeviceTypeForm = ({ onCancel, formValues = null, isEdit = false, open }) =
                 label: 'מק"ט',
                 name: "catalogNumber",
                 type: "text",
-                span: 12,
+                span: 24,
                 placeholder: "לדוגמא 12344-555",
                 rules: [
                     { required: true, message: "יש למלא שדה זה." },

@@ -68,7 +68,7 @@ const VoucherStepper = ({ onCancel, formDefaultValues }) => {
     });
     const isLoading = addVoucherOutMutation.isLoading || addVoucherMutation.isLoading;
     return (
-        <CustomForm steps={steps} onSubmit={handleSave} onCancel={onCancel} values={formDefaultValues} isLoading={isLoading}></CustomForm>
+        <CustomForm steps={steps} onSubmit={handleSave} onCancel={onCancel} values={formDefaultValues}  isLoading={isLoading}></CustomForm>
     );
 };
 VoucherStepper.propTypes = {

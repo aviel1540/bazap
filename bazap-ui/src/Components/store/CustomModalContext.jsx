@@ -70,7 +70,6 @@ export const CustomModalProvider = ({ children }) => {
                     open={mState.show}
                     title={mState.options.title}
                     width={mState.options.width ? mState.options.width : modalWidth}
-                    centered
                     footer={null}
                     onCancel={() => onHide(mState.name)}
                     closable={true}

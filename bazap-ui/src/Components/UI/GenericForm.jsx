@@ -45,6 +45,20 @@ const GenericForm = ({ fields, onSubmit, title, visible, onCancel, steps, initia
         }
     }, [visible, initialValues, form, fields]);
 
+    const handleClearErrors = () => {
+        // Get all fields with their error states
+        const fieldsWithErrors = form.getFieldsError();
+
+        // Map through each field and clear only the errors
+        const fieldsWithoutErrors = fieldsWithErrors.map((field) => ({
+            name: field.name,
+            errors: [], // Set an empty array to clear the errors for each field
+        }));
+
+        // Apply the new error-free state to the form fields
+        form.setFields(fieldsWithoutErrors);
+    };
+
     useEffect(() => {
         if (visible && firstFieldRef.current) {
             setTimeout(() => {
@@ -54,31 +68,50 @@ const GenericForm = ({ fields, onSubmit, title, visible, onCancel, steps, initia
             }, 100);
         }
     }, [visible]);
-
+    const fieldOnChangeHandler = (field, event) => {
+        if (field?.onChange) {
+            field.onChange(event.target.value, handleClearErrors);
+        }
+    };
     const renderField = (field, isFirstField = false) => {
         const commonProps = isFirstField ? { ref: firstFieldRef } : {};
 
+        // Calculate the span for the field and extra
+        const fieldSpan = field.span || 24; // Default span to 24 if not provided
+        const extraSpan = field.extra ? 24 - fieldSpan : 0; // Calculate the remaining space for extra
+
+        let fieldComponent;
         switch (field.type) {
             case "text":
-                return <Input {...commonProps} />;
+                fieldComponent = <Input {...commonProps} />;
+                break;
             case "number":
-                return <InputNumber {...commonProps} />;
+                fieldComponent = <InputNumber {...commonProps} />;
+                break;
             case "select":
-                return (
-                    <Select {...commonProps}>
+                fieldComponent = (
+                    <Select
+                        showSearch
+                        allowClear
+                        filterOption={(input, option) => option?.label.toLowerCase().includes(input.toLowerCase())}
+                        {...commonProps}
+                    >
                         {field.options?.map((option) => (
-                            <Select.Option key={option.value} value={option.value}>
+                            <Select.Option key={option.value} value={option.value} label={option.label}>
                                 {option.label}
                             </Select.Option>
                         ))}
                     </Select>
                 );
+                break;
             case "checkbox":
-                return <Checkbox {...commonProps}>{field.label}</Checkbox>;
+                fieldComponent = <Checkbox {...commonProps}>{field.label}</Checkbox>;
+                break;
             case "date":
-                return <DatePicker {...commonProps} style={{ width: "100%" }} />;
+                fieldComponent = <DatePicker {...commonProps} style={{ width: "100%" }} />;
+                break;
             case "autocomplete":
-                return (
+                fieldComponent = (
                     <AutoComplete
                         {...commonProps}
                         options={field.options}
@@ -88,8 +121,9 @@ const GenericForm = ({ fields, onSubmit, title, visible, onCancel, steps, initia
                         {field.freeText && <Input />}
                     </AutoComplete>
                 );
+                break;
             case "list":
-                return (
+                fieldComponent = (
                     <Form.List name={field.name}>
                         {(fields, { add, remove }) => (
                             <>
@@ -121,9 +155,17 @@ const GenericForm = ({ fields, onSubmit, title, visible, onCancel, steps, initia
                         )}
                     </Form.List>
                 );
+                break;
             case "radiobutton":
-                return (
-                    <Radio.Group block optionType="button" className="d-flex" buttonStyle="solid">
+                fieldComponent = (
+                    <Radio.Group
+                        size="large"
+                        block
+                        optionType="button"
+                        onChange={(event) => fieldOnChangeHandler(field, event)}
+                        className="d-flex"
+                        buttonStyle="solid"
+                    >
                         {field.options?.map(({ value, label }) => (
                             <Radio.Button className="w-100 text-center" value={value} key={value}>
                                 {label}
@@ -131,11 +173,19 @@ const GenericForm = ({ fields, onSubmit, title, visible, onCancel, steps, initia
                         ))}
                     </Radio.Group>
                 );
+                break;
             default:
-                return null;
+                fieldComponent = null;
         }
-    };
 
+        // If the field has extra content, display them in separate columns
+        return (
+            <Row gutter={16}>
+                <Col span={fieldSpan}>{fieldComponent}</Col>
+                {field.extra && <Col span={extraSpan}>{field.extra}</Col>}
+            </Row>
+        );
+    };
     // New handleSubmit that includes password check logic
     const handleSubmit = async (values) => {
         try {
@@ -207,7 +257,7 @@ const GenericForm = ({ fields, onSubmit, title, visible, onCancel, steps, initia
     const renderSteps = () => {
         if (!steps) return null;
         return (
-            <Steps current={currentStep}>
+            <Steps current={currentStep} progressDot>
                 {steps.map((step) => (
                     <Step key={step.title} title={step.title} />
                 ))}
@@ -293,7 +343,7 @@ GenericForm.propTypes = {
                 }),
             ),
         }),
-    ).isRequired,
+    ),
     onSubmit: PropTypes.func.isRequired,
     title: PropTypes.string.isRequired,
     visible: PropTypes.bool.isRequired,

@@ -10,6 +10,7 @@ import { useUserAlert } from "./Components/store/UserAlertContext";
 import { AdminAuthProvider } from "./Components/store/AdminAuthContext";
 import RootLayout from "./Components/Layout/RootLayout";
 import CssImporter from "./Components/UI/CssImporter";
+import NewVoucherPage from "./Pages/ProjectList/Project/NewVoucerPage";
 
 const DeviceType = lazy(() => import("./Pages/DeviceType/DeviceType"));
 const Unit = lazy(() => import("./Pages/Unit/Unit"));
@@ -24,6 +25,7 @@ const router = createBrowserRouter(
             <Route path="DeviceType" element={<DeviceType />} />
             <Route path="Project" element={<ProjectsList />} />
             <Route path="Project/:id" element={<Project />} />
+            <Route path="Project/:id/Voucher" element={<NewVoucherPage />} />
             <Route path="Unit" element={<Unit />} />
             <Route path="Technician" element={<Technician />} />
         </Route>,

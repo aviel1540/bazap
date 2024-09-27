@@ -14,6 +14,7 @@ const AddVoucherAction = () => {
         onShow({
             title: "שובר חדש",
             name: "voucherStepper",
+            width: "90%",
             body: <VoucherStepper onCancel={() => onHide("voucherStepper")} formDefaultValues={formDefaultValues} />,
         });
     };

@@ -7,38 +7,34 @@ import { getAllUnits } from "../../../../Utils/unitAPI";
 import RenderFields from "../../../../Components/UI/CustomForm/RenderFields";
 import { PlusOutlined } from "@ant-design/icons";
 import CustomButton from "../../../../Components/UI/CustomButton/CustomButton";
-import { useCustomModal } from "../../../../Components/store/CustomModalContext";
 import UnitForm from "../../../Unit/UnitForm";
 import TechnicianForm from "../../../Technician/TechnicianForm";
 import { Tooltip } from "antd";
 import { sortOptions } from "../../../../Utils/utils";
 
 const VoucherStep1 = () => {
-    const { onShow, onHide } = useCustomModal();
     const { methods } = useFormContext();
     const { formMethods } = methods;
     const { getValues, getFieldState, resetField } = formMethods;
+    const [isTechnicianModalOpen, setIsTechnicianModalOpen] = useState(false);
+    const [isUnitModalOpen, setIsUnitModalOpen] = useState(false);
 
+    const showTechnicianModal = () => {
+        setIsTechnicianModalOpen(true);
+    };
+    const showUnitModal = () => {
+        setIsUnitModalOpen(true);
+    };
+
+    const handleCancel = () => {
+        setIsTechnicianModalOpen(false);
+        setIsUnitModalOpen(false);
+    };
     const isTypeSelected = getValues("type") === "false" && !getFieldState("type").isDirty;
     const [technicianType, setTechnicianType] = useState({
         arrivedBy: getValues("type") === "true" ? "text" : "autocomplete",
         receivedBy: getValues("type") === "true" ? "autocomplete" : "text",
     });
-
-    const showUnitModal = () => {
-        onShow({
-            title: "יחידה חדשה",
-            name: "unit",
-            body: <UnitForm onCancel={() => onHide("unit")} />,
-        });
-    };
-    const showTechnicianModal = () => {
-        onShow({
-            title: "טכנאי חדש",
-            name: "technician",
-            body: <TechnicianForm onCancel={() => onHide("technician")} />,
-        });
-    };
 
     const { isLoading: isLoadingUnits, data: units } = useQuery({
         queryKey: ["units"],
@@ -153,7 +149,13 @@ const VoucherStep1 = () => {
         return <Loader />;
     }
 
-    return <RenderFields stepFields={voucherInputs} />;
+    return (
+        <>
+            <RenderFields stepFields={voucherInputs} />
+            <TechnicianForm formValues={null} open={isTechnicianModalOpen} onCancel={handleCancel} isEdit={false} />
+            <UnitForm formValues={null} open={isUnitModalOpen} onCancel={handleCancel} isEdit={false} />
+        </>
+    );
 };
 
 export default VoucherStep1;
