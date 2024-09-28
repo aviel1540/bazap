@@ -57,11 +57,7 @@ const ProjectTable = ({ projects, onEdit }) => {
             dataIndex: "finished",
             key: "finished",
             sorter: (a, b) => a.finished - b.finished,
-            render: (finished) => (
-                <Tag className="fw-500" color={finished ? "red" : "green"}>
-                    {finished ? "פרוייקט סגור" : "פרוייקט פתוח"}
-                </Tag>
-            ),
+            render: (finished) => <Tag color={finished ? "red" : "green"}>{finished ? "פרוייקט סגור" : "פרוייקט פתוח"}</Tag>,
         },
         {
             title: "פעולות",

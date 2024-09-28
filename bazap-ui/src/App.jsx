@@ -25,7 +25,7 @@ const router = createBrowserRouter(
             <Route path="DeviceType" element={<DeviceType />} />
             <Route path="Project" element={<ProjectsList />} />
             <Route path="Project/:id" element={<Project />} />
-            <Route path="Project/:id/Voucher" element={<NewVoucherPage />} />
+            <Route path="Project/:id/Voucher/:voucherType" element={<NewVoucherPage />} />
             <Route path="Unit" element={<Unit />} />
             <Route path="Technician" element={<Technician />} />
         </Route>,

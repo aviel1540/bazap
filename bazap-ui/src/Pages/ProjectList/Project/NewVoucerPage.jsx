@@ -1,8 +1,7 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Tooltip, Form, Input, Radio, Select, Row, Col, Card, Flex, Divider, Button, Space } from "antd";
+import { Tooltip, Card } from "antd";
 import { useProject } from "../../../Components/store/ProjectContext";
 import { getAllUnits } from "../../../Utils/unitAPI";
 import { getAllTechnicians } from "../../../Utils/technicianAPI";
@@ -13,23 +12,26 @@ import UnitForm from "../../Unit/UnitForm";
 import CustomButton from "../../../Components/UI/CustomButton/CustomButton";
 import { addVoucherOut, exportVoucherToExcel } from "../../../Utils/voucherApi";
 import TechnicianForm from "../../Technician/TechnicianForm";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import AddVoucherAction from "./ProjectSideBar/AddVoucherAction";
+import { useState } from "react";
+import GenericForm from "../../../Components/UI/Form/GenericForm/GenericForm";
+
+// Define constants for KABALA and NIPUK
+const KABALA = "false"; // קבלה (Receipt)
+const NIPUK = "true"; // ניפוק (Issue)
 
 const NewVoucherPage = ({ onCancel, formDefaultValues }) => {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { projectId } = useProject();
-    const [form] = Form.useForm();
+    const { voucherType } = useParams(); // Get the voucher type from the URL
 
     // State for modals
     const [isUnitModalOpen, setIsUnitModalOpen] = useState(false);
     const [isTechnicianModalOpen, setIsTechnicianModalOpen] = useState(false);
-    const [technicianType, setTechnicianType] = useState({
-        arrivedBy: formDefaultValues?.type === "true" ? "text" : "select",
-        receivedBy: formDefaultValues?.type === "true" ? "select" : "text",
-    });
 
+    // Fetch units and technicians using react-query
     const { isLoading: isLoadingUnits, data: units } = useQuery({
         queryKey: ["units"],
         queryFn: getAllUnits,
@@ -39,6 +41,7 @@ const NewVoucherPage = ({ onCancel, formDefaultValues }) => {
         queryFn: getAllTechnicians,
     });
 
+    // Map unit and technician options for the select components
     const unitOptions = sortOptions(units, "unitsName")?.map((unit) => ({
         value: unit._id,
         label: unit.unitsName,
@@ -49,31 +52,12 @@ const NewVoucherPage = ({ onCancel, formDefaultValues }) => {
         label: technician.techName,
     }));
 
+    // Handle form submission
     const handleSave = (values) => {
-        if (values.unit && typeof values.unit === "object") {
-            values.unit = values.unit.value;
-        }
-        if (values.receivedBy && typeof values.receivedBy === "object") {
-            values.receivedBy = values.receivedBy.value;
-        }
-        if (values.arrivedBy && typeof values.arrivedBy === "object") {
-            values.arrivedBy = values.arrivedBy.value;
-        }
-
-         // const isDeliveryVoucher = values.type === "false";
-         alert(values);
-         return;
-         // if (isDeliveryVoucher) {
-         //     addVoucherOutMutation.mutate(values);
-         // } else {
-         //     values.accessoriesData = values.accessoriesData.map((item) => ({
-         //         ...item,
-         //         deviceTypeId: item.deviceTypeId?.value || item.deviceTypeId,
-         //     }));
-         //     addVoucherMutation.mutate(values);
-         // }
+        alert(JSON.stringify(values));
     };
 
+    // Handle mutations for voucher creation
     const exportVoucherMutation = useMutation(exportVoucherToExcel, {});
     const addVoucherOutMutation = useMutation(addVoucherOut, {
         onSuccess: (data) => {
@@ -93,19 +77,10 @@ const NewVoucherPage = ({ onCancel, formDefaultValues }) => {
         },
     });
 
+    // Handle loading states
     const isLoading = addVoucherOutMutation.isLoading || addVoucherMutation.isLoading || isLoadingUnits || isLoadingTechnicians;
 
-
-    const handleTypeChange = (newValue) => {
-        const boolValue = newValue === "true";
-        setTechnicianType({
-            arrivedBy: boolValue ? "text" : "select",
-            receivedBy: boolValue ? "select" : "text",
-        });
-        // Reset these fields when switching between input types
-        form.resetFields(["arrivedBy", "receivedBy"]);
-    };
-
+    // Navigate back to the previous page
     const navigateBack = () => {
         navigate(-1);
     };
@@ -114,104 +89,68 @@ const NewVoucherPage = ({ onCancel, formDefaultValues }) => {
         return <Loader />;
     }
 
+    // Define form fields based on voucher type (KABALA or NIPUK)
+    const fields = [
+        {
+            name: "unit",
+            label: "יחידה",
+            type: "select",
+            options: unitOptions,
+            rules: [{ required: true, message: "יש למלא שדה זה." }],
+            span: 23, // Set span to 23
+            extra: (
+                <Tooltip title="הוסף יחידה חדשה">
+                    <CustomButton type="light-primary" onClick={() => setIsUnitModalOpen(true)} icon={<PlusOutlined />} />
+                </Tooltip>
+            ),
+        },
+        {
+            name: "arrivedBy",
+            label: "חייל מנפק",
+            type: voucherType === NIPUK ? "text" : "select",
+            options: voucherType !== NIPUK ? technicianOptions : undefined,
+            rules: [{ required: true, message: "יש למלא שדה זה." }],
+            span: 23,
+            extra: voucherType !== NIPUK && (
+                <Tooltip title="הוסף טכנאי חדש">
+                    <CustomButton type="light-primary" onClick={() => setIsTechnicianModalOpen(true)} icon={<PlusOutlined />} />
+                </Tooltip>
+            ),
+        },
+        {
+            name: "receivedBy",
+            label: "חייל מקבל",
+            type: voucherType === KABALA ? "text" : "select",
+            options: voucherType === KABALA ? undefined : technicianOptions,
+            rules: [{ required: true, message: "יש למלא שדה זה." }],
+            span: 23,
+            extra: voucherType !== KABALA && (
+                <Tooltip title="הוסף טכנאי חדש">
+                    <CustomButton type="light-primary" onClick={() => setIsTechnicianModalOpen(true)} icon={<PlusOutlined />} />
+                </Tooltip>
+            ),
+        },
+        {
+            type: "render",
+            render: () => {
+                return <div>asd</div>;
+            },
+        },
+    ];
+
     return (
         <>
-            <Card title="שובר חדש">
-                <Form form={form} initialValues={formDefaultValues} onFinish={handleSave} layout="vertical">
-                    <Form.Item label="סוג שובר" name="type" rules={[{ required: true, message: "יש למלא שדה זה." }]}>
-                        <Radio.Group
-                            size="large"
-                            block
-                            optionType="button"
-                            buttonStyle="solid"
-                            className="d-flex"
-                            onChange={(e) => handleTypeChange(e.target.value)}
-                        >
-                            <Radio.Button className="w-100 text-center" value="true">
-                                קבלה
-                            </Radio.Button>
-                            <Radio.Button className="w-100 text-center" value="false">
-                                ניפוק
-                            </Radio.Button>
-                        </Radio.Group>
-                    </Form.Item>
-
-                    <Form.Item label="יחידה" required>
-                        <Row gutter={8}>
-                            <Col span={23}>
-                                <Form.Item name="unit" rules={[{ required: true, message: "יש למלא שדה זה." }]}>
-                                    <Select options={unitOptions} placeholder="בחר יחידה" />
-                                </Form.Item>
-                            </Col>
-                            <Col span={1}>
-                                <Tooltip title="הוסף יחידה חדשה">
-                                    <CustomButton type="light-primary" onClick={() => setIsUnitModalOpen(true)} icon={<PlusOutlined />} />
-                                </Tooltip>
-                            </Col>
-                        </Row>
-                    </Form.Item>
-
-                    <Form.Item
-                        label="חייל מנפק"
-                        name="arrivedBy"
-                        rules={[{ required: true, message: "יש למלא שדה זה." }]}
-                        dependencies={["type"]} // Ensure revalidation on type change
-                    >
-                        {technicianType.arrivedBy === "text" ? (
-                            <Input />
-                        ) : (
-                            <Row gutter={8}>
-                                <Col span={23}>
-                                    <Select options={technicianOptions} placeholder="בחר חייל מנפק" />
-                                </Col>
-                                <Col span={1}>
-                                    <Tooltip title="הוסף טכנאי חדש">
-                                        <CustomButton
-                                            type="light-primary"
-                                            onClick={() => setIsTechnicianModalOpen(true)}
-                                            icon={<PlusOutlined />}
-                                        />
-                                    </Tooltip>
-                                </Col>
-                            </Row>
-                        )}
-                    </Form.Item>
-
-                    <Form.Item
-                        label="חייל מקבל"
-                        name="receivedBy"
-                        rules={[{ required: true, message: "יש למלא שדה זה." }]}
-                        dependencies={["type"]} // Ensure revalidation on type change
-                    >
-                        {technicianType.receivedBy === "text" ? (
-                            <Input />
-                        ) : (
-                            <Row gutter={8}>
-                                <Col span={23}>
-                                    <Select options={technicianOptions} placeholder="בחר חייל מקבל" />
-                                </Col>
-                                <Col span={1}>
-                                    <Tooltip title="הוסף טכנאי חדש">
-                                        <CustomButton
-                                            type="light-primary"
-                                            onClick={() => setIsTechnicianModalOpen(true)}
-                                            icon={<PlusOutlined />}
-                                        />
-                                    </Tooltip>
-                                </Col>
-                            </Row>
-                        )}
-                    </Form.Item>
-                    <Divider />
-                    <Flex justify="flex-end" align="center">
-                        <Space>
-                            <Button onClick={navigateBack}>בטל</Button>
-                            <Button type="primary" htmlType="submit">
-                                שמור
-                            </Button>
-                        </Space>
-                    </Flex>
-                </Form>
+            <Card title={voucherType == NIPUK ? "שובר ניפוק חדש" : "שובר קבלה חדש"}>
+                <GenericForm
+                    isModal={false} // Display form without modal
+                    fields={fields}
+                    onSubmit={handleSave}
+                    title="שובר חדש"
+                    visible={true}
+                    onCancel={navigateBack}
+                    initialValues={formDefaultValues}
+                    isLoading={false}
+                ></GenericForm>
             </Card>
 
             <UnitForm formValues={null} open={isUnitModalOpen} onCancel={() => setIsUnitModalOpen(false)} isEdit={false} />

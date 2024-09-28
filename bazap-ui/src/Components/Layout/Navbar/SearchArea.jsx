@@ -102,12 +102,12 @@ const SearchArea = () => {
                                             <div>
                                                 <Text className="text-muted">יחידה: {item.unit?.unitsName}</Text>
                                                 <Divider type="vertical" />
-                                                <Tag className="fw-500 fs-9" color={item.voucherOut ? "success" : "warning"}>
+                                                <Tag className="fs-9" color={item.voucherOut ? "success" : "warning"}>
                                                     {item.voucherOut ? "נופק" : "ביחידה"}
                                                 </Tag>
                                             </div>
                                             <Divider type="vertical" />
-                                            <Tag className="fw-500 fs-9" color={tagColors[item.status]}>
+                                            <Tag className="fs-9" color={tagColors[item.status]}>
                                                 {item.status}
                                             </Tag>
                                         </Flex>

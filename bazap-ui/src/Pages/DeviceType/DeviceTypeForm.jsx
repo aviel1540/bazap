@@ -3,7 +3,7 @@ import propTypes from "prop-types";
 import { addDeviceType, getAllDeviceTypes, updateDeviceType } from "../../Utils/deviceTypeApi";
 import { useEffect, useState } from "react";
 import { checkDuplicationInForm } from "../../Utils/formUtils";
-import GenericForm from "../../Components/UI/GenericForm";
+import GenericForm from "../../Components/UI/Form/GenericForm/GenericForm";
 
 const DeviceTypeForm = ({ onCancel, formValues = null, isEdit = false, open }) => {
     const queryClient = useQueryClient();
