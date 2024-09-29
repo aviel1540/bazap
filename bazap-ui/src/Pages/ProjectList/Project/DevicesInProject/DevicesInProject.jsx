@@ -16,6 +16,7 @@ import { useUserAlert } from "../../../../Components/store/UserAlertContext";
 import { getAllProductsInProject } from "../../../../Utils/projectAPI";
 import FilterMenu from "../../../../Components/UI/FilterMenu";
 import { getAllUnits } from "../../../../Utils/unitAPI";
+import { getAllDeviceTypes } from "../../../../Utils/deviceTypeApi";
 
 const ArrivedDevices = () => {
     const { onAlert, error } = useUserAlert();
@@ -24,6 +25,10 @@ const ArrivedDevices = () => {
     const { data: units } = useQuery({
         queryKey: ["units"],
         queryFn: getAllUnits,
+    });
+    const { data: deviceTypes } = useQuery({
+        queryKey: ["deviceTypes"],
+        queryFn: getAllDeviceTypes,
     });
     const [searchParam, setSearchParam] = useState("");
     const [selectedStatus, setSelectedStatus] = useState(ALL);
@@ -219,11 +224,18 @@ const ArrivedDevices = () => {
         ],
     };
     const uniqueUnits = [...new Set(devices?.map((device) => device.unit._id))];
+    const uniqueDeviceTypes = [...new Set(devices?.map((device) => device.deviceTypeId._id))];
     const unitOptions = uniqueUnits.map((unitId) => {
         const unit = units.find((unit) => unit._id === unitId);
         return { label: unit.unitsName, value: unit._id };
     });
     unitOptions.unshift({ value: "all", label: "הכל" });
+
+    const deviceTypeOptions = uniqueDeviceTypes.map((deviceTypeId) => {
+        const deviceType = deviceTypes.find((deviceType) => deviceType._id === deviceTypeId);
+        return { label: deviceType.deviceName, value: deviceType._id };
+    });
+    deviceTypeOptions.unshift({ value: "all", label: "הכל" });
     return (
         <CustomCard
             title='מכשירים בבצ"פ'
@@ -238,11 +250,30 @@ const ArrivedDevices = () => {
                                 value: "all",
                                 options: unitOptions,
                             },
+                            {
+                                name: "classified",
+                                label: "מסווג",
+                                type: "radio",
+                                value: null, // Could be true for classified, false for non-classified, null for all
+                                options: [
+                                    { label: "מסווג", value: true },
+                                    { label: "לא מסווג", value: false },
+                                ],
+                            },
+                            {
+                                name: "deviceType",
+                                label: "מכשירים",
+                                type: "select",
+                                value: "all",
+                                options: deviceTypeOptions,
+                            },
                         ]}
-                        clearAllFilters={(data) => {
+                        clearAllFilters={() => {
+                            alert("clear");
+                        }}
+                        onFilterChange={(data) => {
                             alert(JSON.stringify(data));
                         }}
-                        onFilterChange={() => {}}
                     />
                     {selectedRows.length > 0 && !areClassifiedAndNonClassifiedSelected() && (
                         <CustomButton type="light-info" onClick={showModalChangeStatus} iconPosition="end" icon={<SwapOutlined />}>

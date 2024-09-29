@@ -1,4 +1,4 @@
-import { Dropdown, Button, Space, Divider, Select, DatePicker, Switch } from "antd";
+import { Dropdown, Button, Space, Divider, Select, DatePicker, Switch, Radio } from "antd";
 import { FilterOutlined, CloseOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import PropTypes from "prop-types";
@@ -36,7 +36,7 @@ const FilterMenu = ({ filtersConfig, onFilterChange, clearAllFilters }) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [filters, setFilters] = useState(
         filtersConfig.reduce((acc, filter) => {
-            acc[filter.name] = filter.value || null; 
+            acc[filter.name] = filter.value || null;
             return acc;
         }, {}),
     );
@@ -55,12 +55,12 @@ const FilterMenu = ({ filtersConfig, onFilterChange, clearAllFilters }) => {
 
     const handleClearAll = () => {
         const resetFilters = filtersConfig.reduce((acc, filter) => {
-            acc[filter.name] = filter.value || null; 
+            acc[filter.name] = filter.value || null;
             return acc;
         }, {});
 
         setFilters(resetFilters);
-        onFilterChange(resetFilters); 
+        onFilterChange(resetFilters);
         clearAllFilters();
         setIsDropdownOpen(false);
     };
@@ -80,12 +80,13 @@ const FilterMenu = ({ filtersConfig, onFilterChange, clearAllFilters }) => {
                         <Select
                             value={filters[name]}
                             showSearch
+                            filterOption={(input, option) => option?.label.toLowerCase().includes(input.toLowerCase())}
                             onChange={(value) => handleFilterChange(value, name)}
                             className="w-200px"
-                            onClick={(e) => e.stopPropagation()} 
+                            onClick={(e) => e.stopPropagation()}
                         >
                             {options.map((option) => (
-                                <Select.Option key={option.value} value={option.value}>
+                                <Select.Option key={option.value} value={option.value} label={option.label}>
                                     {option.label}
                                 </Select.Option>
                             ))}
@@ -121,6 +122,19 @@ const FilterMenu = ({ filtersConfig, onFilterChange, clearAllFilters }) => {
                             unCheckedChildren={unCheckedChildren}
                             onChange={(checked) => handleFilterChange(checked, name)}
                         />
+                    </Space>
+                );
+            case "radio":
+                return (
+                    <Space direction="vertical">
+                        <div>{label}</div>
+                        <Radio.Group buttonStyle="solid" onChange={(e) => handleFilterChange(e.target.value, name)} value={filters[name]}>
+                            {options.map((option) => (
+                                <Radio.Button key={option.value} value={option.value}>
+                                    {option.label}
+                                </Radio.Button>
+                            ))}
+                        </Radio.Group>
                     </Space>
                 );
             default:
