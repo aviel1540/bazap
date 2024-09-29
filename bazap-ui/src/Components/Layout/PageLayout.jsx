@@ -17,7 +17,7 @@ const PageLayout = ({ children }) => {
                 </Content>
                 <Footer className="py-2">
                     <Flex justify="center" align="end" gap={5}>
-                        <div>מוצר זה פותח ע&quot;י ניר קוסן ואביאל יעקב ©{new Date().getFullYear()}</div>
+                        <div>מוצר זה פותח ע&quot;י ניר קוסן, אביאל יעקב ועומר הראל ©{new Date().getFullYear()}</div>
                         <Tag className="fs-8" color="processing">
                             {version}
                         </Tag>
