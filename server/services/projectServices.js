@@ -52,7 +52,7 @@ exports.updateDateToRestart = async (projectId) => {
 exports.deleteProjectById = async (projectId) => await Project.findByIdAndRemove(projectId);
 
 exports.findAllAccessoriesByProject = async (projectId) =>
-    await Accessories.find({ project: projectId }).populate("unit").populate("deviceTypeId");
+    await Accessories.find({ project: projectId }).populate("unit").populate("deviceTypeId").populate("voucherIn").populate("voucherOut");
 
 exports.findAllAccessoriesInLab = async (projectId) =>
     await Accessories.find({
@@ -62,7 +62,8 @@ exports.findAllAccessoriesInLab = async (projectId) =>
         .populate("unit")
         .populate("deviceTypeId");
 
-exports.findAllDevicesByProject = async (projectId) => await Device.find({ project: projectId }).populate("unit").populate("deviceTypeId");
+exports.findAllDevicesByProject = async (projectId) =>
+    await Device.find({ project: projectId }).populate("unit").populate("deviceTypeId").populate("voucherIn").populate("voucherOut");
 
 exports.findAllDevicesInLab = async (projectId) =>
     await Device.find({ project: projectId, voucherOut: null }).populate("deviceTypeId").populate("unit");

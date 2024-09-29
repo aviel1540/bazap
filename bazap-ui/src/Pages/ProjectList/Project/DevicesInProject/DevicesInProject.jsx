@@ -241,7 +241,7 @@ const ArrivedDevices = () => {
             title='מכשירים בבצ"פ'
             action={
                 <Space size="small">
-                    <FilterMenu
+                    {/* <FilterMenu
                         filtersConfig={[
                             {
                                 name: "unit",
@@ -274,7 +274,7 @@ const ArrivedDevices = () => {
                         onFilterChange={(data) => {
                             alert(JSON.stringify(data));
                         }}
-                    />
+                    /> */}
                     {selectedRows.length > 0 && !areClassifiedAndNonClassifiedSelected() && (
                         <CustomButton type="light-info" onClick={showModalChangeStatus} iconPosition="end" icon={<SwapOutlined />}>
                             שנה סטטוס

@@ -1,4 +1,4 @@
-import { Input, InputNumber, Space, Table, Tag, Typography } from "antd";
+import { Input, InputNumber, Space, Table, Tag, Tooltip, Typography } from "antd";
 import PropTypes from "prop-types";
 import { DeviceStatuses, FIXED_OR_DEFECTIVE, RETURNED, ReturnedStatuses, tagColors } from "../../../../Utils/utils";
 import Loader from "../../../../Components/Layout/Loader";
@@ -249,6 +249,24 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
             pagination={paginationOptions}
             size="small"
             rowKey={(record) => record._id}
+            expandable={{
+                expandedRowRender: (record) => (
+                    <Space>
+                        <Tooltip title="שובר קבלה">
+                            <Tag color="warning" className="fs-6">
+                                {record.voucherIn.voucherNumber}
+                            </Tag>
+                        </Tooltip>
+                        {record.voucherOut && (
+                            <Tooltip title="שובר ניפוק">
+                                <Tag color="success" className="fs-6">
+                                    {record.voucherOut.voucherNumber}
+                                </Tag>
+                            </Tooltip>
+                        )}
+                    </Space>
+                ),
+            }}
             columns={columns()}
         />
     );

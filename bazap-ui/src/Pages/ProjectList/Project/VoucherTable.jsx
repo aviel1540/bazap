@@ -12,6 +12,7 @@ const { Text } = Typography;
 
 import IosShareIcon from "@mui/icons-material/IosShare";
 import { getAllUnits } from "../../../Utils/unitAPI";
+import { dateTostring } from "../../../Utils/utils";
 const VoucherTable = () => {
     const { data: units, isLoading: isUnitsLoading } = useQuery({
         queryKey: ["units"],
@@ -105,6 +106,12 @@ const VoucherTable = () => {
             title: 'סה"כ צל"מ',
             render: ({ accessoriesList }) => accessoriesList.length,
             key: "deviceList",
+        },
+        {
+            title: "תאריך",
+            dataIndex: "date",
+            key: "date",
+            render: (date) => dateTostring(date),
         },
         {
             title: "פעולות",
