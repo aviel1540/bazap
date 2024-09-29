@@ -11,6 +11,7 @@ import { AdminAuthProvider } from "./Components/store/AdminAuthContext";
 import RootLayout from "./Components/Layout/RootLayout";
 import CssImporter from "./Components/UI/CssImporter";
 import NewVoucherPage from "./Pages/ProjectList/Project/NewVoucerPage";
+import ProjectDashBoardPage from "./Pages/ProjectList/Project/ProjectDashBoardPage";
 
 const DeviceType = lazy(() => import("./Pages/DeviceType/DeviceType"));
 const Unit = lazy(() => import("./Pages/Unit/Unit"));
@@ -26,6 +27,7 @@ const router = createBrowserRouter(
             <Route path="Project" element={<ProjectsList />} />
             <Route path="Project/:id" element={<Project />} />
             <Route path="Project/:id/Voucher/:voucherType" element={<NewVoucherPage />} />
+            <Route path="Project/:id/Dashboard" element={<ProjectDashBoardPage />} />
             <Route path="Unit" element={<Unit />} />
             <Route path="Technician" element={<Technician />} />
         </Route>,

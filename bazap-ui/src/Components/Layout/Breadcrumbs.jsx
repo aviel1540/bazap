@@ -45,6 +45,9 @@ const Breadcrumbs = () => {
                     if (url.includes("/Voucher")) {
                         breadcrumbName = "שובר חדש"; // Display "שובר חדש" for voucher page
                     }
+                    if (url.includes("/Dashboard")) {
+                        breadcrumbName = "נתוני פרוייקט"; // Display "שובר חדש" for voucher page
+                    }
 
                     extraBreadcrumbItems.push({
                         path: url,

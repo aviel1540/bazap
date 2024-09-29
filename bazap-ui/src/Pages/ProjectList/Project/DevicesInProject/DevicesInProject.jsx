@@ -254,10 +254,11 @@ const ArrivedDevices = () => {
                                 name: "classified",
                                 label: "מסווג",
                                 type: "radio",
-                                value: null, // Could be true for classified, false for non-classified, null for all
+                                value: "all", // Could be true for classified, false for non-classified, null for all
                                 options: [
-                                    { label: "מסווג", value: true },
-                                    { label: "לא מסווג", value: false },
+                                    { label: "הכל", value: "all" },
+                                    { label: "מסווג", value: "classfied" },
+                                    { label: "לא מסווג", value: "nonClassified" },
                                 ],
                             },
                             {

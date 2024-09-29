@@ -64,7 +64,7 @@ const NewVoucherPage = ({ onCancel, formDefaultValues }) => {
             queryClient.invalidateQueries({ queryKey: ["vouchers", projectId] });
             queryClient.invalidateQueries({ queryKey: ["devicesInProject", projectId] });
             exportVoucherMutation.mutate(data.newVoucher._id);
-            onCancel();
+            onCancel && onCancel();
         },
     });
 
@@ -73,7 +73,7 @@ const NewVoucherPage = ({ onCancel, formDefaultValues }) => {
             queryClient.invalidateQueries({ queryKey: ["vouchers", projectId] });
             queryClient.invalidateQueries({ queryKey: ["devicesInProject", projectId] });
             exportVoucherMutation.mutate(data.newVoucher._id);
-            onCancel();
+            onCancel && onCancel();
         },
     });
 
@@ -165,7 +165,7 @@ const NewVoucherPage = ({ onCancel, formDefaultValues }) => {
 };
 
 NewVoucherPage.propTypes = {
-    onCancel: PropTypes.func.isRequired,
+    onCancel: PropTypes.func,
     formDefaultValues: PropTypes.object,
     open: PropTypes.bool,
 };
