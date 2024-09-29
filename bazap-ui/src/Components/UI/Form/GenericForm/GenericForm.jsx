@@ -19,12 +19,23 @@ import {
 } from "antd";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
-import Loader from "../Layout/Loader";
-import { useAdminAuth } from "../store/AdminAuthContext";
-
+import Loader from "../../../../Components/Layout/Loader";
+import { useAdminAuth } from "../../../store/AdminAuthContext";
 const { Step } = Steps;
 
-const GenericForm = ({ fields, onSubmit, title, visible, onCancel, steps, initialValues, isLoading, isPasswordRequired, width = 800 }) => {
+const GenericForm = ({
+    fields,
+    onSubmit,
+    title,
+    visible,
+    onCancel,
+    steps,
+    initialValues,
+    isLoading,
+    isPasswordRequired,
+    width = 800,
+    isModal = true,
+}) => {
     const [form] = Form.useForm();
     const [currentStep, setCurrentStep] = useState(0);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -94,6 +105,7 @@ const GenericForm = ({ fields, onSubmit, title, visible, onCancel, steps, initia
                         showSearch
                         allowClear
                         filterOption={(input, option) => option?.label.toLowerCase().includes(input.toLowerCase())}
+                        onChange={(value) => form.setFieldValue(field.name, value)} // Ensure form updates value on selection
                         {...commonProps}
                     >
                         {field.options?.map((option) => (
@@ -243,11 +255,20 @@ const GenericForm = ({ fields, onSubmit, title, visible, onCancel, steps, initia
                     if (isFirstField) firstFieldRendered = true;
 
                     return (
-                        <Col key={field.name} span={field.span || 24}>
-                            <Form.Item name={field.name} label={field.label} rules={field.rules}>
-                                {renderField(field, isFirstField)}
-                            </Form.Item>
-                        </Col>
+                        <>
+                            {field.type != "render" && (
+                                <Col key={field.name} span={field.span || 24}>
+                                    <Form.Item name={field.name} label={field.label} rules={field.rules}>
+                                        {renderField(field, isFirstField)}
+                                    </Form.Item>
+                                </Col>
+                            )}
+                            {field.type == "render" && (
+                                <Col key={field.name} span={field.span || 24}>
+                                    {field.render()}
+                                </Col>
+                            )}
+                        </>
                     );
                 })}
             </Row>
@@ -302,17 +323,24 @@ const GenericForm = ({ fields, onSubmit, title, visible, onCancel, steps, initia
             </Space>
         );
     };
-
+    const formContent = (
+        <Form form={form} onFinish={handleSubmit} layout="vertical">
+            {isLoading && <Loader />}
+            {!isLoading && renderSteps()}
+            {!isLoading && renderFields()}
+            <Divider className="my-3 mt-2" />
+            <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}>{renderButtons()}</div>
+        </Form>
+    );
     return (
-        <Modal title={title} open={visible} onCancel={handleCancel} footer={null} width={width}>
-            <Form form={form} onFinish={handleSubmit} layout="vertical">
-                {isLoading && <Loader />}
-                {!isLoading && renderSteps()}
-                {!isLoading && renderFields()}
-                <Divider className="my-3 mt-2" />
-                <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}>{renderButtons()}</div>
-            </Form>
-        </Modal>
+        <>
+            {isModal && (
+                <Modal title={title} open={visible} onCancel={handleCancel} footer={null} width={width}>
+                    {formContent}
+                </Modal>
+            )}
+            {!isModal && formContent}
+        </>
     );
 };
 
@@ -366,6 +394,7 @@ GenericForm.propTypes = {
     isLoading: PropTypes.bool.isRequired,
     isPasswordRequired: PropTypes.bool,
     width: PropTypes.any,
+    isModal: PropTypes.bool,
 };
 
 export default GenericForm;

@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import propTypes from "prop-types";
-import GenericForm from "../../Components/UI/GenericForm";
 import { checkDuplicationInForm } from "../../Utils/formUtils";
 import { addProject, getAllProjects, updateProject } from "../../Utils/projectAPI";
+import GenericForm from "../../Components/UI/Form/GenericForm/GenericForm";
 
 const ProjectForm = ({ onCancel, formValues = null, isEdit = false, open }) => {
     const queryClient = useQueryClient();

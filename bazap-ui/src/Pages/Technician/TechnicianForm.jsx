@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import propTypes from "prop-types";
-import GenericForm from "../../Components/UI/GenericForm";
 import { checkDuplicationInForm } from "../../Utils/formUtils";
 import { addTechnician, getAllTechnicians, updateTechnician } from "../../Utils/technicianAPI";
+import GenericForm from "../../Components/UI/Form/GenericForm/GenericForm";
 
 const TechnicianForm = ({ onCancel, formValues = null, isEdit = false, open }) => {
     const queryClient = useQueryClient();

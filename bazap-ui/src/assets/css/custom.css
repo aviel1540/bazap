@@ -13,3 +13,7 @@
     background-color: #242424;
     --bs-bg-opacity: 1;
 }
+
+.ant-tag {
+    font-weight: 500 !important;
+}

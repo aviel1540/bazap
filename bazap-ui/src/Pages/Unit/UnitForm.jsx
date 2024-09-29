@@ -1,8 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import propTypes from "prop-types";
-import GenericForm from "../../Components/UI/GenericForm";
 import { checkDuplicationInForm } from "../../Utils/formUtils";
 import { addUnit, getAllUnits, updateUnit } from "../../Utils/unitAPI";
+import GenericForm from "../../Components/UI/Form/GenericForm/GenericForm";
 
 const UnitForm = ({ onCancel, formValues = null, isEdit = false, open }) => {
     const queryClient = useQueryClient();

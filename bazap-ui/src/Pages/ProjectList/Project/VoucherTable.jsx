@@ -82,7 +82,7 @@ const VoucherTable = () => {
             onFilter: (value, record) => record.type == value,
             render: ({ type }) => {
                 const label = type ? "קבלה" : "ניפוק";
-                const color = type ? "#ffc700" : "#50cd89";
+                const color = type ? "warning" : "success";
                 return <Tag color={color}>{label}</Tag>;
             },
         },
