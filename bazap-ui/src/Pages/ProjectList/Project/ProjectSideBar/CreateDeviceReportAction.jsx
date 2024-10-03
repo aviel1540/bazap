@@ -1,20 +1,15 @@
 // CreateDeviceReportAction.js
 import IosShareIcon from "@mui/icons-material/IosShare";
 import { ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useProject } from "../../../../Components/store/ProjectContext";
 import { useUserAlert } from "../../../../Components/store/UserAlertContext";
 import { createExcel } from "../../../../Utils/excelUtils";
 import { dateTostring, sortDevices } from "../../../../Utils/utils";
-import { getAllDevicesInLab, getProjectData } from "../../../../Utils/projectAPI";
+import { getAllDevicesInLab } from "../../../../Utils/projectAPI";
 
 const CreateDeviceReportAction = () => {
-    const { projectId } = useProject();
-    const { data: project } = useQuery({
-        queryKey: ["project", projectId],
-        queryFn: getProjectData,
-        enabled: projectId !== null,
-    });
+    const { projectId, project } = useProject();
     const { onAlert } = useUserAlert();
     const getAllDevicesInProjectMutation = useMutation(getAllDevicesInLab, {
         onSuccess: (devices) => {

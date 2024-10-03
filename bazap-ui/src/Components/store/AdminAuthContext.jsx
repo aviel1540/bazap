@@ -146,7 +146,7 @@ export const AdminAuthProvider = ({ children }) => {
         <AdminAuthContext.Provider value={{ isAuth: isLoading ? undefined : isAuth, onLogin, onLogout }}>
             {children}
             <Modal
-                zIndex={1005}
+                zIndex={2000}
                 title="התחבר כמנהל"
                 open={isModalVisible}
                 okText="אישור"

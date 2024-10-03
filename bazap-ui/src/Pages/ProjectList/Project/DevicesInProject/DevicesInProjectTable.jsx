@@ -118,20 +118,6 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
         },
     ];
     const columns = () => {
-        // Extract unique units from filteredDevices
-        const uniqueUnits = [...new Set(filteredDevices.map((device) => device.unit?.unitsName))].filter(Boolean).map((unit) => ({
-            text: unit, // Display name
-            value: unit, // Value to filter on
-        }));
-
-        // Extract unique device types from filteredDevices
-        const uniqueDeviceTypes = [...new Set(filteredDevices.map((device) => device.deviceTypeId?.deviceName))]
-            .filter(Boolean)
-            .map((deviceType) => ({
-                text: deviceType, // Display name
-                value: deviceType, // Value to filter on
-            }));
-
         return [
             {
                 title: "צ' מכשיר",
@@ -166,16 +152,12 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
                 title: "יחידה",
                 dataIndex: "unit",
                 key: "unit",
-                filters: uniqueUnits, // Dynamic unit filters
-                onFilter: (value, record) => record.unit?.unitsName === value,
                 sorter: (a, b) => a?.unit?.unitsName.length - b?.unit?.unitsName.length,
                 render: (unit) => unit?.unitsName,
             },
             {
                 title: "סוג מכשיר",
                 key: "deviceType",
-                filters: uniqueDeviceTypes, // Dynamic device type filters
-                onFilter: (value, record) => record.deviceTypeId?.deviceName === value,
                 render: ({ deviceTypeId }) => deviceTypeId?.deviceName,
                 sorter: (a, b) => a.deviceTypeId.deviceName?.length - b.deviceTypeId?.deviceName.length,
                 sortDirections: ["descend"],

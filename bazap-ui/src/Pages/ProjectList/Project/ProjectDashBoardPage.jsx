@@ -1,36 +1,19 @@
 // import { useProject } from "../../../Components/store/ProjectContext";
-import { useQuery } from "@tanstack/react-query";
-import { getAllProductsInProject, getProjectData } from "../../../Utils/projectAPI";
 import { Row, Col, Card, Typography, Button, Space } from "antd";
 import Chart from "react-apexcharts";
-import { getAllVouchers } from "../../../Utils/voucherApi";
 import * as htmlToImage from "html-to-image";
 import download from "downloadjs";
 import Loader from "../../../Components/Layout/Loader";
-import { useParams } from "react-router";
 import { FileExcelOutlined, PictureOutlined, RightCircleOutlined } from "@ant-design/icons";
 import CustomButton from "../../../Components/UI/CustomButton/CustomButton";
 import { useNavigate } from "react-router";
 import { createExcel } from "../../../Utils/excelUtils";
+import { useProject } from "../../../Components/store/ProjectContext";
 
 const ProjectDashBoardPage = () => {
     const navigate = useNavigate();
-    const { id: projectId } = useParams();
-    const { isLoading: isProjectLoading, data: project } = useQuery({
-        queryKey: ["project", projectId],
-        queryFn: getProjectData,
-        enabled: projectId !== null,
-    });
-    const { isLoading: isLoadingDevices, data: devices } = useQuery({
-        queryKey: ["devicesInProject", projectId],
-        queryFn: getAllProductsInProject,
-    });
-    const { isLoading: isLoadingVoucher } = useQuery({
-        queryKey: ["vouchers", projectId],
-        queryFn: getAllVouchers,
-        enabled: projectId !== null,
-    });
-    const isLoading = isLoadingDevices || isLoadingVoucher || isProjectLoading;
+    const { project, isLoading, devices } = useProject();
+    // const isLoading = isLoadingDevices || isLoadingVoucher || isProjectLoading;
     // Separate classified and non-classified devices by device type
     const getClassifiedAndNonClassifiedTotalsByDeviceType = () => {
         const classifiedTotals = {};

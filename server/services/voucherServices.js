@@ -1,4 +1,3 @@
-const Project = require("../models/Project");
 const Voucher = require("../models/Voucher");
 
 exports.addVoucher = async (request) => {
@@ -34,3 +33,22 @@ exports.findVoucherById = async (checkVoucherId) => {
 };
 
 exports.deleteVoucher = async (checkVoucherId) => await Voucher.findByIdAndDelete(checkVoucherId);
+
+exports.getVouchersByProject = async (projectId) => {
+    return await Voucher.find({ project: projectId })
+        .populate("unit")
+        .populate({
+            path: "deviceList",
+            populate: {
+                path: "deviceTypeId",
+                model: "DeviceType",
+            },
+        })
+        .populate({
+            path: "accessoriesList",
+            populate: {
+                path: "deviceTypeId",
+                model: "DeviceType",
+            },
+        });
+};

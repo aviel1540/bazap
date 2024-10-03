@@ -7,18 +7,19 @@ import { useUserAlert } from "../../../Components/store/UserAlertContext";
 import { deleteVoucher, exportVoucherToExcel, getAllVouchers } from "../../../Utils/voucherApi";
 import { Table, Tag, Typography } from "antd";
 import DeleteIcon from "@mui/icons-material/Delete";
+// import ChangeCircleIcon from "@mui/icons-material/ChangeCircle";
 import CustomDropDown from "../../../Components/UI/CustomDropDown";
+import IosShareIcon from "@mui/icons-material/IosShare";
+import { dateTostring } from "../../../Utils/utils";
+// import { useState } from "react";
+// import ChangeProjectForm from "./ChangeProjectForm";
 const { Text } = Typography;
 
-import IosShareIcon from "@mui/icons-material/IosShare";
-import { getAllUnits } from "../../../Utils/unitAPI";
-import { dateTostring } from "../../../Utils/utils";
 const VoucherTable = () => {
-    const { data: units, isLoading: isUnitsLoading } = useQuery({
-        queryKey: ["units"],
-        queryFn: getAllUnits,
-    });
+    // const [open, setOpen] = useState(false);
+    // const [voucherData, setVoucherData] = useState({ voucherId: null, project: null });
     const { projectId } = useProject();
+
     const { isLoading, data: vouchers } = useQuery({
         queryKey: ["vouchers", projectId],
         queryFn: getAllVouchers,
@@ -45,6 +46,15 @@ const VoucherTable = () => {
                 exportVoucherMutation.mutate(data._id);
             },
         },
+        // {
+        //     key: "changeProject",
+        //     label: "שנה פרוייקט",
+        //     icon: <ChangeCircleIcon />,
+        //     handler: (data) => {
+        //         setVoucherData({ voucherId: data._id, project: data.project });
+        //         setOpen(true);
+        //     },
+        // },
         {
             key: "deleteVoucher",
             danger: true,
@@ -65,11 +75,6 @@ const VoucherTable = () => {
         {
             title: "יחידה",
             key: "voucherNumber",
-            filters: !isUnitsLoading
-                ? units.map((unit) => {
-                      return { text: unit.unitsName, value: unit._id };
-                  })
-                : [],
             onFilter: (value, record) => record.unit._id == value,
             render: ({ unit }) => unit.unitsName,
         },
@@ -128,20 +133,23 @@ const VoucherTable = () => {
     });
     const exportVoucherMutation = useMutation(exportVoucherToExcel, {});
 
-    if (isLoading || isUnitsLoading) {
+    if (isLoading) {
         return <Loader />;
     }
 
     return (
-        <CustomCard title="שוברים">
-            <Table
-                locale={{ emptyText: <EmptyData label="אין שוברים להצגה" /> }}
-                dataSource={vouchers}
-                columns={columns()}
-                size="small"
-                rowKey={(record) => record._id}
-            />
-        </CustomCard>
+        <>
+            <CustomCard title="שוברים">
+                <Table
+                    locale={{ emptyText: <EmptyData label="אין שוברים להצגה" /> }}
+                    dataSource={vouchers}
+                    columns={columns()}
+                    size="small"
+                    rowKey={(record) => record._id}
+                />
+            </CustomCard>
+            {/* <ChangeProjectForm open={open} onCancel={() => setOpen(false)} formValues={voucherData} /> */}
+        </>
     );
 };
 

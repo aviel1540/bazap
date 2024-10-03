@@ -10,6 +10,7 @@ import CloseProjectAction from "./ProjectSideBar/CloseProjectAction";
 import DeleteProjectAction from "./ProjectSideBar/DeleteProjectAction";
 import OpenProjectAction from "./ProjectSideBar/OpenProjectAction";
 import ProjectDashBoard from "./ProjectSideBar/ProjectDashBoard";
+import NewVoucherPageAction from "./ProjectSideBar/NewVoucherPageAction";
 // import EditProjectAction from "./ProjectSideBar/EditProjectAction";
 
 const ProjectSideBar = ({ isProjectIsClosed }) => {
@@ -33,6 +34,7 @@ const ProjectSideBar = ({ isProjectIsClosed }) => {
                 {!isProjectIsClosed && <CloseProjectAction />}
                 {isProjectIsClosed && <OpenProjectAction />}
                 <DeleteProjectAction />
+                <NewVoucherPageAction />
             </List>
         </Sider>
     );

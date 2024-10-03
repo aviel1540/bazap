@@ -1,10 +1,6 @@
 import { Stack } from "@mui/material";
-import { useQuery } from "@tanstack/react-query";
 import { Badge, Card, Descriptions, Layout, Tag } from "antd";
-import { useEffect } from "react";
-import { useParams } from "react-router";
 import Loader from "../../../Components/Layout/Loader";
-import { getProjectData } from "../../../Utils/projectAPI";
 import { dateTostring } from "../../../Utils/utils";
 import { useProject } from "../../../Components/store/ProjectContext";
 import ArrivedDevices from "./DevicesInProject/DevicesInProject";
@@ -13,21 +9,7 @@ import VoucherTable from "./VoucherTable";
 import { Content } from "antd/es/layout/layout";
 
 const Project = () => {
-    const { id } = useParams();
-    const { projectId, setProjectId } = useProject();
-
-    const { isLoading: isProjectLoading, data: project } = useQuery({
-        queryKey: ["project", projectId],
-        queryFn: getProjectData,
-        enabled: projectId !== null,
-    });
-    const isLoading = isProjectLoading;
-    useEffect(() => {
-        setProjectId(id);
-        return () => {
-            setProjectId(null);
-        };
-    }, [id, setProjectId]);
+    const { project, isLoading } = useProject();
 
     if (isLoading) {
         return <Loader />;
