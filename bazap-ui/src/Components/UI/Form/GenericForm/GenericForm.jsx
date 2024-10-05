@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, Fragment, forwardRef, useImperativeHandle } from "react";
+import { useState, useEffect, useRef, Fragment } from "react";
 import PropTypes from "prop-types";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
@@ -24,342 +24,336 @@ import {
 } from "antd";
 
 const { Step } = Steps;
+const GenericForm = ({
+    fields,
+    onSubmit,
+    title,
+    visible,
+    onCancel,
+    steps,
+    initialValues,
+    isLoading,
+    isPasswordRequired,
+    width = 800,
+    isModal = true,
+}) => {
+    const [form] = Form.useForm();
+    const [currentStep, setCurrentStep] = useState(0);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const { isAuth, onLogin } = useAdminAuth();
+    const fieldsRef = useRef({});
 
-const GenericForm = forwardRef(
-    (
-        { fields, onSubmit, title, visible, onCancel, steps, initialValues, isLoading, isPasswordRequired, width = 800, isModal = true },
-        ref,
-    ) => {
-        const [form] = Form.useForm();
-        const [currentStep, setCurrentStep] = useState(0);
-        const [isSubmitting, setIsSubmitting] = useState(false);
-        const firstFieldRef = useRef(null);
-        const { isAuth, onLogin } = useAdminAuth();
-        const fieldsRef = useRef({});
+    useEffect(() => {
+        if (visible && initialValues) {
+            const formattedInitialValues = Object.keys(initialValues).reduce((acc, key) => {
+                if (fields.find((field) => field.name === key && field.type === "date")) {
+                    acc[key] = dayjs(initialValues[key]);
+                } else {
+                    acc[key] = initialValues[key];
+                }
+                return acc;
+            }, {});
+            form.setFieldsValue(formattedInitialValues);
+        }
+        const firstField = fieldsRef.current[fields[0]?.name];
+        if (firstField && firstField.focus) {
+            firstField.focus(); // Focus on the first field
+        }
+    }, [visible, initialValues, form, fields]);
 
-        useImperativeHandle(ref, () => ({
-            getFieldsRef: () => fieldsRef.current,
+    const handleClearErrors = () => {
+        const fieldsWithErrors = form.getFieldsError();
+        const fieldsWithoutErrors = fieldsWithErrors.map((field) => ({
+            name: field.name,
+            errors: [],
         }));
+        form.setFields(fieldsWithoutErrors);
+    };
 
-        useEffect(() => {
-            if (visible && initialValues) {
-                const formattedInitialValues = Object.keys(initialValues).reduce((acc, key) => {
-                    if (fields.find((field) => field.name === key && field.type === "date")) {
-                        acc[key] = dayjs(initialValues[key]);
-                    } else {
-                        acc[key] = initialValues[key];
-                    }
-                    return acc;
-                }, {});
-                form.setFieldsValue(formattedInitialValues);
-            }
-        }, [visible, initialValues, form, fields]);
+    const fieldOnChangeHandler = (field, event) => {
+        if (field?.onChange) {
+            field.onChange(event.target.value, handleClearErrors);
+        }
+    };
 
-        const handleClearErrors = () => {
-            const fieldsWithErrors = form.getFieldsError();
-            const fieldsWithoutErrors = fieldsWithErrors.map((field) => ({
-                name: field.name,
-                errors: [],
-            }));
-            form.setFields(fieldsWithoutErrors);
-        };
+    const setNestedFieldRef = (fieldName, subFieldName, node) => {
+        if (!fieldsRef.current[fieldName]) {
+            fieldsRef.current[fieldName] = [];
+        }
+        if (!fieldsRef.current[fieldName][0]) {
+            fieldsRef.current[fieldName][0] = {};
+        }
+        fieldsRef.current[fieldName][0][subFieldName] = node;
+    };
 
-        useEffect(() => {
-            if (visible && firstFieldRef.current) {
-                setTimeout(() => {
-                    if (firstFieldRef.current && firstFieldRef.current.focus) {
-                        firstFieldRef.current.focus();
-                    }
-                }, 100);
-            }
-        }, [visible]);
-
-        const fieldOnChangeHandler = (field, event) => {
-            if (field?.onChange) {
-                field.onChange(event.target.value, handleClearErrors);
-            }
-        };
-
-        const renderField = (field, isFirstField = false) => {
-            const commonProps = isFirstField ? { ref: firstFieldRef } : {};
-
-            const fieldRef = (node) => {
-                if (node) {
+    const renderField = (field, parentField = null) => {
+        const fieldRef = (node) => {
+            if (node) {
+                if (parentField) {
+                    setNestedFieldRef(parentField.name, field.name, node);
+                } else {
                     fieldsRef.current[field.name] = node;
                 }
-            };
+            }
+        };
 
-            switch (field.type) {
-                case "text":
-                    return <Input {...commonProps} ref={fieldRef} />;
-                case "number":
-                    return <InputNumber className="w-100" {...commonProps} ref={fieldRef} />;
-                case "select":
-                    return (
-                        <Select
-                            showSearch
-                            allowClear
-                            filterOption={(input, option) => option?.label.toLowerCase().includes(input.toLowerCase())}
-                            onChange={(value) => {
-                                form.setFieldValue(field.name, value);
-                                fieldOnChangeHandler(field, { target: { value } });
-                            }}
-                            {...commonProps}
-                            ref={fieldRef}
-                        >
-                            {field.options?.map((option) => (
-                                <Select.Option key={option.value} value={option.value} label={option.label}>
-                                    {option.label}
-                                </Select.Option>
-                            ))}
-                        </Select>
-                    );
-                case "checkbox":
-                    return (
-                        <Checkbox {...commonProps} ref={fieldRef}>
-                            {field.label}
-                        </Checkbox>
-                    );
-                case "date":
-                    return <DatePicker {...commonProps} ref={fieldRef} style={{ width: "100%" }} />;
-                case "autocomplete":
-                    return (
-                        <AutoComplete
-                            onChange={(data) => {
-                                if (field?.onChange) {
-                                    field.onChange(data);
-                                }
-                            }}
-                            {...commonProps}
-                            ref={fieldRef}
-                            options={field.options}
-                            filterOption={(inputValue, option) => option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
-                            {...(field.freeText ? {} : { onSelect: (value) => form.setFieldsValue({ [field.name]: value }) })}
-                        >
-                            {field.freeText && <Input />}
-                        </AutoComplete>
-                    );
-                case "list":
-                    return (
-                        <Form.List name={field.name}>
-                            {(fields, { add, remove }) => {
-                                const totalSpan = 23;
-                                const availableSpan = totalSpan / (field.listFields?.length || 1);
-                                return (
-                                    <>
-                                        {fields.map((listField) => (
-                                            <Row key={listField.key} gutter={16} align="middle">
-                                                {field.listFields?.map((subField) => (
-                                                    <Col span={subField.span || Math.floor(availableSpan)} key={subField.name}>
-                                                        <Form.Item
-                                                            {...listField}
-                                                            key={listField.key}
-                                                            label={subField.label}
-                                                            name={[listField.name, subField.name]}
-                                                            rules={subField.rules}
-                                                        >
-                                                            {renderField(subField)}
-                                                        </Form.Item>
-                                                    </Col>
-                                                ))}
-                                                <Col span={1}>
-                                                    <CustomButton
-                                                        type="light-danger"
-                                                        onClick={() => remove(listField.name)}
-                                                        icon={<MinusCircleOutlined />}
-                                                        block
-                                                    />
+        switch (field.type) {
+            case "text":
+                return <Input ref={fieldRef} />;
+            case "number":
+                return <InputNumber className="w-100" ref={fieldRef} />;
+            case "select":
+                return (
+                    <Select
+                        showSearch
+                        allowClear
+                        filterOption={(input, option) => option?.label.toLowerCase().includes(input.toLowerCase())}
+                        onChange={(value) => {
+                            form.setFieldValue(field.name, value);
+                            fieldOnChangeHandler(field, { target: { value } });
+                        }}
+                        ref={fieldRef}
+                    >
+                        {field.options?.map((option) => (
+                            <Select.Option key={option.value} value={option.value} label={option.label}>
+                                {option.label}
+                            </Select.Option>
+                        ))}
+                    </Select>
+                );
+            case "checkbox":
+                return <Checkbox ref={fieldRef}>{field.label}</Checkbox>;
+            case "date":
+                return <DatePicker ref={fieldRef} style={{ width: "100%" }} />;
+            case "autocomplete":
+                return (
+                    <AutoComplete
+                        onChange={(data) => {
+                            if (field?.onChange) {
+                                field.onChange(data, handleClearErrors, field, parentField, form);
+                            }
+                        }}
+                        ref={fieldRef}
+                        options={field.options}
+                        filterOption={(inputValue, option) => option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
+                        {...(field.freeText ? {} : { onSelect: (value) => form.setFieldsValue({ [field.name]: value }) })}
+                    >
+                        {field.freeText && <Input />}
+                    </AutoComplete>
+                );
+            case "list":
+                return (
+                    <Form.List name={field.name}>
+                        {(fields, { add, remove }) => {
+                            const totalSpan = 23;
+                            const availableSpan = totalSpan / (field.listFields?.length || 1);
+                            return (
+                                <>
+                                    {fields.map((listField, index) => (
+                                        <Row key={listField.key} gutter={16} align="middle">
+                                            {field.listFields?.map((subField) => (
+                                                <Col span={subField.span || Math.floor(availableSpan)} key={subField.name}>
+                                                    <Form.Item
+                                                        {...listField}
+                                                        key={listField.key}
+                                                        label={subField.label}
+                                                        name={[listField.name, subField.name]}
+                                                        rules={subField.rules}
+                                                    >
+                                                        {renderField(subField, { name: `${field.name}[${index}]` })}
+                                                    </Form.Item>
                                                 </Col>
-                                            </Row>
-                                        ))}
-                                        <Form.Item>
-                                            {field.addButton == null ? (
-                                                <Button type="dashed" onClick={() => add()} block icon={field.addIcon || <PlusOutlined />}>
-                                                    {field.addText || `Add ${field.label}`}
-                                                </Button>
-                                            ) : (
-                                                field.addButton(add)
-                                            )}
-                                        </Form.Item>
-                                    </>
-                                );
-                            }}
-                        </Form.List>
-                    );
-                case "radiobutton":
-                    return (
-                        <Radio.Group
-                            size="large"
-                            block
-                            optionType="button"
-                            onChange={(event) => fieldOnChangeHandler(field, event)}
-                            className="d-flex"
-                            buttonStyle="solid"
-                            ref={fieldRef}
-                        >
-                            {field.options?.map(({ value, label }) => (
-                                <Radio.Button className="w-100 text-center" value={value} key={value}>
-                                    {label}
-                                </Radio.Button>
-                            ))}
-                        </Radio.Group>
-                    );
-                case "render":
-                    return <Fragment key={field.name}>{field.render(renderFields)}</Fragment>;
-                default:
-                    return null;
-            }
-        };
+                                            ))}
+                                            <Col span={1}>
+                                                <CustomButton
+                                                    type="light-danger"
+                                                    onClick={() => remove(listField.name)}
+                                                    icon={<MinusCircleOutlined />}
+                                                    block
+                                                />
+                                            </Col>
+                                        </Row>
+                                    ))}
+                                    <Form.Item>
+                                        {field.addButton == null ? (
+                                            <Button type="dashed" onClick={() => add()} block icon={field.addIcon || <PlusOutlined />}>
+                                                {field.addText || `Add ${field.label}`}
+                                            </Button>
+                                        ) : (
+                                            field.addButton(add)
+                                        )}
+                                    </Form.Item>
+                                </>
+                            );
+                        }}
+                    </Form.List>
+                );
+            case "radiobutton":
+                return (
+                    <Radio.Group
+                        size="large"
+                        block
+                        optionType="button"
+                        onChange={(event) => fieldOnChangeHandler(field, event)}
+                        className="d-flex"
+                        buttonStyle="solid"
+                        ref={fieldRef}
+                    >
+                        {field.options?.map(({ value, label }) => (
+                            <Radio.Button className="w-100 text-center" value={value} key={value}>
+                                {label}
+                            </Radio.Button>
+                        ))}
+                    </Radio.Group>
+                );
+            case "render":
+                return <Fragment key={field.name}>{field.render(renderFields)}</Fragment>;
+            default:
+                return null;
+        }
+    };
 
-        const handleSubmit = async (values) => {
-            try {
-                await form.validateFields();
-                if (isPasswordRequired && !isAuth) {
-                    const isValid = await onLogin("validate");
+    const handleSubmit = async (values) => {
+        try {
+            await form.validateFields();
+            if (isPasswordRequired && !isAuth) {
+                const isValid = await onLogin("validate");
 
-                    if (!isValid) {
-                        return;
-                    }
+                if (!isValid) {
+                    return;
                 }
-
-                onSubmit(values);
-                setIsSubmitting(true);
-                form.resetFields();
-                setCurrentStep(0);
-            } catch (error) {
-                console.error("Validation failed:", error);
-            } finally {
-                setIsSubmitting(false);
             }
-        };
 
-        const handleCancel = () => {
+            onSubmit(values);
+            setIsSubmitting(true);
             form.resetFields();
             setCurrentStep(0);
-            onCancel();
-        };
+        } catch (error) {
+            console.error("Validation failed:", error);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
-        const next = async () => {
-            try {
-                if (steps) {
-                    const currentFields = steps[currentStep].fields.map((field) => field.name);
-                    await form.validateFields(currentFields);
-                    setCurrentStep(currentStep + 1);
-                }
-            } catch (error) {
-                console.error("Step validation failed:", error);
+    const handleCancel = () => {
+        form.resetFields();
+        setCurrentStep(0);
+        onCancel();
+    };
+
+    const next = async () => {
+        try {
+            if (steps) {
+                const currentFields = steps[currentStep].fields.map((field) => field.name);
+                await form.validateFields(currentFields);
+                setCurrentStep(currentStep + 1);
             }
-        };
+        } catch (error) {
+            console.error("Step validation failed:", error);
+        }
+    };
 
-        const prev = () => {
-            setCurrentStep(currentStep - 1);
-        };
+    const prev = () => {
+        setCurrentStep(currentStep - 1);
+    };
 
-        const renderFields = (overrideFields) => {
-            if (overrideFields) {
-                fields = overrideFields;
-            }
-            const currentFields = steps ? steps[currentStep].fields : fields;
-            let firstFieldRendered = false;
-
-            return (
-                <Row gutter={16} align="middle">
-                    {currentFields.map((field) => {
-                        const isFirstField = !firstFieldRendered;
-                        if (isFirstField) firstFieldRendered = true;
-                        const fieldSpan = field.span || 24;
-                        const extraSpan = field.extra ? 24 - fieldSpan : 0;
-                        return (
-                            <Fragment key={field.name}>
-                                <Col key={field.name} span={field.span || 24}>
-                                    <Form.Item name={field.name} label={field.label} rules={field.rules}>
-                                        {renderField(field, isFirstField)}
-                                    </Form.Item>
+    const renderFields = (overrideFields) => {
+        const currentFields = overrideFields || (steps ? steps[currentStep].fields : fields);
+        return (
+            <Row gutter={16} align="middle">
+                {currentFields.map((field) => {
+                    const fieldSpan = field.span || 24;
+                    const extraSpan = field.extra ? 24 - fieldSpan : 0;
+                    return (
+                        <Fragment key={field.name}>
+                            <Col key={field.name} span={field.span || 24}>
+                                <Form.Item name={field.name} label={field.label} rules={field.rules}>
+                                    {renderField(field)}
+                                </Form.Item>
+                            </Col>
+                            {field.extra && (
+                                <Col key={`${field.name}-extra`} span={extraSpan}>
+                                    {field.extra}
                                 </Col>
-                                {field.extra && (
-                                    <Col key={`${field.name}-extra`} span={extraSpan}>
-                                        {field.extra}
-                                    </Col>
-                                )}
-                            </Fragment>
-                        );
-                    })}
-                </Row>
-            );
-        };
+                            )}
+                        </Fragment>
+                    );
+                })}
+            </Row>
+        );
+    };
 
-        const renderSteps = () => {
-            if (!steps) return null;
-            return (
-                <Steps current={currentStep} progressDot>
-                    {steps.map((step) => (
-                        <Step key={step.title} title={step.title} />
-                    ))}
-                </Steps>
-            );
-        };
+    const renderSteps = () => {
+        if (!steps) return null;
+        return (
+            <Steps current={currentStep} progressDot>
+                {steps.map((step) => (
+                    <Step key={step.title} title={step.title} />
+                ))}
+            </Steps>
+        );
+    };
 
-        const renderButtons = () => {
-            if (!steps) {
-                return (
-                    <Space>
-                        <Button onClick={handleCancel} disabled={isSubmitting}>
-                            בטל
-                        </Button>
-                        <Button type="primary" htmlType="submit" disabled={isSubmitting} loading={isSubmitting}>
-                            {isSubmitting ? "שומר..." : "שמור"}
-                        </Button>
-                    </Space>
-                );
-            }
-
-            const isLastStep = currentStep === steps.length - 1;
+    const renderButtons = () => {
+        if (!steps) {
             return (
                 <Space>
                     <Button onClick={handleCancel} disabled={isSubmitting}>
                         בטל
                     </Button>
-                    {currentStep > 0 && (
-                        <Button onClick={prev} disabled={isSubmitting}>
-                            הקודם
-                        </Button>
-                    )}
-                    {isLastStep ? (
-                        <Button type="primary" htmlType="submit" loading={isSubmitting}>
-                            {isSubmitting ? "שומר..." : "שמור"}
-                        </Button>
-                    ) : (
-                        <Button type="primary" onClick={next} disabled={isSubmitting}>
-                            הבא
-                        </Button>
-                    )}
+                    <Button type="primary" htmlType="submit" disabled={isSubmitting} loading={isSubmitting}>
+                        {isSubmitting ? "שומר..." : "שמור"}
+                    </Button>
                 </Space>
             );
-        };
+        }
 
-        const formContent = (
-            <Form form={form} onFinish={handleSubmit} layout="vertical">
-                {isLoading && <Loader />}
-                {!isLoading && renderSteps()}
-                {!isLoading && renderFields()}
-                <Divider className="my-3 mt-2" />
-                <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}>{renderButtons()}</div>
-            </Form>
-        );
-
+        const isLastStep = currentStep === steps.length - 1;
         return (
-            <>
-                {isModal ? (
-                    <Modal title={title} open={visible} onCancel={handleCancel} footer={null} width={width}>
-                        {formContent}
-                    </Modal>
-                ) : (
-                    formContent
+            <Space>
+                <Button onClick={handleCancel} disabled={isSubmitting}>
+                    בטל
+                </Button>
+                {currentStep > 0 && (
+                    <Button onClick={prev} disabled={isSubmitting}>
+                        הקודם
+                    </Button>
                 )}
-            </>
+                {isLastStep ? (
+                    <Button type="primary" htmlType="submit" loading={isSubmitting}>
+                        {isSubmitting ? "שומר..." : "שמור"}
+                    </Button>
+                ) : (
+                    <Button type="primary" onClick={next} disabled={isSubmitting}>
+                        הבא
+                    </Button>
+                )}
+            </Space>
         );
-    },
-);
+    };
+
+    const formContent = (
+        <Form form={form} onFinish={handleSubmit} layout="vertical">
+            {isLoading && <Loader />}
+            {!isLoading && renderSteps()}
+            {!isLoading && renderFields()}
+            <Divider className="my-3 mt-2" />
+            <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}>{renderButtons()}</div>
+        </Form>
+    );
+
+    return (
+        <>
+            {isModal ? (
+                <Modal title={title} open={visible} onCancel={handleCancel} footer={null} width={width}>
+                    {formContent}
+                </Modal>
+            ) : (
+                formContent
+            )}
+        </>
+    );
+};
 
 GenericForm.propTypes = {
     fields: PropTypes.arrayOf(

@@ -6,6 +6,8 @@ import { getAllDeviceTypes } from "../../../../Utils/deviceTypeApi";
 import { useQuery } from "@tanstack/react-query";
 import Loader from "../../../../Components/Layout/Loader";
 import { getDevices } from "../../../../Utils/deviceApi";
+import PropTypes from "prop-types";
+
 const smartInsertInitialState = { quantity: 1, deviceType: null, unit: null };
 const VoucherTabs = ({ renderFields }) => {
     const { isLoading: isLoadingArrivedDevices, data: allDevices } = useQuery({
@@ -66,9 +68,8 @@ const VoucherTabs = ({ renderFields }) => {
                     name: "serialNumber",
                     type: "autocomplete",
                     label: "צ' מכשיר",
-                    onChange: (value, field) => {
-                      //is case depands of the value disable the device type using the refs
-                    },
+                    onChange: (value, clearErrors, field, parentField, form) =>
+                        handleSerialNumberChange(value, clearErrors, field, parentField, form),
                     options: convertDeivcesToACOptions(allDevices),
                     rules: [{ required: true, message: "יש להזין צ'" }],
                 },
@@ -157,6 +158,13 @@ const VoucherTabs = ({ renderFields }) => {
             ],
         },
     ];
+    const handleSerialNumberChange = (value, clearErrors, field, parentField, form) => {
+        const fieldName = parentField.name + "deviceType";
+        const device = allDevices.find((d) => d.serialNumber === value);
+        if (device) {
+            form.setFieldValue(fieldName, device.deviceTypeId);
+        }
+    };
 
     return (
         <Tabs
@@ -184,9 +192,8 @@ const VoucherTabs = ({ renderFields }) => {
     );
 };
 
-import PropTypes from "prop-types";
-
 VoucherTabs.propTypes = {
-    renderFields: PropTypes.func,
+    renderFields: PropTypes.func.isRequired,
 };
+
 export default VoucherTabs;

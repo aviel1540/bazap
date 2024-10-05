@@ -85,6 +85,19 @@ const NewVoucherPage = ({ onCancel, formDefaultValues }) => {
 
     const fields = [
         {
+            name: "123",
+            label: "יחידה",
+            type: "text",
+            options: unitOptions,
+            rules: [{ required: true, message: "יש למלא שדה זה." }],
+            span: 23,
+            extra: (
+                <Tooltip title="הוסף יחידה חדשה">
+                    <CustomButton type="light-primary" onClick={() => setIsUnitModalOpen(true)} icon={<PlusOutlined />} />
+                </Tooltip>
+            ),
+        },
+        {
             name: "unit",
             label: "יחידה",
             type: "select",
@@ -140,7 +153,7 @@ const NewVoucherPage = ({ onCancel, formDefaultValues }) => {
         <>
             <Card title={`${voucherType == NIPUK ? "שובר ניפוק חדש" : "שובר קבלה חדש"} לפרוייקט - ${project.projectName}`}>
                 <GenericForm
-                    isModal={false} // Display form without modal
+                    isModal={false}
                     fields={fields}
                     onSubmit={handleSave}
                     title="שובר חדש"
@@ -148,7 +161,7 @@ const NewVoucherPage = ({ onCancel, formDefaultValues }) => {
                     onCancel={navigateBack}
                     initialValues={formDefaultValues}
                     isLoading={isLoading}
-                ></GenericForm>
+                />
             </Card>
 
             <UnitForm formValues={null} open={isUnitModalOpen} onCancel={() => setIsUnitModalOpen(false)} isEdit={false} />
