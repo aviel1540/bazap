@@ -34,3 +34,10 @@ exports.findVoucherById = async (checkVoucherId) => {
 };
 
 exports.deleteVoucher = async (checkVoucherId) => await Voucher.findByIdAndDelete(checkVoucherId);
+
+exports.updateVoucherProject = async ({request}) => {
+    const {checkVoucherId, checkProjectId} = request
+    return await Voucher.findByIdAndUpdate(checkVoucherId, {
+        project : checkProjectId
+    })
+}

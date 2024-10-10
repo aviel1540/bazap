@@ -1,6 +1,7 @@
 const escape = require("escape-html");
 const validation = require("../utils/validation");
 const unitsServices = require("../services/unitsServices");
+const brigadeServices = require("../services/brigadeServices")
 
 exports.getAllUnits = async (req, res) => {
     let units;
@@ -14,13 +15,19 @@ exports.getAllUnits = async (req, res) => {
 };
 
 exports.addNewUnit = async (req, res) => {
+    const brigadeId = escape(req.params.brigadeId);
     const unitName = escape(req.body.unitName);
     let newUnit;
+    let brigade;
     try {
-        if (!unitName) return res.status(400).json({ message: "יש למלא את כל השדות" });
+        if(![brigadeId, unitName].every(Boolean)) return res.status(400).json({ message: "יש למלא את כל השדות" });
         const checkUnitName = validation.addSlashes(unitName);
+        brigade = await brigadeServices.findBrigadeById(brigadeId)
+        if(!brigade) return res.status(404).json({message: "לא נמצאה חטיבה"})
         newUnit = await unitsServices.addUnit(checkUnitName);
         await newUnit.save();
+        brigade.unitsList.push(newUnit);
+        await brigade.save();
         return res.status(200).json(newUnit);
     } catch (err) {
         return res.status(401).json({ message: err.message });

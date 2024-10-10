@@ -6,11 +6,10 @@ const divisionSchema = new Schema({
     type: String,
     required: true
   },
-  brigade: {
+  brigadesList: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Brigade',
-    required: true
-  }
+  }]
 });
 
 const Division = mongoose.model('Division', divisionSchema);

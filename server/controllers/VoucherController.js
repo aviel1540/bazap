@@ -347,3 +347,42 @@ exports.updateVoucherDevices = async (req, res) => {
         return res.status(500).json({ message: err.message });
     }
 }
+
+
+exports.changeVoucherProject = async (req, res) => {
+    const voucherId = escape(req.params.voucherId);
+    const newProjectId = escape(req.params.newProjectId);
+    try {
+        const checkVoucherId = validation.addSlashes(voucherId);
+        const checkProjectId = validation.addSlashes(newProjectId);
+        const voucher = await voucherService.findVoucherById(checkVoucherId);
+        const newProject = await projectService.findProjectById(checkProjectId);
+        if (!voucher) return res.status(404).json({ message: "לא נמצא שובר" });
+        if (!newProject) return res.status(404).json({ message: "לא נמצא פרויקט" });
+        if (voucher.type == false) return res.status(400).json({ message: "לא ניתן לשנות שובר יציאה" });
+        if (voucher.deviceList.length > 0) {
+            voucher.deviceList.map(async (device) => {
+                if (device.voucherOut) {
+                    return res.status(400).json({message:"קיים שובר יציאה"});
+                }
+            });
+        }
+        if (voucher.accessoriesList.length > 0) {
+            voucher.accessoriesList.map(async (accessory) => {
+                if (accessory.voucherOut) {
+                    return res.status(400).json({message:"קיים שובר יציאה"});
+                }
+            });
+        }
+        const oldProject = await projectService.findProjectById(checkProjectId)
+        oldProject.vouchersList.pop(checkVoucherId);
+        await oldProject.save()
+        const updatedVoucher = await voucherService.updateVoucherProject({checkVoucherId, checkProjectId});
+        await updatedVoucher.save();
+        newProject.vouchersList.push(checkVoucherId)
+        await newProject.save()
+        return res.status(201).json({message: "השובר הועבר בהצלחה"});
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
+    }
+}

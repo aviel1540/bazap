@@ -11,7 +11,8 @@ const unitsRouter = require("./routers/unitsRouter");
 const voucherRouter = require("./routers/voucherRouter");
 const passwordRouter = require("./routers/passwordRouter");
 const accessoryRouter = require("./routers/accessoriesRouter")
-//const divisionRouter = require("./routers/divisionRouter")
+const divisionRouter = require("./routers/divisionRouter")
+const brigadeRouter = require("./routers/brigadeRouter")
 
 // const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
@@ -52,7 +53,8 @@ app.use("/api/technician/", technicianRouter);
 app.use("/api/units/", unitsRouter);
 app.use("/api/voucher/", voucherRouter);
 app.use("/api/password/", passwordRouter);
-//app.use("/api/division/", divisionRouter);
+app.use("/api/division/", divisionRouter);
+app.use("/api/brigade/", brigadeRouter);
 
 
 const PORT = process.env.PORT;

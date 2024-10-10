@@ -1,58 +1,86 @@
 const escape = require("escape-html");
 const validation = require("../utils/validation");
 const divisionServices = require("../services/divisionServices")
+const brigadeServices = require("../services/brigadeServices")
+const unitServices = require("../services/unitsServices")
 
 
 exports.getAllDivisions = async (req, res) => {
     let divisions;
     try {
         divisions = await divisionServices.findAllDivisions();
-        if(!divisions) return res.status(404).json({ message: "לא קיימות אוגדות" });
+        if (!divisions) return res.status(404).json({ message: "לא קיימות אוגדות" });
         return res.status(200).json(divisions);
-    } catch(err) {
+    } catch (err) {
         return res.status(500).json({ message: err.message });
     }
 }
 
-exports.getDivision = async(req,res) => {
+exports.getDivision = async (req, res) => {
     const divisionId = escape(req.params.id);
     let division;
     try {
-        if(!divisionId) return res.status(400).json({ message: "יש למלא את השדות" });
+        if (!divisionId) return res.status(400).json({ message: "יש למלא את השדות" });
         const checkDivisionId = validation.addSlashes(divisionId);
         division = await divisionServices.findDivisionById(checkDivisionId);
-        if(!division) return res.status(404).json({ message: "לא קיימת אוגדה עם תעודת זהות זו" });
+        if (!division) return res.status(404).json({ message: "לא קיימת אוגדה" });
         return res.status(200).json(division);
-    } catch(err) {
+    } catch (err) {
         return res.status(500).json({ message: err.message });
     }
 }
 
-exports.addNewDivision = async(req,res) => {
+exports.addNewDivision = async (req, res) => {
     const divisionName = escape(req.body.divisionName);
     let newDivision;
     try {
-        if(!divisionName) return res.status(400).json({ message: "יש למלא את השדות" });
+        if (!divisionName) return res.status(400).json({ message: "יש למלא את השדות" });
         const checkDivisionName = validation.addSlashes(divisionName);
+        const checkDivisionExists = await divisionServices.findDivisionByName(checkDivisionName)
+        if(checkDivisionExists) return res.status(401).json({ message: "שם האוגדה קיים במערכת" });
         newDivision = await divisionServices.addDivision(checkDivisionName);
+        const brigadeUnitNumber = checkDivisionName.match(/\d+/)[0];
+        const brigadeUnitName = "מפאוג " + brigadeUnitNumber
+        newBrigade = await brigadeServices.addBrigade(brigadeUnitName);
+        newUnit = await unitServices.addUnit(brigadeUnitName);
+        newBrigade.unitsList.push(newUnit)
+        newDivision.brigadesList.push(newBrigade)
         await newDivision.save();
+        await newBrigade.save();
+        await newUnit.save();
         return res.status(200).json(newDivision);
-    } catch(err) {
+    } catch (err) {
         return res.status(500).json({ message: err.message });
     }
 }
 
-exports.updateDivisionName = async(req,res) => {
+exports.updateDivisionName = async (req, res) => {
     const divisionId = escape(req.params.id);
     const divisionName = escape(req.body.divisionName);
     let division;
     try {
-        if(!divisionId || !divisionName) return res.status(400).json({ message: "יש למלא את השדות" });
+        if (!divisionId || !divisionName) return res.status(400).json({ message: "יש למלא את השדות" });
         const checkDivisionId = validation.addSlashes(divisionId);
         const checkDivisionName = validation.addSlashes(divisionName);
         division = await divisionServices.updateDivisionName({ checkDivisionId, checkDivisionName });
         return res.status(200).json(division);
-    } catch(err) {
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
+    }
+}
+
+exports.deleteDivision = async (req, res) => {
+    const divisionId = escape(req.params.id);
+    let division;
+    try {
+        if (!divisionId) return res.status(400).json({ message: "יש למלא את השדות" });
+        const checkDivisionId = validation.addSlashes(divisionId);
+        division = await divisionServices.findDivisionById(checkDivisionId);
+        if(!division) return res.status(404).json({message:"לא נמצאה יחידה"})
+        if(division.brigadesList.length > 0) return res.status(400).json({message:"קיימות יחידות תחת האוגדה"})
+        await divisionServices.deleteDivision(checkDivisionId);
+        return res.status(200).json({message:"האוגדה נמחקה בהצלחה"});
+    } catch (err) {
         return res.status(500).json({ message: err.message });
     }
 }

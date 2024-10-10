@@ -7,7 +7,7 @@ router.get("/find-by-name/:unitName", unitsController.getUnitByName);
 
 router.get("/:id", unitsController.getUnitById);
 
-router.post("/add-new-unit", unitsController.addNewUnit);
+router.post("/add-new-unit/:brigadeId", unitsController.addNewUnit);
 
 router.patch("/update-unit/:id", unitsController.updateUnitDetailes);
 

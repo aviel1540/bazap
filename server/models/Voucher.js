@@ -11,6 +11,7 @@ const voucherSchema = new Schema({
     unit: {
         type: Schema.Types.ObjectId,
         ref: "Units",
+        required : true
     },
     type: {
         type: Boolean,

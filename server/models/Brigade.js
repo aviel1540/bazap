@@ -2,15 +2,14 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const brigadeSchema = new Schema({
-  unit_name: {
+  brigadeName: {
     type: String,
     required: true
   },
-  unit: {
+  unitsList: [{
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Unit',
-    required: true
-  }
+    ref: 'Unit'
+  }]
 });
 
 const Brigade = mongoose.model('Brigade', brigadeSchema);
