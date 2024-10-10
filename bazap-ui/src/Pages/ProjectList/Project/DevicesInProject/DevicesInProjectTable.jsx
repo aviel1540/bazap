@@ -117,126 +117,121 @@ const DevicesInProjectTable = ({ rowSelection, filteredDevices, defaultPageSize,
             },
         },
     ];
-    const columns = () => [
-        {
-            title: "צ' מכשיר",
-            dataIndex: "serialNumber",
-            key: "serialNumber",
-            render: (text) => <Text strong>{text}</Text>,
-        },
-        {
-            title: 'מק"ט',
-            key: "deviceTypeId",
-            render: ({ deviceTypeId }) => deviceTypeId.catalogNumber,
-            sorter: (a, b) => a.deviceTypeId.catalogNumber?.length - b.deviceTypeId?.catalogNumber.length,
-        },
-        {
-            title: "סטטוס",
-            dataIndex: "status",
-            key: "status",
-            render: (_, { status }) => (
-                <>
-                    {handleStatusChange == undefined && <Tag color={tagColors[status]}>{status}</Tag>}
-                    {handleStatusChange != undefined && (
-                        <Tag color={tagColors[status]} onClick={() => handleTagClick(status)} style={{ cursor: "pointer" }}>
-                            {status}
-                        </Tag>
-                    )}
-                </>
-            ),
-            sorter: (a, b) => a.status.length - b.status.length,
-            sortDirections: ["descend"],
-        },
-        {
-            title: "יחידה",
-            dataIndex: "unit",
-            key: "unit",
-            onFilter: (value, record) => record.unit._id == value,
-            sorter: (a, b) => a?.unit?.unitsName.length - b?.unit?.unitsName.length,
-            render: (unit) => unit?.unitsName,
-        },
-        {
-            title: "סוג מכשיר",
-            key: "deviceType",
-            filters: [
-                { text: "מסווג", value: true },
-                { text: 'צל"מ', value: false },
-            ],
-            onFilter: (value, record) => record.deviceTypeId?.isClassified == value,
-            render: ({ deviceTypeId }) => deviceTypeId?.deviceName,
-            sorter: (a, b) => a.deviceTypeId.deviceName?.length - b.deviceTypeId?.deviceName.length,
-            sortDirections: ["descend"],
-        },
-        {
-            title: "כמות",
-            key: "quantity",
-            sorter: (a, b) => a.deviceTypeId.deviceName?.length - b.deviceTypeId?.deviceName.length,
-            sortDirections: ["descend"],
-            render: (record) => (record.deviceTypeId.isClassified ? 1 : record.quantity),
-        },
-        {
-            title: "הערות",
-            dataIndex: "notes",
-            key: "notes",
-            width: "30%",
-            // width: "40%",
-            render: (notes, record) => {
-                const notesInput = (
-                    <Input
-                        defaultValue={notes}
-                        onChange={(event) => handleNotesChange(event, record._id, record.deviceTypeId.isClassified)}
-                        placeholder="הערות"
-                    />
-                );
-                let status = "";
-                if (!record.deviceTypeId.isClassified) {
-                    status = "";
-                    if (record.fix != 0 || record.defective != 0) {
-                        status = record.fix + record.defective != record.quantity && "error";
-                    }
-                }
-                return (
-                    <>
-                        {!record.deviceTypeId.isClassified && (
-                            <Space.Compact size="middle" block>
-                                <InputNumber
-                                    addonBefore="תקין"
-                                    name="fix"
-                                    min={0}
-                                    className="min-w-100px"
-                                    disabled={ReturnedStatuses.includes(record.status)}
-                                    max={record.quantity}
-                                    status={status}
-                                    onChange={(value) => handleFixOrDefectiveChange(value, record._id, "fix", record.defective)}
-                                    defaultValue={record.fix ?? 0}
-                                />
-                                <InputNumber
-                                    addonBefore="מושבת"
-                                    name="defective"
-                                    min={0}
-                                    className="min-w-100px"
-                                    disabled={ReturnedStatuses.includes(record.status)}
-                                    max={record.quantity}
-                                    status={status}
-                                    onChange={(value) => handleFixOrDefectiveChange(value, record._id, "defective", record.fix)}
-                                    defaultValue={record.defective ?? 0}
-                                />
-                                {notesInput}
-                            </Space.Compact>
-                        )}
-                        {record.deviceTypeId.isClassified && notesInput}
-                    </>
-                );
+    const columns = () => {
+        return [
+            {
+                title: "צ' מכשיר",
+                dataIndex: "serialNumber",
+                key: "serialNumber",
+                render: (text) => <Text strong>{text}</Text>,
             },
-        },
-        {
-            title: "פעולות",
-            key: "menu",
-            hidden: isActionsHidden,
-            align: "center",
-            render: (_, row) => <CustomDropDown key={row._id} actions={menuActions} data={row} />,
-        },
-    ];
+            {
+                title: 'מק"ט',
+                key: "deviceTypeId",
+                render: ({ deviceTypeId }) => deviceTypeId.catalogNumber,
+                sorter: (a, b) => a.deviceTypeId.catalogNumber?.length - b.deviceTypeId?.catalogNumber.length,
+            },
+            {
+                title: "סטטוס",
+                dataIndex: "status",
+                key: "status",
+                render: (_, { status }) => (
+                    <>
+                        {handleStatusChange == undefined && <Tag color={tagColors[status]}>{status}</Tag>}
+                        {handleStatusChange != undefined && (
+                            <Tag color={tagColors[status]} onClick={() => handleTagClick(status)} style={{ cursor: "pointer" }}>
+                                {status}
+                            </Tag>
+                        )}
+                    </>
+                ),
+                sorter: (a, b) => a.status.length - b.status.length,
+                sortDirections: ["descend"],
+            },
+            {
+                title: "יחידה",
+                dataIndex: "unit",
+                key: "unit",
+                sorter: (a, b) => a?.unit?.unitsName.length - b?.unit?.unitsName.length,
+                render: (unit) => unit?.unitsName,
+            },
+            {
+                title: "סוג מכשיר",
+                key: "deviceType",
+                render: ({ deviceTypeId }) => deviceTypeId?.deviceName,
+                sorter: (a, b) => a.deviceTypeId.deviceName?.length - b.deviceTypeId?.deviceName.length,
+                sortDirections: ["descend"],
+            },
+            {
+                title: "כמות",
+                key: "quantity",
+                sorter: (a, b) => a.deviceTypeId.deviceName?.length - b.deviceTypeId?.deviceName.length,
+                sortDirections: ["descend"],
+                render: (record) => (record.deviceTypeId.isClassified ? 1 : record.quantity),
+            },
+            {
+                title: "הערות",
+                dataIndex: "notes",
+                key: "notes",
+                width: "30%",
+                render: (notes, record) => {
+                    const notesInput = (
+                        <Input
+                            defaultValue={notes}
+                            onChange={(event) => handleNotesChange(event, record._id, record.deviceTypeId.isClassified)}
+                            placeholder="הערות"
+                        />
+                    );
+                    let status = "";
+                    if (!record.deviceTypeId.isClassified) {
+                        status = "";
+                        if (record.fix != 0 || record.defective != 0) {
+                            status = record.fix + record.defective != record.quantity && "error";
+                        }
+                    }
+                    return (
+                        <>
+                            {!record.deviceTypeId.isClassified && (
+                                <Space.Compact size="middle" block>
+                                    <InputNumber
+                                        addonBefore="תקין"
+                                        name="fix"
+                                        min={0}
+                                        className="min-w-100px"
+                                        disabled={ReturnedStatuses.includes(record.status)}
+                                        max={record.quantity}
+                                        status={status}
+                                        onChange={(value) => handleFixOrDefectiveChange(value, record._id, "fix", record.defective)}
+                                        defaultValue={record.fix ?? 0}
+                                    />
+                                    <InputNumber
+                                        addonBefore="מושבת"
+                                        name="defective"
+                                        min={0}
+                                        className="min-w-100px"
+                                        disabled={ReturnedStatuses.includes(record.status)}
+                                        max={record.quantity}
+                                        status={status}
+                                        onChange={(value) => handleFixOrDefectiveChange(value, record._id, "defective", record.fix)}
+                                        defaultValue={record.defective ?? 0}
+                                    />
+                                    {notesInput}
+                                </Space.Compact>
+                            )}
+                            {record.deviceTypeId.isClassified && notesInput}
+                        </>
+                    );
+                },
+            },
+            {
+                title: "פעולות",
+                key: "menu",
+                hidden: isActionsHidden,
+                align: "center",
+                render: (_, row) => <CustomDropDown key={row._id} actions={menuActions} data={row} />,
+            },
+        ];
+    };
 
     if (isLoading) {
         return <Loader />;

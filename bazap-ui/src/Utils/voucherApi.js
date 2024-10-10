@@ -32,6 +32,10 @@ export const addVoucherOut = async (voucher) => {
     return await voucherAPI.post(`add-new-voucher-out/${projectId}`, voucher);
 };
 
+export const changeVoucherProject = async (voucherId, projectId) => {
+    return await voucherAPI.patch(`/change-voucher-project/${voucherId}/${projectId}`);
+};
+
 export const exportVoucherToExcel = async (voucherId) => {
     const voucher = await getVoucherById(voucherId);
     const devices = [];

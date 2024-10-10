@@ -28,13 +28,14 @@ const convertStringToOptions = (options) =>
     });
 
 const StatusForm = ({ status, onCancel, devices, clearSelectedRows, isClassified }) => {
-    const { projectId } = useProject();
+    const { projectId, refetchAll } = useProject();
     const queryClient = useQueryClient();
     const methods = useForm();
     const { getValues, control, trigger } = methods;
 
     const updateDeviceStatusMutation = useMutation(deviceUpdateStatus, {
         onSuccess: () => {
+            refetchAll();
             queryClient.invalidateQueries({ queryKey: ["devicesInProject", projectId] });
             clearSelectedRows();
         },
@@ -42,6 +43,7 @@ const StatusForm = ({ status, onCancel, devices, clearSelectedRows, isClassified
 
     const updateAccesoryStatusMutation = useMutation(accessoryUpdateStatus, {
         onSuccess: () => {
+            refetchAll();
             queryClient.invalidateQueries({ queryKey: ["devicesInProject", projectId] });
             clearSelectedRows();
         },

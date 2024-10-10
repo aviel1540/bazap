@@ -1,5 +1,10 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Fragment } from "react";
 import PropTypes from "prop-types";
+import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
+import dayjs from "dayjs";
+import Loader from "../../../../Components/Layout/Loader";
+import { useAdminAuth } from "../../../store/AdminAuthContext";
+import CustomButton from "../../CustomButton/CustomButton";
 import {
     Form,
     Input,
@@ -17,12 +22,8 @@ import {
     Divider,
     Radio,
 } from "antd";
-import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
-import dayjs from "dayjs";
-import Loader from "../../../../Components/Layout/Loader";
-import { useAdminAuth } from "../../../store/AdminAuthContext";
-const { Step } = Steps;
 
+const { Step } = Steps;
 const GenericForm = ({
     fields,
     onSubmit,
@@ -39,8 +40,8 @@ const GenericForm = ({
     const [form] = Form.useForm();
     const [currentStep, setCurrentStep] = useState(0);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const firstFieldRef = useRef(null);
     const { isAuth, onLogin } = useAdminAuth();
+    const fieldsRef = useRef({});
 
     useEffect(() => {
         if (visible && initialValues) {
@@ -54,59 +55,64 @@ const GenericForm = ({
             }, {});
             form.setFieldsValue(formattedInitialValues);
         }
+        const firstField = fieldsRef.current[fields[0]?.name];
+        if (firstField && firstField.focus) {
+            firstField.focus(); // Focus on the first field
+        }
     }, [visible, initialValues, form, fields]);
 
     const handleClearErrors = () => {
-        // Get all fields with their error states
         const fieldsWithErrors = form.getFieldsError();
-
-        // Map through each field and clear only the errors
         const fieldsWithoutErrors = fieldsWithErrors.map((field) => ({
             name: field.name,
-            errors: [], // Set an empty array to clear the errors for each field
+            errors: [],
         }));
-
-        // Apply the new error-free state to the form fields
         form.setFields(fieldsWithoutErrors);
     };
 
-    useEffect(() => {
-        if (visible && firstFieldRef.current) {
-            setTimeout(() => {
-                if (firstFieldRef.current && firstFieldRef.current.focus) {
-                    firstFieldRef.current.focus();
-                }
-            }, 100);
-        }
-    }, [visible]);
     const fieldOnChangeHandler = (field, event) => {
         if (field?.onChange) {
             field.onChange(event.target.value, handleClearErrors);
         }
     };
-    const renderField = (field, isFirstField = false) => {
-        const commonProps = isFirstField ? { ref: firstFieldRef } : {};
 
-        // Calculate the span for the field and extra
-        const fieldSpan = field.span || 24; // Default span to 24 if not provided
-        const extraSpan = field.extra ? 24 - fieldSpan : 0; // Calculate the remaining space for extra
+    const setNestedFieldRef = (fieldName, subFieldName, node) => {
+        if (!fieldsRef.current[fieldName]) {
+            fieldsRef.current[fieldName] = [];
+        }
+        if (!fieldsRef.current[fieldName][0]) {
+            fieldsRef.current[fieldName][0] = {};
+        }
+        fieldsRef.current[fieldName][0][subFieldName] = node;
+    };
 
-        let fieldComponent;
+    const renderField = (field, parentField = null) => {
+        const fieldRef = (node) => {
+            if (node) {
+                if (parentField) {
+                    setNestedFieldRef(parentField.name, field.name, node);
+                } else {
+                    fieldsRef.current[field.name] = node;
+                }
+            }
+        };
+
         switch (field.type) {
             case "text":
-                fieldComponent = <Input {...commonProps} />;
-                break;
+                return <Input ref={fieldRef} />;
             case "number":
-                fieldComponent = <InputNumber {...commonProps} />;
-                break;
+                return <InputNumber className="w-100" ref={fieldRef} />;
             case "select":
-                fieldComponent = (
+                return (
                     <Select
                         showSearch
                         allowClear
                         filterOption={(input, option) => option?.label.toLowerCase().includes(input.toLowerCase())}
-                        onChange={(value) => form.setFieldValue(field.name, value)} // Ensure form updates value on selection
-                        {...commonProps}
+                        onChange={(value) => {
+                            form.setFieldValue(field.name, value);
+                            fieldOnChangeHandler(field, { target: { value } });
+                        }}
+                        ref={fieldRef}
                     >
                         {field.options?.map((option) => (
                             <Select.Option key={option.value} value={option.value} label={option.label}>
@@ -115,17 +121,19 @@ const GenericForm = ({
                         ))}
                     </Select>
                 );
-                break;
             case "checkbox":
-                fieldComponent = <Checkbox {...commonProps}>{field.label}</Checkbox>;
-                break;
+                return <Checkbox ref={fieldRef}>{field.label}</Checkbox>;
             case "date":
-                fieldComponent = <DatePicker {...commonProps} style={{ width: "100%" }} />;
-                break;
+                return <DatePicker ref={fieldRef} style={{ width: "100%" }} />;
             case "autocomplete":
-                fieldComponent = (
+                return (
                     <AutoComplete
-                        {...commonProps}
+                        onChange={(data) => {
+                            if (field?.onChange) {
+                                field.onChange(data, handleClearErrors, field, parentField, form);
+                            }
+                        }}
+                        ref={fieldRef}
                         options={field.options}
                         filterOption={(inputValue, option) => option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
                         {...(field.freeText ? {} : { onSelect: (value) => form.setFieldsValue({ [field.name]: value }) })}
@@ -133,43 +141,55 @@ const GenericForm = ({
                         {field.freeText && <Input />}
                     </AutoComplete>
                 );
-                break;
             case "list":
-                fieldComponent = (
+                return (
                     <Form.List name={field.name}>
-                        {(fields, { add, remove }) => (
-                            <>
-                                {fields.map((listField) => (
-                                    <Row key={listField.key} gutter={16} align="middle">
-                                        {field.listFields?.map((subField) => (
-                                            <Col span={subField.span || 24 / (field.listFields?.length || 1)} key={subField.name}>
-                                                <Form.Item
-                                                    {...listField}
-                                                    label={subField.label}
-                                                    name={[listField.name, subField.name]}
-                                                    rules={subField.rules}
-                                                >
-                                                    {renderField(subField)}
-                                                </Form.Item>
+                        {(fields, { add, remove }) => {
+                            const totalSpan = 23;
+                            const availableSpan = totalSpan / (field.listFields?.length || 1);
+                            return (
+                                <>
+                                    {fields.map((listField, index) => (
+                                        <Row key={listField.key} gutter={16} align="middle">
+                                            {field.listFields?.map((subField) => (
+                                                <Col span={subField.span || Math.floor(availableSpan)} key={subField.name}>
+                                                    <Form.Item
+                                                        {...listField}
+                                                        key={listField.key}
+                                                        label={subField.label}
+                                                        name={[listField.name, subField.name]}
+                                                        rules={subField.rules}
+                                                    >
+                                                        {renderField(subField, { name: `${field.name}[${index}]` })}
+                                                    </Form.Item>
+                                                </Col>
+                                            ))}
+                                            <Col span={1}>
+                                                <CustomButton
+                                                    type="light-danger"
+                                                    onClick={() => remove(listField.name)}
+                                                    icon={<MinusCircleOutlined />}
+                                                    block
+                                                />
                                             </Col>
-                                        ))}
-                                        <Col>
-                                            <MinusCircleOutlined onClick={() => remove(listField.name)} />
-                                        </Col>
-                                    </Row>
-                                ))}
-                                <Form.Item>
-                                    <Button type="dashed" onClick={() => add()} block icon={field.addIcon || <PlusOutlined />}>
-                                        {field.addText || `Add ${field.label}`}
-                                    </Button>
-                                </Form.Item>
-                            </>
-                        )}
+                                        </Row>
+                                    ))}
+                                    <Form.Item>
+                                        {field.addButton == null ? (
+                                            <Button type="dashed" onClick={() => add()} block icon={field.addIcon || <PlusOutlined />}>
+                                                {field.addText || `Add ${field.label}`}
+                                            </Button>
+                                        ) : (
+                                            field.addButton(add)
+                                        )}
+                                    </Form.Item>
+                                </>
+                            );
+                        }}
                     </Form.List>
                 );
-                break;
             case "radiobutton":
-                fieldComponent = (
+                return (
                     <Radio.Group
                         size="large"
                         block
@@ -177,6 +197,7 @@ const GenericForm = ({
                         onChange={(event) => fieldOnChangeHandler(field, event)}
                         className="d-flex"
                         buttonStyle="solid"
+                        ref={fieldRef}
                     >
                         {field.options?.map(({ value, label }) => (
                             <Radio.Button className="w-100 text-center" value={value} key={value}>
@@ -185,32 +206,24 @@ const GenericForm = ({
                         ))}
                     </Radio.Group>
                 );
-                break;
+            case "render":
+                return <Fragment key={field.name}>{field.render(renderFields)}</Fragment>;
             default:
-                fieldComponent = null;
+                return null;
         }
-
-        // If the field has extra content, display them in separate columns
-        return (
-            <Row gutter={16}>
-                <Col span={fieldSpan}>{fieldComponent}</Col>
-                {field.extra && <Col span={extraSpan}>{field.extra}</Col>}
-            </Row>
-        );
     };
-    // New handleSubmit that includes password check logic
+
     const handleSubmit = async (values) => {
         try {
-            // If password is required and the user is not authenticated, show the modal for validation
+            await form.validateFields();
             if (isPasswordRequired && !isAuth) {
-                const isValid = await onLogin("validate"); // Calls the validate method in AdminAuthContext
+                const isValid = await onLogin("validate");
 
                 if (!isValid) {
-                    return; // Stop submission if the validation fails
+                    return;
                 }
             }
 
-            await form.validateFields();
             onSubmit(values);
             setIsSubmitting(true);
             form.resetFields();
@@ -244,31 +257,26 @@ const GenericForm = ({
         setCurrentStep(currentStep - 1);
     };
 
-    const renderFields = () => {
-        const currentFields = steps ? steps[currentStep].fields : fields;
-        let firstFieldRendered = false;
-
+    const renderFields = (overrideFields) => {
+        const currentFields = overrideFields || (steps ? steps[currentStep].fields : fields);
         return (
-            <Row gutter={16}>
+            <Row gutter={16} align="middle">
                 {currentFields.map((field) => {
-                    const isFirstField = !firstFieldRendered;
-                    if (isFirstField) firstFieldRendered = true;
-
+                    const fieldSpan = field.span || 24;
+                    const extraSpan = field.extra ? 24 - fieldSpan : 0;
                     return (
-                        <>
-                            {field.type != "render" && (
-                                <Col key={field.name} span={field.span || 24}>
-                                    <Form.Item name={field.name} label={field.label} rules={field.rules}>
-                                        {renderField(field, isFirstField)}
-                                    </Form.Item>
+                        <Fragment key={field.name}>
+                            <Col key={field.name} span={field.span || 24}>
+                                <Form.Item name={field.name} label={field.label} rules={field.rules}>
+                                    {renderField(field)}
+                                </Form.Item>
+                            </Col>
+                            {field.extra && (
+                                <Col key={`${field.name}-extra`} span={extraSpan}>
+                                    {field.extra}
                                 </Col>
                             )}
-                            {field.type == "render" && (
-                                <Col key={field.name} span={field.span || 24}>
-                                    {field.render()}
-                                </Col>
-                            )}
-                        </>
+                        </Fragment>
                     );
                 })}
             </Row>
@@ -323,6 +331,7 @@ const GenericForm = ({
             </Space>
         );
     };
+
     const formContent = (
         <Form form={form} onFinish={handleSubmit} layout="vertical">
             {isLoading && <Loader />}
@@ -332,24 +341,26 @@ const GenericForm = ({
             <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}>{renderButtons()}</div>
         </Form>
     );
+
     return (
         <>
-            {isModal && (
+            {isModal ? (
                 <Modal title={title} open={visible} onCancel={handleCancel} footer={null} width={width}>
                     {formContent}
                 </Modal>
+            ) : (
+                formContent
             )}
-            {!isModal && formContent}
         </>
     );
 };
 
-// Add PropTypes
 GenericForm.propTypes = {
     fields: PropTypes.arrayOf(
         PropTypes.shape({
             name: PropTypes.string.isRequired,
-            type: PropTypes.oneOf(["text", "number", "select", "checkbox", "date", "autocomplete", "list", "radiobutton"]).isRequired,
+            type: PropTypes.oneOf(["text", "number", "select", "checkbox", "date", "autocomplete", "list", "radiobutton", "render"])
+                .isRequired,
             label: PropTypes.string,
             options: PropTypes.arrayOf(
                 PropTypes.shape({
@@ -396,5 +407,6 @@ GenericForm.propTypes = {
     width: PropTypes.any,
     isModal: PropTypes.bool,
 };
+GenericForm.displayName = "GenericForm";
 
 export default GenericForm;

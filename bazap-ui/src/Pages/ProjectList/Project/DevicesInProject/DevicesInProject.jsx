@@ -1,4 +1,3 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Space } from "antd";
 import { useEffect, useState } from "react";
 import { ALL, DeviceStatuses, FIXED_OR_DEFECTIVE, RETURNED, ReturnedStatuses, replaceApostrophe } from "../../../../Utils/utils";
@@ -13,20 +12,21 @@ import StatusFilter from "./StatusFilter";
 import CustomButton from "../../../../Components/UI/CustomButton/CustomButton";
 import { SwapOutlined } from "@ant-design/icons";
 import { useUserAlert } from "../../../../Components/store/UserAlertContext";
-import { getAllProductsInProject } from "../../../../Utils/projectAPI";
 import FilterMenu from "../../../../Components/UI/FilterMenu";
 import { getAllUnits } from "../../../../Utils/unitAPI";
 import { getAllDeviceTypes } from "../../../../Utils/deviceTypeApi";
-
+import { areClassifiedAndNonClassifiedSelected } from "./devicesInProjectUtils";
+import { useQuery } from "@tanstack/react-query";
+const initialState = { unit: "all", classified: "all", deviceType: "all" };
 const ArrivedDevices = () => {
     const { onAlert, error } = useUserAlert();
-    const { projectId } = useProject();
+    const { projectId, devices, isLoading } = useProject();
     const { onShow, onHide } = useCustomModal();
-    const { data: units } = useQuery({
+    const { data: units, isLoading: isUnitLoading } = useQuery({
         queryKey: ["units"],
         queryFn: getAllUnits,
     });
-    const { data: deviceTypes } = useQuery({
+    const { data: deviceTypes, isLoading: isDeviceTypeLoading } = useQuery({
         queryKey: ["deviceTypes"],
         queryFn: getAllDeviceTypes,
     });
@@ -35,20 +35,17 @@ const ArrivedDevices = () => {
     const [selectedRows, setSelectedRows] = useState([]);
     const [selectedDevicesIds, setSelectedDevicesIds] = useState([]);
     const [selectedAccessoriesIds, setSelectedAccessoriesIds] = useState([]);
-    const queryClient = useQueryClient();
-    const { isLoading, data: devices } = useQuery({
-        queryKey: ["devicesInProject", projectId],
-        queryFn: getAllProductsInProject,
-        onSuccess: (data) => {
-            setFilteredDevices(data);
-            if (devices) handleSearchAndFilter(searchParam, data, selectedStatus);
-        },
-    });
+    const [filters, setFilters] = useState(initialState);
+
     const [filteredDevices, setFilteredDevices] = useState(devices);
 
     useEffect(() => {
-        queryClient.invalidateQueries({ queryKey: ["devicesInProject", projectId] });
-    }, [projectId, queryClient]);
+        // setFilteredDevices(devices);
+
+        if (devices) {
+            handleSearchAndFilter(searchParam, devices, selectedStatus);
+        }
+    }, [devices, filters]);
 
     const clearSelectedRows = () => {
         setSelectedRows([]);
@@ -74,6 +71,7 @@ const ArrivedDevices = () => {
     };
     const handleSearchAndFilter = (search, overrideDevices, status) => {
         const devicesToFilter = overrideDevices || devices;
+        // filter by status
         let newFilteredDevices = devicesToFilter.filter((device) => {
             if (status == ALL) return true;
             if (status == RETURNED) {
@@ -88,12 +86,13 @@ const ArrivedDevices = () => {
             }
             return device.status == status;
         });
+        // filter by search
         if (newFilteredDevices.length == 0) {
             setSelectedStatus(ALL);
             newFilteredDevices = devicesToFilter;
         }
 
-        const keysToInclude = ["serialNumber", "status", "deviceType"];
+        const keysToInclude = ["serialNumber"];
 
         newFilteredDevices = newFilteredDevices.filter((device) => {
             const searchObject = {
@@ -107,7 +106,24 @@ const ArrivedDevices = () => {
             const searchableString = JSON.stringify(searchObject).toLocaleLowerCase();
             return searchableString.includes(search.toLocaleLowerCase());
         });
-
+        // {"unit":"all","classified":"all","deviceType":"all"}
+        // filter by filtermenu
+        newFilteredDevices = newFilteredDevices.filter((device) => {
+            //unit
+            let byUnit = true;
+            let byClassified = true;
+            let byDeviceType = true;
+            if (filters.unit != "all") {
+                byUnit = device.unit._id == filters.unit;
+            }
+            if (filters.classified != "all") {
+                byClassified = device.deviceTypeId.isClassified == filters.classified;
+            }
+            if (filters.deviceType != "all") {
+                byDeviceType = device.deviceTypeId._id == filters.deviceType;
+            }
+            return byUnit && byClassified && byDeviceType;
+        });
         setFilteredDevices(newFilteredDevices);
     };
 
@@ -181,13 +197,6 @@ const ArrivedDevices = () => {
             onAlert("אין אפשרות לבחור מכשירים שלא מאותה יחידה או לבחור צל\"ם או צ' ביחד", error, true);
         }
     };
-    const areClassifiedAndNonClassifiedSelected = () => {
-        const selectedDevices = devices.filter((device) => selectedRows.includes(device._id));
-        const classifiedDevices = selectedDevices.some((device) => device.deviceTypeId.isClassified);
-        const nonClassifiedDevices = selectedDevices.some((device) => !device.deviceTypeId.isClassified);
-
-        return classifiedDevices && nonClassifiedDevices;
-    };
     const rowSelection = {
         selectedRowKeys: selectedRows,
         onChange: onSelectChange,
@@ -225,23 +234,27 @@ const ArrivedDevices = () => {
     };
     const uniqueUnits = [...new Set(devices?.map((device) => device.unit._id))];
     const uniqueDeviceTypes = [...new Set(devices?.map((device) => device.deviceTypeId._id))];
-    const unitOptions = uniqueUnits.map((unitId) => {
-        const unit = units.find((unit) => unit._id === unitId);
-        return { label: unit.unitsName, value: unit._id };
-    });
+    const unitOptions = !isUnitLoading
+        ? uniqueUnits.map((unitId) => {
+              const unit = units?.find((unit) => unit._id === unitId);
+              return { label: unit.unitsName, value: unit._id };
+          })
+        : [];
     unitOptions.unshift({ value: "all", label: "הכל" });
 
-    const deviceTypeOptions = uniqueDeviceTypes.map((deviceTypeId) => {
-        const deviceType = deviceTypes.find((deviceType) => deviceType._id === deviceTypeId);
-        return { label: deviceType.deviceName, value: deviceType._id };
-    });
+    const deviceTypeOptions = !isDeviceTypeLoading
+        ? uniqueDeviceTypes.map((deviceTypeId) => {
+              const deviceType = deviceTypes?.find((deviceType) => deviceType._id === deviceTypeId);
+              return { label: deviceType.deviceName, value: deviceType._id };
+          })
+        : [];
     deviceTypeOptions.unshift({ value: "all", label: "הכל" });
     return (
         <CustomCard
             title='מכשירים בבצ"פ'
             action={
                 <Space size="small">
-                    {/* <FilterMenu
+                    <FilterMenu
                         filtersConfig={[
                             {
                                 name: "unit",
@@ -254,8 +267,9 @@ const ArrivedDevices = () => {
                                 name: "classified",
                                 label: "מסווג",
                                 type: "radio",
-                                value: null, // Could be true for classified, false for non-classified, null for all
+                                value: "all", 
                                 options: [
+                                    { label: "הכל", value: "all" },
                                     { label: "מסווג", value: true },
                                     { label: "לא מסווג", value: false },
                                 ],
@@ -268,14 +282,10 @@ const ArrivedDevices = () => {
                                 options: deviceTypeOptions,
                             },
                         ]}
-                        clearAllFilters={() => {
-                            alert("clear");
-                        }}
-                        onFilterChange={(data) => {
-                            alert(JSON.stringify(data));
-                        }}
-                    /> */}
-                    {selectedRows.length > 0 && !areClassifiedAndNonClassifiedSelected() && (
+                        clearAllFilters={() => setFilters(initialState)}
+                        onFilterChange={setFilters}
+                    />
+                    {selectedRows.length > 0 && !areClassifiedAndNonClassifiedSelected(devices, selectedRows) && (
                         <CustomButton type="light-info" onClick={showModalChangeStatus} iconPosition="end" icon={<SwapOutlined />}>
                             שנה סטטוס
                         </CustomButton>

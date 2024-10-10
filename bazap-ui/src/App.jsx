@@ -3,14 +3,14 @@ import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } 
 import ErrorPage from "./Components/Layout/ErrorPage/ErrorPage";
 import Theme from "./Components/Layout/Theme";
 import { CustomModalProvider } from "./Components/store/CustomModalContext";
-import { ProjectProvider } from "./Components/store/ProjectContext";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { useUserAlert } from "./Components/store/UserAlertContext";
 import { AdminAuthProvider } from "./Components/store/AdminAuthContext";
 import RootLayout from "./Components/Layout/RootLayout";
 import CssImporter from "./Components/UI/CssImporter";
-import NewVoucherPage from "./Pages/ProjectList/Project/NewVoucerPage";
+import ProjectDashBoardPage from "./Pages/ProjectList/Project/ProjectDashBoardPage";
+import NewVoucherPage from "./Pages/ProjectList/Project/VoucherPage/NewVoucherPage";
 
 const DeviceType = lazy(() => import("./Pages/DeviceType/DeviceType"));
 const Unit = lazy(() => import("./Pages/Unit/Unit"));
@@ -26,6 +26,7 @@ const router = createBrowserRouter(
             <Route path="Project" element={<ProjectsList />} />
             <Route path="Project/:id" element={<Project />} />
             <Route path="Project/:id/Voucher/:voucherType" element={<NewVoucherPage />} />
+            <Route path="Project/:id/Dashboard" element={<ProjectDashBoardPage />} />
             <Route path="Unit" element={<Unit />} />
             <Route path="Technician" element={<Technician />} />
         </Route>,
@@ -57,13 +58,11 @@ function App() {
         <QueryClientProvider client={queryClient}>
             <Theme>
                 <CssImporter />
-                <ProjectProvider>
-                    <AdminAuthProvider>
-                        <CustomModalProvider>
-                            <RouterProvider router={router} />
-                        </CustomModalProvider>
-                    </AdminAuthProvider>
-                </ProjectProvider>
+                <AdminAuthProvider>
+                    <CustomModalProvider>
+                        <RouterProvider router={router} />
+                    </CustomModalProvider>
+                </AdminAuthProvider>
                 <ReactQueryDevtools initialIsOpen={false} />
             </Theme>
         </QueryClientProvider>

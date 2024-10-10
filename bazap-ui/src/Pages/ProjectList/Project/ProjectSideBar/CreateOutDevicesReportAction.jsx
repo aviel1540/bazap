@@ -1,11 +1,11 @@
 import ArrowOutwardIcon from "@mui/icons-material/ArrowOutward";
 import { ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useUserAlert } from "../../../../Components/store/UserAlertContext";
 import { createExcel } from "../../../../Utils/excelUtils";
 import { dateTostring, sortDevices } from "../../../../Utils/utils";
 import { useProject } from "../../../../Components/store/ProjectContext";
-import { getAllProductsInProject, getProjectData } from "../../../../Utils/projectAPI";
+import { getAllProductsInProject } from "../../../../Utils/projectAPI";
 
 const getAllDevicesInProjectAction = async (projectId) => {
     const devices = await getAllProductsInProject({ queryKey: [null, projectId] });
@@ -14,12 +14,7 @@ const getAllDevicesInProjectAction = async (projectId) => {
 };
 
 const CreateOutDevicesReportAction = () => {
-    const { projectId } = useProject();
-    const { data: project } = useQuery({
-        queryKey: ["project", projectId],
-        queryFn: getProjectData,
-        enabled: projectId !== null,
-    });
+    const { projectId, project } = useProject();
     const { onAlert, warning } = useUserAlert();
     const getAllDevicesOutMutation = useMutation(getAllDevicesInProjectAction, {
         onSuccess: (devices) => {

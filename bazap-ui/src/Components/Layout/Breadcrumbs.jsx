@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { Breadcrumb } from "antd";
 import { Link, useLocation } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { getAllProjects } from "../../Utils/projectAPI";
+import { useProject } from "../store/ProjectContext";
 
 const breadcrumbNameMap = {
     "/": "דף הבית",
@@ -15,18 +14,10 @@ const breadcrumbNameMap = {
 const Breadcrumbs = () => {
     const location = useLocation();
     const [breadcrumbItems, setBreadcrumbItems] = useState([]);
-    const { isLoading, data: projects } = useQuery({
-        queryKey: ["projects"],
-        queryFn: getAllProjects,
-    });
-
-    const fetchProjectNameById = async (id) => {
-        const project = projects.find((project) => project._id === id);
-        return project ? project.projectName : "Unknown Project";
-    };
+    const { projectId, project, isLoading } = useProject();
 
     useEffect(() => {
-        if (!isLoading && projects) {
+        if (!isLoading || projectId == null) {
             const generateBreadcrumbItems = async () => {
                 const pathSnippets = location.pathname.split("/").filter((i) => i);
                 const extraBreadcrumbItems = [];
@@ -38,12 +29,15 @@ const Breadcrumbs = () => {
                     // Special handling for dynamic paths like 'Project/:id'
                     if (url.startsWith("/Project/") && i === 1) {
                         const projectId = pathSnippets[1]; // Get the actual project ID from the path
-                        breadcrumbName = await fetchProjectNameById(projectId);
+                        breadcrumbName = project?.projectName;
                         url = `/Project/${projectId}`; // Correct URL without duplication
                     }
 
                     if (url.includes("/Voucher")) {
                         breadcrumbName = "שובר חדש"; // Display "שובר חדש" for voucher page
+                    }
+                    if (url.includes("/Dashboard")) {
+                        breadcrumbName = "נתוני פרוייקט"; // Display "שובר חדש" for voucher page
                     }
 
                     extraBreadcrumbItems.push({
@@ -57,7 +51,7 @@ const Breadcrumbs = () => {
 
             generateBreadcrumbItems();
         }
-    }, [location, isLoading, projects]);
+    }, [location, isLoading]);
 
     return (
         <>

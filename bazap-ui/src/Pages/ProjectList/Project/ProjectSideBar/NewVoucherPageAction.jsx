@@ -1,23 +1,22 @@
+import AddIcon from "@mui/icons-material/Add";
 import { ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
-import AnalyticsIcon from "@mui/icons-material/Analytics";
 import { useNavigate } from "react-router-dom";
 
-const ProjectDashBoard = () => {
+const NewVoucherPageAction = () => {
     const navigate = useNavigate();
-    const handleClick = () => {
-        navigate("Dashboard");
+    const addVoucher = () => {
+        navigate(`Voucher/false`);
     };
-
     return (
         <ListItem disablePadding>
-            <ListItemButton onClick={handleClick}>
+            <ListItemButton onClick={addVoucher}>
                 <ListItemIcon>
-                    <AnalyticsIcon />
+                    <AddIcon />
                 </ListItemIcon>
-                <ListItemText primary="נתוני פרוייקט" />
+                <ListItemText primary="הוסף שובר קבלה" />
             </ListItemButton>
         </ListItem>
     );
 };
 
-export default ProjectDashBoard;
+export default NewVoucherPageAction;

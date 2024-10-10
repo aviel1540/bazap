@@ -116,11 +116,11 @@ exports.getAllVouchersInProject = async (req, res) => {
         if (!project) {
             return res.status(404).json({ message: "לא נמצא פרויקט" });
         }
-        const vouchersList = project.vouchersList;
-        vouchersList.sort((a, b) => {
+        const vouchers = await voucherService.getVouchersByProject(checkProjectId);
+        vouchers.sort((a, b) => {
             return parseInt(b.voucherNumber) - parseInt(a.voucherNumber);
         });
-        return res.status(200).json(vouchersList);
+        return res.status(200).json(vouchers);
     } catch (err) {
         return res.status(500).json({ message: err.message });
     }
@@ -274,16 +274,15 @@ const createVoucher = async (detailes, type, checkProjectId) => {
     return { newVoucher, autoNumber };
 };
 
-
 exports.updateVoucherDevices = async (req, res) => {
-    const voucherId = escape(req.params.voucherId)
+    const voucherId = escape(req.params.voucherId);
     const devicesData = req.body.devicesData;
     const accessoriesData = req.body.accessoriesData;
     let voucher;
     try {
         const checkVoucherId = validation.addSlashes(voucherId);
 
-        voucher = await voucherService.findVoucherById(checkVoucherId)
+        voucher = await voucherService.findVoucherById(checkVoucherId);
         if (!voucher) return res.status(404).json({ message: "לא נמצא שובר" });
 
         if (
@@ -346,7 +345,7 @@ exports.updateVoucherDevices = async (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: err.message });
     }
-}
+};
 
 
 exports.changeVoucherProject = async (req, res) => {
