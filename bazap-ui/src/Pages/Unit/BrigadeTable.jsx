@@ -4,44 +4,46 @@ import { Table, Typography } from "antd";
 import CustomDropDown from "../../Components/UI/CustomDropDown";
 const { Text } = Typography;
 import { useUserAlert } from "../../Components/store/UserAlertContext";
-import { deleteUnit, getAllUnits } from "../../Utils/unitAPI";
+import { deleteBrigade, getAllBrigades } from "../../Utils/brigadeAPI";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EmptyData from "../../Components/UI/EmptyData";
 import TableLoader from "../../Components/Loaders/TableLoader";
 
-const UnitTable = ({ onEdit, searchQuery }) => {
+const BrigadeTable = ({ onEdit, searchQuery }) => {
     const queryClient = useQueryClient();
     const { onConfirm } = useUserAlert();
-    const { isLoading, data: units } = useQuery({
-        queryKey: ["units"],
-        queryFn: getAllUnits,
+    const { isLoading, data: brigades } = useQuery({
+        queryKey: ["brigades"],
+        queryFn: getAllBrigades,
     });
 
-    const filteredUnits = units?.filter((unit) => unit.unitsName.toLowerCase().includes(searchQuery.toLowerCase()));
+    const filteredBrigades = brigades?.filter((brigade) => brigade.brigadeName.toLowerCase().includes(searchQuery.toLowerCase()));
 
-    const onEditUnitHandler = (id) => {
-        const unit = units.find((item) => item._id == id);
-        if (unit) {
-            onEdit(null, { unitName: unit.unitsName, id: unit._id });
+    const onEditBrigadeHandler = (id) => {
+        const brigade = brigades.find((item) => item._id == id);
+        if (brigade) {
+            onEdit(null, { brigadeName: brigade.brigadeName, id: brigade._id });
         }
     };
-    const onDeleteUnitHandler = (id) => {
+
+    const onDeleteBrigadeHandler = (id) => {
         const config = {
-            title: "האם אתה בטוח מעוניין למחוק את היחידה?",
+            title: "האם אתה בטוח מעוניין למחוק את החטיבה?",
             okHandler: () => {
-                deleteUnitMutation.mutate(id);
+                deleteBrigadeMutation.mutate(id);
             },
         };
         onConfirm(config);
     };
+
     const menuActions = [
         {
             key: "1",
             label: "ערוך",
             icon: <BorderColorIcon />,
             handler: (data) => {
-                onEditUnitHandler(data._id);
+                onEditBrigadeHandler(data._id);
             },
         },
         {
@@ -51,24 +53,25 @@ const UnitTable = ({ onEdit, searchQuery }) => {
             danger: true,
             icon: <DeleteIcon />,
             handler: (data) => {
-                onDeleteUnitHandler(data._id);
+                onDeleteBrigadeHandler(data._id);
             },
         },
     ];
+
     const columns = [
         {
-            title: "שם יחידה",
-            dataIndex: "unitsName",
-            key: "unitsName",
-            sorter: (a, b) => a.unitsName.localeCompare(b.unitsName),
+            title: "שם חטיבה",
+            dataIndex: "brigadeName",
+            key: "brigadeName",
+            sorter: (a, b) => a.brigadeName.localeCompare(b.brigadeName),
             render: (text) => <Text strong>{text}</Text>,
         },
         {
-            title: "חטיבה",
-            dataIndex: "brigade",
-            key: "brigade",
-            sorter: (a, b) => a.bridage?.brigadeName.localeCompare(b.brigade?.brigadeName),
-            render: (_, row) => <Text>{row?.brigade?.brigadeName}</Text>,
+            title: "אוגדה",
+            dataIndex: "division",
+            key: "division",
+            sorter: (a, b) => a.division?.division_name.localeCompare(b.division?.division_name),
+            render: (_, row) => <Text>{row?.division?.division_name}</Text>,
         },
         {
             title: "פעולות",
@@ -78,9 +81,10 @@ const UnitTable = ({ onEdit, searchQuery }) => {
             render: (_, row) => <CustomDropDown key={row._id} actions={menuActions} data={row} />,
         },
     ];
-    const deleteUnitMutation = useMutation(deleteUnit, {
+
+    const deleteBrigadeMutation = useMutation(deleteBrigade, {
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["units"] });
+            queryClient.invalidateQueries({ queryKey: ["brigades"] });
         },
     });
 
@@ -90,8 +94,8 @@ const UnitTable = ({ onEdit, searchQuery }) => {
 
     return (
         <Table
-            locale={{ emptyText: <EmptyData label="אין יחידות להצגה" /> }}
-            dataSource={filteredUnits}
+            locale={{ emptyText: <EmptyData label="אין חטיבות להצגה" /> }}
+            dataSource={filteredBrigades}
             size="small"
             columns={columns}
             rowKey={(record) => record._id}
@@ -99,9 +103,9 @@ const UnitTable = ({ onEdit, searchQuery }) => {
     );
 };
 
-UnitTable.propTypes = {
+BrigadeTable.propTypes = {
     onEdit: propTypes.func.isRequired,
     searchQuery: propTypes.string,
 };
 
-export default UnitTable;
+export default BrigadeTable;

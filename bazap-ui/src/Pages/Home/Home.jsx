@@ -1,8 +1,8 @@
-import ClosedProjects from "./Projects/ClosedProjects";
+import HomeDashboard from "./HomeDashbaord";
 function Home() {
     return (
         <>
-            <ClosedProjects />
+            <HomeDashboard />
         </>
     );
 }

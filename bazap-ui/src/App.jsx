@@ -11,6 +11,7 @@ import RootLayout from "./Components/Layout/RootLayout";
 import CssImporter from "./Components/UI/CssImporter";
 import ProjectDashBoardPage from "./Pages/ProjectList/Project/ProjectDashBoardPage";
 import NewVoucherPage from "./Pages/ProjectList/Project/VoucherPage/NewVoucherPage";
+import Datafix from "./Pages/Datafix";
 
 const DeviceType = lazy(() => import("./Pages/DeviceType/DeviceType"));
 const Unit = lazy(() => import("./Pages/Unit/Unit"));
@@ -24,8 +25,9 @@ const router = createBrowserRouter(
             <Route index element={<Home />} />
             <Route path="DeviceType" element={<DeviceType />} />
             <Route path="Project" element={<ProjectsList />} />
+            <Route path="Datafix" element={<Datafix />} />
             <Route path="Project/:id" element={<Project />} />
-            <Route path="Project/:id/Voucher/:voucherType" element={<NewVoucherPage />} />
+            <Route path="Project/:id/Voucher/" element={<NewVoucherPage />} />
             <Route path="Project/:id/Dashboard" element={<ProjectDashBoardPage />} />
             <Route path="Unit" element={<Unit />} />
             <Route path="Technician" element={<Technician />} />
@@ -41,14 +43,17 @@ function App() {
                 networkMode: "always",
                 staleTime: 300000,
                 onError: ({ message }) => {
-                    onAlert(message, error);
+                    onAlert(message, error, true);
                 },
             },
             mutations: {
                 networkMode: "always",
                 staleTime: 300000,
+                onSuccess: ({ message }) => {
+                    onAlert(message, "success", true);
+                },
                 onError: ({ message }) => {
-                    onAlert(message, error);
+                    onAlert(message, error, true);
                 },
             },
         },

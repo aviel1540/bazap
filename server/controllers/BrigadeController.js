@@ -1,7 +1,7 @@
 const escape = require("escape-html");
 const validation = require("../utils/validation");
-const brigadeServices = require("../services/brigadeServices")
-const unitServices = require("../services/unitsServices")
+const brigadeServices = require("../services/brigadeServices");
+const unitServices = require("../services/unitsServices");
 const divisionServices = require("../services/divisionServices");
 
 exports.getAllBrigades = async (req, res) => {
@@ -13,11 +13,10 @@ exports.getAllBrigades = async (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: err.message });
     }
-}
-
+};
 
 exports.getBrigadeById = async (req, res) => {
-    const brigadeId = escape(req.params.brigadeId)
+    const brigadeId = escape(req.params.brigadeId);
     let brigade;
     try {
         if (!brigadeId) return res.status(400).json({ message: "יש למלא את השדות" });
@@ -28,31 +27,32 @@ exports.getBrigadeById = async (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: err.message });
     }
-
-}
-
+};
 
 exports.addNewBrigade = async (req, res) => {
-    const divisionId = escape(req.params.divisionId)
-    const brigadeName = escape(req.body.brigadeName)
+    const divisionId = escape(req.params.divisionId);
+    const brigadeName = escape(req.body.brigadeName);
+
     let division;
     let brigade;
     let unit;
     try {
-        if (!brigadeName) return res.status(400).json({ message: "יש להזין שם חטיבה" })
-        const checkDivisionId = validation.addSlashes(divisionId)
-        division = await divisionServices.findDivisionById(checkDivisionId)
-        if (!division) return res.status(404).json({ message: "לא נמצאה אוגדה" })
-        const checkBrigadeName = validation.addSlashes(brigadeName)
-        const brigadeExists = await brigadeServices.findBrigadeByName(checkBrigadeName)
-        if (brigadeExists) return res.status(401).json({ message: "שם החטיבה קיים במערכת" })
+        if (!brigadeName) return res.status(400).json({ message: "יש להזין שם חטיבה" });
+        const checkDivisionId = validation.addSlashes(divisionId);
+        division = await divisionServices.findDivisionById(checkDivisionId);
+        if (!division) return res.status(404).json({ message: "לא נמצאה אוגדה" });
+        const checkBrigadeName = validation.addSlashes(brigadeName);
+        const brigadeExists = await brigadeServices.findBrigadeByName(checkBrigadeName);
+        if (brigadeExists) return res.status(401).json({ message: "שם החטיבה קיים במערכת" });
+
         const brigadeUnitNumber = checkBrigadeName.match(/\d+/)[0];
-        const brigadeNewName = "חטיבה " + brigadeUnitNumber
-        brigade = await brigadeServices.addBrigade(brigadeNewName)
-        const unitName = "מפחט " + brigadeUnitNumber
-        unit = await unitServices.addUnit(unitName)
-        brigade.unitsList.push(unit)
-        division.brigadesList.push(brigade)
+        const brigadeNewName = "חטיבה " + brigadeUnitNumber;
+        const birgadeData = { brigadeName: brigadeNewName, division: checkDivisionId };
+        brigade = await brigadeServices.addBrigade(birgadeData);
+        const unitName = 'מפח"ט ' + brigadeUnitNumber;
+        unit = await unitServices.addUnit(unitName);
+        brigade.unitsList.push(unit);
+        division.brigadesList.push(brigade);
         await division.save();
         await brigade.save();
         await unit.save();
@@ -60,8 +60,7 @@ exports.addNewBrigade = async (req, res) => {
     } catch (err) {
         return res.status(500).json({ message: err.message });
     }
-}
-
+};
 
 // exports.updateBrigadeName = async (req, res) => {
 //     const brigadeId = escape(req.params.brigadeId);
@@ -76,7 +75,6 @@ exports.addNewBrigade = async (req, res) => {
 //     }
 // }
 
-
 exports.deleteBrigade = async (req, res) => {
     const brigadeId = escape(req.params.brigadeId);
     let brigade;
@@ -84,11 +82,11 @@ exports.deleteBrigade = async (req, res) => {
         if (!brigadeId) return res.status(400).json({ message: "יש למלא את השדות" });
         const checkBrigadeId = validation.addSlashes(brigadeId);
         brigade = await brigadeServices.findBrigadeById(checkBrigadeId);
-        if(!brigade) return res.status(404).json({message:"לא נמצאה חטיבה"})
-        if(brigade.unitsList.length > 0) return res.status(400).json({message:"קיימים גדודים תחת החטיבה"})
+        if (!brigade) return res.status(404).json({ message: "לא נמצאה חטיבה" });
+        if (brigade.unitsList.length > 0) return res.status(400).json({ message: "קיימים גדודים תחת החטיבה" });
         await brigadeServices.deleteBrigade(checkBrigadeId);
-        return res.status(200).json({message:"החטיבה נמחקה בהצלחה"});
+        return res.status(200).json({ message: "החטיבה נמחקה בהצלחה" });
     } catch (err) {
         return res.status(500).json({ message: err.message });
     }
-}
+};

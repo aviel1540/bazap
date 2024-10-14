@@ -23,7 +23,7 @@ export const ProjectProvider = ({ children }) => {
     } = useQuery({
         queryKey: ["project", projectId],
         queryFn: getProjectData,
-        enabled: projectId !== null,
+        enabled: projectId !== null && projectId !== undefined,
     });
     const {
         isLoading: isLoadingDevices,
@@ -32,7 +32,7 @@ export const ProjectProvider = ({ children }) => {
     } = useQuery({
         queryKey: ["devicesInProject", projectId],
         queryFn: getAllProductsInProject,
-        enabled: projectId !== null,
+        enabled: projectId !== null && projectId !== undefined,
     });
     const refetchAll = () => {
         refetchDevices();

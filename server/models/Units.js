@@ -7,6 +7,10 @@ const unitsSchema = new Schema({
         trim: true,
         required: true,
     },
+    brigade: {
+        type: Schema.Types.ObjectId,
+        ref: "Brigade",
+    },
 });
 
 const UnitsType = mongoose.model("Units", unitsSchema);

@@ -10,7 +10,8 @@ export const getAllUnits = async () => {
 };
 
 export const addUnit = async (unit) => {
-    return await unitAPI.post("add-new-unit", unit);
+    
+    return await unitAPI.post(`add-new-unit/${unit.brigade}`, unit);
 };
 
 export const deleteUnit = async (deleteUnit) => {

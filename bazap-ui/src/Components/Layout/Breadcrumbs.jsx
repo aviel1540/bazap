@@ -9,6 +9,8 @@ const breadcrumbNameMap = {
     "/Project": "רשימת פרוייקטים",
     "/Unit": "יחידות",
     "/Technician": "טכנאים",
+    "/Voucher": "שובר חדש",
+    "/Dashboard": "נתוני פרוייקט",
 };
 
 const Breadcrumbs = () => {
@@ -24,26 +26,22 @@ const Breadcrumbs = () => {
 
                 for (let i = 0; i < pathSnippets.length; i++) {
                     let url = `/${pathSnippets.slice(0, i + 1).join("/")}`;
-                    let breadcrumbName = breadcrumbNameMap[url] || pathSnippets[i];
+                    if (Object.keys(breadcrumbNameMap).includes(`/${pathSnippets[i]}`) || url.startsWith("/Project/")) {
+                        let breadcrumbName = breadcrumbNameMap[url] || breadcrumbNameMap[`/${pathSnippets[i]}`];
 
-                    // Special handling for dynamic paths like 'Project/:id'
-                    if (url.startsWith("/Project/") && i === 1) {
-                        const projectId = pathSnippets[1]; // Get the actual project ID from the path
-                        breadcrumbName = project?.projectName;
-                        url = `/Project/${projectId}`; // Correct URL without duplication
+                        // Special handling for dynamic paths like 'Project/:id'
+                        if (url.startsWith("/Project/") && i === 1) {
+                            const projectId = pathSnippets[1];
+                            breadcrumbName = "פרוייקט: " + project?.projectName;
+                            url = `/Project/${projectId}`;
+                        }
+                        if (breadcrumbName) {
+                            extraBreadcrumbItems.push({
+                                path: url,
+                                title: breadcrumbName,
+                            });
+                        }
                     }
-
-                    if (url.includes("/Voucher")) {
-                        breadcrumbName = "שובר חדש"; // Display "שובר חדש" for voucher page
-                    }
-                    if (url.includes("/Dashboard")) {
-                        breadcrumbName = "נתוני פרוייקט"; // Display "שובר חדש" for voucher page
-                    }
-
-                    extraBreadcrumbItems.push({
-                        path: url,
-                        title: breadcrumbName,
-                    });
                 }
 
                 setBreadcrumbItems(extraBreadcrumbItems);

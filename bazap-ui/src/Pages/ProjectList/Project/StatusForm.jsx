@@ -1,14 +1,10 @@
-import KeyboardDoubleArrowLeftIcon from "@mui/icons-material/KeyboardDoubleArrowLeft";
-import { FormControl, Stack, TextField } from "@mui/material";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import PropTypes, { object } from "prop-types";
-import { useForm } from "react-hook-form";
-import ControlledInput from "../../../Components/UI/CustomForm/ControlledInput";
+import PropTypes from "prop-types";
 import { useProject } from "../../../Components/store/ProjectContext";
 import { DeviceStatuses } from "../../../Utils/utils";
 import { updateStatus as deviceUpdateStatus } from "../../../Utils/deviceApi";
 import { updateStatus as accessoryUpdateStatus } from "../../../Utils/accessoryAPI";
-import CustomForm from "../../../Components/UI/CustomForm/CustomForm";
+import GenericForm from "../../../Components/UI/Form/GenericForm/GenericForm";
 
 const statuses = Object.values(DeviceStatuses);
 const devicesStatuses = statuses.filter(
@@ -24,14 +20,12 @@ const devicesStatuses = statuses.filter(
 const accessoriesStatuses = [DeviceStatuses.WAIT_TO_WORK, DeviceStatuses.AT_WORK, DeviceStatuses.FINISHED];
 const convertStringToOptions = (options) =>
     options.map((option) => {
-        return { value: option, text: option };
+        return { label: option, value: option };
     });
 
-const StatusForm = ({ status, onCancel, devices, clearSelectedRows, isClassified }) => {
+const StatusForm = ({ onCancel, formValues = null, open, clearSelectedRows }) => {
     const { projectId, refetchAll } = useProject();
     const queryClient = useQueryClient();
-    const methods = useForm();
-    const { getValues, control, trigger } = methods;
 
     const updateDeviceStatusMutation = useMutation(deviceUpdateStatus, {
         onSuccess: () => {
@@ -49,53 +43,44 @@ const StatusForm = ({ status, onCancel, devices, clearSelectedRows, isClassified
         },
     });
 
-    const handelSave = async () => {
-        const result = await trigger("status");
-        if (result) {
-            devices.map((selectedDevice) => {
-                const device = getValues();
-                if (isClassified) {
-                    updateDeviceStatusMutation.mutate({ id: selectedDevice._id, status: device.status });
-                } else {
-                    updateAccesoryStatusMutation.mutate({ id: selectedDevice._id, status: device.status });
-                }
-            });
-            onCancel();
-        }
+    const handelSave = async (values) => {
+        const { devices, status, isClassified } = values;
+        devices.map((selectedDevice) => {
+            if (isClassified) {
+                updateDeviceStatusMutation.mutate({ id: selectedDevice._id, status: status });
+            } else {
+                updateAccesoryStatusMutation.mutate({ id: selectedDevice._id, status: status });
+            }
+        });
+        onCancel();
     };
 
-    const newStatusInputObj = [
+    const fields = [
         {
             label: "סטטוס חדש",
             name: "status",
             type: "select",
-            validators: {
-                required: "יש למלא שדה זה.",
-            },
-            options: convertStringToOptions(isClassified ? devicesStatuses : accessoriesStatuses),
+            rules: [{ required: true, message: "יש למלא שדה זה." }],
+            options: convertStringToOptions(formValues.isClassified ? devicesStatuses : accessoriesStatuses),
         },
     ];
-
     return (
-        <CustomForm onSubmit={handelSave} onCancel={onCancel} isLoading={false}>
-            <Stack direction="row" p={3} justifyContent="center" alignItems="center">
-                <TextField disabled id="outlined-disabled" label="סטטוס נוכחי" defaultValue={status} />
-                <KeyboardDoubleArrowLeftIcon fontSize="large" color="success" />
-                <FormControl fullWidth>
-                    {newStatusInputObj.map((input) => (
-                        <ControlledInput key={input.name} {...input} control={control} />
-                    ))}
-                </FormControl>
-            </Stack>
-        </CustomForm>
+        <GenericForm
+            fields={fields}
+            onSubmit={handelSave}
+            onCancel={onCancel}
+            initialValues={formValues}
+            title="שינוי סטטוס"
+            visible={open}
+            isLoading={updateDeviceStatusMutation.isLoading || updateAccesoryStatusMutation.isLoading}
+        />
     );
 };
 
 StatusForm.propTypes = {
     onCancel: PropTypes.func.isRequired,
-    status: PropTypes.string,
-    isClassified: PropTypes.bool,
-    devices: PropTypes.arrayOf(object).isRequired,
+    formValues: PropTypes.object,
+    open: PropTypes.bool,
     clearSelectedRows: PropTypes.func.isRequired,
 };
 

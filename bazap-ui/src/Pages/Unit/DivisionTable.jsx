@@ -4,44 +4,46 @@ import { Table, Typography } from "antd";
 import CustomDropDown from "../../Components/UI/CustomDropDown";
 const { Text } = Typography;
 import { useUserAlert } from "../../Components/store/UserAlertContext";
-import { deleteUnit, getAllUnits } from "../../Utils/unitAPI";
+import { deleteDivision, getAllDivisions } from "../../Utils/divisionAPI";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EmptyData from "../../Components/UI/EmptyData";
 import TableLoader from "../../Components/Loaders/TableLoader";
 
-const UnitTable = ({ onEdit, searchQuery }) => {
+const DivisionTable = ({ onEdit, searchQuery }) => {
     const queryClient = useQueryClient();
     const { onConfirm } = useUserAlert();
-    const { isLoading, data: units } = useQuery({
-        queryKey: ["units"],
-        queryFn: getAllUnits,
+    const { isLoading, data: divisions } = useQuery({
+        queryKey: ["divisions"],
+        queryFn: getAllDivisions,
     });
 
-    const filteredUnits = units?.filter((unit) => unit.unitsName.toLowerCase().includes(searchQuery.toLowerCase()));
+    const filteredDivisions = divisions?.filter((division) => division.division_name.toLowerCase().includes(searchQuery.toLowerCase()));
 
-    const onEditUnitHandler = (id) => {
-        const unit = units.find((item) => item._id == id);
-        if (unit) {
-            onEdit(null, { unitName: unit.unitsName, id: unit._id });
+    const onEditDivisionHandler = (id) => {
+        const division = divisions.find((item) => item._id == id);
+        if (division) {
+            onEdit(null, { division_name: division.division_name, id: division._id });
         }
     };
-    const onDeleteUnitHandler = (id) => {
+
+    const onDeleteDivisionHandler = (id) => {
         const config = {
-            title: "האם אתה בטוח מעוניין למחוק את היחידה?",
+            title: "האם אתה בטוח מעוניין למחוק את האוגדה?",
             okHandler: () => {
-                deleteUnitMutation.mutate(id);
+                deleteDivisionMutation.mutate(id);
             },
         };
         onConfirm(config);
     };
+
     const menuActions = [
         {
             key: "1",
             label: "ערוך",
             icon: <BorderColorIcon />,
             handler: (data) => {
-                onEditUnitHandler(data._id);
+                onEditDivisionHandler(data._id);
             },
         },
         {
@@ -51,24 +53,18 @@ const UnitTable = ({ onEdit, searchQuery }) => {
             danger: true,
             icon: <DeleteIcon />,
             handler: (data) => {
-                onDeleteUnitHandler(data._id);
+                onDeleteDivisionHandler(data._id);
             },
         },
     ];
+
     const columns = [
         {
-            title: "שם יחידה",
-            dataIndex: "unitsName",
-            key: "unitsName",
-            sorter: (a, b) => a.unitsName.localeCompare(b.unitsName),
+            title: "שם אוגדה",
+            dataIndex: "division_name",
+            key: "division_name",
+            sorter: (a, b) => a.division_name.localeCompare(b.division_name),
             render: (text) => <Text strong>{text}</Text>,
-        },
-        {
-            title: "חטיבה",
-            dataIndex: "brigade",
-            key: "brigade",
-            sorter: (a, b) => a.bridage?.brigadeName.localeCompare(b.brigade?.brigadeName),
-            render: (_, row) => <Text>{row?.brigade?.brigadeName}</Text>,
         },
         {
             title: "פעולות",
@@ -78,9 +74,10 @@ const UnitTable = ({ onEdit, searchQuery }) => {
             render: (_, row) => <CustomDropDown key={row._id} actions={menuActions} data={row} />,
         },
     ];
-    const deleteUnitMutation = useMutation(deleteUnit, {
+
+    const deleteDivisionMutation = useMutation(deleteDivision, {
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["units"] });
+            queryClient.invalidateQueries({ queryKey: ["divisions"] });
         },
     });
 
@@ -90,8 +87,8 @@ const UnitTable = ({ onEdit, searchQuery }) => {
 
     return (
         <Table
-            locale={{ emptyText: <EmptyData label="אין יחידות להצגה" /> }}
-            dataSource={filteredUnits}
+            locale={{ emptyText: <EmptyData label="אין אוגדות להצגה" /> }}
+            dataSource={filteredDivisions}
             size="small"
             columns={columns}
             rowKey={(record) => record._id}
@@ -99,9 +96,9 @@ const UnitTable = ({ onEdit, searchQuery }) => {
     );
 };
 
-UnitTable.propTypes = {
+DivisionTable.propTypes = {
     onEdit: propTypes.func.isRequired,
     searchQuery: propTypes.string,
 };
 
-export default UnitTable;
+export default DivisionTable;

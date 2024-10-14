@@ -2,19 +2,19 @@ import PropTypes from "prop-types";
 import { createContext, useContext, useState } from "react";
 import { isAdminAuthenticated, login, logout, validatePassword } from "../../Utils/passwordAPI";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Form, Input, Modal } from "antd";
+import GenericForm from "../UI/Form/GenericForm/GenericForm";
+import { useUserAlert } from "./UserAlertContext";
 
 // Create Admin Authentication Context
 const AdminAuthContext = createContext();
 const ONE_MINUTE = 60000;
 
 export const AdminAuthProvider = ({ children }) => {
-    const [isModalVisible, setIsModalVisible] = useState(false); // Controls modal visibility
+    const [open, setOpen] = useState(false); // Controls modal visibility
     const [authOption, setAuthOption] = useState("admin"); // Controls the auth option (either "admin" or "validate")
     const [resolveLoginPromise, setResolveLoginPromise] = useState(null); // Used to resolve the login promise
     const queryClient = useQueryClient();
-    const [form] = Form.useForm(); // Ant Design form handler
-
+    const { onAlert, error } = useUserAlert();
     // Query to check admin authentication status
     const { isLoading, data: isAuth } = useQuery({
         queryKey: ["isAdminAuth"],
@@ -24,8 +24,7 @@ export const AdminAuthProvider = ({ children }) => {
 
     // Handlers for closing modal and resetting form
     const handleCancel = () => {
-        setIsModalVisible(false);
-        form.resetFields();
+        setOpen(false);
         if (resolveLoginPromise) {
             resolveLoginPromise(false); // Reject the login attempt if canceled
         }
@@ -47,15 +46,12 @@ export const AdminAuthProvider = ({ children }) => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["isAdminAuth"] });
         },
-        onError: () => {
-            /* Handle logout error */
-        },
     });
 
     // Admin login handler (option 1)
     const loginHandler = (password) => {
         return new Promise((resolve, reject) => {
-            loginMutation.mutate(password, {
+            loginMutation.mutateAsync(password, {
                 onSuccess: (isValid) => {
                     if (isValid) {
                         queryClient.invalidateQueries({ queryKey: ["isAdminAuth"] });
@@ -81,71 +77,62 @@ export const AdminAuthProvider = ({ children }) => {
     };
 
     // Handle "OK" on modal
-    const handleOk = () => {
-        form.validateFields().then((values) => {
-            const { password } = values;
+    const handleOk = async (values) => {
+        const { password } = values;
 
-            // Check the auth option and call the appropriate handler
-            let resultPromise;
+        // Check the auth option and call the appropriate handler
+        let result;
 
-            if (authOption === "admin") {
-                resultPromise = loginHandler(password);
-            } else if (authOption === "validate") {
-                resultPromise = validatePasswordHandler(password);
-            }
-
-            resultPromise
-                .then((result) => {
-                    if (result) {
-                        setIsModalVisible(false);
-                        form.resetFields();
-                        if (resolveLoginPromise) {
-                            resolveLoginPromise(true); // Resolve the login promise with true
-                        }
-                    } else {
-                        form.setFields([
-                            {
-                                name: "password",
-                                errors: ["אימות סיסמא נכשל!"],
-                            },
-                        ]);
-                        if (resolveLoginPromise) {
-                            resolveLoginPromise(false); // Resolve the login promise with false
-                        }
-                    }
-                })
-                .catch(() => {
-                    form.setFields([
-                        {
-                            name: "password",
-                            errors: ["אימות סיסמא נכשל!"],
-                        },
-                    ]);
-                    if (resolveLoginPromise) {
-                        resolveLoginPromise(false); // Resolve the login promise with false
-                    }
-                });
-        });
+        if (authOption === "admin") {
+            result = await loginHandler(password);
+        } else if (authOption === "validate") {
+            result = await validatePasswordHandler(password);
+        }
+        if (result) {
+            setOpen(false);
+        } else {
+            onAlert("סיסמת מנהל שגויה!", error, true);
+        }
+        return result;
     };
 
     // Open login modal with admin authentication
     const onLogin = (option = "validate") => {
         return new Promise((resolve) => {
             setAuthOption(option);
-            setIsModalVisible(true);
+            setOpen(true);
             setResolveLoginPromise(() => resolve); // Store the resolve function for the login promise
         });
     };
 
     // Execute logout
     const onLogout = () => {
-        logoutMutation.mutate();
+        logoutMutation.mutateAsync();
     };
-
+    const fields = [
+        {
+            label: "סיסמא",
+            name: "password",
+            type: "password",
+            rules: [
+                { required: true, message: "יש למלא שדה זה." },
+                { min: 2, message: "שדה זה חייב לפחות 2 תווים" },
+            ],
+        },
+    ];
     return (
         <AdminAuthContext.Provider value={{ isAuth: isLoading ? undefined : isAuth, onLogin, onLogout }}>
             {children}
-            <Modal
+            <GenericForm
+                zIndex={2000}
+                title="התחבר כמנהל"
+                onSubmit={handleOk}
+                onCancel={handleCancel}
+                visible={open}
+                fields={fields}
+                isLoading={isLoading}
+            />
+            {/* <Modal
                 zIndex={2000}
                 title="התחבר כמנהל"
                 open={isModalVisible}
@@ -159,7 +146,7 @@ export const AdminAuthProvider = ({ children }) => {
                         <Input.Password />
                     </Form.Item>
                 </Form>
-            </Modal>
+            </Modal> */}
         </AdminAuthContext.Provider>
     );
 };

@@ -10,35 +10,36 @@ import { PlusOutlined } from "@ant-design/icons";
 import Loader from "../../../../Components/Layout/Loader";
 import UnitForm from "../../../Unit/UnitForm";
 import CustomButton from "../../../../Components/UI/CustomButton/CustomButton";
-import { addVoucherOut, exportVoucherToExcel } from "../../../../Utils/voucherApi";
+import { addVoucherIn, addVoucherOut, exportVoucherToExcel } from "../../../../Utils/voucherApi";
 import TechnicianForm from "../../../Technician/TechnicianForm";
-import { useNavigate, useParams } from "react-router";
-import AddVoucherAction from "../ProjectSideBar/AddVoucherAction";
+import { useLocation, useNavigate } from "react-router";
 import { useState } from "react";
 import GenericForm from "../../../../Components/UI/Form/GenericForm/GenericForm";
 import VoucherTabs from "./VoucherTabs";
+import VoucherDevices from "./VoucherDevices";
 
-const KABALA = "false"; // קבלה (Receipt)
-const NIPUK = "true"; // ניפוק (Issue)
+const KABALA = true;
+const NIPUK = false;
 
-const NewVoucherPage = ({ onCancel, formDefaultValues }) => {
+const NewVoucherPage = () => {
+    const location = useLocation();
+    const voucherType = location?.state?.voucherType;
+    const unit = location?.state?.unit;
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     const { projectId, project, isLoading: isProjectLoading } = useProject();
-    const { voucherType } = useParams();
     const [isUnitModalOpen, setIsUnitModalOpen] = useState(false);
     const [isTechnicianModalOpen, setIsTechnicianModalOpen] = useState(false);
-
-    // Fetch units and technicians using react-query
+    const formDefaultValues = { projectId, type: voucherType, unit };
     const { isLoading: isLoadingUnits, data: units } = useQuery({
         queryKey: ["units"],
         queryFn: getAllUnits,
     });
+
     const { isLoading: isLoadingTechnicians, data: technicians } = useQuery({
         queryKey: ["technicians"],
         queryFn: getAllTechnicians,
     });
-
     const unitOptions = sortOptions(units, "unitsName")?.map((unit) => ({
         value: unit._id,
         label: unit.unitsName,
@@ -49,8 +50,24 @@ const NewVoucherPage = ({ onCancel, formDefaultValues }) => {
         label: technician.techName,
     }));
 
-    const handleSave = (values) => {
-        alert(JSON.stringify(values));
+    const addVoucherMutation = useMutation(addVoucherIn, {
+        onSuccess: (data) => {
+            queryClient.invalidateQueries({ queryKey: ["vouchers", projectId] });
+            queryClient.invalidateQueries({ queryKey: ["devicesInProject", projectId] });
+            queryClient.invalidateQueries(["project", projectId]);
+            queryClient.invalidateQueries(["projects"]);
+            exportVoucherMutation.mutate(data.newVoucher._id);
+            navigateBack();
+            return true;
+        },
+    });
+
+    const handleSave = async (values) => {
+        if (voucherType == KABALA) {
+            return await addVoucherMutation.mutateAsync(values);
+        } else {
+            return await addVoucherOutMutation.mutateAsync(values);
+        }
     };
 
     const exportVoucherMutation = useMutation(exportVoucherToExcel, {});
@@ -58,17 +75,11 @@ const NewVoucherPage = ({ onCancel, formDefaultValues }) => {
         onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ["vouchers", projectId] });
             queryClient.invalidateQueries({ queryKey: ["devicesInProject", projectId] });
+            queryClient.invalidateQueries(["project", projectId]);
+            queryClient.invalidateQueries(["projects"]);
             exportVoucherMutation.mutate(data.newVoucher._id);
-            onCancel && onCancel();
-        },
-    });
-
-    const addVoucherMutation = useMutation(AddVoucherAction, {
-        onSuccess: (data) => {
-            queryClient.invalidateQueries({ queryKey: ["vouchers", projectId] });
-            queryClient.invalidateQueries({ queryKey: ["devicesInProject", projectId] });
-            exportVoucherMutation.mutate(data.newVoucher._id);
-            onCancel && onCancel();
+            navigateBack();
+            return true;
         },
     });
 
@@ -76,27 +87,36 @@ const NewVoucherPage = ({ onCancel, formDefaultValues }) => {
         addVoucherOutMutation.isLoading || addVoucherMutation.isLoading || isLoadingUnits || isLoadingTechnicians || isProjectLoading;
 
     const navigateBack = () => {
-        navigate(-1);
+        navigate(`/Project/${projectId}`);
     };
-
-    if (isProjectLoading) {
-        return <Loader />;
+    if (voucherType == undefined || voucherType == null) {
+        navigate(`/Project/${projectId}`);
     }
-
     const fields = [
-        {
-            name: "123",
-            label: "יחידה",
-            type: "text",
-            options: unitOptions,
-            rules: [{ required: true, message: "יש למלא שדה זה." }],
-            span: 23,
-            extra: (
-                <Tooltip title="הוסף יחידה חדשה">
-                    <CustomButton type="light-primary" onClick={() => setIsUnitModalOpen(true)} icon={<PlusOutlined />} />
-                </Tooltip>
-            ),
-        },
+        // {
+        //     name: "division",
+        //     label: "אוגדה",
+        //     type: "select",
+        //     options: unitOptions,
+        //     rules: [{ required: true, message: "יש למלא שדה זה." }],
+        //     span: 8,
+        // },
+        // {
+        //     name: "brigade",
+        //     label: "חטיבה",
+        //     type: "select",
+        //     options: unitOptions,
+        //     rules: [{ required: true, message: "יש למלא שדה זה." }],
+        //     span: 8,
+        // },
+        // {
+        //     name: "unit",
+        //     label: "יחידה",
+        //     type: "select",
+        //     options: unitOptions,
+        //     rules: [{ required: true, message: "יש למלא שדה זה." }],
+        //     span: 8,
+        // },
         {
             name: "unit",
             label: "יחידה",
@@ -139,16 +159,18 @@ const NewVoucherPage = ({ onCancel, formDefaultValues }) => {
         {
             name: "devicesData",
             type: "render",
-            render: (renderFields) => {
+            render: ({ renderFields, setDefaultValues }) => {
                 if (voucherType == KABALA) {
                     return <VoucherTabs key="devicesData" renderFields={renderFields} />;
                 } else {
-                    return <>asd</>;
+                    return <VoucherDevices key="voucherDevices" setDefaultValues={setDefaultValues} />;
                 }
             },
         },
     ];
-
+    if (isProjectLoading) {
+        return <Loader />;
+    }
     return (
         <>
             <Card title={`${voucherType == NIPUK ? "שובר ניפוק חדש" : "שובר קבלה חדש"} לפרוייקט - ${project.projectName}`}>
@@ -163,7 +185,6 @@ const NewVoucherPage = ({ onCancel, formDefaultValues }) => {
                     isLoading={isLoading}
                 />
             </Card>
-
             <UnitForm formValues={null} open={isUnitModalOpen} onCancel={() => setIsUnitModalOpen(false)} isEdit={false} />
             <TechnicianForm
                 formValues={null}

@@ -1,23 +1,24 @@
 const Brigade = require("../models/Brigade");
 
+exports.addBrigade = async (bridage) => {
+    return new Brigade({ brigadeName: bridage.brigadeName, division: bridage.division });
+};
 
-exports.addBrigade = async (brigadeUnitName) => {
-    return new Brigade({ brigadeName: brigadeUnitName });
-}
+exports.findBrigadeByName = async (brigadeName) => {
+    await Brigade.findOne({ brigadeName: brigadeName });
+};
 
-exports.findBrigadeByName = async (brigadeName) => { await Brigade.findOne({ brigadeName: brigadeName }) }
-
-exports.findAllBrigades = async () => await Brigade.find();
+exports.findAllBrigades = async () => await Brigade.find().populate("division");
 
 exports.findBrigadeById = async (checkBrigadeId) => await Brigade.findById(checkBrigadeId);
 
-exports.updateBrigadeNewName = async(request) => {
-    const {checkBrigadeId, brigadeNewName} = request;
+exports.updateBrigadeNewName = async (request) => {
+    const { checkBrigadeId, brigadeNewName } = request;
     return Brigade.findByIdAndUpdate(checkBrigadeId, {
-        brigadeName: brigadeNewName  
-    })
-}
+        brigadeName: brigadeNewName,
+    });
+};
 
-exports.deleteBrigade = async(brigadeId) => {
-    await Brigade.findByIdAndDelete(brigadeId)
-}
+exports.deleteBrigade = async (brigadeId) => {
+    await Brigade.findByIdAndDelete(brigadeId);
+};

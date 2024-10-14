@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef, Fragment } from "react";
 import PropTypes from "prop-types";
 import { MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
-import dayjs from "dayjs";
-import Loader from "../../../../Components/Layout/Loader";
 import { useAdminAuth } from "../../../store/AdminAuthContext";
 import CustomButton from "../../CustomButton/CustomButton";
 import {
@@ -22,6 +20,8 @@ import {
     Divider,
     Radio,
 } from "antd";
+import { convertInitialValuesToFormValues } from "./utils";
+let timeoutId = null;
 
 const { Step } = Steps;
 const GenericForm = ({
@@ -34,6 +34,7 @@ const GenericForm = ({
     initialValues,
     isLoading,
     isPasswordRequired,
+    zIndex = 1005,
     width = 800,
     isModal = true,
 }) => {
@@ -42,25 +43,28 @@ const GenericForm = ({
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { isAuth, onLogin } = useAdminAuth();
     const fieldsRef = useRef({});
-
+    const [disabledFields, setDisabledFields] = useState([]);
+    const [defaultValues, setDefaultValues] = useState({});
     useEffect(() => {
         if (visible && initialValues) {
-            const formattedInitialValues = Object.keys(initialValues).reduce((acc, key) => {
-                if (fields.find((field) => field.name === key && field.type === "date")) {
-                    acc[key] = dayjs(initialValues[key]);
-                } else {
-                    acc[key] = initialValues[key];
-                }
-                return acc;
-            }, {});
+            const formattedInitialValues = convertInitialValuesToFormValues(initialValues, fields);
             form.setFieldsValue(formattedInitialValues);
-        }
-        const firstField = fieldsRef.current[fields[0]?.name];
-        if (firstField && firstField.focus) {
-            firstField.focus(); // Focus on the first field
+            setDefaultValues(formattedInitialValues);
         }
     }, [visible, initialValues, form, fields]);
-
+    useEffect(() => {
+        if (visible) {
+            focusFirstField();
+        }
+    }, [visible]);
+    const focusFirstField = () => {
+        if (!isLoading && fields) {
+            const firstField = fieldsRef?.current[fields[0]?.name];
+            if (firstField && firstField.focus) {
+                firstField.focus();
+            }
+        }
+    };
     const handleClearErrors = () => {
         const fieldsWithErrors = form.getFieldsError();
         const fieldsWithoutErrors = fieldsWithErrors.map((field) => ({
@@ -70,10 +74,28 @@ const GenericForm = ({
         form.setFields(fieldsWithoutErrors);
     };
 
-    const fieldOnChangeHandler = (field, event) => {
+    const fieldOnChangeHandler = (field, event, parentField) => {
         if (field?.onChange) {
-            field.onChange(event.target.value, handleClearErrors);
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+            }
+            timeoutId = setTimeout(() => {
+                const data = {
+                    value: event.target.value,
+                    handleClearErrors,
+                    setDisabledField,
+                    field,
+                    form,
+                    parentField,
+                };
+                field.onChange(data);
+            }, 300);
         }
+    };
+
+    const handleRemoveField = (fieldToRemove, fieldName, remove) => {
+        remove(fieldToRemove);
+        setDisabledField(fieldName, false, true);
     };
 
     const setNestedFieldRef = (fieldName, subFieldName, node) => {
@@ -96,21 +118,25 @@ const GenericForm = ({
                 }
             }
         };
-
+        const fieldName = parentField ? parentField.name + "." + field.name : field.name;
+        const isDisabled = disabledFields.includes(fieldName);
         switch (field.type) {
             case "text":
-                return <Input ref={fieldRef} />;
+                return <Input ref={fieldRef} disabled={isDisabled} />;
+            case "password":
+                return <Input.Password ref={fieldRef} disabled={isDisabled} />;
             case "number":
-                return <InputNumber className="w-100" ref={fieldRef} />;
+                return <InputNumber className="w-100" disabled={isDisabled} ref={fieldRef} />;
             case "select":
                 return (
                     <Select
+                        disabled={isDisabled || field.disabled}
                         showSearch
                         allowClear
                         filterOption={(input, option) => option?.label.toLowerCase().includes(input.toLowerCase())}
                         onChange={(value) => {
                             form.setFieldValue(field.name, value);
-                            fieldOnChangeHandler(field, { target: { value } });
+                            fieldOnChangeHandler(field, { target: { value }, parentField });
                         }}
                         ref={fieldRef}
                     >
@@ -122,16 +148,20 @@ const GenericForm = ({
                     </Select>
                 );
             case "checkbox":
-                return <Checkbox ref={fieldRef}>{field.label}</Checkbox>;
+                return (
+                    <Checkbox ref={fieldRef} disabled={isDisabled}>
+                        {field.label}
+                    </Checkbox>
+                );
             case "date":
-                return <DatePicker ref={fieldRef} style={{ width: "100%" }} />;
+                return <DatePicker ref={fieldRef} className="w-100" disabled={isDisabled} />;
             case "autocomplete":
                 return (
                     <AutoComplete
-                        onChange={(data) => {
-                            if (field?.onChange) {
-                                field.onChange(data, handleClearErrors, field, parentField, form);
-                            }
+                        allowClear={true}
+                        disabled={isDisabled}
+                        onChange={(value) => {
+                            fieldOnChangeHandler(field, { target: { value } }, parentField);
                         }}
                         ref={fieldRef}
                         options={field.options}
@@ -167,7 +197,9 @@ const GenericForm = ({
                                             <Col span={1}>
                                                 <CustomButton
                                                     type="light-danger"
-                                                    onClick={() => remove(listField.name)}
+                                                    onClick={() =>
+                                                        handleRemoveField(listField.name, `${fieldName}[${listField.name}]`, remove)
+                                                    }
                                                     icon={<MinusCircleOutlined />}
                                                     block
                                                 />
@@ -194,7 +226,7 @@ const GenericForm = ({
                         size="large"
                         block
                         optionType="button"
-                        onChange={(event) => fieldOnChangeHandler(field, event)}
+                        onChange={(event) => fieldOnChangeHandler(field, event, parentField)}
                         className="d-flex"
                         buttonStyle="solid"
                         ref={fieldRef}
@@ -207,7 +239,7 @@ const GenericForm = ({
                     </Radio.Group>
                 );
             case "render":
-                return <Fragment key={field.name}>{field.render(renderFields)}</Fragment>;
+                return <Fragment key={field.name}>{field.render({ renderFields, form, setDefaultValues })}</Fragment>;
             default:
                 return null;
         }
@@ -224,12 +256,15 @@ const GenericForm = ({
                 }
             }
 
-            onSubmit(values);
             setIsSubmitting(true);
-            form.resetFields();
-            setCurrentStep(0);
+            const result = await onSubmit({ ...defaultValues, ...values });
+            if (result) {
+                form.resetFields();
+                setCurrentStep(0);
+            }
         } catch (error) {
-            console.error("Validation failed:", error);
+            // onAlert(error.message, "error", true);
+            console.log(error.message);
         } finally {
             setIsSubmitting(false);
         }
@@ -261,7 +296,7 @@ const GenericForm = ({
         const currentFields = overrideFields || (steps ? steps[currentStep].fields : fields);
         return (
             <Row gutter={16} align="middle">
-                {currentFields.map((field) => {
+                {currentFields?.map((field) => {
                     const fieldSpan = field.span || 24;
                     const extraSpan = field.extra ? 24 - fieldSpan : 0;
                     return (
@@ -331,12 +366,24 @@ const GenericForm = ({
             </Space>
         );
     };
+    const setDisabledField = (fieldName, isDisabled, isList = false) => {
+        setDisabledFields((prevDisabledFields) => {
+            if (isDisabled) {
+                return [...prevDisabledFields, fieldName];
+            } else {
+                if (isList) {
+                    return prevDisabledFields.filter((field) => !field.startsWith(fieldName));
+                } else {
+                    return prevDisabledFields.filter((field) => field !== fieldName);
+                }
+            }
+        });
+    };
 
     const formContent = (
         <Form form={form} onFinish={handleSubmit} layout="vertical">
-            {isLoading && <Loader />}
-            {!isLoading && renderSteps()}
-            {!isLoading && renderFields()}
+            {renderSteps()}
+            {renderFields()}
             <Divider className="my-3 mt-2" />
             <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}>{renderButtons()}</div>
         </Form>
@@ -345,7 +392,17 @@ const GenericForm = ({
     return (
         <>
             {isModal ? (
-                <Modal title={title} open={visible} onCancel={handleCancel} footer={null} width={width}>
+                <Modal
+                    title={title}
+                    zIndex={zIndex}
+                    open={visible}
+                    onCancel={handleCancel}
+                    footer={null}
+                    width={width}
+                    afterOpenChange={(open) => {
+                        if (open) focusFirstField();
+                    }}
+                >
                     {formContent}
                 </Modal>
             ) : (
@@ -359,8 +416,18 @@ GenericForm.propTypes = {
     fields: PropTypes.arrayOf(
         PropTypes.shape({
             name: PropTypes.string.isRequired,
-            type: PropTypes.oneOf(["text", "number", "select", "checkbox", "date", "autocomplete", "list", "radiobutton", "render"])
-                .isRequired,
+            type: PropTypes.oneOf([
+                "text",
+                "password",
+                "number",
+                "select",
+                "checkbox",
+                "date",
+                "autocomplete",
+                "list",
+                "radiobutton",
+                "render",
+            ]).isRequired,
             label: PropTypes.string,
             options: PropTypes.arrayOf(
                 PropTypes.shape({
@@ -404,6 +471,7 @@ GenericForm.propTypes = {
     initialValues: PropTypes.object,
     isLoading: PropTypes.bool.isRequired,
     isPasswordRequired: PropTypes.bool,
+    zIndex: PropTypes.number,
     width: PropTypes.any,
     isModal: PropTypes.bool,
 };

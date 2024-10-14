@@ -2,7 +2,6 @@ import { List } from "@mui/material";
 import Sider from "antd/es/layout/Sider";
 import PropTypes from "prop-types";
 import { theme } from "antd";
-import AddVoucherAction from "./ProjectSideBar/AddVoucherAction";
 
 import CreateDeviceReportAction from "./ProjectSideBar/CreateDeviceReportAction";
 import CreateOutDevicesReportAction from "./ProjectSideBar/CreateOutDevicesReportAction";
@@ -26,7 +25,7 @@ const ProjectSideBar = ({ isProjectIsClosed }) => {
             width={200}
         >
             <List>
-                {!isProjectIsClosed && <AddVoucherAction />}
+                {!isProjectIsClosed && <NewVoucherPageAction />}
                 {!isProjectIsClosed && <ProjectDashBoard />}
                 {/* {!isProjectIsClosed && <EditProjectAction />} */}
                 {!isProjectIsClosed && <CreateDeviceReportAction />}
@@ -34,7 +33,6 @@ const ProjectSideBar = ({ isProjectIsClosed }) => {
                 {!isProjectIsClosed && <CloseProjectAction />}
                 {isProjectIsClosed && <OpenProjectAction />}
                 <DeleteProjectAction />
-                <NewVoucherPageAction />
             </List>
         </Sider>
     );

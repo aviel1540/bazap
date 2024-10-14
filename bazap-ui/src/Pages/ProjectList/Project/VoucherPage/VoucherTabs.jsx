@@ -18,7 +18,7 @@ const VoucherTabs = ({ renderFields }) => {
     const [smartInsert, setSmartInsert] = useState(smartInsertInitialState);
     const onAddNewDevice = (add) => {
         for (let i = 0; i < smartInsert.quantity; i++) {
-            add({ deviceType: smartInsert.deviceType, unit: smartInsert.unit });
+            add({ deviceTypeId: smartInsert.deviceType, unit: smartInsert.unit });
         }
         setSmartInsert(smartInsertInitialState);
     };
@@ -60,7 +60,7 @@ const VoucherTabs = ({ renderFields }) => {
     };
     const devicesFields = [
         {
-            name: "devices",
+            name: "devicesData",
             label: "",
             type: "list",
             listFields: [
@@ -68,13 +68,29 @@ const VoucherTabs = ({ renderFields }) => {
                     name: "serialNumber",
                     type: "autocomplete",
                     label: "צ' מכשיר",
-                    onChange: (value, clearErrors, field, parentField, form) =>
-                        handleSerialNumberChange(value, clearErrors, field, parentField, form),
+                    onChange: (data) => handleSerialNumberChange(data),
                     options: convertDeivcesToACOptions(allDevices),
-                    rules: [{ required: true, message: "יש להזין צ'" }],
+                    rules: [
+                        { required: true, message: "יש להזין צ'" },
+                        ({ getFieldValue }) => ({
+                            validator(_, value) {
+                                const devices = getFieldValue("devicesData") || [];
+                                const serialNumberCount = devices.filter((device) => device.serialNumber === value).length;
+                                const deviceInAllDevices = allDevices.find((device) => device.serialNumber === value && !device.voucherOut);
+
+                                if (serialNumberCount > 1) {
+                                    return Promise.reject(new Error("הצ' מכשיר כבר מופיע ברשימה"));
+                                } else if (deviceInAllDevices) {
+                                    return Promise.reject(new Error("צ' כבר קיים באחד מהפרוייקטים."));
+                                } else {
+                                    return Promise.resolve();
+                                }
+                            },
+                        }),
+                    ],
                 },
                 {
-                    name: "deviceType",
+                    name: "deviceTypeId",
                     type: "select",
                     label: "סוג מכשיר",
                     options: deviceTypeOptions,
@@ -129,7 +145,7 @@ const VoucherTabs = ({ renderFields }) => {
     ];
     const accessoriesFields = [
         {
-            name: "accessories",
+            name: "accessoriesData",
             addButton: (add) => {
                 return (
                     <Flex justify="center" align="center" gap={4} className="mt-4">
@@ -143,7 +159,7 @@ const VoucherTabs = ({ renderFields }) => {
             type: "list",
             listFields: [
                 {
-                    name: "deviceType",
+                    name: "deviceTypeId",
                     type: "select",
                     label: "סוג מכשיר",
                     options: accessoriesTypes,
@@ -158,11 +174,19 @@ const VoucherTabs = ({ renderFields }) => {
             ],
         },
     ];
-    const handleSerialNumberChange = (value, clearErrors, field, parentField, form) => {
-        const fieldName = parentField.name + "deviceType";
-        const device = allDevices.find((d) => d.serialNumber === value);
-        if (device) {
-            form.setFieldValue(fieldName, device.deviceTypeId);
+    const handleSerialNumberChange = ({ parentField, form, value, setDisabledField }) => {
+        const match = parentField.name.match(/\[(\d+)\]/);
+        if (match) {
+            const index = match[1];
+            const device = allDevices.find((d) => d.serialNumber === value);
+            if (device) {
+                const devices = form.getFieldValue("devicesData");
+                devices[index].deviceTypeId = device.deviceTypeId;
+                form.setFieldValue("devicesData", devices);
+                setDisabledField(`devicesData[${index}].deviceTypeId`, true);
+            } else {
+                setDisabledField(`devicesData[${index}].deviceTypeId`, false);
+            }
         }
     };
 

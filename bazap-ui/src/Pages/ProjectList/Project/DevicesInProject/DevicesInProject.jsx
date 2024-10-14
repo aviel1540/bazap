@@ -1,11 +1,9 @@
 import { Space } from "antd";
 import { useEffect, useState } from "react";
 import { ALL, DeviceStatuses, FIXED_OR_DEFECTIVE, RETURNED, ReturnedStatuses, replaceApostrophe } from "../../../../Utils/utils";
-import { useCustomModal } from "../../../../Components/store/CustomModalContext";
 import { useProject } from "../../../../Components/store/ProjectContext";
 import CustomCard from "../../../../Components/UI/CustomCard";
 import SearchInput from "../../../../Components/UI/SearchInput";
-import VoucherStepper from "../NewVoucher/VoucherStepper";
 import StatusForm from "../StatusForm";
 import DevicesInProjectTable from "./DevicesInProjectTable";
 import StatusFilter from "./StatusFilter";
@@ -17,11 +15,12 @@ import { getAllUnits } from "../../../../Utils/unitAPI";
 import { getAllDeviceTypes } from "../../../../Utils/deviceTypeApi";
 import { areClassifiedAndNonClassifiedSelected } from "./devicesInProjectUtils";
 import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router";
 const initialState = { unit: "all", classified: "all", deviceType: "all" };
 const ArrivedDevices = () => {
+    const navigate = useNavigate();
     const { onAlert, error } = useUserAlert();
-    const { projectId, devices, isLoading } = useProject();
-    const { onShow, onHide } = useCustomModal();
+    const { devices, isLoading } = useProject();
     const { data: units, isLoading: isUnitLoading } = useQuery({
         queryKey: ["units"],
         queryFn: getAllUnits,
@@ -36,12 +35,10 @@ const ArrivedDevices = () => {
     const [selectedDevicesIds, setSelectedDevicesIds] = useState([]);
     const [selectedAccessoriesIds, setSelectedAccessoriesIds] = useState([]);
     const [filters, setFilters] = useState(initialState);
-
+    const [open, setOpen] = useState(false);
     const [filteredDevices, setFilteredDevices] = useState(devices);
-
+    const [statusFormsParams, setStatusFormsParams] = useState({});
     useEffect(() => {
-        // setFilteredDevices(devices);
-
         if (devices) {
             handleSearchAndFilter(searchParam, devices, selectedStatus);
         }
@@ -106,7 +103,6 @@ const ArrivedDevices = () => {
             const searchableString = JSON.stringify(searchObject).toLocaleLowerCase();
             return searchableString.includes(search.toLocaleLowerCase());
         });
-        // {"unit":"all","classified":"all","deviceType":"all"}
         // filter by filtermenu
         newFilteredDevices = newFilteredDevices.filter((device) => {
             //unit
@@ -142,38 +138,45 @@ const ArrivedDevices = () => {
         }
         return keys.includes(status);
     };
-
     const showModalChangeStatus = () => {
         const device = filteredDevices.find((dev) => dev._id === selectedRows[0]);
         const devices = filteredDevices.filter((device) => selectedRows.includes(device._id));
-        onShow({
-            title: "שינוי סטטוס",
-            name: "status",
-            body: (
-                <StatusForm
-                    status={selectedRows.length == 0 ? null : device.status}
-                    isClassified={device.deviceTypeId.isClassified}
-                    devices={devices}
-                    onCancel={() => onHide("status")}
-                    clearSelectedRows={clearSelectedRows}
-                />
-            ),
-        });
+        const status = selectedRows.length == 0 ? null : device.status;
+        const isClassified = device.deviceTypeId.isClassified;
+        const formValues = {
+            devices,
+            isClassified,
+            status,
+        };
+        setStatusFormsParams(formValues);
+        setOpen(true);
     };
+    // const showModalChangeStatus = () => {
+    //     const device = filteredDevices.find((dev) => dev._id === selectedRows[0]);
+    //     const devices = filteredDevices.filter((device) => selectedRows.includes(device._id));
+    //     onShow({
+    //         title: "שינוי סטטוס",
+    //         name: "status",
+    //         body: (
+    //             <StatusForm
+    //                 status={selectedRows.length == 0 ? null : device.status}
+    //                 isClassified={device.deviceTypeId.isClassified}
+    //                 devices={devices}
+    //                 onCancel={() => onHide("status")}
+    //                 clearSelectedRows={clearSelectedRows}
+    //             />
+    //         ),
+    //     });
+    // };
 
     const showModalCreateVoucher = () => {
-        const formDefaultValues = {
-            type: "false",
-            unit: { text: filteredDevices[0].unit.unitsName, value: filteredDevices[0].unit._id },
-            devicesIds: selectedDevicesIds,
-            accessoriesIds: selectedAccessoriesIds,
-            projectId,
-        };
-        onShow({
-            title: "שובר חדש",
-            name: "voucherStepper",
-            width: "60%",
-            body: <VoucherStepper onCancel={() => onHide("voucherStepper")} projectId={projectId} formDefaultValues={formDefaultValues} />,
+        navigate(`Voucher`, {
+            state: {
+                voucherType: false,
+                unit: filteredDevices[0].unit._id,
+                devicesIds: selectedDevicesIds,
+                accessoriesIds: selectedAccessoriesIds,
+            },
         });
     };
     const onSelectChange = (newSelectedRowKeys) => {
@@ -267,7 +270,7 @@ const ArrivedDevices = () => {
                                 name: "classified",
                                 label: "מסווג",
                                 type: "radio",
-                                value: "all", 
+                                value: "all",
                                 options: [
                                     { label: "הכל", value: "all" },
                                     { label: "מסווג", value: true },
@@ -286,9 +289,17 @@ const ArrivedDevices = () => {
                         onFilterChange={setFilters}
                     />
                     {selectedRows.length > 0 && !areClassifiedAndNonClassifiedSelected(devices, selectedRows) && (
-                        <CustomButton type="light-info" onClick={showModalChangeStatus} iconPosition="end" icon={<SwapOutlined />}>
-                            שנה סטטוס
-                        </CustomButton>
+                        <>
+                            <CustomButton type="light-info" onClick={showModalChangeStatus} iconPosition="end" icon={<SwapOutlined />}>
+                                שנה סטטוס
+                            </CustomButton>
+                            <StatusForm
+                                open={open}
+                                onCancel={() => setOpen(false)}
+                                formValues={statusFormsParams}
+                                clearSelectedRows={clearSelectedRows}
+                            />
+                        </>
                     )}
                     {selectedStatus === FIXED_OR_DEFECTIVE && selectedRows.length > 0 && (
                         <CustomButton type="light-success" onClick={showModalCreateVoucher} iconPosition="end" icon={<SwapOutlined />}>

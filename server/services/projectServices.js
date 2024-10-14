@@ -12,8 +12,34 @@ exports.findAllProjects = async () =>
     await Project.find().populate({
         path: "vouchersList",
         populate: [
-            { path: "deviceList", model: "Device" },
-            { path: "accessoriesList", model: "Accessories" },
+            {
+                path: "deviceList",
+                model: "Device",
+                populate: [
+                    {
+                        path: "unit",
+                        model: "Units",
+                    },
+                    {
+                        path: "deviceTypeId",
+                        model: "DeviceType",
+                    },
+                ],
+            },
+            {
+                path: "accessoriesList",
+                model: "Accessories",
+                populate: [
+                    {
+                        path: "unit",
+                        model: "Units",
+                    },
+                    {
+                        path: "deviceTypeId",
+                        model: "DeviceType",
+                    },
+                ],
+            },
         ],
     });
 

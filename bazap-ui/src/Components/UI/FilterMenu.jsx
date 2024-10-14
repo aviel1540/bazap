@@ -70,7 +70,7 @@ const FilterMenu = ({ filtersConfig, onFilterChange, clearAllFilters }) => {
     };
 
     const renderFilterItem = (filter) => {
-        const { name, label, type, options, placeholder, checkedChildren, unCheckedChildren } = filter;
+        const { name, label, type, options, placeholder, checkedChildren, unCheckedChildren, multiple } = filter;
 
         switch (type) {
             case "select":
@@ -80,6 +80,9 @@ const FilterMenu = ({ filtersConfig, onFilterChange, clearAllFilters }) => {
                         <Select
                             value={filters[name]}
                             showSearch
+                            placeholder={placeholder}
+                            allowClear
+                            mode={multiple ? "multiple" : ""}
                             filterOption={(input, option) => option?.label.toLowerCase().includes(input.toLowerCase())}
                             onChange={(value) => handleFilterChange(value, name)}
                             className="w-200px"
