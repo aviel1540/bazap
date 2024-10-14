@@ -263,7 +263,6 @@ const GenericForm = ({
                 setCurrentStep(0);
             }
         } catch (error) {
-            // onAlert(error.message, "error", true);
             console.log(error.message);
         } finally {
             setIsSubmitting(false);

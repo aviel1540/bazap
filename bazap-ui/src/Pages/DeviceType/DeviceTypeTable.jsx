@@ -88,7 +88,7 @@ const DeviceTypeTable = ({ onEdit, searchQuery, filterValue }) => {
             key: "type",
             render: (_, data) => {
                 const label = data?.isClassified ? "מסווג" : 'צל"מ';
-                const color = data?.isClassified ? "#50cd89" : "#ffc700";
+                const color = data?.isClassified ? "success" : "warning";
                 return <Tag color={color}>{label}</Tag>;
             },
         },

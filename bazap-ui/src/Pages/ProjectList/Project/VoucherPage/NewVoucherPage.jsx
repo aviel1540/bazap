@@ -13,7 +13,7 @@ import CustomButton from "../../../../Components/UI/CustomButton/CustomButton";
 import { addVoucherIn, addVoucherOut, exportVoucherToExcel } from "../../../../Utils/voucherApi";
 import TechnicianForm from "../../../Technician/TechnicianForm";
 import { useLocation, useNavigate } from "react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GenericForm from "../../../../Components/UI/Form/GenericForm/GenericForm";
 import VoucherTabs from "./VoucherTabs";
 import VoucherDevices from "./VoucherDevices";
@@ -30,7 +30,7 @@ const NewVoucherPage = () => {
     const { projectId, project, isLoading: isProjectLoading } = useProject();
     const [isUnitModalOpen, setIsUnitModalOpen] = useState(false);
     const [isTechnicianModalOpen, setIsTechnicianModalOpen] = useState(false);
-    const formDefaultValues = { projectId, type: voucherType, unit };
+    const [formDefaultValues, setFormDefaultValues] = useState({ projectId: projectId, type: voucherType, unit });
     const { isLoading: isLoadingUnits, data: units } = useQuery({
         queryKey: ["units"],
         queryFn: getAllUnits,
@@ -40,6 +40,14 @@ const NewVoucherPage = () => {
         queryKey: ["technicians"],
         queryFn: getAllTechnicians,
     });
+    useEffect(() => {
+        if (projectId) {
+            setFormDefaultValues((prevValues) => ({
+                ...prevValues,
+                projectId,
+            }));
+        }
+    }, [projectId]);
     const unitOptions = sortOptions(units, "unitsName")?.map((unit) => ({
         value: unit._id,
         label: unit.unitsName,
@@ -159,11 +167,11 @@ const NewVoucherPage = () => {
         {
             name: "devicesData",
             type: "render",
-            render: ({ renderFields, setDefaultValues }) => {
+            render: ({ renderFields }) => {
                 if (voucherType == KABALA) {
                     return <VoucherTabs key="devicesData" renderFields={renderFields} />;
                 } else {
-                    return <VoucherDevices key="voucherDevices" setDefaultValues={setDefaultValues} />;
+                    return <VoucherDevices key="voucherDevices" setDefaultValues={setFormDefaultValues} />;
                 }
             },
         },

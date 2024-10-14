@@ -67,8 +67,15 @@ const UnitTable = ({ onEdit, searchQuery }) => {
             title: "חטיבה",
             dataIndex: "brigade",
             key: "brigade",
-            sorter: (a, b) => a.bridage?.brigadeName.localeCompare(b.brigade?.brigadeName),
+            sorter: (a, b) => a.brigade?.brigadeName.localeCompare(b.brigade?.brigadeName),
             render: (_, row) => <Text>{row?.brigade?.brigadeName}</Text>,
+        },
+        {
+            title: "אוגדה",
+            dataIndex: "division",
+            key: "division",
+            sorter: (a, b) => a.brigade?.division?.division_name.localeCompare(b.brigade?.division?.division_name),
+            render: (_, row) => <Text>{row.brigade?.division?.division_name}</Text>,
         },
         {
             title: "פעולות",

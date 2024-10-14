@@ -1,7 +1,13 @@
 const Units = require("../models/Units");
 
-exports.findAllUnits = async () => await Units.find().populate("brigade");
-
+exports.findAllUnits = async () => {
+    return await Units.find().populate({
+        path: "brigade",
+        populate: {
+            path: "division",
+        },
+    });
+};
 exports.findUnitByName = async (checkUnitName) => {
     return await Units.findOne({ unitsName: checkUnitName });
 };

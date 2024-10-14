@@ -3,10 +3,11 @@ import propTypes from "prop-types";
 import { checkDuplicationInForm } from "../../Utils/formUtils";
 import { addProject, getAllProjects, updateProject } from "../../Utils/projectAPI";
 import GenericForm from "../../Components/UI/Form/GenericForm/GenericForm";
+import { useUserAlert } from "../../Components/store/UserAlertContext";
 
 const ProjectForm = ({ onCancel, formValues = null, isEdit = false, open }) => {
     const queryClient = useQueryClient();
-
+    const { onAlert } = useUserAlert();
     // Fetch all projects
     const { isLoading, data: projects } = useQuery({
         queryKey: ["projects"],
@@ -24,24 +25,29 @@ const ProjectForm = ({ onCancel, formValues = null, isEdit = false, open }) => {
     };
 
     // Handle save operation for both new and edit modes
-    const handleSave = (data) => {
+    const handleSave = async (data) => {
         if (!isEdit) {
             const newProject = { projectName: data.projectName };
-            addProjectMutation.mutate(newProject);
+            return await addProjectMutation.mutateAsync(newProject);
         } else {
             const editProject = {
                 id: formValues.id,
                 projectName: data.projectName,
             };
-            editProjectMutation.mutate(editProject);
+            return await editProjectMutation.mutateAsync(editProject);
         }
     };
 
     // Mutation for adding a new project
     const addProjectMutation = useMutation(addProject, {
-        onSuccess: () => {
+        onSuccess: (data) => {
             queryClient.invalidateQueries({ queryKey: ["projects"] });
+            const { message } = data;
+            if (message) {
+                onAlert(message, "success", true);
+            }
             onCancel();
+            return true;
         },
     });
 
@@ -50,6 +56,7 @@ const ProjectForm = ({ onCancel, formValues = null, isEdit = false, open }) => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["projects"] });
             onCancel();
+            return true;
         },
     });
 
@@ -81,7 +88,7 @@ const ProjectForm = ({ onCancel, formValues = null, isEdit = false, open }) => {
             fields={fields}
             onSubmit={handleSave}
             onCancel={onCancel}
-            isPasswordRequired
+            // isPasswordRequired
             initialValues={formValues}
             title={isEdit ? "עריכת פרוייקט" : "פרוייקט חדש"}
             visible={open}

@@ -12,7 +12,7 @@ exports.addNewProject = async (req, res) => {
         const checkProjectName = validation.addSlashes(projectName);
         newProject = await projectService.addNewProject(checkProjectName);
         await newProject.save();
-        return res.status(200).json(newProject);
+        return res.status(200).json({ message: "פרוייקט נוצר בהצלחה!", newProject });
     } catch (err) {
         return res.status(401).json({ message: err.message });
     }

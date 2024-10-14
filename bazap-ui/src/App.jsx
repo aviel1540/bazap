@@ -49,9 +49,13 @@ function App() {
             mutations: {
                 networkMode: "always",
                 staleTime: 300000,
-                onSuccess: ({ message }) => {
-                    onAlert(message, "success", true);
+                onSuccess: (data) => {
+                    const { message } = data;
+                    if (message) {
+                        onAlert(message, "success", true);
+                    }
                 },
+                
                 onError: ({ message }) => {
                     onAlert(message, error, true);
                 },

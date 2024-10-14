@@ -51,6 +51,7 @@ export const AdminAuthProvider = ({ children }) => {
         onSuccess: (isValid) => {
             if (isValid) {
                 queryClient.invalidateQueries({ queryKey: ["isAdminAuth"] });
+                if (resolveLoginPromise) resolveLoginPromise(isValid);
                 return isValid;
             }
         },
@@ -98,7 +99,7 @@ export const AdminAuthProvider = ({ children }) => {
         },
     ];
     return (
-        <AdminAuthContext.Provider value={{ isAuth: isLoading ? undefined : isAuth, onLogin, onLogout }}>
+        <AdminAuthContext.Provider value={{ isAuth: isLoading ? false : isAuth, onLogin, onLogout }}>
             {children}
             <GenericForm
                 zIndex={2000}
