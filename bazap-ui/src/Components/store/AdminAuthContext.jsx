@@ -35,10 +35,8 @@ export const AdminAuthProvider = ({ children }) => {
         onSuccess: (isValid) => {
             if (isValid) {
                 queryClient.invalidateQueries({ queryKey: ["isAdminAuth"] });
+                return isValid;
             }
-        },
-        onError: () => {
-            /* Handle login error */
         },
     });
     // Admin logout mutation
@@ -48,45 +46,24 @@ export const AdminAuthProvider = ({ children }) => {
         },
     });
 
-    // Admin login handler (option 1)
-    const loginHandler = (password) => {
-        return new Promise((resolve, reject) => {
-            loginMutation.mutateAsync(password, {
-                onSuccess: (isValid) => {
-                    if (isValid) {
-                        queryClient.invalidateQueries({ queryKey: ["isAdminAuth"] });
-                        resolve(true);
-                    } else {
-                        resolve(false);
-                    }
-                },
-                onError: (error) => {
-                    reject(error);
-                },
-            });
-        });
-    };
-
-    // Password validation handler (option 2)
-    const validatePasswordHandler = (password) => {
-        return new Promise((resolve, reject) => {
-            validatePassword(password)
-                .then((isValid) => resolve(isValid))
-                .catch((error) => reject(error));
-        });
-    };
+    // Password validation mutation
+    const validatePasswordMutation = useMutation(validatePassword, {
+        onSuccess: (isValid) => {
+            if (isValid) {
+                queryClient.invalidateQueries({ queryKey: ["isAdminAuth"] });
+                return isValid;
+            }
+        },
+    });
 
     // Handle "OK" on modal
     const handleOk = async (values) => {
         const { password } = values;
-
-        // Check the auth option and call the appropriate handler
         let result;
-
         if (authOption === "admin") {
-            result = await loginHandler(password);
+            result = await loginMutation.mutateAsync(password);
         } else if (authOption === "validate") {
-            result = await validatePasswordHandler(password);
+            result = await validatePasswordMutation.mutateAsync(password);
         }
         if (result) {
             setOpen(false);
@@ -107,7 +84,7 @@ export const AdminAuthProvider = ({ children }) => {
 
     // Execute logout
     const onLogout = () => {
-        logoutMutation.mutateAsync();
+        logoutMutation.mutate();
     };
     const fields = [
         {
@@ -132,21 +109,6 @@ export const AdminAuthProvider = ({ children }) => {
                 fields={fields}
                 isLoading={isLoading}
             />
-            {/* <Modal
-                zIndex={2000}
-                title="התחבר כמנהל"
-                open={isModalVisible}
-                okText="אישור"
-                cancelText="בטל"
-                onOk={handleOk}
-                onCancel={handleCancel}
-            >
-                <Form form={form} layout="vertical">
-                    <Form.Item name="password" label="סיסמא" rules={[{ required: true, message: "יש להזין סיסמא." }]}>
-                        <Input.Password />
-                    </Form.Item>
-                </Form>
-            </Modal> */}
         </AdminAuthContext.Provider>
     );
 };
