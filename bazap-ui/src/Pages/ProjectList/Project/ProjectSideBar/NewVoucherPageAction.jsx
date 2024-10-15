@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 const NewVoucherPageAction = () => {
     const navigate = useNavigate();
     const addVoucher = () => {
-        navigate(`Voucher`, { state: { voucherType: false } });
+        navigate(`Voucher`, { state: { voucherType: true } });
     };
     return (
         <ListItem disablePadding>

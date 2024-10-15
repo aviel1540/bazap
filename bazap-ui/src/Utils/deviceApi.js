@@ -24,6 +24,10 @@ export const getDevices = async () => {
     return await deviceAPI.get();
 };
 
+export const getAllDevicesToDashboard = async () => {
+    return await deviceAPI.get("get-all-devices-to-dashboard");
+};
+
 export const updateStatus = async (device) => {
     const { id } = device;
     return await deviceAPI.patch(`/update-status/${id}`, device);

@@ -3,6 +3,8 @@ const deviceController = require("../controllers/DeviceController");
 
 router.get("/", deviceController.getAllDevices);
 
+router.get("/get-all-devices-to-dashboard", deviceController.getAllDevicesToDashboard);
+
 router.get("/:id", deviceController.getDeviceById);
 
 router.get("/find-by-serialNumber/:serialnumber", deviceController.getDeviceBySerialNumber);

@@ -1,25 +1,30 @@
-import { useEffect, useState } from "react";
-import { Row, Col, Card } from "antd";
+import { useState } from "react";
+import { Row, Card } from "antd";
 import { useQuery } from "@tanstack/react-query";
 import { getAllProjects } from "../../Utils/projectAPI";
 import Loader from "../../Components/Layout/Loader";
 import FilterMenu from "../../Components/UI/FilterMenu";
 import { getAllUnits } from "../../Utils/unitAPI";
-import ProjectCompletionRadialBar from "./Dashboard/ProjectCompletionAreaChart";
-import VoucherTypesPieChart from "./Dashboard/VoucherTypesPieChart";
-import DeviceStatusBarChart from "./Dashboard/DeviceStatusBarChart";
-import AccessoriesPolarChart from "./Dashboard/AccessoriesPolarChart";
-import DevicesByUnitStackedChart from "./Dashboard/DevicesByUnitStackedChart";
-import AccessoriesHeatmapChart from "./AccessoriesHeatmapChart";
-import UnitsByDeviceStatusPieChart from "./Dashboard/UnitsByDeviceStatusPieChart";
-import ProjectStatusDonutChart from "./Dashboard/ProjectStatusDonutChart";
+import { getAllDevicesToDashboard } from "../../Utils/deviceApi";
+import { aggregadeDevices } from "./utils";
+
 const initialState = { unit: "all", projects: [] };
+
 const HomeDashboard = () => {
-    const { isLoading, data: projects } = useQuery({
+    const [devices, setDevices] = useState([]);
+    const { isLoading: projectIsLoading, data: projects } = useQuery({
         queryKey: ["projects"],
         queryFn: getAllProjects,
         onSuccess: (data) => {
-            setFilteredProjects(data);
+            // setFilteredProjects(data);
+        },
+    });
+
+    const { isLoading: devicesIsLoading } = useQuery({
+        queryKey: ["dashboardDevices"],
+        queryFn: getAllDevicesToDashboard,
+        onSuccess: (data) => {
+            setDevices(data);
         },
     });
     const { data: units, isLoading: isUnitLoading } = useQuery({
@@ -28,8 +33,8 @@ const HomeDashboard = () => {
     });
 
     const [filters, setFilters] = useState(initialState);
+    const isLoading = devicesIsLoading || projectIsLoading;
 
-    const [filteredProjects, setFilteredProjects] = useState();
     // useEffect(() => {
     //     if (projects) {
     //         // handleFilterChange();
@@ -88,33 +93,11 @@ const HomeDashboard = () => {
             <Row gutter={[16, 16]} align="middle">
                 {/* Radial Bar Chart - Project Overview */}
                 {isLoading && <Loader />}
-                {!isLoading && filteredProjects && (
+                {!isLoading && devices && (
                     <>
-                        <Col span={12}>
-                            <ProjectCompletionRadialBar projects={filteredProjects} />
-                        </Col>
-                        <Col span={12}>
-                            <VoucherTypesPieChart projects={filteredProjects} />
-                        </Col>
-                        <Col span={24}>
-                            <DeviceStatusBarChart projects={filteredProjects} />
-                        </Col>
-                        <Col span={24}>
-                            <DevicesByUnitStackedChart projects={filteredProjects} />
-                        </Col>
-
-                        <Col span={12}>
-                            <AccessoriesPolarChart projects={filteredProjects} />
-                        </Col>
-                        <Col span={12}>
-                            <AccessoriesHeatmapChart projects={filteredProjects} />
-                        </Col>
-                        <Col span={12}>
-                            <UnitsByDeviceStatusPieChart projects={filteredProjects} />
-                        </Col>
-                        <Col span={12}>
-                            <ProjectStatusDonutChart projects={filteredProjects} />
-                        </Col>
+                        <div dir="ltr" style={{ direction: "ltr" }}>
+                            {JSON.stringify(aggregadeDevices(devices))}
+                        </div>
                     </>
                 )}
             </Row>

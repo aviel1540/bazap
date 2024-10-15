@@ -4,14 +4,8 @@ const { DeviceStatus } = require("../constants/DeviceStatus");
 exports.findDeviceById = async (DeviceId) => await Device.findById(DeviceId);
 exports.findDeviceBySerialNumber = async (serialNumber) => await Device.findOne({ serialNumber });
 exports.findAllDevices = async () =>
-    await Device.find()
-        .sort({ status: 1 })
-        .populate("unit")
-        .populate("voucherIn")
-        .populate("voucherOut")
-        .populate("project")
-        .populate("deviceTypeId");
-        
+    await Device.find().sort({ status: 1 }).populate("unit").populate("voucherIn").populate("voucherOut").populate("project");
+
 exports.addNewDevice = async (request) => {
     return new Device({
         serialNumber: request.checkSerialNumber,
@@ -61,3 +55,12 @@ exports.checkVoucherOutInDevice = async (deviceId) => {
     if (device.voucherOut) return true;
     return false;
 };
+
+exports.findAllDevicesToDashboard = async () =>
+    await Device.find()
+        .sort({ status: 1 })
+        .populate("unit")
+        .populate("voucherIn")
+        .populate("voucherOut")
+        .populate("project")
+        .populate("deviceTypeId");

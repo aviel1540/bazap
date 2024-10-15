@@ -166,7 +166,14 @@ const GenericForm = ({
                         ref={fieldRef}
                         options={field.options}
                         filterOption={(inputValue, option) => option.value.toUpperCase().indexOf(inputValue.toUpperCase()) !== -1}
-                        {...(field.freeText ? {} : { onSelect: (value) => form.setFieldsValue({ [field.name]: value }) })}
+                        {...(field.freeText
+                            ? {}
+                            : {
+                                  onSelect: (value) => {
+                                      form.setFieldValue(field.name, value);
+                                      fieldOnChangeHandler(field, { target: { value } }, parentField);
+                                  },
+                              })}
                     >
                         {field.freeText && <Input />}
                     </AutoComplete>
@@ -365,6 +372,7 @@ const GenericForm = ({
             </Space>
         );
     };
+
     const setDisabledField = (fieldName, isDisabled, isList = false) => {
         setDisabledFields((prevDisabledFields) => {
             if (isDisabled) {

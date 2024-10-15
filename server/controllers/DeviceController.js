@@ -206,6 +206,18 @@ exports.getAllDevices = async (req, res) => {
         return res.status(500).json({ message: err.message });
     }
 };
+exports.getAllDevicesToDashboard = async (req, res) => {
+    let devices;
+    try {
+        devices = await deviceService.findAllDevicesToDashboard();
+        if (!devices) {
+            return res.status(404).json({ message: "לא קיימים מכשירים" });
+        }
+        return res.status(200).json(devices);
+    } catch (err) {
+        return res.status(500).json({ message: err.message });
+    }
+};
 
 exports.deleteDevice = async (req, res) => {
     const deviceId = escape(req.params.id);
