@@ -93,6 +93,15 @@ export const tagColors = {
     "מושבת - הוחזר ליחידה": "success",
 };
 
+export const tagColorsHex = {
+    "ממתין לעבודה": "#d9d9d9", // Default gray
+    בעבודה: "#1890ff", // Blue
+    תקין: "#52c41a", // Green
+    מושבת: "#fa8c16", // Orange
+    "תקין - הוחזר ליחידה": "#52c41a", // Green
+    "מושבת - הוחזר ליחידה": "#fa8c16", // Orange
+};
+
 export const ReturnedStatuses = [DeviceStatuses.DEFECTIVE_RETURN, DeviceStatuses.FIXED_RETURN, DeviceStatuses.FINISHED_OUT];
 
 export const sortOptions = (list, key) => {
@@ -104,4 +113,14 @@ export const sortOptions = (list, key) => {
         return 0;
     });
     return sortedList;
+};
+
+export const sortObjectByValue = (obj) => {
+    // Convert the object into an array of key-value pairs
+    const sortedArray = Object.entries(obj).sort(([, a], [, b]) => b - a);
+
+    // Convert the sorted array back into an object
+    const sortedObj = Object.fromEntries(sortedArray);
+
+    return sortedObj;
 };

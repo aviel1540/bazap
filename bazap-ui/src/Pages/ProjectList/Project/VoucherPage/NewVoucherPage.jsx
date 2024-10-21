@@ -17,6 +17,8 @@ import { useEffect, useState } from "react";
 import GenericForm from "../../../../Components/UI/Form/GenericForm/GenericForm";
 import VoucherTabs from "./VoucherTabs";
 import VoucherDevices from "./VoucherDevices";
+// import { getAllDivisions } from "../../../../Utils/divisionAPI";
+// import { getAllBrigades } from "../../../../Utils/brigadeAPI";
 
 const KABALA = true;
 const NIPUK = false;
@@ -30,6 +32,17 @@ const NewVoucherPage = () => {
     const { projectId, project, isLoading: isProjectLoading } = useProject();
     const [isUnitModalOpen, setIsUnitModalOpen] = useState(false);
     const [isTechnicianModalOpen, setIsTechnicianModalOpen] = useState(false);
+    // const [selectedDivision, setSelectedDivision] = useState(null);
+    // // const [selectedBrigade, setSelectedBrigade] = useState(null);
+    // const { isLoading: isLoadingDivision, data: divisions } = useQuery({
+    //     queryKey: ["divisions"],
+    //     queryFn: getAllDivisions,
+    // });
+    // const { isLoading: isLoadingBrigade, data: brigades } = useQuery({
+    //     queryKey: ["brigades"],
+    //     queryFn: getAllBrigades,
+    // });
+
     const [formDefaultValues, setFormDefaultValues] = useState({ projectId: projectId, type: voucherType, unit });
     const { isLoading: isLoadingUnits, data: units } = useQuery({
         queryKey: ["units"],
@@ -102,19 +115,39 @@ const NewVoucherPage = () => {
     }
     const fields = [
         // {
-        //     name: "division",
         //     label: "אוגדה",
+        //     name: "divisionId",
         //     type: "select",
-        //     options: unitOptions,
-        //     rules: [{ required: true, message: "יש למלא שדה זה." }],
+        //     onChange: ({ value }) => {
+        //         setSelectedDivision(value);
+        //     },
+        //     placeholder: "בחר אוגדה",
+        //     options: divisions?.map((division) => ({
+        //         value: division._id,
+        //         label: division.division_name,
+        //     })),
+        //     rules: [{ required: true, message: "יש לבחור אוגדה." }],
         //     span: 8,
         // },
         // {
-        //     name: "brigade",
         //     label: "חטיבה",
+        //     name: "brigade",
         //     type: "select",
-        //     options: unitOptions,
-        //     rules: [{ required: true, message: "יש למלא שדה זה." }],
+        //     disabled: selectedDivision == null,
+        //     placeholder: "בחר חטיבה",
+        //     options: brigades
+        //         ?.filter((brigade) => {
+        //             if (selectedDivision == null) {
+        //                 return true;
+        //             } else {
+        //                 return brigade?.division?._id === selectedDivision;
+        //             }
+        //         })
+        //         ?.map((brigade) => ({
+        //             value: brigade._id,
+        //             label: brigade.brigadeName,
+        //         })),
+        //     rules: [{ required: true, message: "יש לבחור חטיבה." }],
         //     span: 8,
         // },
         // {

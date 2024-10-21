@@ -3,6 +3,7 @@ const validation = require("../utils/validation");
 const deviceService = require("../services/deviceServices");
 const voucherService = require("../services/voucherServices");
 const { DeviceStatus } = require("../constants/DeviceStatus");
+const accessoriesServices = require("../services/accessoriesServices");
 
 exports.addNewDevices = async (req, res) => {
     try {
@@ -208,12 +209,25 @@ exports.getAllDevices = async (req, res) => {
 };
 exports.getAllDevicesToDashboard = async (req, res) => {
     let devices;
+    let accessories;
+    let products = [];
     try {
         devices = await deviceService.findAllDevicesToDashboard();
-        if (!devices) {
+        accessories = await accessoriesServices.findAllAccessoriesToDashboard();
+        if (devices.length > 0) {
+            devices.map((device) => {
+                products.push(device);
+            });
+        }
+        if (accessories.length > 0) {
+            accessories.map((acc) => {
+                products.push(acc);
+            });
+        }
+        if (!products) {
             return res.status(404).json({ message: "לא קיימים מכשירים" });
         }
-        return res.status(200).json(devices);
+        return res.status(200).json(products);
     } catch (err) {
         return res.status(500).json({ message: err.message });
     }

@@ -13,7 +13,6 @@ exports.addNewAccessories = async (request) => {
     });
 };
 
-
 exports.updateStatus = async (request) => {
     const data = await Accessory.findByIdAndUpdate(request.checkAccessoryId, {
         status: request.checkStatus,
@@ -47,9 +46,17 @@ exports.updateFixDefective = async (request) => {
 
 exports.deleteAccessoryById = async (checkAccessoryId) => await Accessory.findByIdAndDelete(checkAccessoryId);
 
-
-exports.checkVoucherOutInAccessory = async(AccessoryId) => {
-    const accessory = Accessory.findById(AccessoryId)
-    if(accessory.voucherOut) return true;
+exports.checkVoucherOutInAccessory = async (AccessoryId) => {
+    const accessory = Accessory.findById(AccessoryId);
+    if (accessory.voucherOut) return true;
     return false;
-} 
+};
+
+exports.findAllAccessoriesToDashboard = async () =>
+    await Accessory.find()
+        .sort({ status: 1 })
+        .populate("unit")
+        .populate("voucherIn")
+        .populate("voucherOut")
+        .populate("project")
+        .populate("deviceTypeId");

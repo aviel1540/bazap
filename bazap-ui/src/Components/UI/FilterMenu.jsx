@@ -68,7 +68,11 @@ const FilterMenu = ({ filtersConfig, onFilterChange, clearAllFilters }) => {
     const handleCloseDropdown = () => {
         setIsDropdownOpen(false);
     };
-
+    const handleClear = (options, name) => {
+        if (options.some((opt) => opt.value == "all")) {
+            handleFilterChange("all", name);
+        }
+    };
     const renderFilterItem = (filter) => {
         const { name, label, type, options, placeholder, checkedChildren, unCheckedChildren, multiple } = filter;
 
@@ -84,7 +88,12 @@ const FilterMenu = ({ filtersConfig, onFilterChange, clearAllFilters }) => {
                             allowClear
                             mode={multiple ? "multiple" : ""}
                             filterOption={(input, option) => option?.label.toLowerCase().includes(input.toLowerCase())}
-                            onChange={(value) => handleFilterChange(value, name)}
+                            onChange={(value) => {
+                                if (value) handleFilterChange(value, name);
+                                else {
+                                    handleClear(options, name);
+                                }
+                            }}
                             className="w-200px"
                             onClick={(e) => e.stopPropagation()}
                         >
@@ -195,7 +204,7 @@ FilterMenu.propTypes = {
         }),
     ).isRequired,
     onFilterChange: PropTypes.func.isRequired,
-    clearAllFilters: PropTypes.func.isRequired,
+    clearAllFilters: PropTypes.func,
 };
 
 export default FilterMenu;

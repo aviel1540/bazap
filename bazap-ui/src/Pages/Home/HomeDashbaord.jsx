@@ -1,59 +1,76 @@
-import { useState } from "react";
-import { Row, Card } from "antd";
+import { useEffect, useState } from "react";
+import { Row, Card, Space } from "antd";
 import { useQuery } from "@tanstack/react-query";
 import { getAllProjects } from "../../Utils/projectAPI";
 import Loader from "../../Components/Layout/Loader";
 import FilterMenu from "../../Components/UI/FilterMenu";
 import { getAllUnits } from "../../Utils/unitAPI";
 import { getAllDevicesToDashboard } from "../../Utils/deviceApi";
-import { aggregadeDevices } from "./utils";
-
-const initialState = { unit: "all", projects: [] };
+import { aggregateDevices } from "./utils";
+import UnitsChart from "./Dashboard/UnitsChart";
+import DeviceTypeChart from "./Dashboard/DevicesTypeChart";
+import StatusChart from "./Dashboard/StatusChart";
+import ProjectChart from "./Dashboard/ProjectChart";
+import CustomButton from "../../Components/UI/CustomButton/CustomButton";
+import { FileExcelOutlined } from "@ant-design/icons";
+import { createExcel } from "../../Utils/excelUtils";
 
 const HomeDashboard = () => {
-    const [devices, setDevices] = useState([]);
+    const [filteredDevices, setFilteredDevices] = useState([]);
     const { isLoading: projectIsLoading, data: projects } = useQuery({
         queryKey: ["projects"],
         queryFn: getAllProjects,
-        onSuccess: (data) => {
-            // setFilteredProjects(data);
-        },
     });
 
-    const { isLoading: devicesIsLoading } = useQuery({
+    const { isLoading: devicesIsLoading, data: devices } = useQuery({
         queryKey: ["dashboardDevices"],
         queryFn: getAllDevicesToDashboard,
-        onSuccess: (data) => {
-            setDevices(data);
-        },
     });
+    useEffect(() => {
+        if (devices) {
+            setFilteredDevices(devices);
+        }
+    }, [devices]);
+
     const { data: units, isLoading: isUnitLoading } = useQuery({
         queryKey: ["units"],
         queryFn: getAllUnits,
     });
 
-    const [filters, setFilters] = useState(initialState);
+    const getFiltersAndUpdatePage = (filters) => {
+        const { unit, project, openProjectOnly, deviceStatus } = filters;
+        const filteredDevicesData = devices.filter((device) => {
+            const unitMatch = unit === "all" || device.unit._id === unit;
+
+            let projectMatch = false;
+            if (project == undefined || project == null || project?.length === 0) {
+                projectMatch = true;
+            } else {
+                projectMatch = project.includes(device.project._id);
+            }
+
+            const projectStatusMatch = !openProjectOnly || (openProjectOnly && !device.project.finished);
+            const deviceStatusMatch =
+                deviceStatus == "all" ||
+                (deviceStatus == true && device.voucherOut == null) ||
+                (deviceStatus == false && device.voucherOut != null);
+
+            return unitMatch && projectMatch && projectStatusMatch && deviceStatusMatch;
+        });
+
+        setFilteredDevices(filteredDevicesData);
+    };
+
     const isLoading = devicesIsLoading || projectIsLoading;
 
-    // useEffect(() => {
-    //     if (projects) {
-    //         // handleFilterChange();
-    //     }
-    // }, [projects, filters]);
-
-    // const handleFilterChange = () => {
-    //     const updatedProjects = projects.filter(() => {
-    //         return true;
-    //     });
-    //     setFilteredProjects(updatedProjects);
-    // };
     const unitOptions = !isUnitLoading
         ? units.map((unit) => {
               return { label: unit.unitsName, value: unit._id };
           })
         : [];
     unitOptions.unshift({ value: "all", label: "הכל" });
-    const proejctOptions = !isLoading
+
+    const projectOptions = !isLoading
         ? projects.map((project) => {
               return { label: project.projectName, value: project._id };
           })
@@ -62,42 +79,100 @@ const HomeDashboard = () => {
     if (isLoading) {
         return <Loader />;
     }
+    const exportDashboardAsExcel = () => {
+        const devicesData = [["פרוייקט", "יחידה", "צ' מכשיר", "סוג מכשיר", "מקט", "כמות", "סטטוס"]];
+        // Sort devices by project, unit, and status
+        const sortedDevices = filteredDevices.sort((a, b) => {
+            // Sort by project name
+            if (a.project.projectName > b.project.projectName) return 1;
+            if (a.project.projectName < b.project.projectName) return -1;
+
+            // If project names are the same, sort by unit name
+            if (a.unit.unitsName > b.unit.unitsName) return 1;
+            if (a.unit.unitsName < b.unit.unitsName) return -1;
+
+            // If unit names are the same, sort by status
+            if (a.status > b.status) return 1;
+            if (a.status < b.status) return -1;
+
+            return 0;
+        });
+
+        // Push sorted data into devicesData array
+        sortedDevices.forEach((device) => {
+            devicesData.push([
+                device.project.projectName,
+                device.unit.unitsName,
+                device.serialNumber,
+                device.deviceTypeId.deviceName,
+                device.deviceTypeId.catalogNumber,
+                device.quantity ? device.quantity : 1,
+                device.status,
+            ]);
+        });
+        createExcel(devicesData, 'נתוני בצ"פ מעקב');
+    };
+    const data = aggregateDevices(filteredDevices);
+
     return (
         <Card
             title={`בצפ מעקב`}
             extra={
-                <FilterMenu
-                    onFilterChange={setFilters}
-                    clearAllFilters={() => setFilters(initialState)}
-                    filtersConfig={[
-                        {
-                            multiple: true,
-                            name: "project",
-                            label: "פרוייקטים",
-                            placeholder: "בחר פרוייקטים",
-                            type: "select",
-                            options: proejctOptions,
-                        },
-                        {
-                            name: "unit",
-                            label: "יחידות",
-                            type: "select",
-                            value: "all",
-                            options: unitOptions,
-                        },
-                    ]}
-                />
+                <Space>
+                    <FilterMenu
+                        onFilterChange={getFiltersAndUpdatePage}
+                        filtersConfig={[
+                            {
+                                name: "deviceStatus",
+                                label: "סטטוס מכשירים",
+                                type: "radio",
+                                value: "all",
+                                options: [
+                                    { label: "הכל", value: "all" },
+                                    { label: 'בבצ"פ', value: true },
+                                    { label: "מכשירים שיצאו", value: false },
+                                ],
+                            },
+                            {
+                                name: "openProjectOnly",
+                                label: "סטטוס פרוייקטים",
+                                checkedChildren: "כל הפרוייקטים",
+                                unCheckedChildren: "פרוייקטים פתוחים",
+                                type: "switch",
+                                value: true,
+                            },
+                            {
+                                multiple: true,
+                                name: "project",
+                                label: "פרוייקטים",
+                                placeholder: "בחר פרוייקטים",
+                                type: "select",
+                                options: projectOptions,
+                            },
+                            {
+                                name: "unit",
+                                label: "יחידות",
+                                type: "select",
+                                value: "all",
+                                options: unitOptions,
+                            },
+                        ]}
+                    />
+                    <CustomButton type="light-success" icon={<FileExcelOutlined />} iconPosition="end" onClick={exportDashboardAsExcel}>
+                        ייצא לאקסל
+                    </CustomButton>
+                </Space>
             }
         >
-            {/* Chart Layout */}
             <Row gutter={[16, 16]} align="middle">
-                {/* Radial Bar Chart - Project Overview */}
-                {isLoading && <Loader />}
-                {!isLoading && devices && (
+                {isLoading && filteredDevices.length == 0 && <Loader />}
+                {!isLoading && filteredDevices && filteredDevices.length > 0 && (
                     <>
-                        <div dir="ltr" style={{ direction: "ltr" }}>
-                            {JSON.stringify(aggregadeDevices(devices))}
-                        </div>
+                        <UnitsChart data={data.units} />
+                        <DeviceTypeChart data={data.units} />
+                        <StatusChart data={data} />
+                        <ProjectChart data={data.projects} />
+                        {/* <>{JSON.stringify(data)}</> */}
                     </>
                 )}
             </Row>
@@ -106,75 +181,3 @@ const HomeDashboard = () => {
 };
 
 export default HomeDashboard;
-//  {/* Chart Layout */}
-//  <Row gutter={16}>
-//  {/* Radial Bar Chart - Project Overview */}
-//  <Col span={24}>
-//      <Card title="Project Completion Overview">
-//          <Chart options={radialBarOptions} series={radialBarSeries} type="radialBar" />
-//      </Card>
-//  </Col>
-
-//  {/* Pie Chart - Voucher Types */}
-//  <Col span={8}>
-//      <Card title="Voucher Types">
-//          <Chart options={pieOptions} series={pieSeries} type="pie" />
-//      </Card>
-//  </Col>
-
-//  {/* Bar Chart - Device Status Breakdown */}
-//  <Col span={24}>
-//      <Card title="Device Status Breakdown">
-//          <Chart options={barOptions} series={barSeries} type="bar" />
-//      </Card>
-//  </Col>
-
-//  {/* Polar Area Chart - Accessories Status */}
-//  <Col span={8}>
-//      <Card title="Accessories Status">
-//          <Chart options={polarOptions} series={polarSeries} type="polarArea" />
-//      </Card>
-//  </Col>
-
-//  {/* Stacked Column Chart - Devices by Unit */}
-//  <Col span={24}>
-//      <Card title="Devices by Unit">
-//          <Chart options={stackedColumnOptions} series={stackedColumnSeries} type="bar" />
-//      </Card>
-//  </Col>
-
-//  {/* Line Chart - Vouchers Over Time */}
-//  <Col span={16}>
-//      <Card title="Vouchers Over Time">
-//          <Chart options={lineOptions} series={lineSeries} type="line" />
-//      </Card>
-//  </Col>
-
-//  {/* Heatmap - Accessories Quantity by Device Type */}
-//  <Col span={8}>
-//      <Card title="Accessories Quantity by Device Type">
-//          <Chart options={heatmapOptions} series={heatmapSeries} type="heatmap" />
-//      </Card>
-//  </Col>
-
-//  {/* Area Chart - Device Status over Time */}
-//  <Col span={24}>
-//      <Card title="Device Status over Time">
-//          <Chart options={areaOptions} series={areaSeries} type="area" />
-//      </Card>
-//  </Col>
-
-//  {/* Pie Chart - Units by Device Status */}
-//  <Col span={8}>
-//      <Card title="Units by Device Status">
-//          <Chart options={unitStatusPieOptions} series={unitStatusPieSeries} type="pie" />
-//      </Card>
-//  </Col>
-
-//  {/* Donut Chart - Project Status */}
-//  <Col span={8}>
-//      <Card title="Project Status">
-//          <Chart options={donutOptions} series={donutSeries} type="donut" />
-//      </Card>
-//  </Col>
-// </Row>
