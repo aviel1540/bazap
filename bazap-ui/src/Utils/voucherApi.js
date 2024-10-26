@@ -15,7 +15,8 @@ export const getAllVouchers = async ({ queryKey }) => {
     return await voucherAPI.get(`find-all-vouchers/${id}`);
 };
 
-export const getVoucherById = async (voucherId) => {
+export const getVoucherById = async ({ queryKey }) => {
+    const [_, voucherId] = queryKey;
     return await voucherAPI.get(`/${voucherId}`);
 };
 export const deleteVoucher = async (voucherId) => {
@@ -37,7 +38,7 @@ export const changeVoucherProject = async (voucherId, projectId) => {
 };
 
 export const exportVoucherToExcel = async (voucherId) => {
-    const voucher = await getVoucherById(voucherId);
+    const voucher = await getVoucherById(["", voucherId]);
     const devices = [];
     voucher.deviceList.forEach((device) => {
         devices.push({
