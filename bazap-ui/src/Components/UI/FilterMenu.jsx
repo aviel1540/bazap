@@ -111,7 +111,16 @@ const FilterMenu = ({ filtersConfig, onFilterChange, clearAllFilters }) => {
                         <div>{label}</div>
                         <RangePicker
                             value={filters[name]}
-                            onChange={(dates) => handleFilterChange(dates, name)}
+                            onChange={(dates) => {
+                                if (dates) {
+                                    const [startDate, endDate] = dates;
+                                    // Set the start date to the first day of the month and the end date to the last day of the month
+                                    const adjustedDates = [startDate.startOf("month"), endDate.endOf("month")];
+                                    handleFilterChange(adjustedDates, name);
+                                } else {
+                                    handleFilterChange(null, name); // Handle clear event
+                                }
+                            }}
                             onClick={(e) => e.stopPropagation()}
                             format={"MM/YYYY"}
                             presets={rangePresets}

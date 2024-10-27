@@ -14,6 +14,7 @@ import ProjectChart from "./Dashboard/ProjectChart";
 import CustomButton from "../../Components/UI/CustomButton/CustomButton";
 import { FileExcelOutlined } from "@ant-design/icons";
 import { createExcel } from "../../Utils/excelUtils";
+import VoucherChart from "./Dashboard/VoucherChart";
 
 const HomeDashboard = () => {
     const [filteredDevices, setFilteredDevices] = useState([]);
@@ -38,7 +39,7 @@ const HomeDashboard = () => {
     });
 
     const getFiltersAndUpdatePage = (filters) => {
-        const { unit, project, openProjectOnly, deviceStatus } = filters;
+        const { unit, project, openProjectOnly, deviceStatus, monthRange } = filters;
         const filteredDevicesData = devices.filter((device) => {
             const unitMatch = unit === "all" || device.unit._id === unit;
 
@@ -55,7 +56,21 @@ const HomeDashboard = () => {
                 (deviceStatus == true && device.voucherOut == null) ||
                 (deviceStatus == false && device.voucherOut != null);
 
-            return unitMatch && projectMatch && projectStatusMatch && deviceStatusMatch;
+            // Filter by date range
+            let dateMatch = true;
+            if (monthRange != null) {
+                const [startFilterDate, endFilterDate] = monthRange;
+                if (startFilterDate && endFilterDate) {
+                    const startDate = new Date(device.voucherIn.date);
+                    const endDate = device.voucherOut ? new Date(device.voucherOut.date) : null;
+                    const filterStart = new Date(startFilterDate);
+                    const filterEnd = new Date(endFilterDate);
+                    dateMatch = startDate >= filterStart && (endDate == null || filterEnd <= endDate);
+                }
+            }
+
+            // return true;
+            return unitMatch && projectMatch && projectStatusMatch && deviceStatusMatch && dateMatch;
         });
 
         setFilteredDevices(filteredDevicesData);
@@ -83,15 +98,12 @@ const HomeDashboard = () => {
         const devicesData = [["פרוייקט", "יחידה", "צ' מכשיר", "סוג מכשיר", "מקט", "כמות", "סטטוס"]];
         // Sort devices by project, unit, and status
         const sortedDevices = filteredDevices.sort((a, b) => {
-            // Sort by project name
             if (a.project.projectName > b.project.projectName) return 1;
             if (a.project.projectName < b.project.projectName) return -1;
 
-            // If project names are the same, sort by unit name
             if (a.unit.unitsName > b.unit.unitsName) return 1;
             if (a.unit.unitsName < b.unit.unitsName) return -1;
 
-            // If unit names are the same, sort by status
             if (a.status > b.status) return 1;
             if (a.status < b.status) return -1;
 
@@ -142,6 +154,12 @@ const HomeDashboard = () => {
                                 value: true,
                             },
                             {
+                                name: "monthRange",
+                                label: "תאריכים",
+                                placeholder: ["תאריך התחלה", "תאריך סיום"],
+                                type: "monthRange",
+                            },
+                            {
                                 multiple: true,
                                 name: "project",
                                 label: "פרוייקטים",
@@ -165,13 +183,14 @@ const HomeDashboard = () => {
             }
         >
             <Row gutter={[16, 16]} align="middle">
-                {isLoading && filteredDevices.length == 0 && <Loader />}
-                {!isLoading && filteredDevices && filteredDevices.length > 0 && (
+                {isLoading && <Loader />}
+                {!isLoading && filteredDevices && filteredDevices.length >= 0 && (
                     <>
                         <UnitsChart data={data.units} />
                         <DeviceTypeChart data={data.units} />
                         <StatusChart data={data} />
                         <ProjectChart data={data.projects} />
+                        <VoucherChart data={data} />
                         {/* <>{JSON.stringify(data)}</> */}
                     </>
                 )}

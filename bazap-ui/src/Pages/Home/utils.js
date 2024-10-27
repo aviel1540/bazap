@@ -1,5 +1,6 @@
 export const aggregateDevices = (devices) => {
     const projects = [];
+    const vouchers = [];
     const aggregation = {
         units: {}, // Store units with classified vs non-classified counts
         deviceTypes: {}, // Store device types counts across all units
@@ -9,8 +10,12 @@ export const aggregateDevices = (devices) => {
             finished: 0,
             nonFinished: 0,
         },
+        vouchers: {
+            vouchersIn: 0,
+            vouchersOut: 0,
+        },
     };
-    
+
     devices.forEach((device) => {
         const deviceName = device.deviceTypeId.deviceName;
         const unitName = device.unit.unitsName;
@@ -28,6 +33,14 @@ export const aggregateDevices = (devices) => {
             aggregation.projects.finished += device.project.finished ? 1 : 0;
             aggregation.projects.nonFinished += device.project.finished ? 0 : 1;
             projects.push(device.project._id);
+        }
+        if (!vouchers.includes(device.voucherIn._id)) {
+            vouchers.push(device.voucherIn._id);
+            aggregation.vouchers.vouchersIn++;
+        }
+        if (device.voucherOut != null && !vouchers.includes(device.voucherOut._id)) {
+            vouchers.push(device.voucherOut._id);
+            aggregation.vouchers.vouchersOut++;
         }
 
         if (isClassified) {

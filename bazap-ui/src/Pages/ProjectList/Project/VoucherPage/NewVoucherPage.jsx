@@ -17,8 +17,8 @@ import { useEffect, useState } from "react";
 import GenericForm from "../../../../Components/UI/Form/GenericForm/GenericForm";
 import VoucherTabs from "./VoucherTabs";
 import VoucherDevices from "./VoucherDevices";
-// import { getAllDivisions } from "../../../../Utils/divisionAPI";
-// import { getAllBrigades } from "../../../../Utils/brigadeAPI";
+import { getAllDivisions } from "../../../../Utils/divisionAPI";
+import { getAllBrigades } from "../../../../Utils/brigadeAPI";
 
 const KABALA = true;
 const NIPUK = false;
@@ -32,16 +32,16 @@ const NewVoucherPage = () => {
     const { projectId, project, isLoading: isProjectLoading } = useProject();
     const [isUnitModalOpen, setIsUnitModalOpen] = useState(false);
     const [isTechnicianModalOpen, setIsTechnicianModalOpen] = useState(false);
-    // const [selectedDivision, setSelectedDivision] = useState(null);
-    // // const [selectedBrigade, setSelectedBrigade] = useState(null);
-    // const { isLoading: isLoadingDivision, data: divisions } = useQuery({
-    //     queryKey: ["divisions"],
-    //     queryFn: getAllDivisions,
-    // });
-    // const { isLoading: isLoadingBrigade, data: brigades } = useQuery({
-    //     queryKey: ["brigades"],
-    //     queryFn: getAllBrigades,
-    // });
+    const [selectedDivision, setSelectedDivision] = useState(null);
+    // const [selectedBrigade, setSelectedBrigade] = useState(null);
+    const { isLoading: isLoadingDivision, data: divisions } = useQuery({
+        queryKey: ["divisions"],
+        queryFn: getAllDivisions,
+    });
+    const { isLoading: isLoadingBrigade, data: brigades } = useQuery({
+        queryKey: ["brigades"],
+        queryFn: getAllBrigades,
+    });
 
     const [formDefaultValues, setFormDefaultValues] = useState({ projectId: projectId, type: voucherType, unit });
     const { isLoading: isLoadingUnits, data: units } = useQuery({
@@ -126,7 +126,7 @@ const NewVoucherPage = () => {
         //         value: division._id,
         //         label: division.division_name,
         //     })),
-        //     rules: [{ required: true, message: "יש לבחור אוגדה." }],
+        //     rules: [],
         //     span: 8,
         // },
         // {
@@ -147,7 +147,7 @@ const NewVoucherPage = () => {
         //             value: brigade._id,
         //             label: brigade.brigadeName,
         //         })),
-        //     rules: [{ required: true, message: "יש לבחור חטיבה." }],
+        //     rules: [],
         //     span: 8,
         // },
         // {
