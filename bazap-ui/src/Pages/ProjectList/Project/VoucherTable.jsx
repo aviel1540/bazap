@@ -4,26 +4,42 @@ import CustomCard from "../../../Components/UI/CustomCard";
 import EmptyData from "../../../Components/UI/EmptyData";
 import { useProject } from "../../../Components/store/ProjectContext";
 import { useUserAlert } from "../../../Components/store/UserAlertContext";
-import { deleteVoucher, exportVoucherToExcel, getAllVouchers } from "../../../Utils/voucherApi";
-import { Table, Tag, Typography } from "antd";
+import { deleteVoucher, exportVoucherToExcel, getAllVouchers, getVoucherById } from "../../../Utils/voucherApi";
+import { Modal, Table, Tag, Typography } from "antd";
 import DeleteIcon from "@mui/icons-material/Delete";
 // import ChangeCircleIcon from "@mui/icons-material/ChangeCircle";
 import CustomDropDown from "../../../Components/UI/CustomDropDown";
 import IosShareIcon from "@mui/icons-material/IosShare";
 import { dateTostring } from "../../../Utils/utils";
+import { EyeOutlined } from "@ant-design/icons";
+import { useState } from "react";
+import DevicesInProjectTable from "./DevicesInProject/DevicesInProjectTable";
 // import { useState } from "react";
 // import ChangeProjectForm from "./ChangeProjectForm";
 const { Text } = Typography;
 
 const VoucherTable = () => {
     // const [open, setOpen] = useState(false);
+    const [showDevicesModalOpen, setShowDevicesModalOpen] = useState(false);
+    const [products, setProducts] = useState([]);
+    const [voucherId, setVoucherId] = useState(null);
     // const [voucherData, setVoucherData] = useState({ voucherId: null, project: null });
+
     const { projectId } = useProject();
 
     const { isLoading, data: vouchers } = useQuery({
         queryKey: ["vouchers", projectId],
         queryFn: getAllVouchers,
         enabled: projectId !== null,
+    });
+    const { isLoading: isVoucherLoading } = useQuery({
+        queryKey: ["voucher", voucherId],
+        queryFn: getVoucherById,
+        enabled: voucherId !== null,
+        onSuccess: (voucher) => {
+            setProducts([voucher.deviceList, voucher.accessoriesList]);
+            setShowDevicesModalOpen(true);
+        },
     });
     const { onConfirm } = useUserAlert();
     const queryClient = useQueryClient();
@@ -37,7 +53,21 @@ const VoucherTable = () => {
         };
         onConfirm(config);
     };
+    const showDevicesModal = (id) => {
+        const voucher = vouchers.find((voucher) => voucher._id == id);
+        if (voucher) {
+            setVoucherId(id);
+        }
+    };
     const menuActions = [
+        {
+            key: "showDevices",
+            label: "צפה בשובר",
+            icon: <EyeOutlined />,
+            handler: (data) => {
+                showDevicesModal(data._id);
+            },
+        },
         {
             key: "exportVoucher",
             label: "יצא לשובר",
@@ -148,6 +178,23 @@ const VoucherTable = () => {
                     rowKey={(record) => record._id}
                 />
             </CustomCard>
+            <Modal
+                title="מכשירים בשובר"
+                width="80%"
+                cancelButtonProps={{ style: { display: "none" } }}
+                open={showDevicesModalOpen}
+                okText="סגור"
+                onOk={() => setShowDevicesModalOpen(false)}
+            >
+                <DevicesInProjectTable
+                    isActionsHidden={true}
+                    filteredDevices={products}
+                    rowSelection={undefined}
+                    defaultPageSize={25}
+                    handleStatusChange={null}
+                    isLoading={isVoucherLoading}
+                />
+            </Modal>
             {/* <ChangeProjectForm open={open} onCancel={() => setOpen(false)} formValues={voucherData} /> */}
         </>
     );
