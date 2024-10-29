@@ -31,16 +31,15 @@ exports.getDivision = async (req, res) => {
 
 exports.addNewDivision = async (req, res) => {
     const divisionName = escape(req.body.divisionName);
-    console.log(req.body);
     let newDivision;
     try {
         if (!divisionName) return res.status(400).json({ message: "יש למלא את השדות" });
         const checkDivisionName = validation.addSlashes(divisionName);
-        const checkDivisionExists = await divisionServices.findDivisionByName(checkDivisionName);
+        const DivisionName = "אוגדה " + checkDivisionName;
+        const checkDivisionExists = await divisionServices.findDivisionByName(DivisionName);
         if (checkDivisionExists) return res.status(401).json({ message: "שם האוגדה קיים במערכת" });
-        newDivision = await divisionServices.addDivision(checkDivisionName);
-        const brigadeUnitNumber = checkDivisionName.match(/\d+/)[0];
-        const brigadeUnitName = 'מפאו"ג ' + brigadeUnitNumber;
+        newDivision = await divisionServices.addDivision(DivisionName);
+        const brigadeUnitName = 'מפאו"ג ' + checkDivisionName;
         newBrigade = await brigadeServices.addBrigade({ brigadeName: brigadeUnitName, division: newDivision._id });
         newUnit = await unitServices.addUnit({ unitsName: brigadeUnitName, brigade: newBrigade._id });
         newBrigade.unitsList.push(newUnit);

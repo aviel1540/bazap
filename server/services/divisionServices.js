@@ -1,7 +1,10 @@
 const Division = require("../models/Division");
 
 
-exports.findAllDivisions = async () => await Division.find();
+exports.findAllDivisions = async () => await Division.find().populate({
+    path: 'brigadesList',
+    populate: { path: 'unitsList' } 
+});
 
 exports.findDivisionById = async (checkDivisionId) => await Division.findById(checkDivisionId);
 
@@ -12,7 +15,7 @@ exports.updateDivisionName = async (request) => {
     return await Division.findByIdAndUpdate(checkDivisionId, { division_name: checkNewName });
 }
 
-exports.findDivisionByName = async(checkDivisionName) => await Division.findOne({ division_name: checkDivisionName });
+exports.findDivisionByName = async (checkDivisionName) => await Division.findOne({ division_name: checkDivisionName });
 
 
 exports.deleteDivision = async (checkDivisionId) => await Division.findByIdAndDelete(checkDivisionId);

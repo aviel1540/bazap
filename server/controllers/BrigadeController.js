@@ -42,14 +42,12 @@ exports.addNewBrigade = async (req, res) => {
         division = await divisionServices.findDivisionById(checkDivisionId);
         if (!division) return res.status(404).json({ message: "לא נמצאה אוגדה" });
         const checkBrigadeName = validation.addSlashes(brigadeName);
-        const brigadeExists = await brigadeServices.findBrigadeByName(checkBrigadeName);
+        const brigadeNewName = "חטיבה " + checkBrigadeName;
+        const brigadeExists = await brigadeServices.findBrigadeByName(brigadeNewName);
         if (brigadeExists) return res.status(401).json({ message: "שם החטיבה קיים במערכת" });
-
-        const brigadeUnitNumber = checkBrigadeName.match(/\d+/)[0];
-        const brigadeNewName = "חטיבה " + brigadeUnitNumber;
-        const birgadeData = { brigadeName: brigadeNewName, division: checkDivisionId };
+        const birgadeData = { brigadeName: brigadeName, division: checkDivisionId };
         brigade = await brigadeServices.addBrigade(birgadeData);
-        const unitName = 'מפח"ט ' + brigadeUnitNumber;
+        const unitName = 'מפח"ט ' + checkBrigadeName;
         unit = await unitServices.addUnit(unitName);
         brigade.unitsList.push(unit);
         division.brigadesList.push(brigade);

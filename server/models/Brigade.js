@@ -13,7 +13,7 @@ const brigadeSchema = new Schema({
     unitsList: [
         {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Unit",
+            ref: "Units",
         },
     ],
 });
